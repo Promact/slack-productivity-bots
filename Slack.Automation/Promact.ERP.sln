@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Erp.Core", "Promact.Erp.Core\Promact.Erp.Core.csproj", "{671C70B8-03D9-4F2D-A326-78C1E4ED2697}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Erp.Util", "Promact.Erp.Util\Promact.Erp.Util.csproj", "{DD6F35FC-9ABD-4FCD-9B71-40E12B76C572}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Erp.DomainModel", "Promact.Erp.DomainModel\Promact.Erp.DomainModel.csproj", "{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Core.Test", "Promact.Core.Test\Promact.Core.Test.csproj", "{B4A2FEC4-871F-4742-A254-7E666ECA4692}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Core.Repository", "Promact.Core.Repository\Promact.Core.Repository.csproj", "{969E9C68-D3AC-453C-967F-824DA24E2A0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promact.Erp.Web", "Promact.Erp.Web\Promact.Erp.Web.csproj", "{BC7ABB86-5592-4171-9CD1-A39C1AEAA3B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{671C70B8-03D9-4F2D-A326-78C1E4ED2697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{671C70B8-03D9-4F2D-A326-78C1E4ED2697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{671C70B8-03D9-4F2D-A326-78C1E4ED2697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{671C70B8-03D9-4F2D-A326-78C1E4ED2697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD6F35FC-9ABD-4FCD-9B71-40E12B76C572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD6F35FC-9ABD-4FCD-9B71-40E12B76C572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD6F35FC-9ABD-4FCD-9B71-40E12B76C572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD6F35FC-9ABD-4FCD-9B71-40E12B76C572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4A2FEC4-871F-4742-A254-7E666ECA4692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4A2FEC4-871F-4742-A254-7E666ECA4692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4A2FEC4-871F-4742-A254-7E666ECA4692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4A2FEC4-871F-4742-A254-7E666ECA4692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{969E9C68-D3AC-453C-967F-824DA24E2A0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{969E9C68-D3AC-453C-967F-824DA24E2A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{969E9C68-D3AC-453C-967F-824DA24E2A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{969E9C68-D3AC-453C-967F-824DA24E2A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC7ABB86-5592-4171-9CD1-A39C1AEAA3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC7ABB86-5592-4171-9CD1-A39C1AEAA3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC7ABB86-5592-4171-9CD1-A39C1AEAA3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC7ABB86-5592-4171-9CD1-A39C1AEAA3B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
