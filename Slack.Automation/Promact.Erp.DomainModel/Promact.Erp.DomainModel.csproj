@@ -30,8 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -60,11 +65,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
+    <Compile Include="ApplicationClass\SlashAttachment.cs" />
+    <Compile Include="ApplicationClass\SlashAttachmentAction.cs" />
+    <Compile Include="ApplicationClass\SlashChatUpdateResponse.cs" />
+    <Compile Include="ApplicationClass\SlashChatUpdateResponseAction.cs" />
+    <Compile Include="ApplicationClass\SlashChatUpdateResponseChannelUser.cs" />
+    <Compile Include="ApplicationClass\SlashChatUpdateResponseTeam.cs" />
+    <Compile Include="ApplicationClass\SlashCommand.cs" />
+    <Compile Include="ApplicationClass\SlashIncomingWebhook.cs" />
+    <Compile Include="ApplicationClass\SlashResponse.cs" />
+    <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="Context\PromactErpContext.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LeaveRequest.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

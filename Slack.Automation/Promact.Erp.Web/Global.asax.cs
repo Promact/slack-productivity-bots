@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.Web.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,8 @@ namespace Promact.Erp.Web
     {
         protected void Application_Start()
         {
+            var container = AutofacConfig.RegisterDependancies();
+            DatabaseConfig.Initialize(container);
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
