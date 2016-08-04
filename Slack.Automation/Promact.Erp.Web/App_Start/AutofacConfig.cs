@@ -24,17 +24,20 @@ namespace Promact.Erp.Web.App_Start
         {
 
             var builder = new ContainerBuilder();
-
+            // register dependency
             builder.RegisterType<PromactErpContext>().As<DbContext>();
+
+            // register webapi controller
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
-         //   builder.RegisterControllers(typeof(HomeController).Assembly);
+
+            // register repositories
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             var container = builder.Build();
-       //     DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
             // replace webapi dependancy resolver with autofac
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 

@@ -11,7 +11,9 @@ namespace Promact.Erp.DomainModel.Context
         {
 
         }
-
+        /// <summary>
+        /// Added table of LeaveRequest on Database PromactErpContext
+        /// </summary>
         public DbSet<LeaveRequest> LeaveRequest { get; set; }
 
         public static PromactErpContext Create()

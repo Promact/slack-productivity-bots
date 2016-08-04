@@ -7,6 +7,9 @@ namespace Promact.Erp.DomainModel.Migrations
 
     public class Configuration : DbMigrationsConfiguration<Promact.Erp.DomainModel.Context.PromactErpContext>
     {
+        /// <summary>
+        /// Enable auto-migration for this project
+        /// </summary>
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;

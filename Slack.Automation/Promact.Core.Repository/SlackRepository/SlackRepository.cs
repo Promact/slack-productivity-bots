@@ -21,6 +21,13 @@ namespace Promact.Core.Repository.SlackRepository
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
         }
+
+        /// <summary>
+        /// Method to convert List of string to leaveRequest object and call leave apply method to save the leave details
+        /// </summary>
+        /// <param name="slackRequest"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public LeaveRequest LeaveApply(List<string> slackRequest, string userName)
         {
             LeaveRequest leaveRequest = new LeaveRequest();
@@ -35,6 +42,12 @@ namespace Promact.Core.Repository.SlackRepository
             _leaveRepository.ApplyLeave(leaveRequest);
             return leaveRequest;
         }
+
+        /// <summary>
+        /// Method to get Employee Id from its userName and from its employeeId, to get list of leave
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public string LeaveList(string userName)
         {
             var userId = _projectUser.GetUserByUsername(userName).Id;
@@ -45,6 +58,13 @@ namespace Promact.Core.Repository.SlackRepository
             }
             return replyText;
         }
+
+        /// <summary>
+        /// Method to Cancel leave, only allow the applier of the leave to cancel the leave
+        /// </summary>
+        /// <param name="leaveId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public string CancelLeave(int leaveId, string userName)
         {
             var userId = _projectUser.GetUserByUsername(userName).Id;
@@ -59,6 +79,12 @@ namespace Promact.Core.Repository.SlackRepository
             }
             return replyText;
         }
+
+        /// <summary>
+        /// Method to get Employee Id from its userName and from its employeeId, to get last leave status
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public string LeaveStatus(string userName)
         {
             var userId = _projectUser.GetUserByUsername(userName).Id;
@@ -66,6 +92,12 @@ namespace Promact.Core.Repository.SlackRepository
             replyText = "Your leave Id no: " + leave.Id + " From " + leave.FromDate.ToShortDateString() + " To " + leave.EndDate.ToShortDateString() + " for " + leave.Reason + " is " + leave.Status;
             return replyText;
         }
+
+        /// <summary>
+        /// Method to create attchment of slack which is used in chat.PostMessage method
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public string ChatPostAttachment(string text)
         {
             List<SlashAttachmentAction> ActionList = new List<SlashAttachmentAction>();
@@ -98,6 +130,13 @@ namespace Promact.Core.Repository.SlackRepository
             var attachments = JsonConvert.SerializeObject(attachmentList);
             return attachments;
         }
+
+        /// <summary>
+        /// Method to create attchment of slack used generically
+        /// </summary>
+        /// <param name="leaveRequestId"></param>
+        /// <param name="replyText"></param>
+        /// <returns></returns>
         public List<SlashAttachment> SlackResponseAttachment(string leaveRequestId, string replyText)
         {
             List<SlashAttachmentAction> ActionList = new List<SlashAttachmentAction>();
@@ -128,6 +167,13 @@ namespace Promact.Core.Repository.SlackRepository
             attachment.Add(attachmentList);
             return attachment;
         }
+
+        /// <summary>
+        /// Method to get leave Updated from slack button response
+        /// </summary>
+        /// <param name="leaveId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public LeaveRequest UpdateLeave(int leaveId, string status)
         {
             var leave = _leaveRepository.LeaveById(leaveId);

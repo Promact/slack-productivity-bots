@@ -15,8 +15,15 @@ namespace Promact.Core.Repository.ProjectUserCall
         public ProjectUserCallRepository()
         {
             client = new HttpClient();
+            //Setting baseAddress in client
             client.BaseAddress = new Uri("http://localhost:6875/");
         }
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Employee detail by their slack userName
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public User GetUserByUsername(string userName)
         {
             var response = client.GetAsync("project/userDetails/" + userName).Result;
@@ -24,6 +31,12 @@ namespace Promact.Core.Repository.ProjectUserCall
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
             return userDetails;
         }
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get List of TeamLeader's slack UserName from employee userName
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public List<string> GetTeamLeaderUserName(string userName)
         {
             var response = client.GetAsync("project/teamLeadersDetails/" + userName).Result;
@@ -31,6 +44,11 @@ namespace Promact.Core.Repository.ProjectUserCall
             var teamLeader = JsonConvert.DeserializeObject<List<string>>(responseContent);
             return teamLeader;
         }
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetManagementUserName()
         {
             var response = client.GetAsync("project/Admin").Result;

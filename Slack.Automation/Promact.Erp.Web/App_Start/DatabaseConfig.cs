@@ -10,6 +10,10 @@ namespace Promact.Erp.Web.App_Start
 {
     public class DatabaseConfig
     {
+        /// <summary>
+        /// Method to enable auto-migration and update Database after migration
+        /// </summary>
+        /// <param name="componentContext"></param>
         public static void Initialize(IComponentContext componentContext)
         {
             Database.SetInitializer<PromactErpContext>(new MigrateDatabaseToLatestVersion<PromactErpContext, Promact.Erp.DomainModel.Migrations.Configuration>());

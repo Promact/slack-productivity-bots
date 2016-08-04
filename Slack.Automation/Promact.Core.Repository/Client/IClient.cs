@@ -12,7 +12,6 @@ namespace Promact.Core.Repository.Client
     {
         void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText);
         void SendMessage(SlashCommand leave, string replyText);
-        void SendMessageWithAttachment(SlashCommand leave, string replyText, string leaveRequestId);
         void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, string leaveRequestId);
     }
 }

@@ -17,7 +17,6 @@ namespace Promact.Core.Repository.DataRepository
         void Save();
         T FirstOrDefault(Expression<Func<T, bool>> predicate);
         IQueryable<T> Fetch(Func<T, bool> predicate);
-        IQueryable<T> Fetch(Func<T, bool> predicate, string includeProperties);
         bool Any(Func<T, bool> predicate);
         bool All(Func<T, bool> predicate);
     }

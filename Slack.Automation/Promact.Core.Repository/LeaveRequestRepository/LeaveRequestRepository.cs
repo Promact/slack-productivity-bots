@@ -16,15 +16,31 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         {
             _leaveRequestRepository = leaveRequestRepository;
         }
+
+        /// <summary>
+        /// Method to apply Leave
+        /// </summary>
+        /// <param name="leave"></param>
         public void ApplyLeave(LeaveRequest leave)
         {
             _leaveRequestRepository.Insert(leave);
             _leaveRequestRepository.Save();
         }
+
+        /// <summary>
+        /// Method to get All List of leave
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<LeaveRequest> LeaveList()
         {
             return _leaveRequestRepository.List();
         }
+
+        /// <summary>
+        /// Method used to cancel the leave request using its integer leaveId
+        /// </summary>
+        /// <param name="leaveId"></param>
+        /// <returns></returns>
         public LeaveRequest CancelLeave(int leaveId)
         {
             var leave = _leaveRequestRepository.GetById(leaveId);
@@ -33,10 +49,22 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             _leaveRequestRepository.Save();
             return leave;
         }
+
+        /// <summary>
+        /// Method to get leave list corresponding each user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IEnumerable<LeaveRequest> LeaveListByUserId(string userId)
         {
             return _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
         }
+
+        /// <summary>
+        /// Method to get the last leave request status corresponding to each user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public LeaveRequest LeaveListStatusByUserId(string userId)
         {
             var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
@@ -47,11 +75,22 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             }
             return leave;
         }
+
+        /// <summary>
+        /// Get a particular leave detail using leaveId
+        /// </summary>
+        /// <param name="leaveId"></param>
+        /// <returns></returns>
         public LeaveRequest LeaveById(int leaveId)
         {
             var leave = _leaveRequestRepository.FirstOrDefault(x => x.Id == leaveId);
             return leave;
         }
+
+        /// <summary>
+        /// Method to update leave request
+        /// </summary>
+        /// <param name="leave"></param>
         public void UpdateLeave(LeaveRequest leave)
         {
             _leaveRequestRepository.Update(leave);

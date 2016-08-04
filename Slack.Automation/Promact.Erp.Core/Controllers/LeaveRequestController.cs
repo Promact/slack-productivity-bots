@@ -34,6 +34,7 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
+                // Way to break string by spaces only if spaces are not between quotes
                 var slackText = leave.text.Split('"').Select((element, index) => index % 2 == 0 ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element }).SelectMany(element => element).ToList();
                 var action = slackText[0];
                 switch (action)
@@ -42,8 +43,8 @@ namespace Promact.Erp.Core.Controllers
                         {
                             var leaveRequest = _slackRepository.LeaveApply(slackText, leave.user_name);
                             var replyText = "Leave has been applied by " + leave.user_name + " From " + leaveRequest.FromDate.ToShortDateString() + " To " + leaveRequest.EndDate.ToShortDateString() + " for Reason " + leaveRequest.Reason + " will re-join by " + leaveRequest.RejoinDate.ToShortDateString();
-                            //_client.SendMessageWithAttachment(leave, replyText, Convert.ToString(leaveRequest.Id));
                             _client.SendMessage(leave, replyText);
+                            // Assigning the Incoming Web-Hook Url in response url to send message to all TL and management in their personal message by LeaveBot
                             leave.response_url = "https://hooks.slack.com/services/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";
                             _client.SendMessageWithAttachmentIncomingWebhook(leave, replyText, Convert.ToString(leaveRequest.Id));
                         }
@@ -101,6 +102,7 @@ namespace Promact.Erp.Core.Controllers
                 }
                 return Ok();
             }
+            // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
                 var replyText = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
@@ -108,6 +110,12 @@ namespace Promact.Erp.Core.Controllers
                 return BadRequest();
             }
         }
+
+        /// <summary>
+        /// Method to update the leave details. Response will be from slack interactive message button
+        /// </summary>
+        /// <param name="leaveResponse"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
         public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
@@ -115,7 +123,7 @@ namespace Promact.Erp.Core.Controllers
             var leave = _slackRepository.UpdateLeave(leaveResponse.callback_id, leaveResponse.actions.value);
             var replyText = "You had " + leave.Status + " Leave for " + leaveResponse.user.name + " From " + leave.FromDate.ToShortDateString() + " To " + leave.EndDate.ToShortDateString() + " for Reason " + leave.Reason + " will re-join by " + leave.RejoinDate.ToShortDateString();
             _client.UpdateMessage(leaveResponse, replyText);
-            return Ok(replyText);
+            return Ok();
         }
     }
 }

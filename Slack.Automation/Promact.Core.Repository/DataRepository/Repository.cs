@@ -19,31 +19,59 @@ namespace Promact.Core.Repository.DataRepository
             dbSet = db.Set<T>();
         }
 
+        /// <summary>
+        /// To get List of all from database 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<T> List()
         {
             return dbSet.AsEnumerable(); ;
         }
 
+        /// <summary>
+        /// To search any data by its integer Id number
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public virtual T GetById(int? id)
         {
             return dbSet.Find(id);
         }
+
+        /// <summary>
+        /// To search any data by its string Id number
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public virtual T GetById(string id)
         {
             return dbSet.Find(id);
         }
 
+        /// <summary>
+        /// Method to add data in database
+        /// </summary>
+        /// <param name="entity"></param>
         public void Insert(T entity)
         {
             dbSet.Add(entity);
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Method to delete data from database from its integer Id
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(int? id)
         {
             dbSet.Remove(dbSet.Find(id));
             db.SaveChanges();
         }
+
+        /// <summary>
+        /// Method to delete data from database from its string Id
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(string id)
         {
             T detail = dbSet.Find(id);
@@ -51,17 +79,29 @@ namespace Promact.Core.Repository.DataRepository
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Method to update data in existing database
+        /// </summary>
+        /// <param name="entity"></param>
         public void Update(T entity)
         {
             db.Entry(entity).State = EntityState.Modified;
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Method use to save changes in database
+        /// </summary>
         public void Save()
         {
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Method to search database using Linq Expression and get FirstOrDefault Value corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
             try
@@ -74,6 +114,11 @@ namespace Promact.Core.Repository.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method to search database using Linq Expression and get All Value corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public IQueryable<T> Fetch(Func<T, bool> predicate)
         {
             try
@@ -86,6 +131,11 @@ namespace Promact.Core.Repository.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method to search database using Linq Expression and return true or false for any existance of data in database
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public bool Any(Func<T, bool> predicate)
         {
             try
@@ -98,6 +148,11 @@ namespace Promact.Core.Repository.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method to search database using Linq Expression and return true or false for corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public bool All(Func<T, bool> predicate)
         {
             try
@@ -112,6 +167,10 @@ namespace Promact.Core.Repository.DataRepository
 
         private bool disposed = false;
 
+        /// <summary>
+        /// Dispose Method
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -128,27 +187,6 @@ namespace Promact.Core.Repository.DataRepository
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-
-        public IQueryable<T> Fetch(Func<T, bool> predicate, string includeProperties)
-        {
-            try
-            {
-                var query = dbSet.Where<T>(predicate).AsQueryable();
-
-                if (!String.IsNullOrWhiteSpace(includeProperties))
-                {
-                    includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList().
-                        ForEach(x => query = query.Include(x));
-                }
-
-                return query;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
     }
 }

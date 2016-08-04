@@ -27,10 +27,22 @@ namespace Promact.Core.Repository.Client
             _slackRepository = slackRepository;
             _projectUser = projectUser;
         }
+
+        /// <summary>
+        /// The below method use for updating slack message without attachment. Required field token, channelId and message_ts which we had get at time of response from slack.
+        /// </summary>
+        /// <param name="leaveResponse"></param>
+        /// <param name="replyText"></param>
         public void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
         {
             var response = _chatUpdateMessage.GetAsync("?token=" + HttpUtility.UrlEncode(leaveResponse.token) + "&channel=" + HttpUtility.UrlEncode(leaveResponse.channel.Id) + "&text=" + HttpUtility.UrlEncode(replyText) + "&ts=" + HttpUtility.UrlEncode(leaveResponse.message_ts) + "&as_user=true&pretty=1").Result;
         }
+
+        /// <summary>
+        /// The below method used for sending resposne back to slack for a slash command in ephemeral mood. Required field response_url.
+        /// </summary>
+        /// <param name="leave"></param>
+        /// <param name="replyText"></param>
         public void SendMessage(SlashCommand leave, string replyText)
         {
             var example = new SlashResponse() { response_type = "ephemeral", text = replyText };
@@ -46,22 +58,13 @@ namespace Promact.Core.Repository.Client
             }
             var response = (HttpWebResponse)request.GetResponse();
         }
-        public void SendMessageWithAttachment(SlashCommand leave, string replyText, string leaveRequestId)
-        {
-            var attachment = _slackRepository.SlackResponseAttachment(leaveRequestId, replyText);
-            var example = new SlashResponse() { response_type = "in_channel", text = replyText };
-            var Json = JsonConvert.SerializeObject(example);
-            var request = (HttpWebRequest)WebRequest.Create(leave.response_url);
-            request.Method = WebRequestMethods.Http.Post;
-            request.ContentType = "application/json; charset=UTF-8";
-            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-            {
-                streamWriter.Write(Json);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
-            var response = (HttpWebResponse)request.GetResponse();
-        }
+
+        /// <summary>
+        /// The below method is used for sending meassage to all the TL and management people using Incoming Webhook.Required field channel name(whom to send) and here i had override the bot name and its identity.
+        /// </summary>
+        /// <param name="leave"></param>
+        /// <param name="replyText"></param>
+        /// <param name="leaveRequestId"></param>
         public void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, string leaveRequestId)
         {
             var attachment = _slackRepository.SlackResponseAttachment(leaveRequestId, replyText);

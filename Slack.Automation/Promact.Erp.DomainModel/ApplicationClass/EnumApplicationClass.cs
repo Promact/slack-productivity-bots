@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
+    /// <summary>
+    /// Leave Status
+    /// </summary>
     public enum Condition
     {
         Pending,
