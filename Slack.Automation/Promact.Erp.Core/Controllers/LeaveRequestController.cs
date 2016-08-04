@@ -46,7 +46,7 @@ namespace Promact.Erp.Core.Controllers
                             _client.SendMessage(leave, replyText);
                             // Assigning the Incoming Web-Hook Url in response url to send message to all TL and management in their personal message by LeaveBot
                             leave.response_url = "https://hooks.slack.com/services/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";
-                            _client.SendMessageWithAttachmentIncomingWebhook(leave, replyText, Convert.ToString(leaveRequest.Id));
+                            _client.SendMessageWithAttachmentIncomingWebhook(leave, replyText, leaveRequest);
                         }
                         break;
                     case "list":

@@ -8,6 +8,7 @@ using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
+using Promact.Erp.Util.Email;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -36,6 +37,8 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
+            builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
+
             var container = builder.Build();
 
             // replace webapi dependancy resolver with autofac

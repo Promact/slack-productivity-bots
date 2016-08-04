@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Promact.Erp.Util;
+using Promact.Erp.Util.Email_Templates;
+using Promact.Erp.Util.Email;
 
 namespace Promact.Core.Repository.SlackRepository
 {

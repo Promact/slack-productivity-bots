@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationClass\EmailApplication.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\SlashAttachment.cs" />
     <Compile Include="ApplicationClass\SlashAttachmentAction.cs" />

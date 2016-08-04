@@ -40,7 +40,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Email Templates\LeaveApplication.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LeaveApplication.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email Templates\LeaveApproveAndRejected.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LeaveApproveAndRejected.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email\EmailService.cs" />
+    <Compile Include="Email\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Email Templates\LeaveApplication.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LeaveApplication.cs</LastGenOutput>
+    </Content>
+    <Content Include="Email Templates\LeaveApproveAndRejected.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LeaveApproveAndRejected.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Promact.Erp.DomainModel\Promact.Erp.DomainModel.csproj">
+      <Project>{A3A93CDB-BF02-41A6-8CF7-843F53F930E8}</Project>
+      <Name>Promact.Erp.DomainModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
