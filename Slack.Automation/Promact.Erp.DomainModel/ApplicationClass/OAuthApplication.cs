@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
-    public class EmailApplication
+    public class OAuthApplication
     {
         /// <summary>
-        /// Email address from
+        /// OAuth App ClientId
         /// </summary>
-        public string From { get; set; }
+        public string ClientId { get; set; }
 
         /// <summary>
-        /// Email address Subject
+        /// OAuth App ClientSecret
         /// </summary>
-        public string Subject { get; set; }
+        public string ClientSecret { get; set; }
 
         /// <summary>
-        /// Email Body
+        /// OAuth App RefreshToken
         /// </summary>
-        public string Body { get; set; }
+        public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Email to
+        /// OAuth App ReturnUrl
         /// </summary>
-        public List<string> To { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }
