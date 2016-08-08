@@ -17,26 +17,23 @@ namespace Promact.Erp.Util.Email
         /// <param name="email">email.from, email.to, email.body, email.subject</param>
         public void Send(EmailApplication email)
         {
-            foreach (var item in email.To)
+            MailMessage message = new MailMessage(email.From, email.To);
+            message.Subject = email.Subject;
+            message.Body = email.Body;
+            message.BodyEncoding = Encoding.UTF8;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient("webmail.promactinfo.com", 587);
+            client.EnableSsl = false;
+            client.Credentials = new NetworkCredential("siddhartha@promactinfo.com", "B#(WdPtCwdI^Duik");
+            try
             {
-                var to = item + "@promactinfo.com";
-                MailMessage message = new MailMessage(email.From, to);
-                message.Subject = email.Subject;
-                message.Body = email.Body;
-                message.BodyEncoding = Encoding.UTF8;
-                message.IsBodyHtml = true;
-                SmtpClient client = new SmtpClient("webmail.promactinfo.com", 587);
-                client.EnableSsl = false;
-                client.Credentials = new NetworkCredential("siddhartha@promactinfo.com", "B#(WdPtCwdI^Duik");
-                try
-                {
-                    client.Send(message);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                client.Send(message);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }
 }
+

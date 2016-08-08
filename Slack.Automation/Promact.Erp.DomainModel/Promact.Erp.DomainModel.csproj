@@ -74,6 +74,7 @@
     <Compile Include="ApplicationClass\EmailApplication.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
+    <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\SlashAttachment.cs" />
     <Compile Include="ApplicationClass\SlashAttachmentAction.cs" />
     <Compile Include="ApplicationClass\SlashChatUpdateResponse.cs" />

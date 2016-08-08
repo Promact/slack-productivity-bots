@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         {
             client = new HttpClient();
             //Setting baseAddress in client
-            client.BaseAddress = new Uri("http://localhost:6875/");
+            client.BaseAddress = new Uri(AppSettingsUtil.ProjectUserUrl);
         }
 
         /// <summary>
@@ -38,12 +39,12 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public async Task<List<string>> GetTeamLeaderUserName(string userName)
+        public async Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName)
         {
             var requestUrl = string.Format("project/teamLeadersDetails/{0}", userName);
             var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var teamLeader = JsonConvert.DeserializeObject<List<string>>(responseContent);
+            var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return teamLeader;
         }
 
@@ -51,12 +52,12 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
         /// </summary>
         /// <returns></returns>
-        public async Task<List<string>> GetManagementUserName()
+        public async Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName()
         {
             var requestUrl = string.Format("project/teamLeadersDetails/");
             var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var teamLeader = JsonConvert.DeserializeObject<List<string>>(responseContent);
+            var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return teamLeader;
         }
     }

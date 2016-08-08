@@ -18,16 +18,16 @@ using System.Web;
 
 namespace Promact.Core.Repository.Client
 {
-    public class Client:IClient
+    public class Client : IClient
     {
         private HttpClient _chatUpdateMessage;
         private readonly ISlackRepository _slackRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IEmailService _email;
-        public Client(ISlackRepository slackRepository,IProjectUserCallRepository projectUser,IEmailService email)
+        public Client(ISlackRepository slackRepository, IProjectUserCallRepository projectUser, IEmailService email)
         {
             _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri("https://slack.com/api/chat.update");
+            _chatUpdateMessage.BaseAddress = new Uri(AppSettingsUtil.ChatUpdateUrl);
             _slackRepository = slackRepository;
             _projectUser = projectUser;
             _email = email;
@@ -76,16 +76,20 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@"+teamLeader, Username = "LeaveBot", Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader, Username = "LeaveBot", Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, leave.ResponseUrl);
             }
-            EmailApplication email = new EmailApplication();
-            email.Body = EmailServiceTemplate(leaveRequest);
-            email.From = leave.Username + "@promactinfo.com";
-            email.Subject = StringConstant.EmailSubject;
-            email.To = teamLeaders;
-            _email.Send(email);
+            var userDetail = await _projectUser.GetUserByUsername(leave.Username); 
+            foreach (var teamLeader in teamLeaders)
+            {
+                EmailApplication email = new EmailApplication();
+                email.Body = EmailServiceTemplate(leaveRequest);
+                email.From = userDetail.Email;
+                email.Subject = StringConstant.EmailSubject;
+                email.To = teamLeader.Email;
+                _email.Send(email);
+            }
         }
 
         /// <summary>
@@ -119,18 +123,25 @@ namespace Promact.Core.Repository.Client
         /// <param name="url">Json string and url</param>
         public void WebRequestMethod(string Json, string url)
         {
-            // Call to an url using HttpWebRequest
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = WebRequestMethods.Http.Post;
-            request.ContentType = StringConstant.WebRequestContentType;
-            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            try
             {
-                //adding rest portion of url
-                streamWriter.Write(Json);
-                streamWriter.Flush();
-                streamWriter.Close();
+                // Call to an url using HttpWebRequest
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = WebRequestMethods.Http.Post;
+                request.ContentType = StringConstant.WebRequestContentType;
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    //adding rest portion of url
+                    streamWriter.Write(Json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+                var response = (HttpWebResponse)request.GetResponse();
             }
-            var response = (HttpWebResponse)request.GetResponse();
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

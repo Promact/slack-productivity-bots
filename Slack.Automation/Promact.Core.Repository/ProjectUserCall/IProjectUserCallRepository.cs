@@ -10,7 +10,7 @@ namespace Promact.Core.Repository.ProjectUserCall
     public interface IProjectUserCallRepository
     {
         Task<User> GetUserByUsername(string userName);
-        Task<List<string>> GetTeamLeaderUserName(string userName);
-        Task<List<string>> GetManagementUserName();
+        Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName);
+        Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName();
     }
 }
