@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,41 +12,49 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Action details of Slash ChatUpdateMethod
         /// </summary>
-        public SlashChatUpdateResponseAction actions { get; set; }
+        [JsonProperty("actions")]
+        public SlashChatUpdateResponseAction Actions { get; set; }
 
         /// <summary>
         /// Callback_id details of Slash ChatUpdateMethod
         /// </summary>
-        public int callback_id { get; set; }
+        [JsonProperty("callback_id")]
+        public int CallbackId { get; set; }
 
         /// <summary>
         /// Team details of Slash ChatUpdateMethod
         /// </summary>
-        public SlashChatUpdateResponseTeam team { get; set; }
+        [JsonProperty("team")]
+        public SlashChatUpdateResponseTeam Team { get; set; }
 
         /// <summary>
         /// Channel details of Slash ChatUpdateMethod
         /// </summary>
-        public SlashChatUpdateResponseChannelUser channel { get; set; }
+        [JsonProperty("channel")]
+        public SlashChatUpdateResponseChannelUser Channel { get; set; }
 
         /// <summary>
         /// User details of Slash ChatUpdateMethod
         /// </summary>
-        public SlashChatUpdateResponseChannelUser user { get; set; }
+        [JsonProperty("user")]
+        public SlashChatUpdateResponseChannelUser User { get; set; }
 
         /// <summary>
         /// action_ts of Slash ChatUpdateMethod
         /// </summary>
-        public string action_ts { get; set; }
+        [JsonProperty("action_ts")]
+        public string ActionTs { get; set; }
 
         /// <summary>
         /// message_ts of Slash ChatUpdateMethod
         /// </summary>
-        public string message_ts { get; set; }
+        [JsonProperty("message_ts")]
+        public string MessageTs { get; set; }
 
         /// <summary>
         /// token of Slash ChatUpdateMethod
         /// </summary>
-        public string token { get; set; }
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
 }

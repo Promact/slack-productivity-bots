@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,51 +12,61 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Token issued from slack
         /// </summary>
-        public string token { get; set; }
+        [JsonProperty("token")]
+        public string Token { get; set; }
 
         /// <summary>
         /// Team_id of slack
         /// </summary>
-        public string team_id { get; set; }
+        [JsonProperty("team_id")]
+        public string TeamId { get; set; }
 
         /// <summary>
         /// Team Doamin of slack
         /// </summary>
-        public string team_domain { get; set; }
+        [JsonProperty("team_domain")]
+        public string TeamDomain { get; set; }
 
         /// <summary>
         /// Channel Id of the slack
         /// </summary>
-        public string channel_id { get; set; }
+        [JsonProperty("channel_id")]
+        public string ChannelId { get; set; }
 
         /// <summary>
         /// Channel Name of Slack
         /// </summary>
-        public string channel_name { get; set; }
+        [JsonProperty("channel_name")]
+        public string ChannelName { get; set; }
 
         /// <summary>
         /// User Id according to slack
         /// </summary>
-        public string user_id { get; set; }
+        [JsonProperty("user_id")]
+        public string UserId { get; set; }
 
         /// <summary>
         /// User Name according to Slack
         /// </summary>
-        public string user_name { get; set; }
+        [JsonProperty("user_name")]
+        public string Username { get; set; }
 
         /// <summary>
         /// Slash Command issued by user
         /// </summary>
-        public string command { get; set; }
+        [JsonProperty("command")]
+        public string Command { get; set; }
 
         /// <summary>
         /// Text send along with /command by user
         /// </summary>
-        public string text { get; set; }
+        [JsonProperty("text")]
+        public string Text { get; set; }
 
         /// <summary>
         /// Url to response back for slash Command
         /// </summary>
-        public string response_url { get; set; }
+        [JsonProperty("response_url")]
+        public string ResponseUrl { get; set; }
     }
 }

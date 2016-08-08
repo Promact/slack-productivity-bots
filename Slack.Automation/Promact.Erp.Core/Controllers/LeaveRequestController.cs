@@ -31,22 +31,22 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("leaves/slackcall")]
-        public IHttpActionResult SlackRequest(SlashCommand leave)
+        public async Task<IHttpActionResult> SlackRequest(SlashCommand leave)
         {
             try
             {
                 // Way to break string by spaces only if spaces are not between quotes
-                var slackText = leave.text.Split('"').Select((element, index) => index % 2 == 0 ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element }).SelectMany(element => element).ToList();
+                var slackText = leave.Text.Split('"').Select((element, index) => index % 2 == 0 ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element }).SelectMany(element => element).ToList();
                 var action = slackText[0];
                 switch (action)
                 {
                     case "apply":
                         {
-                            var leaveRequest = _slackRepository.LeaveApply(slackText, leave.user_name);
-                            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}", leave.user_name, leaveRequest.FromDate.ToShortDateString(), leaveRequest.EndDate.ToShortDateString(), leaveRequest.Reason, leaveRequest.RejoinDate.ToShortDateString());
+                            var leaveRequest = await _slackRepository.LeaveApply(slackText, leave.Username);
+                            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}", leave.Username, leaveRequest.FromDate.ToShortDateString(), leaveRequest.EndDate.ToShortDateString(), leaveRequest.Reason, leaveRequest.RejoinDate.ToShortDateString());
                             _client.SendMessage(leave, replyText);
                             // Assigning the Incoming Web-Hook Url in response url to send message to all TL and management in their personal message by LeaveBot
-                            leave.response_url = "https://hooks.slack.com/services/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";
+                            leave.ResponseUrl = "https://hooks.slack.com/services/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";
                             _client.SendMessageWithAttachmentIncomingWebhook(leave, replyText, leaveRequest);
                         }
                         break;
@@ -56,12 +56,12 @@ namespace Promact.Erp.Core.Controllers
                             if (slackText.Count > 1)
                             {
                                 var userName = slackText[1];
-                                replyText = _slackRepository.LeaveList(userName);
+                                replyText = await _slackRepository.LeaveList(userName);
                                 _client.SendMessage(leave, replyText);
                             }
                             else
                             {
-                                replyText = _slackRepository.LeaveList(leave.user_name);
+                                replyText = await _slackRepository.LeaveList(leave.Username);
                                 _client.SendMessage(leave, replyText);
                             }
                         }
@@ -69,7 +69,7 @@ namespace Promact.Erp.Core.Controllers
                     case "cancel":
                         {
                             var leaveId = Convert.ToInt32(slackText[1]);
-                            var replyText = _slackRepository.CancelLeave(leaveId, leave.user_name);
+                            var replyText = await _slackRepository.CancelLeave(leaveId, leave.Username);
                             _client.SendMessage(leave, replyText);
                         }
                         break;
@@ -78,12 +78,12 @@ namespace Promact.Erp.Core.Controllers
                             if (slackText.Count > 1)
                             {
                                 var userName = slackText[1];
-                                var replyText = _slackRepository.LeaveStatus(userName);
+                                var replyText = await _slackRepository.LeaveStatus(userName);
                                 _client.SendMessage(leave, replyText);
                             }
                             else
                             {
-                                var replyText = _slackRepository.LeaveStatus(leave.user_name);
+                                var replyText = await _slackRepository.LeaveStatus(leave.Username);
                                 _client.SendMessage(leave, replyText);
                             }
                         }
@@ -121,8 +121,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaves/slackbuttoncall")]
         public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
-            var leave = _slackRepository.UpdateLeave(leaveResponse.callback_id, leaveResponse.actions.value);
-            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}", leave.Status, leaveResponse.user.name, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.RejoinDate.ToShortDateString());
+            var leave = _slackRepository.UpdateLeave(leaveResponse.CallbackId, leaveResponse.Actions.Value);
+            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}", leave.Status, leaveResponse.User.Name, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.RejoinDate.ToShortDateString());
             _client.UpdateMessage(leaveResponse, replyText);
             return Ok();
         }

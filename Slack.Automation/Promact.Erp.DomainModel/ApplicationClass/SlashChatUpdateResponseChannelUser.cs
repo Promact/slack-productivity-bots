@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,11 +12,13 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Id field in Slash ChatUpdate Channel and User
         /// </summary>
+        [JsonProperty("Id")]
         public string Id { get; set; }
 
         /// <summary>
         /// Name field in Slash ChatUpdate Channel and User
         /// </summary>
-        public string name { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +12,19 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Channel Name or Id for Incoming WebHook
         /// </summary>
-        public string channel { get; set; }
+        [JsonProperty("channel")]
+        public string Channel { get; set; }
 
         /// <summary>
         /// UserName of Slack
         /// </summary>
-        public string username { get; set; }
+        [JsonProperty("username")]
+        public string Username { get; set; }
 
         /// <summary>
         /// Attachment of message to be send on slack using Incoming WebHook
         /// </summary>
-        public List<SlashAttachment> attachments { get; set; }
+        [JsonProperty("attachments")]
+        public List<SlashAttachment> Attachments { get; set; }
     }
 }

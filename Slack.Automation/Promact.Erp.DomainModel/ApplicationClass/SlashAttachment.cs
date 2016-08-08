@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,31 +12,37 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// FallBack of Slash message Attachment
         /// </summary>
-        public string fallback { get; set; }
+        [JsonProperty("fallback")]
+        public string Fallback { get; set; }
 
         /// <summary>
         /// Title of Slash message Attachment
         /// </summary>
-        public string title { get; set; }
+        [JsonProperty("title")]
+        public string Title { get; set; }
 
         /// <summary>
         /// Callback_id of Slash message Attachment
         /// </summary>
-        public string callback_id { get; set; }
+        [JsonProperty("callback_id")]
+        public string CallbackId { get; set; }
 
         /// <summary>
         /// Color of Slash message Attachment
         /// </summary>
-        public string color { get; set; }
+        [JsonProperty("color")]
+        public string Color { get; set; }
 
         /// <summary>
         /// Attachment_type  of Slash message Attachment
         /// </summary>
-        public string attachment_type { get; set; }
+        [JsonProperty("attachment_type")]
+        public string AttachmentType { get; set; }
 
         /// <summary>
         /// Action of Slash message Attachment Whether it may have text or text along with button
         /// </summary>
-        public List<SlashAttachmentAction> actions { get; set; }
+        [JsonProperty("actions")]
+        public List<SlashAttachmentAction> Actions { get; set; }
     }
 }

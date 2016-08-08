@@ -112,28 +112,27 @@ namespace Promact.Core.Repository.SlackRepository
             SlashAttachment attachment = new SlashAttachment();
             SlashAttachmentAction Approved = new SlashAttachmentAction()
             {
-                name = StringConstant.Approved,
-                text = StringConstant.Approved,
-                type = StringConstant.Button,
-                value = StringConstant.Approved,
+                Name = StringConstant.Approved,
+                Text = StringConstant.Approved,
+                Type = StringConstant.Button,
+                Value = StringConstant.Approved,
             };
             ActionList.Add(Approved);
             SlashAttachmentAction Rejected = new SlashAttachmentAction()
             {
-                name = StringConstant.Rejected,
-                text = StringConstant.Rejected,
-                type = StringConstant.Button,
-                value = StringConstant.Rejected,
+                Name = StringConstant.Rejected,
+                Text = StringConstant.Rejected,
+                Type = StringConstant.Button,
+                Value = StringConstant.Rejected,
             };
             ActionList.Add(Rejected);
-            attachment.fallback = StringConstant.LeaveTitle;
-            attachment.title = StringConstant.LeaveTitle;
-            attachment.callback_id = leaveRequestId;
-            attachment.color = StringConstant.Color;
-            attachment.attachment_type = StringConstant.AttachmentType;
-            attachment.actions = ActionList;
+            attachment.Fallback = StringConstant.LeaveTitle;
+            attachment.CallbackId = leaveRequestId;
+            attachment.Color = StringConstant.Color;
+            attachment.AttachmentType = StringConstant.AttachmentType;
+            attachment.Actions = ActionList;
             attachmentList.Add(attachment);
-            attachment.title = text;
+            attachment.Title = text;
             var attachments = JsonConvert.SerializeObject(attachmentList);
             return attachments;
         }
@@ -151,26 +150,26 @@ namespace Promact.Core.Repository.SlackRepository
             SlashAttachment attachmentList = new SlashAttachment();
             SlashAttachmentAction Approved = new SlashAttachmentAction()
             {
-                name = StringConstant.Approved,
-                text = StringConstant.Approved,
-                type = StringConstant.Button,
-                value = StringConstant.Approved,
+                Name = StringConstant.Approved,
+                Text = StringConstant.Approved,
+                Type = StringConstant.Button,
+                Value = StringConstant.Approved,
             };
             ActionList.Add(Approved);
             SlashAttachmentAction Rejected = new SlashAttachmentAction()
             {
-                name = StringConstant.Rejected,
-                text = StringConstant.Rejected,
-                type = StringConstant.Button,
-                value = StringConstant.Rejected,
+                Name = StringConstant.Rejected,
+                Text = StringConstant.Rejected,
+                Type = StringConstant.Button,
+                Value = StringConstant.Rejected,
             };
             ActionList.Add(Rejected);
-            attachmentList.actions = ActionList;
-            attachmentList.fallback = StringConstant.LeaveTitle;
-            attachmentList.title = replyText;
-            attachmentList.callback_id = leaveRequestId;
-            attachmentList.color = StringConstant.Color;
-            attachmentList.attachment_type = StringConstant.AttachmentType;
+            attachmentList.Actions = ActionList;
+            attachmentList.Fallback = StringConstant.LeaveTitle;
+            attachmentList.Title = replyText;
+            attachmentList.CallbackId = leaveRequestId;
+            attachmentList.Color = StringConstant.Color;
+            attachmentList.AttachmentType = StringConstant.AttachmentType;
             attachment.Add(attachmentList);
             return attachment;
         }

@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.Client
         public async void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
         {
             // Call to an url using HttpClient.
-            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.token), HttpUtility.UrlEncode(leaveResponse.channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.message_ts));
+            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
             var response = await _chatUpdateMessage.GetAsync(responseUrl);
         }
 
@@ -52,9 +52,9 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Text to be send to slack</param>
         public void SendMessage(SlashCommand leave, string replyText)
         {
-            var text = new SlashResponse() { response_type = StringConstant.ResponseTypeEphemeral, text = replyText };
-            var Json = JsonConvert.SerializeObject(text);
-            WebRequestMethod(Json, leave.response_url);
+            var text = new SlashResponse() { ResponseType = StringConstant.ResponseTypeEphemeral, Text = replyText };
+            var textJson = JsonConvert.SerializeObject(text);
+            WebRequestMethod(textJson, leave.ResponseUrl);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Promact.Core.Repository.Client
         public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, LeaveRequest leaveRequest)
         {
             var attachment = _slackRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.user_name);
+            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username);
             var management = await _projectUser.GetManagementUserName();
             foreach (var user in management)
             {
@@ -76,13 +76,13 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { channel = "@"+teamLeader, username = "LeaveBot", attachments = attachment };
-                var Json = JsonConvert.SerializeObject(text);
-                WebRequestMethod(Json, leave.response_url);
+                var text = new SlashIncomingWebhook() { Channel = "@"+teamLeader, Username = "LeaveBot", Attachments = attachment };
+                var textJson = JsonConvert.SerializeObject(text);
+                WebRequestMethod(textJson, leave.ResponseUrl);
             }
             EmailApplication email = new EmailApplication();
             email.Body = EmailServiceTemplate(leaveRequest);
-            email.From = leave.user_name + "@promactinfo.com";
+            email.From = leave.Username + "@promactinfo.com";
             email.Subject = StringConstant.EmailSubject;
             email.To = teamLeaders;
             _email.Send(email);
