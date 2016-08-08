@@ -28,6 +28,9 @@ namespace Promact.Erp.Web.App_Start
             // register dependency
             builder.RegisterType<PromactErpContext>().As<DbContext>();
 
+            //register mvc controller
+            //builder.RegisterControllers(typeof(HomeController).Assembly);
+
             // register webapi controller
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
 
@@ -40,6 +43,9 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
 
             var container = builder.Build();
+
+            // replace mvc dependancy resolver with autofac
+            //DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             // replace webapi dependancy resolver with autofac
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);

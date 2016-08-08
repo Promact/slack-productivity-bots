@@ -24,9 +24,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public User GetUserByUsername(string userName)
+        public async Task<User> GetUserByUsername(string userName)
         {
-            var response = client.GetAsync("project/userDetails/" + userName).Result;
+            var requestUrl = string.Format("project/userDetails/{0}",userName);
+            var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
             return userDetails;
@@ -37,9 +38,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public List<string> GetTeamLeaderUserName(string userName)
+        public async Task<List<string>> GetTeamLeaderUserName(string userName)
         {
-            var response = client.GetAsync("project/teamLeadersDetails/" + userName).Result;
+            var requestUrl = string.Format("project/teamLeadersDetails/{0}", userName);
+            var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var teamLeader = JsonConvert.DeserializeObject<List<string>>(responseContent);
             return teamLeader;
@@ -49,9 +51,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
         /// </summary>
         /// <returns></returns>
-        public List<string> GetManagementUserName()
+        public async Task<List<string>> GetManagementUserName()
         {
-            var response = client.GetAsync("project/Admin").Result;
+            var requestUrl = string.Format("project/teamLeadersDetails/");
+            var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var teamLeader = JsonConvert.DeserializeObject<List<string>>(responseContent);
             return teamLeader;

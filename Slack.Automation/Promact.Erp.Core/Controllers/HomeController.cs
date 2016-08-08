@@ -20,6 +20,10 @@ namespace Promact.Erp.Core.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
         }
+        public HomeController()
+        {
+
+        }
         public ActionResult Index()
         {
             return View();

@@ -31,7 +31,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="slackRequest"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public LeaveRequest LeaveApply(List<string> slackRequest, string userName)
+        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, string userName)
         {
             LeaveRequest leaveRequest = new LeaveRequest();
             leaveRequest.Reason = slackRequest[1];
@@ -40,7 +40,8 @@ namespace Promact.Core.Repository.SlackRepository
             leaveRequest.Type = slackRequest[4];
             leaveRequest.RejoinDate = Convert.ToDateTime(slackRequest[5]);
             leaveRequest.Status = Condition.Pending;
-            leaveRequest.EmployeeId = _projectUser.GetUserByUsername(userName).Id;
+            var user = await _projectUser.GetUserByUsername(userName);
+            leaveRequest.EmployeeId = user.Id;
             leaveRequest.CreatedOn = DateTime.UtcNow;
             _leaveRepository.ApplyLeave(leaveRequest);
             return leaveRequest;
@@ -51,13 +52,14 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public string LeaveList(string userName)
+        public async Task<string> LeaveList(string userName)
         {
-            var userId = _projectUser.GetUserByUsername(userName).Id;
+            var user = await _projectUser.GetUserByUsername(userName);
+            var userId = user.Id;
             var leaveList = _leaveRepository.LeaveListByUserId(userId);
             foreach (var leave in leaveList)
             {
-                replyText += string.Format("{0} {1} {2} {3} {4}", leave.Id + ",", leave.Reason + ",", leave.FromDate.ToShortDateString() + ",", leave.EndDate.ToShortDateString() + ",", leave.Status + System.Environment.NewLine);
+                replyText += string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Status, System.Environment.NewLine);
             }
             return replyText;
         }
@@ -68,17 +70,18 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leaveId"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public string CancelLeave(int leaveId, string userName)
+        public async Task<string> CancelLeave(int leaveId, string userName)
         {
-            var userId = _projectUser.GetUserByUsername(userName).Id;
+            var user = await _projectUser.GetUserByUsername(userName);
+            var userId = user.Id;
             if (userId == _leaveRepository.LeaveById(leaveId).EmployeeId)
             {
                 var leave = _leaveRepository.CancelLeave(leaveId);
-                replyText = "Your leave Id no: " + leave.Id + " From " + leave.FromDate.ToShortDateString() + " To " + leave.EndDate.ToShortDateString() + " has been " + leave.Status;
+                replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Status);
             }
             else
             {
-                replyText = "You are trying with wrong which not belong to you";
+                replyText = StringConstant.CancelLeaveError;
             }
             return replyText;
         }
@@ -88,11 +91,12 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public string LeaveStatus(string userName)
+        public async Task<string> LeaveStatus(string userName)
         {
-            var userId = _projectUser.GetUserByUsername(userName).Id;
+            var user = await _projectUser.GetUserByUsername(userName);
+            var userId = user.Id;
             var leave = _leaveRepository.LeaveListStatusByUserId(userId);
-            replyText = "Your leave Id no: " + leave.Id + " From " + leave.FromDate.ToShortDateString() + " To " + leave.EndDate.ToShortDateString() + " for " + leave.Reason + " is " + leave.Status;
+            replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.Status);
             return replyText;
         }
 
@@ -101,32 +105,32 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public string ChatPostAttachment(string text)
+        public string ChatPostAttachment(string text, string leaveRequestId)
         {
             List<SlashAttachmentAction> ActionList = new List<SlashAttachmentAction>();
             List<SlashAttachment> attachmentList = new List<SlashAttachment>();
             SlashAttachment attachment = new SlashAttachment();
             SlashAttachmentAction Approved = new SlashAttachmentAction()
             {
-                name = "Approved",
-                text = "Approved",
-                type = "button",
-                value = "approved",
+                name = StringConstant.Approved,
+                text = StringConstant.Approved,
+                type = StringConstant.Button,
+                value = StringConstant.Approved,
             };
             ActionList.Add(Approved);
             SlashAttachmentAction Rejected = new SlashAttachmentAction()
             {
-                name = "Rejected",
-                text = "Rejected",
-                type = "button",
-                value = "Rejected",
+                name = StringConstant.Rejected,
+                text = StringConstant.Rejected,
+                type = StringConstant.Button,
+                value = StringConstant.Rejected,
             };
             ActionList.Add(Rejected);
-            attachment.fallback = "Leave Applied";
-            attachment.title = "Leave Applied";
-            attachment.callback_id = "promactLMS";
-            attachment.color = "#3AA3E3";
-            attachment.attachment_type = "default";
+            attachment.fallback = StringConstant.LeaveTitle;
+            attachment.title = StringConstant.LeaveTitle;
+            attachment.callback_id = leaveRequestId;
+            attachment.color = StringConstant.Color;
+            attachment.attachment_type = StringConstant.AttachmentType;
             attachment.actions = ActionList;
             attachmentList.Add(attachment);
             attachment.title = text;
@@ -147,26 +151,26 @@ namespace Promact.Core.Repository.SlackRepository
             SlashAttachment attachmentList = new SlashAttachment();
             SlashAttachmentAction Approved = new SlashAttachmentAction()
             {
-                name = "Approved",
-                text = "Approved",
-                type = "button",
-                value = "approved",
+                name = StringConstant.Approved,
+                text = StringConstant.Approved,
+                type = StringConstant.Button,
+                value = StringConstant.Approved,
             };
             ActionList.Add(Approved);
             SlashAttachmentAction Rejected = new SlashAttachmentAction()
             {
-                name = "Rejected",
-                text = "Rejected",
-                type = "button",
-                value = "Rejected",
+                name = StringConstant.Rejected,
+                text = StringConstant.Rejected,
+                type = StringConstant.Button,
+                value = StringConstant.Rejected,
             };
             ActionList.Add(Rejected);
             attachmentList.actions = ActionList;
-            attachmentList.fallback = "Leave Applied";
+            attachmentList.fallback = StringConstant.LeaveTitle;
             attachmentList.title = replyText;
             attachmentList.callback_id = leaveRequestId;
-            attachmentList.color = "#3AA3E3";
-            attachmentList.attachment_type = "default";
+            attachmentList.color = StringConstant.Color;
+            attachmentList.attachment_type = StringConstant.AttachmentType;
             attachment.Add(attachmentList);
             return attachment;
         }
@@ -180,7 +184,7 @@ namespace Promact.Core.Repository.SlackRepository
         public LeaveRequest UpdateLeave(int leaveId, string status)
         {
             var leave = _leaveRepository.LeaveById(leaveId);
-            if (status == "approved")
+            if (status == StringConstant.Approved)
             {
                 leave.Status = Condition.Approved;
             }

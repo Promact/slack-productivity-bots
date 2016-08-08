@@ -3,6 +3,7 @@ using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.Email_Templates;
 using System;
@@ -37,10 +38,11 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
-        public void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
+        public async void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
         {
             // Call to an url using HttpClient.
-            var response = _chatUpdateMessage.GetAsync("?token=" + HttpUtility.UrlEncode(leaveResponse.token) + "&channel=" + HttpUtility.UrlEncode(leaveResponse.channel.Id) + "&text=" + HttpUtility.UrlEncode(replyText) + "&ts=" + HttpUtility.UrlEncode(leaveResponse.message_ts) + "&as_user=true&pretty=1").Result;
+            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.token), HttpUtility.UrlEncode(leaveResponse.channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.message_ts));
+            var response = await _chatUpdateMessage.GetAsync(responseUrl);
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Text to be send to slack</param>
         public void SendMessage(SlashCommand leave, string replyText)
         {
-            var text = new SlashResponse() { response_type = "ephemeral", text = replyText };
+            var text = new SlashResponse() { response_type = StringConstant.ResponseTypeEphemeral, text = replyText };
             var Json = JsonConvert.SerializeObject(text);
             WebRequestMethod(Json, leave.response_url);
         }
@@ -62,11 +64,11 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, LeaveRequest leaveRequest)
+        public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, LeaveRequest leaveRequest)
         {
             var attachment = _slackRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            var teamLeaders = _projectUser.GetTeamLeaderUserName(leave.user_name);
-            var management = _projectUser.GetManagementUserName();
+            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.user_name);
+            var management = await _projectUser.GetManagementUserName();
             foreach (var user in management)
             {
                 teamLeaders.Add(user);
@@ -81,7 +83,7 @@ namespace Promact.Core.Repository.Client
             EmailApplication email = new EmailApplication();
             email.Body = EmailServiceTemplate(leaveRequest);
             email.From = leave.user_name + "@promactinfo.com";
-            email.Subject = "Leave Application";
+            email.Subject = StringConstant.EmailSubject;
             email.To = teamLeaders;
             _email.Send(email);
         }
@@ -97,13 +99,13 @@ namespace Promact.Core.Repository.Client
             // Assigning Value in template page
             leaveTemplate.Session = new Dictionary<string, object>
             {
-                {"FromDate",leaveRequest.FromDate.ToString("dd,MM,yyyy") },
-                {"EndDate",leaveRequest.EndDate.ToString("dd,MM,yyyy") },
-                {"Reason",leaveRequest.Reason },
-                {"Type",leaveRequest.Type },
-                {"Status",leaveRequest.Status.ToString() },
-                {"ReJoinDate",leaveRequest.RejoinDate.ToString("dd,MM,yyyy") },
-                {"CreatedOn",leaveRequest.CreatedOn.ToString("dd,MM,yyyy") },
+                {StringConstant.FromDate,leaveRequest.FromDate.ToString(StringConstant.DateFormat) },
+                {StringConstant.EndDate,leaveRequest.EndDate.ToString(StringConstant.DateFormat) },
+                {StringConstant.Reason,leaveRequest.Reason },
+                {StringConstant.Type,leaveRequest.Type },
+                {StringConstant.Status,leaveRequest.Status.ToString() },
+                {StringConstant.ReJoinDate,leaveRequest.RejoinDate.ToString(StringConstant.DateFormat) },
+                {StringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(StringConstant.DateFormat) },
             };
             leaveTemplate.Initialize();
             var emailBody = leaveTemplate.TransformText();
@@ -120,7 +122,7 @@ namespace Promact.Core.Repository.Client
             // Call to an url using HttpWebRequest
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = WebRequestMethods.Http.Post;
-            request.ContentType = "application/json; charset=UTF-8";
+            request.ContentType = StringConstant.WebRequestContentType;
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
                 //adding rest portion of url

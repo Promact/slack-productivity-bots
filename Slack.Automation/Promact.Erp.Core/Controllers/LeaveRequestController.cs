@@ -3,6 +3,7 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace Promact.Erp.Core.Controllers
                     case "apply":
                         {
                             var leaveRequest = _slackRepository.LeaveApply(slackText, leave.user_name);
-                            var replyText = "Leave has been applied by " + leave.user_name + " From " + leaveRequest.FromDate.ToShortDateString() + " To " + leaveRequest.EndDate.ToShortDateString() + " for Reason " + leaveRequest.Reason + " will re-join by " + leaveRequest.RejoinDate.ToShortDateString();
+                            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}", leave.user_name, leaveRequest.FromDate.ToShortDateString(), leaveRequest.EndDate.ToShortDateString(), leaveRequest.Reason, leaveRequest.RejoinDate.ToShortDateString());
                             _client.SendMessage(leave, replyText);
                             // Assigning the Incoming Web-Hook Url in response url to send message to all TL and management in their personal message by LeaveBot
                             leave.response_url = "https://hooks.slack.com/services/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";
@@ -95,7 +96,7 @@ namespace Promact.Erp.Core.Controllers
                         break;
                     case "help":
                         {
-                            var replyText = "For leave apply: /leaves apply [Reason] [FromDate] [EndDate] [LeaveType] [RejoinDate]" + Environment.NewLine + "For leave list of Yours : /leaves list" + Environment.NewLine + "For leave list of others : /leaves list [@user]" + Environment.NewLine + "For leave Cancel : /leaves cancel [leave Id number]" + Environment.NewLine + "For leave status of Yours : /leaves status" + Environment.NewLine + "For leave status of others : /leaves status [@user]" + Environment.NewLine + "For leaves balance: /leaves balance";
+                            var replyText = StringConstant.SlackHelpMessage;
                             _client.SendMessage(leave, replyText);
                         }
                         break;
@@ -105,7 +106,7 @@ namespace Promact.Erp.Core.Controllers
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
-                var replyText = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
+                var replyText = StringConstant.SlackErrorMessage;
                 _client.SendMessage(leave, replyText);
                 return BadRequest();
             }
@@ -121,7 +122,7 @@ namespace Promact.Erp.Core.Controllers
         public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             var leave = _slackRepository.UpdateLeave(leaveResponse.callback_id, leaveResponse.actions.value);
-            var replyText = "You had " + leave.Status + " Leave for " + leaveResponse.user.name + " From " + leave.FromDate.ToShortDateString() + " To " + leave.EndDate.ToShortDateString() + " for Reason " + leave.Reason + " will re-join by " + leave.RejoinDate.ToShortDateString();
+            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}", leave.Status, leaveResponse.user.name, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.RejoinDate.ToShortDateString());
             _client.UpdateMessage(leaveResponse, replyText);
             return Ok();
         }
