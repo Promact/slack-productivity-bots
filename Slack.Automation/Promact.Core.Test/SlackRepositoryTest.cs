@@ -2,6 +2,7 @@
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace Promact.Core.Test
         [Fact]
         public async void LeaveApply()
         {
-            SlashCommand leave = new SlashCommand() { Text = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016" };
+            SlashCommand leave = new SlashCommand() { Text = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016", Username="siddhartha", ResponseUrl=AppSettingsUtil.IncomingWebHookUrl };
             var slackText = leave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
-            var leaveDetails = await _slackRepository.LeaveApply(slackText, "siddhartha");
+            var leaveDetails = await _slackRepository.LeaveApply(slackText, leave);
             Assert.Equal(leaveDetails.Status,Condition.Pending);
         }
 

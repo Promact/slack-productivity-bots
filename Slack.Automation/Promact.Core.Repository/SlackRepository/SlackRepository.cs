@@ -12,6 +12,7 @@ using Promact.Erp.Util;
 using Promact.Erp.Util.Email_Templates;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.Client;
+using Promact.Core.Repository.AttachmentRepository;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -20,12 +21,14 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IProjectUserCallRepository _projectUser;
         private readonly ILeaveRequestRepository _leaveRepository;
         private readonly IClient _client;
+        private readonly IAttachmentRepository _attachmentRepository;
         string replyText = "";
-        public SlackRepository(ILeaveRequestRepository leaveRepository, IProjectUserCallRepository projectUser, IClient client)
+        public SlackRepository(ILeaveRequestRepository leaveRepository, IProjectUserCallRepository projectUser, IClient client, IAttachmentRepository attachmentRepository)
         {
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
             _client = client;
+            _attachmentRepository = attachmentRepository;
         }
 
         /// <summary>
@@ -33,8 +36,8 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackRequest"></param>
         /// <param name="userName"></param>
-        /// <returns></returns>
-        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, string userName)
+        /// <returns>leaveRequest</returns>
+        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave)
         {
             LeaveRequest leaveRequest = new LeaveRequest();
             leaveRequest.Reason = slackRequest[1];
@@ -43,10 +46,12 @@ namespace Promact.Core.Repository.SlackRepository
             leaveRequest.Type = slackRequest[4];
             leaveRequest.RejoinDate = Convert.ToDateTime(slackRequest[5]);
             leaveRequest.Status = Condition.Pending;
-            var user = await _projectUser.GetUserByUsername(userName);
+            var user = await _projectUser.GetUserByUsername(leave.Username);
             leaveRequest.EmployeeId = user.Id;
             leaveRequest.CreatedOn = DateTime.UtcNow;
             _leaveRepository.ApplyLeave(leaveRequest);
+            replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+            _client.SendMessage(leave, replyText);
             return leaveRequest;
         }
 
@@ -54,7 +59,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// Method to get Employee Id from its userName and from its employeeId, to get list of leave
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>replyText as string</returns>
         private async Task<string> LeaveList(string userName)
         {
             var user = await _projectUser.GetUserByUsername(userName);
@@ -72,7 +77,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>replyText as string</returns>
         private async Task<string> CancelLeave(int leaveId, string userName)
         {
             var user = await _projectUser.GetUserByUsername(userName);
@@ -93,7 +98,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// Method to get Employee Id from its userName and from its employeeId, to get last leave status
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>replyText as string</returns>
         private async Task<string> LeaveStatus(string userName)
         {
             var user = await _projectUser.GetUserByUsername(userName);
@@ -104,52 +109,14 @@ namespace Promact.Core.Repository.SlackRepository
         }
 
         /// <summary>
-        /// Method to create attchment of slack which is used in chat.PostMessage method
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        private string ChatPostAttachment(string text, string leaveRequestId)
-        {
-            List<SlashAttachmentAction> ActionList = new List<SlashAttachmentAction>();
-            List<SlashAttachment> attachmentList = new List<SlashAttachment>();
-            SlashAttachment attachment = new SlashAttachment();
-            SlashAttachmentAction Approved = new SlashAttachmentAction()
-            {
-                Name = StringConstant.Approved,
-                Text = StringConstant.Approved,
-                Type = StringConstant.Button,
-                Value = StringConstant.Approved,
-            };
-            ActionList.Add(Approved);
-            SlashAttachmentAction Rejected = new SlashAttachmentAction()
-            {
-                Name = StringConstant.Rejected,
-                Text = StringConstant.Rejected,
-                Type = StringConstant.Button,
-                Value = StringConstant.Rejected,
-            };
-            ActionList.Add(Rejected);
-            attachment.Fallback = StringConstant.LeaveTitle;
-            attachment.CallbackId = leaveRequestId;
-            attachment.Color = StringConstant.Color;
-            attachment.AttachmentType = StringConstant.AttachmentType;
-            attachment.Actions = ActionList;
-            attachmentList.Add(attachment);
-            attachment.Title = text;
-            var attachments = JsonConvert.SerializeObject(attachmentList);
-            return attachments;
-        }
-
-        /// <summary>
         /// Method to get leave Updated from slack button response
         /// </summary>
         /// <param name="leaveId"></param>
         /// <param name="status"></param>
-        /// <returns></returns>
-        public LeaveRequest UpdateLeave(int leaveId, string status)
+        public void UpdateLeave(SlashChatUpdateResponse leaveResponse)
         {
-            var leave = _leaveRepository.LeaveById(leaveId);
-            if (status == StringConstant.Approved)
+            var leave = _leaveRepository.LeaveById(leaveResponse.CallbackId);
+            if (leaveResponse.Actions.Value == StringConstant.Approved)
             {
                 leave.Status = Condition.Approved;
             }
@@ -161,7 +128,14 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 _leaveRepository.UpdateLeave(leave);
             }
-            return leave;
+            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
+                            leave.Status,
+                            leaveResponse.User.Name,
+                            leave.FromDate.ToShortDateString(),
+                            leave.EndDate.ToShortDateString(),
+                            leave.Reason,
+                            leave.RejoinDate.ToShortDateString());
+            _client.UpdateMessage(leaveResponse, replyText);
         }
 
         /// <summary>
@@ -169,7 +143,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async void SlackLeaveList(List<string> slackText,SlashCommand leave)
+        public async void SlackLeaveList(List<string> slackText, SlashCommand leave)
         {
             var replyText = "";
             if (slackText.Count > 1)

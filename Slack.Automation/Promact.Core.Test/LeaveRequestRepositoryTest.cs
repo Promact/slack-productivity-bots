@@ -43,7 +43,7 @@ namespace Promact.Core.Test
         public void LeaveList()
         {
             var leaves = _leaveRequestRepository.LeaveList();
-            Assert.Equal(80, leaves.Count());
+            Assert.Equal(83, leaves.Count());
         }
 
         /// <summary>

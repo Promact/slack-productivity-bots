@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <summary>
         /// Method to get All List of leave
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of leave</returns>
         public IEnumerable<LeaveRequest> LeaveList()
         {
             return _leaveRequestRepository.List();
@@ -40,7 +40,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method used to cancel the leave request using its integer leaveId
         /// </summary>
         /// <param name="leaveId"></param>
-        /// <returns></returns>
+        /// <returns>leave which has been cancelled</returns>
         public LeaveRequest CancelLeave(int leaveId)
         {
             var leave = _leaveRequestRepository.GetById(leaveId);
@@ -54,7 +54,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to get leave list corresponding each user
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>List of leave of a particular user</returns>
         public IEnumerable<LeaveRequest> LeaveListByUserId(string userId)
         {
             return _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
@@ -64,7 +64,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to get the last leave request status corresponding to each user
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <returns>latest leave details of a particular user</returns>
         public LeaveRequest LeaveListStatusByUserId(string userId)
         {
             var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);

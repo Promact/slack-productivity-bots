@@ -22,11 +22,14 @@ namespace Promact.Erp.Util
         public static string Approved = "Approved";
         public static string Button = "button";
         public static string Rejected = "Rejected";
-        public static string LeaveTitle = "Leave Applied";
+        public static string Fallback = "Leave Applied";
         public static string Color = "#3AA3E3";
         public static string AttachmentType = "default";
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate] [EndDate] [LeaveType] [RejoinDate]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
+        public static string UserDetailsUrl = "project/userDetails/";
+        public static string TeamLeaderDetailsUrl = "project/teamLeadersDetails/";
+        public static string ManagementDetailsUrl = "project/Admin";
     }
 }

@@ -35,7 +35,8 @@ namespace Promact.Core.Repository.Client
         }
 
         /// <summary>
-        /// The below method use for updating slack message without attachment. Required field token, channelId and message_ts which we had get at time of response from slack.
+        /// The below method use for updating slack message without attachment. 
+        /// Required field token, channelId and message_ts which we had get at time of response from slack.
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
@@ -65,8 +66,11 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, LeaveRequest leaveRequest)
+        public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest)
         {
+            // getting reply text to be send on slack corresponding to leave applied
+            var replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+            // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
             var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username);
             var management = await _projectUser.GetManagementUserName();
@@ -79,12 +83,13 @@ namespace Promact.Core.Repository.Client
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader, Username = "LeaveBot", Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
-                WebRequestMethod(textJson, leave.ResponseUrl);
+                WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
             }
             var userDetail = await _projectUser.GetUserByUsername(leave.Username); 
             foreach (var teamLeader in teamLeaders)
             {
                 EmailApplication email = new EmailApplication();
+                // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);
                 email.From = userDetail.Email;
                 email.Subject = StringConstant.EmailSubject;
@@ -97,7 +102,7 @@ namespace Promact.Core.Repository.Client
         /// Method to generate template body
         /// </summary>
         /// <param name="leaveRequest">LeaveRequest Class object</param>
-        /// <returns></returns>
+        /// <returns>template emailBody as string</returns>
         private string EmailServiceTemplate(LeaveRequest leaveRequest)
         {
             LeaveApplication leaveTemplate = new LeaveApplication();
