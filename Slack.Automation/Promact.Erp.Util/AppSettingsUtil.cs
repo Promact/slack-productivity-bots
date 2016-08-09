@@ -32,5 +32,37 @@ namespace Promact.Erp.Util
                 return ConfigurationSettings.AppSettings["IncomingWebHookUrl"];
             }
         }
+
+        public static string OAuthUrl
+        {
+            get
+            {
+                return ConfigurationSettings.AppSettings["OAuthUrl"];
+            }
+        }
+
+        public static string ClientId
+        {
+            get
+            {
+                return ConfigurationSettings.AppSettings["ClientId"];
+            }
+        }
+
+        public static string ClientSecret
+        {
+            get
+            {
+                return ConfigurationSettings.AppSettings["ClientSecret"];
+            }
+        }
+
+        public static string ClientReturnUrl
+        {
+            get
+            {
+                return ConfigurationSettings.AppSettings["ClientReturnUrl"];
+            }
+        }
     }
 }
