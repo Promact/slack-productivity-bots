@@ -97,7 +97,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveRequest">LeaveRequest Class object</param>
         /// <returns></returns>
-        public string EmailServiceTemplate(LeaveRequest leaveRequest)
+        private string EmailServiceTemplate(LeaveRequest leaveRequest)
         {
             LeaveApplication leaveTemplate = new LeaveApplication();
             // Assigning Value in template page
