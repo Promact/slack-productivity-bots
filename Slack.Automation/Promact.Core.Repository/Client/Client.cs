@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -21,16 +22,16 @@ namespace Promact.Core.Repository.Client
     public class Client : IClient
     {
         private HttpClient _chatUpdateMessage;
-        private readonly ISlackRepository _slackRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IEmailService _email;
-        public Client(ISlackRepository slackRepository, IProjectUserCallRepository projectUser, IEmailService email)
+        private readonly IAttachmentRepository _attachmentRepository;
+        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository)
         {
             _chatUpdateMessage = new HttpClient();
             _chatUpdateMessage.BaseAddress = new Uri(AppSettingsUtil.ChatUpdateUrl);
-            _slackRepository = slackRepository;
             _projectUser = projectUser;
             _email = email;
+            _attachmentRepository = attachmentRepository;
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace Promact.Core.Repository.Client
         /// <param name="leaveRequest">LeaveRequest object</param>
         public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, string replyText, LeaveRequest leaveRequest)
         {
-            var attachment = _slackRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
+            var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
             var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username);
             var management = await _projectUser.GetManagementUserName();
             foreach (var user in management)
@@ -121,7 +122,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="text"></param>
         /// <param name="url">Json string and url</param>
-        public void WebRequestMethod(string Json, string url)
+        private void WebRequestMethod(string Json, string url)
         {
             try
             {

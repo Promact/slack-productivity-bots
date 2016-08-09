@@ -77,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacConfig.cs" />
-    <Compile Include="ClientRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
     <Compile Include="ProjectUserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

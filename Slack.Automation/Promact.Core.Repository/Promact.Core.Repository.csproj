@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachmentRepository\AttachmentRepository.cs" />
+    <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
     <Compile Include="DataRepository\IRepository.cs" />

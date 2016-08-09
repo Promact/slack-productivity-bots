@@ -12,6 +12,7 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Util.Email;
+using Promact.Core.Repository.AttachmentRepository;
 
 namespace Promact.Core.Test
 {
@@ -27,6 +28,7 @@ namespace Promact.Core.Test
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
+            builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             var container = builder.Build();
             return container;
         }
