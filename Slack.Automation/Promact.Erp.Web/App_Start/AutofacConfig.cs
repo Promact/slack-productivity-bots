@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
@@ -41,6 +42,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
+            builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
 
             var container = builder.Build();
 

@@ -16,4 +16,14 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Rejected,
         Cancel
     }
+
+    public enum SlackAction
+    {
+        Apply,
+        List,
+        Cancel,
+        Status,
+        Balance,
+        Help
+    }
 }

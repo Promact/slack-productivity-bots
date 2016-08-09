@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
+    [JsonObject(MemberSerialization= MemberSerialization.OptIn)]
     public class SlashCommand
     {
         /// <summary>
@@ -18,7 +21,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Team_id of slack
         /// </summary>
-        [JsonProperty("team_id")]
+        [DataMember(Name = "team_id")]
         public string TeamId { get; set; }
 
         /// <summary>

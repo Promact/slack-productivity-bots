@@ -1,4 +1,5 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,13 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken)
         {
-            var clientId = "dhadf15sgdth4td54hfg";
-            var clientSecret = "dhadf15sgdth4td54hfg5d4f8";
+            var clientId = AppSettingsUtil.ClientId;
+            var clientSecret = AppSettingsUtil.ClientSecret;
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
             oAuth.RefreshToken = refreshToken;
-            oAuth.ReturnUrl = "http://localhost:28182/Home/AccessToken";
+            oAuth.ReturnUrl = AppSettingsUtil.ClientReturnUrl;
             return Ok(oAuth);
         }
     }

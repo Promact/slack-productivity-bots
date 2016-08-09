@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Identity;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +45,9 @@ namespace Promact.Erp.Core.Controllers
         public ActionResult ExtrenalLogin()
         {
             //BaseUrl of OAuth and clientId of App to be set 
-            var clientId = "dhadf15sgdth4td54hfg";
-            var basePath = "http://localhost:35716/OAuth/ExternalLogin";
-            var Url = basePath + "?clientId=" + clientId;
+            var url = string.Format("{0}?clientId={1}", AppSettingsUtil.OAuthUrl, AppSettingsUtil.ClientId);
             //make call to the OAuth Server
-            return Redirect(Url);
+            return Redirect(url);
         }
 
         /// <summary>

@@ -24,10 +24,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get Employee detail by their slack userName
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>user Details</returns>
         public async Task<User> GetUserByUsername(string userName)
         {
-            var requestUrl = string.Format("project/userDetails/{0}",userName);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, userName);
             var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
@@ -38,10 +38,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get List of TeamLeader's slack UserName from employee userName
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>teamLeader details</returns>
         public async Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName)
         {
-            var requestUrl = string.Format("project/teamLeadersDetails/{0}", userName);
+            var requestUrl = string.Format("{0}{1}", StringConstant.TeamLeaderDetailsUrl, userName);
             var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
@@ -51,14 +51,14 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <summary>
         /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
         /// </summary>
-        /// <returns></returns>
+        /// <returns>management details</returns>
         public async Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName()
         {
-            var requestUrl = string.Format("project/teamLeadersDetails/");
+            var requestUrl = string.Format("{0}", StringConstant.ManagementDetailsUrl);
             var response = await client.GetAsync(requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
-            return teamLeader;
+            var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
+            return management;
         }
     }
 }
