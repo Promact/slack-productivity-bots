@@ -10,18 +10,21 @@ using Xunit;
 
 namespace Promact.Core.Test
 {
+    /// <summary>
+    /// Test Cases of Slack Repository
+    /// </summary>
     public class SlackRepositoryTest
     {
         private readonly IComponentContext _componentContext;
         private readonly ISlackRepository _slackRepository;
-        public SlackRepositoryTest(ISlackRepository slackRepository)
+        public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _slackRepository = _componentContext.Resolve<ISlackRepository>();
         }
 
         /// <summary>
-        /// Testing with True Value
+        /// Method LeaveApply Testing with True Value
         /// </summary>
         [Fact]
         public async void LeaveApply()
@@ -32,6 +35,9 @@ namespace Promact.Core.Test
             Assert.Equal(leaveDetails.Status, Condition.Pending);
         }
 
+        /// <summary>
+        /// Method LeaveList Testing with True Value
+        /// </summary>
         [Fact]
         public async void LeaveList()
         {
@@ -44,6 +50,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(leaveDetails, ' ');
         }
 
+        /// <summary>
+        /// Method CancelLeave Testing with True Value
+        /// </summary>
         [Fact]
         public async void CancelLeave()
         {
@@ -51,6 +60,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(leaves, "");
         }
 
+        /// <summary>
+        /// Method LeaveStatus Testing with True Value
+        /// </summary>
         [Fact]
         public async void LeaveStatus()
         {
@@ -58,6 +70,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(leaves, "");
         }
 
+        /// <summary>
+        /// Method UpdateLeave Testing with True Value
+        /// </summary>
         [Fact]
         public void UpdateLeave()
         {
@@ -66,7 +81,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with False Value
+        /// Method LeaveApply Testing with False Value
         /// </summary>
         [Fact]
         public async void LeaveApplyFalse()
@@ -77,6 +92,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(leaveDetails.Status, Condition.Approved);
         }
 
+        /// <summary>
+        /// Method UpdateLeave Testing with False Value
+        /// </summary>
         [Fact]
         public void UpdateLeaveFalse()
         {

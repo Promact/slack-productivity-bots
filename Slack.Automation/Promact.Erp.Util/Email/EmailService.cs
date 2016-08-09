@@ -22,9 +22,7 @@ namespace Promact.Erp.Util.Email
             message.Body = email.Body;
             message.BodyEncoding = Encoding.UTF8;
             message.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("webmail.promactinfo.com", 587);
-            client.EnableSsl = false;
-            client.Credentials = new NetworkCredential("siddhartha@promactinfo.com", "B#(WdPtCwdI^Duik");
+            SmtpClient client = new SmtpClient();
             try
             {
                 client.Send(message);

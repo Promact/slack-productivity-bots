@@ -13,7 +13,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["SlackChatUpdateUrl"];
+                return ConfigurationManager.AppSettings["SlackChatUpdateUrl"].ToString();
             }
         }
 
@@ -21,7 +21,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["ProjectUserUrl"];
+                return ConfigurationManager.AppSettings["ProjectUserUrl"].ToString();
             }
         }
 
@@ -29,7 +29,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["IncomingWebHookUrl"];
+                return ConfigurationManager.AppSettings["IncomingWebHookUrl"].ToString();
             }
         }
 
@@ -37,7 +37,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["OAuthUrl"];
+                return ConfigurationManager.AppSettings["OAuthUrl"].ToString();
             }
         }
 
@@ -45,7 +45,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["ClientId"];
+                return ConfigurationManager.AppSettings["ClientId"].ToString();
             }
         }
 
@@ -53,7 +53,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["ClientSecret"];
+                return ConfigurationManager.AppSettings["ClientSecret"].ToString();
             }
         }
 
@@ -61,7 +61,7 @@ namespace Promact.Erp.Util
         {
             get
             {
-                return ConfigurationSettings.AppSettings["ClientReturnUrl"];
+                return ConfigurationManager.AppSettings["ClientReturnUrl"].ToString();
             }
         }
     }

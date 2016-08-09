@@ -9,6 +9,9 @@ using Xunit;
 
 namespace Promact.Core.Test
 {
+    /// <summary>
+    /// Test Cases of Project User Call Repository
+    /// </summary>
     public class ProjectUserRepositoryTest
     {
         private readonly IComponentContext _componentContext;
@@ -20,7 +23,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with True Value
+        /// Method GetUserByUsername Testing with True Value
         /// </summary>
         [Fact]
         public async void GetUserByUsername()
@@ -29,6 +32,9 @@ namespace Promact.Core.Test
             Assert.Equal(user.Email, "siddhartha@promactinfo.com");
         }
 
+        /// <summary>
+        /// Method GetTeamLeaderUserName Testing with True Value
+        /// </summary>
         [Fact]
         public async void GetTeamLeaderUserName()
         {
@@ -41,6 +47,9 @@ namespace Promact.Core.Test
             Assert.Equal(teamLeaderUsername, "siddhartha");
         }
 
+        /// <summary>
+        /// Method GetManagementUserName Testing with True Value
+        /// </summary>
         [Fact]
         public async void GetManagementUserName()
         {
@@ -54,7 +63,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with True Value
+        /// Method GetUserByUsernameFalse Testing with False Value
         /// </summary>
         [Fact]
         public async void GetUserByUsernameFalse()
@@ -63,6 +72,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(user.Email, "admin@promactinfo.com");
         }
 
+        /// <summary>
+        /// Method GetTeamLeaderUserNameFalse Testing with False Value
+        /// </summary>
         [Fact]
         public async void GetTeamLeaderUserNameFalse()
         {
@@ -75,6 +87,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(teamLeaderUsername, "roshni");
         }
 
+        /// <summary>
+        /// Method GetManagementUserNameFalse Testing with False Value
+        /// </summary>
         [Fact]
         public async void GetManagementUserNameFalse()
         {

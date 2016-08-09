@@ -12,6 +12,9 @@ using Xunit;
 
 namespace Promact.Core.Test
 {
+    /// <summary>
+    /// Test Cases of Client Repository
+    /// </summary>
     public class ClientRepositoryTest
     {
         private readonly IComponentContext _componentContext;
@@ -25,7 +28,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with True Value
+        /// Method WebRequestMethod Testing with True Value
         /// </summary>
         [Fact]
         public void WebRequestMethod()
@@ -45,7 +48,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with False Value
+        /// Method WebRequestMethod Testing with False Value
         /// </summary>
         [Fact]
         public void WebRequestMethodFalse()

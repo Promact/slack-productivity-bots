@@ -12,6 +12,9 @@ using Xunit;
 
 namespace Promact.Core.Test
 {
+    /// <summary>
+    /// Test Cases of Leave Request Repository
+    /// </summary>
     public class LeaveRequestRepositoryTest
     {
         private readonly IComponentContext _componentContext;
@@ -23,23 +26,29 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Testing with True Value
+        /// Method LeaveApply Testing with True Value
         /// </summary>
         [Fact]
         public void ApplyLeave()
         {
             LeaveRequest leave = new LeaveRequest() { FromDate=DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason="testing", RejoinDate=DateTime.UtcNow, Status= Condition.Pending, Type="Casual", CreatedOn = DateTime.UtcNow, EmployeeId= "fc172bd7-42d9-4cbf-baa8-130be02d25ed" };
             _leaveRequestRepository.ApplyLeave(leave);
-            Assert.Equal(51, leave.Id);
+            Assert.NotEqual(51, leave.Id);
         }
 
+        /// <summary>
+        /// Method LeaveList Testing with True Value
+        /// </summary>
         [Fact]
         public void LeaveList()
         {
             var leaves = _leaveRequestRepository.LeaveList();
-            Assert.Equal(51, leaves.Count());
+            Assert.Equal(64, leaves.Count());
         }
 
+        /// <summary>
+        /// Method CancelLeave Testing with True Value
+        /// </summary>
         [Fact]
         public void CancelLeave()
         {
@@ -47,6 +56,9 @@ namespace Promact.Core.Test
             Assert.Equal(Condition.Cancel, leaves.Status);
         }
 
+        /// <summary>
+        /// Method LeaveListByUserId Testing with True Value
+        /// </summary>
         [Fact]
         public void LeaveListByUserId()
         {
@@ -59,13 +71,19 @@ namespace Promact.Core.Test
             Assert.Equal(50, status);
         }
 
+        /// <summary>
+        /// Method LeaveListStatusByUserId Testing with True Value
+        /// </summary>
         [Fact]
         public void LeaveListStatusByUserId()
         {
             var leaves = _leaveRequestRepository.LeaveListStatusByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
-            Assert.Equal(Condition.Pending, leaves.Status);
+            Assert.Equal(Condition.Cancel, leaves.Status);
         }
 
+        /// <summary>
+        /// Method LeaveById Testing with True Value
+        /// </summary>
         [Fact]
         public void LeaveById()
         {
@@ -73,6 +91,9 @@ namespace Promact.Core.Test
             Assert.Equal(Condition.Pending, leaves.Status);
         }
 
+        /// <summary>
+        /// Method UpdateLeave Testing with True Value
+        /// </summary>
         [Fact]
         public void UpdateLeave()
         {
@@ -84,7 +105,7 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Testing with False Value
+        /// Method ApplyLeave Testing with False Value
         /// </summary>
         [Fact]
         public void ApplyLeaveFalse()
@@ -94,6 +115,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(31, leave.Id);
         }
 
+        /// <summary>
+        /// Method LeaveList Testing with False Value
+        /// </summary>
         [Fact]
         public void LeaveListFalse()
         {
@@ -101,6 +125,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(20, leaves.Count());
         }
 
+        /// <summary>
+        /// Method CancelLeave Testing with False Value
+        /// </summary>
         [Fact]
         public void CancelLeaveFalse()
         {
@@ -108,6 +135,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(Condition.Pending, leaves.Status);
         }
 
+        /// <summary>
+        /// Method LeaveListByUserId Testing with False Value
+        /// </summary>
         [Fact]
         public void LeaveListByUserIdFalse()
         {
@@ -120,6 +150,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(100, Id);
         }
 
+        /// <summary>
+        /// Method LeaveListStatusByUserId Testing with False Value
+        /// </summary>
         [Fact]
         public void LeaveListStatusByUserIdFalse()
         {
@@ -127,6 +160,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
+        /// <summary>
+        /// Method LeaveById Testing with False Value
+        /// </summary>
         [Fact]
         public void LeaveByIdFalse()
         {
@@ -134,6 +170,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
+        /// <summary>
+        /// Method UpdateLeave Testing with False Value
+        /// </summary>
         [Fact]
         public void UpdateLeaveFalse()
         {
