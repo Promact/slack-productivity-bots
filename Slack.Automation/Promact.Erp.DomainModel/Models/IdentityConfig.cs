@@ -9,8 +9,8 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Promact.Erp.Web
-{
+namespace Promact.Erp.DomainModel.Models
+{ 
     public class EmailService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)

@@ -1,5 +1,7 @@
 ﻿using Autofac;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -14,16 +16,41 @@ namespace Promact.Erp.Core.Controllers
 {
     public  class HomeController :  Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        public HomeController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
-        {
-            _signInManager = signInManager;
-            _userManager = userManager;
-        }
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
         public HomeController()
         {
+        }
 
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
         public ActionResult Index()
         {
@@ -55,24 +82,24 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public ActionResult ExtrenalLoginCallBack(string accessToken, string email)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email)
         {
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");
             }
             //Creating a user with email only. Password not required
             var user = new ApplicationUser { UserName = email, Email = email };
-            var result = _userManager.CreateAsync(user).Result;
-            if(result.Succeeded)
+            var result = await UserManager.CreateAsync(user);
+            if (result.Succeeded)
             {
                 //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo("Promact","akjska6565s4fs", "Promact");
-                result = _userManager.AddLoginAsync(user,info).Result;
+                UserLoginInfo info = new UserLoginInfo("Promact", "akjska6565s4fs");
+                result = await UserManager.AddLoginAsync(user.Id, info);
                 if (result.Succeeded)
                 {
                     //Signing user with username or email only
-                    _signInManager.SignInAsync(user, false).Wait();
+                    await SignInManager.SignInAsync(user, false,false);
                     return RedirectToAction("AfterLogIn", "Home");
                 }
             }
@@ -85,8 +112,16 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult LogOff()
         {
-            _signInManager.SignOutAsync().Wait();
+            AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
+        }
+
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
         }
     }
 }

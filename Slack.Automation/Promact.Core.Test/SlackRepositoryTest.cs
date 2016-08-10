@@ -36,11 +36,11 @@ namespace Promact.Core.Test
             Assert.Equal(leaveDetails.Status,Condition.Pending);
         }
 
-        [Fact]
-        public void LeaveListUpdateLeave()
-        {
-            var leave = _slackRepository.UpdateLeave(19, "Rejected");
-            Assert.Equal(leave.Status, Condition.Rejected);
-        }
+        //[Fact]
+        //public void LeaveListUpdateLeave()
+        //{
+        //    var leave = _slackRepository.UpdateLeave(19, "Rejected");
+        //    Assert.Equal(leave.Status, Condition.Rejected);
+        //}
     }
 }
