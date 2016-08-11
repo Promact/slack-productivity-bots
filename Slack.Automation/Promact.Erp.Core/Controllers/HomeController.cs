@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public  class HomeController :  Controller
+    public class HomeController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -71,6 +71,10 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult ExtrenalLogin()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("AfterLogIn", "Home");
+            }
             //BaseUrl of OAuth and clientId of App to be set 
             var url = string.Format("{0}?clientId={1}", AppSettingsUtil.OAuthUrl, AppSettingsUtil.ClientId);
             //make call to the OAuth Server
@@ -84,12 +88,19 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email)
         {
+            var user = UserManager.FindByEmail(email);
+            if (user!=null)
+            {
+                UserLoginInfo info = new UserLoginInfo("Promact", "akjska6565s4fs");
+                await UserManager.AddLoginAsync(user.Id, info);
+                await SignInManager.SignInAsync(user, false, false);
+                return RedirectToAction("AfterLogIn", "Home");
+            }
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("AfterLogIn", "Home");
             }
             //Creating a user with email only. Password not required
-            var user = new ApplicationUser { UserName = email, Email = email };
             var result = await UserManager.CreateAsync(user);
             if (result.Succeeded)
             {
@@ -99,7 +110,7 @@ namespace Promact.Erp.Core.Controllers
                 if (result.Succeeded)
                 {
                     //Signing user with username or email only
-                    await SignInManager.SignInAsync(user, false,false);
+                    await SignInManager.SignInAsync(user, false, false);
                     return RedirectToAction("AfterLogIn", "Home");
                 }
             }

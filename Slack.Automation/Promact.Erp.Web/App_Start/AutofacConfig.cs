@@ -20,7 +20,7 @@ using System.Web.Mvc;
 
 namespace Promact.Erp.Web.App_Start
 {
-    public class AutofacConfig
+    public static class AutofacConfig
     {
         public static IComponentContext RegisterDependancies()
         {
@@ -28,9 +28,6 @@ namespace Promact.Erp.Web.App_Start
             var builder = new ContainerBuilder();
             // register dependency
             builder.RegisterType<PromactErpContext>().As<DbContext>();
-
-            //register mvc controller
-            //builder.RegisterControllers(typeof(HomeController).Assembly);
 
             // register webapi controller
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
@@ -45,9 +42,6 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
 
             var container = builder.Build();
-
-            // replace mvc dependancy resolver with autofac
-            //DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             // replace webapi dependancy resolver with autofac
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
