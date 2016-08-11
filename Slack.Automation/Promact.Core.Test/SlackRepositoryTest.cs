@@ -24,7 +24,7 @@ namespace Promact.Core.Test
             _slackRepository = _componentContext.Resolve<ISlackRepository>();
         }
 
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void LeaveApply()
         {
             SlashCommand leave = new SlashCommand() { Text = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016", Username="siddhartha", ResponseUrl=AppSettingsUtil.IncomingWebHookUrl };
