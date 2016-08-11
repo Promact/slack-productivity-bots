@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Promact.Erp.Web.App_Start
 {
-    public class DatabaseConfig
+    public static class DatabaseConfig
     {
         /// <summary>
         /// Method to enable auto-migration and update Database after migration
