@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -21,17 +22,16 @@ namespace Promact.Core.Repository.Client
 {
     public class Client : IClient
     {
-        private HttpClient _chatUpdateMessage;
+        private readonly IHttpClientRepository _httpClientRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IEmailService _email;
         private readonly IAttachmentRepository _attachmentRepository;
-        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository)
+        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository, IHttpClientRepository httpClientRepository)
         {
-            _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri(AppSettingsUtil.ChatUpdateUrl);
             _projectUser = projectUser;
             _email = email;
             _attachmentRepository = attachmentRepository;
+            _httpClientRepository = httpClientRepository;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _chatUpdateMessage.GetAsync(responseUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl);
         }
 
         /// <summary>

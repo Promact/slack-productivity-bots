@@ -13,6 +13,8 @@ using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
+using System.Net.Http;
+using Promact.Core.Repository.HttpClientRepository;
 
 namespace Promact.Core.Test
 {
@@ -29,6 +31,8 @@ namespace Promact.Core.Test
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
+            builder.RegisterType<HttpClient>();
+            builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
             var container = builder.Build();
             return container;
         }

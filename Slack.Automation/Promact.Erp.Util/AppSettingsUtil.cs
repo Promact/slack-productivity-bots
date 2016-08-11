@@ -64,5 +64,13 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["ClientReturnUrl"].ToString();
             }
         }
+
+        public static string ProviderName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ProviderName"].ToString();
+            }
+        }
     }
 }

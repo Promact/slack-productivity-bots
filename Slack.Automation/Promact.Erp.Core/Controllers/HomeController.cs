@@ -91,7 +91,7 @@ namespace Promact.Erp.Core.Controllers
             var user = UserManager.FindByEmail(email);
             if (user!=null)
             {
-                UserLoginInfo info = new UserLoginInfo("Promact", "akjska6565s4fs");
+                UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
                 await UserManager.AddLoginAsync(user.Id, info);
                 await SignInManager.SignInAsync(user, false, false);
                 return RedirectToAction("AfterLogIn", "Home");
@@ -105,7 +105,7 @@ namespace Promact.Erp.Core.Controllers
             if (result.Succeeded)
             {
                 //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo("Promact", "akjska6565s4fs");
+                UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
                 result = await UserManager.AddLoginAsync(user.Id, info);
                 if (result.Succeeded)
                 {

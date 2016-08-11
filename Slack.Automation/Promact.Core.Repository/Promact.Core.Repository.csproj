@@ -60,6 +60,8 @@
     <Compile Include="Client\IClient.cs" />
     <Compile Include="DataRepository\IRepository.cs" />
     <Compile Include="DataRepository\Repository.cs" />
+    <Compile Include="HttpClientRepository\HttpClientRepository.cs" />
+    <Compile Include="HttpClientRepository\IHttpClientRepository.cs" />
     <Compile Include="LeaveRequestRepository\ILeaveRequestRepository.cs" />
     <Compile Include="LeaveRequestRepository\LeaveRequestRepository.cs" />
     <Compile Include="ProjectUserCall\IProjectUserCallRepository.cs" />

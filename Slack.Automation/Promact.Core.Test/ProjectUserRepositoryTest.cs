@@ -25,7 +25,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetUserByUsername Testing with True Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetUserByUsername()
         {
             var user = await _projectUserRepository.GetUserByUsername("siddhartha");
@@ -35,7 +35,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetTeamLeaderUserName Testing with True Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetTeamLeaderUserName()
         {
             string teamLeaderUsername = "";
@@ -50,7 +50,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetManagementUserName Testing with True Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetManagementUserName()
         {
             string managementUsername = "";
@@ -65,7 +65,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetUserByUsernameFalse Testing with False Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetUserByUsernameFalse()
         {
             var user = await _projectUserRepository.GetUserByUsername("siddhartha");
@@ -75,7 +75,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetTeamLeaderUserNameFalse Testing with False Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetTeamLeaderUserNameFalse()
         {
             string teamLeaderUsername = "";
@@ -90,7 +90,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method GetManagementUserNameFalse Testing with False Value
         /// </summary>
-        [Fact]
+        [Fact, Trait("Category", "Required")]
         public async void GetManagementUserNameFalse()
         {
             string managementUsername = "";
