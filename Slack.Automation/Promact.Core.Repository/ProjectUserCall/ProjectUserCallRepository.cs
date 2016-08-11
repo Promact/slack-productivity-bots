@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util;
 using System;
@@ -12,12 +13,10 @@ namespace Promact.Core.Repository.ProjectUserCall
 {
     public class ProjectUserCallRepository:IProjectUserCallRepository
     {
-        HttpClient client;
-        public ProjectUserCallRepository()
+        private readonly IHttpClientRepository _httpClientRepository;
+        public ProjectUserCallRepository(IHttpClientRepository httpClientRepository)
         {
-            client = new HttpClient();
-            //Setting baseAddress in client
-            client.BaseAddress = new Uri(AppSettingsUtil.ProjectUserUrl);
+            _httpClientRepository = httpClientRepository;
         }
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<User> GetUserByUsername(string userName)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, userName);
-            var response = await client.GetAsync(requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
             return userDetails;
@@ -42,7 +41,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.TeamLeaderDetailsUrl, userName);
-            var response = await client.GetAsync(requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return teamLeader;
@@ -55,7 +54,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName()
         {
             var requestUrl = string.Format("{0}", StringConstant.ManagementDetailsUrl);
-            var response = await client.GetAsync(requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return management;
