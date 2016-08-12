@@ -2,7 +2,6 @@
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
-using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
@@ -11,11 +10,7 @@ using Promact.Erp.Util.Email_Templates;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Promact.Core.Repository.Client

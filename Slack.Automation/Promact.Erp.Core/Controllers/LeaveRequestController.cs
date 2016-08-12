@@ -1,14 +1,9 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
-using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 

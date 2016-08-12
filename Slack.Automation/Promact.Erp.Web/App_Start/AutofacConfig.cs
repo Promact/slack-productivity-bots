@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
@@ -11,14 +10,9 @@ using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
 using Promact.Erp.Util.Email;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Net.Http;
-using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace Promact.Erp.Web.App_Start
 {

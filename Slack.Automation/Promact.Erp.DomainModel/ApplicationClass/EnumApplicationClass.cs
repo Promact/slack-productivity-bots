@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Promact.Erp.DomainModel.ApplicationClass
+﻿namespace Promact.Erp.DomainModel.ApplicationClass
 {
     /// <summary>
     /// Leave Status

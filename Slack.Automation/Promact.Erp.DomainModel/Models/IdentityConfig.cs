@@ -4,13 +4,12 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Promact.Erp.DomainModel.Context;
-using Promact.Erp.DomainModel.Models;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.Models
-{ 
+{
     public class EmailService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)
