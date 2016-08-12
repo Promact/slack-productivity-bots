@@ -14,7 +14,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class LeaveRequestController : ApiController
+    public class LeaveRequestController : LeaveRequestControllerBase
     {
         private readonly ISlackRepository _slackRepository;
         private readonly IClient _client;
@@ -68,7 +68,7 @@ namespace Promact.Erp.Core.Controllers
             catch (Exception ex)
             {
                 _client.SendMessage(leave, StringConstant.SlackErrorMessage);
-                return BadRequest();
+                return BadRequest(ex.ToString());
             }
         }
 

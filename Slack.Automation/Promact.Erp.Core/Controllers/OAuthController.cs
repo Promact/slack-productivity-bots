@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class OAuthController:ApiController
+    public class OAuthController: OAuthControllerBase
     {
         /// <summary>
         /// Method to get refresh Token from OAuth and send app clientSecretId

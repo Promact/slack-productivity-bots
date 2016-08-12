@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : HomeControllerBase
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
