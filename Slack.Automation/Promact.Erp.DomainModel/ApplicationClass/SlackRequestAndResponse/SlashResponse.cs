@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Promact.Erp.DomainModel.ApplicationClass
+namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
     public class SlashResponse
     {

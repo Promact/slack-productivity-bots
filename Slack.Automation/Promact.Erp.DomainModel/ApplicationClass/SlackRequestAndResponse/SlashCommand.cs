@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Promact.Erp.DomainModel.ApplicationClass
+namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
     [JsonObject(MemberSerialization= MemberSerialization.OptIn)]
     public class SlashCommand

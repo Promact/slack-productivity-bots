@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Promact.Erp.DomainModel.ApplicationClass
+namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
     public class SlashChatUpdateResponseChannelUser
     {

@@ -2,6 +2,7 @@
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
 using System;
 using System.Linq;

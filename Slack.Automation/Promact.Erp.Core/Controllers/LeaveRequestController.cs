@@ -2,13 +2,33 @@
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
 using System;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
+    public class CustomerBinder : IModelBinder
+    {
+
+        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            var request = controllerContext.HttpContext.Request;
+
+            string strCustomerCode = request.Form.Get("response_url");
+            string strCustomerName = request.Form.Get("team_id");
+
+            return new SlashCommand
+            {
+                TeamId = strCustomerCode,
+                ResponseUrl = strCustomerName
+            };
+        }
+    }
     public class LeaveRequestController : LeaveRequestControllerBase
     {
         private readonly ISlackRepository _slackRepository;
@@ -25,9 +45,9 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="blog"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("leaves/slackcall")]
-        public async Task<IHttpActionResult> SlackRequest(SlashCommand leave)
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("leaves/slackcall")]
+        public async Task<IHttpActionResult> SlackRequest([ModelBinder(typeof(CustomerBinder))] SlashCommand leave)
         {
             try
             {
@@ -72,8 +92,8 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="leaveResponse"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("leaves/slackbuttoncall")]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("leaves/slackbuttoncall")]
         public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             _slackRepository.UpdateLeave(leaveResponse);

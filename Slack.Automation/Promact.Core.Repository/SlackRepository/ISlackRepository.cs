@@ -1,7 +1,7 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
+﻿using Promact.Erp.DomainModel.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 
 namespace Promact.Core.Repository.SlackRepository
 {
