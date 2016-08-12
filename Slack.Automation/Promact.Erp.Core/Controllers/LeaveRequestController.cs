@@ -5,30 +5,15 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Controllers;
 using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class CustomerBinder : IModelBinder
-    {
-
-        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            var request = controllerContext.HttpContext.Request;
-
-            string strCustomerCode = request.Form.Get("response_url");
-            string strCustomerName = request.Form.Get("team_id");
-
-            return new SlashCommand
-            {
-                TeamId = strCustomerCode,
-                ResponseUrl = strCustomerName
-            };
-        }
-    }
     public class LeaveRequestController : LeaveRequestControllerBase
     {
         private readonly ISlackRepository _slackRepository;
@@ -47,8 +32,22 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("leaves/slackcall")]
-        public async Task<IHttpActionResult> SlackRequest([ModelBinder(typeof(CustomerBinder))] SlashCommand leave)
+        public async Task<IHttpActionResult> SlackRequest()
         {
+            var request = HttpContext.Current.Request.Form;
+            SlashCommand leave = new SlashCommand()
+            {
+                ChannelId = request.Get("channel_id"),
+                ChannelName = request.Get("channel_name"),
+                Command = request.Get("command"),
+                ResponseUrl = request.Get("response_url"),
+                TeamDomain = request.Get("team_domain"),
+                TeamId = request.Get("team_id"),
+                Text = request.Get("text"),
+                Token = request.Get("token"),
+                UserId = request.Get("user_id"),
+                Username = request.Get("user_name"),
+            };
             try
             {
                 var slackText = _attachmentRepository.SlackText(leave.Text);

@@ -29,14 +29,14 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
 
             // register repositories
-            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
+            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerDependency();
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
-            builder.RegisterType<HttpClient>();
+            builder.RegisterType<HttpClient>().InstancePerDependency();
             builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
 
             var container = builder.Build();
