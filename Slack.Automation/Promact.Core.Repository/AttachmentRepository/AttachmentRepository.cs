@@ -3,6 +3,7 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Promact.Core.Repository.AttachmentRepository
@@ -81,6 +82,24 @@ namespace Promact.Core.Repository.AttachmentRepository
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             return slackText;
+        }
+
+        public SlashCommand SlashCommandTransfrom(NameValueCollection value)
+        {
+            SlashCommand leave = new SlashCommand()
+            {
+                ChannelId = value.Get("channel_id"),
+                ChannelName = value.Get("channel_name"),
+                Command = value.Get("command"),
+                ResponseUrl = value.Get("response_url"),
+                TeamDomain = value.Get("team_domain"),
+                TeamId = value.Get("team_id"),
+                Text = value.Get("text"),
+                Token = value.Get("token"),
+                UserId = value.Get("user_id"),
+                Username = value.Get("user_name"),
+            };
+            return leave;
         }
     }
 }

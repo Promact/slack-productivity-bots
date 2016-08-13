@@ -35,19 +35,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<IHttpActionResult> SlackRequest()
         {
             var request = HttpContext.Current.Request.Form;
-            SlashCommand leave = new SlashCommand()
-            {
-                ChannelId = request.Get("channel_id"),
-                ChannelName = request.Get("channel_name"),
-                Command = request.Get("command"),
-                ResponseUrl = request.Get("response_url"),
-                TeamDomain = request.Get("team_domain"),
-                TeamId = request.Get("team_id"),
-                Text = request.Get("text"),
-                Token = request.Get("token"),
-                UserId = request.Get("user_id"),
-                Username = request.Get("user_name"),
-            };
+            var leave = _attachmentRepository.SlashCommandTransfrom(request);
             try
             {
                 var slackText = _attachmentRepository.SlackText(leave.Text);
