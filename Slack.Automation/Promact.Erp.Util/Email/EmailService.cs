@@ -30,7 +30,6 @@ namespace Promact.Erp.Util.Email
             client.Port = mailSettings.Smtp.Network.Port;
             client.Credentials = new System.Net.NetworkCredential(mailSettings.Smtp.From, mailSettings.Smtp.Network.Password);
             client.EnableSsl = mailSettings.Smtp.Network.EnableSsl;
-            client.UseDefaultCredentials = true;
             try
             {
                 client.Send(message);
