@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -13,15 +15,17 @@ namespace Promact.Erp.Core.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IHttpClientRepository _httpClientRepository;
 
         public HomeController()
         {
         }
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IHttpClientRepository httpClientRepository)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _httpClientRepository = httpClientRepository;
         }
 
         public ApplicationSignInManager SignInManager
@@ -128,6 +132,15 @@ namespace Promact.Erp.Core.Controllers
             {
                 return HttpContext.GetOwinContext().Authentication;
             }
+        }
+
+        /// <summary>
+        /// Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SlackOAuth()
+        {
+            return Redirect(AppSettingsUtil.LeaveManagementAuthorizationUrl+StringConstant.OAuthAuthorizationScopeAndClientId+AppSettingsUtil.OAuthClientId);
         }
     }
 }

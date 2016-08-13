@@ -84,6 +84,11 @@ namespace Promact.Core.Repository.AttachmentRepository
             return slackText;
         }
 
+        /// <summary>
+        /// Method to transform NameValueCollection to SlashCommand class
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public SlashCommand SlashCommandTransfrom(NameValueCollection value)
         {
             SlashCommand leave = new SlashCommand()

@@ -94,6 +94,8 @@
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachment.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachmentAction.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashChatUpdateResponse.cs" />

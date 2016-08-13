@@ -67,5 +67,29 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["ProviderName"].ToString();
             }
         }
+
+        public static string OAuthClientId
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["OAuthClientId"].ToString();
+            }
+        }
+
+        public static string OAuthClientSecret
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["OAuthClientSecret"].ToString();
+            }
+        }
+
+        public static string LeaveManagementAuthorizationUrl
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["LeaveManagementAuthorizationUrl"].ToString();
+            }
+        }
     }
 }

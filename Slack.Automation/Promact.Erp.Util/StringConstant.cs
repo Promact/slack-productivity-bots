@@ -27,5 +27,7 @@ namespace Promact.Erp.Util
         public static string UserDetailsUrl = "project/userDetails/";
         public static string TeamLeaderDetailsUrl = "project/teamLeadersDetails/";
         public static string ManagementDetailsUrl = "project/Admin";
+        public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
+        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";
     }
 }
