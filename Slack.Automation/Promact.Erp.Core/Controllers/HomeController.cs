@@ -99,18 +99,22 @@ namespace Promact.Erp.Core.Controllers
             {
                 return RedirectToAction("AfterLogIn", "Home");
             }
-            //Creating a user with email only. Password not required
-            var result = await UserManager.CreateAsync(user);
-            if (result.Succeeded)
+            if (user == null)
             {
-                //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
-                result = await UserManager.AddLoginAsync(user.Id, info);
+                user = new ApplicationUser() { Email = email, UserName = email };
+                //Creating a user with email only. Password not required
+                var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    //Signing user with username or email only
-                    await SignInManager.SignInAsync(user, false, false);
-                    return RedirectToAction("AfterLogIn", "Home");
+                    //Adding external Oauth details
+                    UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
+                    result = await UserManager.AddLoginAsync(user.Id, info);
+                    if (result.Succeeded)
+                    {
+                        //Signing user with username or email only
+                        await SignInManager.SignInAsync(user, false, false);
+                        return RedirectToAction("AfterLogIn", "Home");
+                    }
                 }
             }
             return View();

@@ -37,7 +37,7 @@ namespace Promact.Core.Test
             var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep");
             foreach (var team in teamLeader)
             {
-                teamLeaderUsername = team.Username;
+                teamLeaderUsername = team.FirstName;
             }
             Assert.Equal(teamLeaderUsername, "siddhartha");
         }
@@ -52,7 +52,7 @@ namespace Promact.Core.Test
             var management = await _projectUserRepository.GetManagementUserName();
             foreach (var team in management)
             {
-                managementUsername = team.Username;
+                managementUsername = team.FirstName;
             }
             Assert.Equal(managementUsername, "rinkesh");
         }
@@ -77,7 +77,7 @@ namespace Promact.Core.Test
             var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep");
             foreach (var team in teamLeader)
             {
-                teamLeaderUsername = team.Username;
+                teamLeaderUsername = team.FirstName;
             }
             Assert.NotEqual(teamLeaderUsername, "roshni");
         }
@@ -92,7 +92,7 @@ namespace Promact.Core.Test
             var management = await _projectUserRepository.GetManagementUserName();
             foreach (var team in management)
             {
-                managementUsername = team.Username;
+                managementUsername = team.FirstName;
             }
             Assert.NotEqual(managementUsername, "divyangi");
         }
