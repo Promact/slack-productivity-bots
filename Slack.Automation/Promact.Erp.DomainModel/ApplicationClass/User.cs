@@ -1,4 +1,5 @@
-﻿namespace Promact.Erp.DomainModel.ApplicationClass
+﻿
+namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class User
     {

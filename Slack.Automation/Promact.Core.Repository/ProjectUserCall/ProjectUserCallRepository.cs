@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ProjectUserCall
 {
-    public class ProjectUserCallRepository:IProjectUserCallRepository
+    public class ProjectUserCallRepository : IProjectUserCallRepository
     {
         private readonly IHttpClientRepository _httpClientRepository;
         public ProjectUserCallRepository(IHttpClientRepository httpClientRepository)
@@ -53,6 +53,16 @@ namespace Promact.Core.Repository.ProjectUserCall
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return management;
+        }
+
+
+        public async Task<ProjectAc> GetProjectDetails(string groupName)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, groupName);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            var project = JsonConvert.DeserializeObject<ProjectAc>(responseContent);
+            return project;
         }
     }
 }
