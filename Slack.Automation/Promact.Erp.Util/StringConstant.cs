@@ -24,13 +24,16 @@ namespace Promact.Erp.Util
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate] [EndDate] [LeaveType] [RejoinDate]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
-        public static string UserDetailsUrl = "project/userDetails/";
-        public static string TeamLeaderDetailsUrl = "project/teamLeadersDetails/";
+     
+       
         public static string ProjectDetailsUrl = "project/fetchProject/";
-        public static string ManagementDetailsUrl = "project/Admin";
+       
         public static string UserDetailByUserNameUrl = "project/fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
         public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";
+        public static string UserDetailsUrl = "userDetails/";
+        public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
+        public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
     }
 }

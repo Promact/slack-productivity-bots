@@ -34,12 +34,12 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="userName"></param>
         /// <returns>teamLeader details</returns>
-        public async Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName)
+        public async Task<List<User>> GetTeamLeaderUserName(string userName)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.TeamLeaderDetailsUrl, userName);
             var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
+            var teamLeader = JsonConvert.DeserializeObject<List<User>>(responseContent);
             return teamLeader;
         }
 
@@ -47,11 +47,11 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
         /// </summary>
         /// <returns>management details</returns>
-        public async Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName()
+        public async Task<List<User>> GetManagementUserName()
         {
             var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, StringConstant.ManagementDetailsUrl);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
+            var management = JsonConvert.DeserializeObject<List<User>>(responseContent);
             return management;
         }
 
