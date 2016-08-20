@@ -7,11 +7,11 @@ namespace Promact.Core.Repository.SlackRepository
 {
     public interface ISlackRepository
     {
-        Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave);
+        Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken);
         void UpdateLeave(SlashChatUpdateResponse leaveResponse);
-        void SlackLeaveList(List<string> slackText, SlashCommand leave);
-        void SlackLeaveCancel(List<string> slackText, SlashCommand leave);
-        void SlackLeaveStatus(List<string> slackText, SlashCommand leave);
+        Task SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken);
+        Task SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken);
+        Task SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken);
         void SlackLeaveBalance(SlashCommand leave);
         void SlackLeaveHelp(SlashCommand leave);
     }

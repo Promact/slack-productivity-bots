@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Promact.Core.Repository.Client
@@ -36,11 +37,11 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
-        public async void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
+        public async Task UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -62,15 +63,15 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public async void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest)
+        public async Task SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest,string accessToken)
         {
             // getting reply text to be send on slack corresponding to leave applied
             var replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username);
-            var management = await _projectUser.GetManagementUserName();
-            var userDetail = await _projectUser.GetUserByUsername(leave.Username);
+            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username,accessToken);
+            var management = await _projectUser.GetManagementUserName(accessToken);
+            var userDetail = await _projectUser.GetUserByUsername(leave.Username,accessToken);
             foreach (var user in management)
             {
                 teamLeaders.Add(user);

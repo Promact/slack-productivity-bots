@@ -11,6 +11,7 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly IProjectUserCallRepository _projectUserRepository;
+        string accessToken = "";
         public ProjectUserRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -23,7 +24,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void GetUserByUsername()
         {
-            var user = await _projectUserRepository.GetUserByUsername("siddhartha");
+            var user = await _projectUserRepository.GetUserByUsername("siddhartha", accessToken);
             Assert.Equal(user.Email, "siddhartha@promactinfo.com");
         }
 
@@ -34,7 +35,7 @@ namespace Promact.Core.Test
         public async void GetTeamLeaderUserName()
         {
             string teamLeaderUsername = "";
-            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep");
+            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep", accessToken);
             foreach (var team in teamLeader)
             {
                 teamLeaderUsername = team.FirstName;
@@ -49,7 +50,7 @@ namespace Promact.Core.Test
         public async void GetManagementUserName()
         {
             string managementUsername = "";
-            var management = await _projectUserRepository.GetManagementUserName();
+            var management = await _projectUserRepository.GetManagementUserName(accessToken);
             foreach (var team in management)
             {
                 managementUsername = team.FirstName;
@@ -63,7 +64,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void GetUserByUsernameFalse()
         {
-            var user = await _projectUserRepository.GetUserByUsername("siddhartha");
+            var user = await _projectUserRepository.GetUserByUsername("siddhartha", accessToken);
             Assert.NotEqual(user.Email, "admin@promactinfo.com");
         }
 
@@ -74,7 +75,7 @@ namespace Promact.Core.Test
         public async void GetTeamLeaderUserNameFalse()
         {
             string teamLeaderUsername = "";
-            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep");
+            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep", accessToken);
             foreach (var team in teamLeader)
             {
                 teamLeaderUsername = team.FirstName;
@@ -89,7 +90,7 @@ namespace Promact.Core.Test
         public async void GetManagementUserNameFalse()
         {
             string managementUsername = "";
-            var management = await _projectUserRepository.GetManagementUserName();
+            var management = await _projectUserRepository.GetManagementUserName(accessToken);
             foreach (var team in management)
             {
                 managementUsername = team.FirstName;

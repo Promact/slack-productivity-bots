@@ -1,12 +1,13 @@
 ﻿using Promact.Erp.DomainModel.Models;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.Client
 {
     public interface IClient
     {
-        void UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText);
+        Task UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText);
         void SendMessage(SlashCommand leave, string replyText);
-        void SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest);
+        Task SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest,string accessToken);
     }
 }

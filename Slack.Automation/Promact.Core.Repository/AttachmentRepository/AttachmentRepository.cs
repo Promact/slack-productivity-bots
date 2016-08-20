@@ -1,4 +1,5 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+﻿using Microsoft.AspNet.Identity;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -105,6 +106,19 @@ namespace Promact.Core.Repository.AttachmentRepository
                 Username = value.Get("user_name"),
             };
             return leave;
+        }
+
+        public string AccessToken(IList<UserLoginInfo> info)
+        {
+            var accessToken = "";
+            foreach (var provider in info)
+            {
+                if(provider.LoginProvider == AppSettingsUtil.ProviderName)
+                {
+                    accessToken = provider.ProviderKey;
+                }
+            }
+            return accessToken;
         }
     }
 }

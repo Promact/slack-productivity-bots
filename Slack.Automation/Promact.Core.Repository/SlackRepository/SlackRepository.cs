@@ -33,7 +33,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="slackRequest"></param>
         /// <param name="userName"></param>
         /// <returns>leaveRequest</returns>
-        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave)
+        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken)
         {
             LeaveRequest leaveRequest = new LeaveRequest();
             leaveRequest.Reason = slackRequest[1];
@@ -42,7 +42,7 @@ namespace Promact.Core.Repository.SlackRepository
             leaveRequest.Type = slackRequest[4];
             leaveRequest.RejoinDate = Convert.ToDateTime(slackRequest[5]);
             leaveRequest.Status = Condition.Pending;
-            var user = await _projectUser.GetUserByUsername(leave.Username);
+            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
             leaveRequest.EmployeeId = user.Id;
             leaveRequest.CreatedOn = DateTime.UtcNow;
             _leaveRepository.ApplyLeave(leaveRequest);
@@ -56,9 +56,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <returns>replyText as string</returns>
-        private async Task<string> LeaveList(string userName)
+        private async Task<string> LeaveList(string userName,string accessToken)
         {
-            var user = await _projectUser.GetUserByUsername(userName);
+            var user = await _projectUser.GetUserByUsername(userName,accessToken);
             var userId = user.Id;
             var leaveList = _leaveRepository.LeaveListByUserId(userId);
             foreach (var leave in leaveList)
@@ -74,9 +74,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leaveId"></param>
         /// <param name="userName"></param>
         /// <returns>replyText as string</returns>
-        private async Task<string> CancelLeave(int leaveId, string userName)
+        private async Task<string> CancelLeave(int leaveId, string userName, string accessToken)
         {
-            var user = await _projectUser.GetUserByUsername(userName);
+            var user = await _projectUser.GetUserByUsername(userName, accessToken);
             var userId = user.Id;
             if (userId == _leaveRepository.LeaveById(leaveId).EmployeeId)
             {
@@ -95,9 +95,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <returns>replyText as string</returns>
-        private async Task<string> LeaveStatus(string userName)
+        private async Task<string> LeaveStatus(string userName, string accessToken)
         {
-            var user = await _projectUser.GetUserByUsername(userName);
+            var user = await _projectUser.GetUserByUsername(userName, accessToken);
             var userId = user.Id;
             var leave = _leaveRepository.LeaveListStatusByUserId(userId);
             replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.Status);
@@ -139,18 +139,18 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async void SlackLeaveList(List<string> slackText, SlashCommand leave)
+        public async Task SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken)
         {
             var replyText = "";
             if (slackText.Count > 1)
             {
                 var userName = slackText[1];
-                replyText = await LeaveList(userName);
+                replyText = await LeaveList(userName, accessToken);
                 _client.SendMessage(leave, replyText);
             }
             else
             {
-                replyText = await LeaveList(leave.Username);
+                replyText = await LeaveList(leave.Username, accessToken);
                 _client.SendMessage(leave, replyText);
             }
         }
@@ -160,10 +160,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async void SlackLeaveCancel(List<string> slackText, SlashCommand leave)
+        public async Task SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken)
         {
             var leaveId = Convert.ToInt32(slackText[1]);
-            var replyText = await CancelLeave(leaveId, leave.Username);
+            var replyText = await CancelLeave(leaveId, leave.Username, accessToken);
             _client.SendMessage(leave, replyText);
         }
 
@@ -172,17 +172,17 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async void SlackLeaveStatus(List<string> slackText, SlashCommand leave)
+        public async Task SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken)
         {
             if (slackText.Count > 1)
             {
                 var userName = slackText[1];
-                var replyText = await LeaveStatus(userName);
+                var replyText = await LeaveStatus(userName, accessToken);
                 _client.SendMessage(leave, replyText);
             }
             else
             {
-                var replyText = await LeaveStatus(leave.Username);
+                var replyText = await LeaveStatus(leave.Username, accessToken);
                 _client.SendMessage(leave, replyText);
             }
         }

@@ -19,12 +19,13 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <param name="baseUrl"></param>
         /// <param name="contentUrl"></param>
         /// <returns>response</returns>
-        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl)
+        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl,string accessToken)
         {
             try
             {
                 _client = new HttpClient();
                 _client.BaseAddress = new Uri(baseUrl);
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 return response;

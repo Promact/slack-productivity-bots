@@ -15,6 +15,7 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IClient _client;
         private readonly ISlackRepository _slackRepository;
+        string accessToken = "";
         public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -30,7 +31,7 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
-            var leaveDetails = await _slackRepository.LeaveApply(slackText, leave);
+            var leaveDetails = await _slackRepository.LeaveApply(slackText, leave,accessToken);
             Assert.Equal(leaveDetails.Status,Condition.Pending);
         }
 

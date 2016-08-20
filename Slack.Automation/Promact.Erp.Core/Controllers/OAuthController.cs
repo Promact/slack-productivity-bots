@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class OAuthController : OAuthControllerBase
+    public class OAuthController : WebApiBaseController
     {
         private readonly IHttpClientRepository _httpClientRepository;
         public OAuthController(IHttpClientRepository httpClientRepository)
@@ -44,7 +44,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<IHttpActionResult> OAuth(string code)
         {
             var request = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", AppSettingsUtil.OAuthClientId, AppSettingsUtil.OAuthClientSecret, code);
-            var response = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, request);
+            var response = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, request, null);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var Json = JsonConvert.DeserializeObject<SlackOAuthResponse>(responseContent);
             return Ok(Json);

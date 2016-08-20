@@ -11,21 +11,19 @@ using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class HomeController : HomeControllerBase
+    public class HomeController : MVCBaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private IHttpClientRepository _httpClientRepository;
 
         public HomeController()
         {
         }
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IHttpClientRepository httpClientRepository)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
-            _httpClientRepository = httpClientRepository;
         }
 
         public ApplicationSignInManager SignInManager
