@@ -5,6 +5,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackRepository;
@@ -33,6 +34,7 @@ namespace Promact.Erp.Web.App_Start
 
             // register webapi controller
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
+            builder.RegisterApiControllers(typeof(LeaveReportController).Assembly);
 
             // register repositories
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
@@ -44,6 +46,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
             builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
+            builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
 
             var container = builder.Build();
 

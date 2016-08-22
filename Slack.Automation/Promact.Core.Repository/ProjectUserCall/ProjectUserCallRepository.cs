@@ -59,5 +59,15 @@ namespace Promact.Core.Repository.ProjectUserCall
             var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return management;
         }
+
+
+        public async Task<User> GetUserByEmployeeId(string employeeId)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
+            return userDetails;
+        }
     }
 }

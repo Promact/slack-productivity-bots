@@ -31,5 +31,6 @@ namespace Promact.Erp.Util
         public static string UserDetailsUrl = "project/userDetails/";
         public static string TeamLeaderDetailsUrl = "project/teamLeadersDetails/";
         public static string ManagementDetailsUrl = "project/Admin";
+        public static string UserDetailUrl = "userDetail/";
     }
 }

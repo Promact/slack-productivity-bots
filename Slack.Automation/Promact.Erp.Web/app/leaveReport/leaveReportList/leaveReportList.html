@@ -1,0 +1,44 @@
+﻿<center>
+
+<table id="#leave">
+
+    <thead>
+
+        <tr>
+            <th>EmployeeName</th>
+            <th>TotalSickLeave</th>
+            <th>TotalCasualLeave</th>
+            <th>UtilisedCasualLeave</th>
+            <th>BalanceCasualLeave</th>
+            <th>UtilisedSickLeave</th>
+            <th>BalanceSickLeave</th>
+        </tr>
+    </thead>
+    <tr>
+        <td>
+            <input type="text" [(ngModel)]="EmployeeName" placeholder="EmployeeName">
+        </td>
+        <td></td>
+        <td></td>
+        <td>
+            <input type="text" [(ngModel)]="UtilisedCasualLeave" placeholder="UtilisedCasualLeave">
+        </td>
+    </tr>
+    <tbody>
+        <tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave ">
+            <td><a routerLink="/detail/{{leaveReport.EmployeeName}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
+   
+            <td>{{leaveReport.TotalSickLeave}}</td>
+            <td>{{leaveReport.TotalCasualLeave}}</td>
+            <td>{{leaveReport.UtilisedCasualLeave}}</td>
+            <td>{{leaveReport.BalanceCasualLeave}}</td>
+            <td>{{leaveReport.UtilisedSickLeave}}</td>
+            <td>{{leaveReport.BalanceSickLeave}}</td>
+            <!--<td><button (click)="leaveDetails(leaveReport.EmployeeName)">details</button></td>-->
+        </tr>
+    </tbody>
+</table>
+
+ <button (click)="exportData()">Export Data</button>
+   
+    </center>

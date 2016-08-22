@@ -9,10 +9,10 @@ namespace Promact.Core.Repository.HttpClientRepository
 {
     public class HttpClientRepository:IHttpClientRepository
     {
-        private readonly HttpClient _client;
-        public HttpClientRepository(HttpClient client)
+        private HttpClient _client;
+        public HttpClientRepository()
         {
-            _client = client;
+            
         }
 
         /// <summary>
@@ -23,9 +23,21 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <returns>response</returns>
         public async Task<HttpResponseMessage> GetAsync(string baseUrl,string contentUrl)
         {
-            _client.BaseAddress = new Uri(baseUrl);
-            var response = await _client.GetAsync(contentUrl);
-            return response;
+            try
+            {
+                _client = new HttpClient();
+                //_client.BaseAddress = new Uri(baseUrl);
+                var url = baseUrl + contentUrl;
+                var response = await _client.GetAsync(url);
+                _client.Dispose();
+                return response;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
     }
 }
