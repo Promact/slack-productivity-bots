@@ -42,7 +42,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
+            //var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Promact.Core.Repository.Client
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
             }
-            var userDetail = await _projectUser.GetUserByUsername(leave.Username); 
+            //var userDetail = await _projectUser.GetUserByUsername(leave.Username,accessToken); 
             foreach (var teamLeader in teamLeaders)
             {
                 EmailApplication email = new EmailApplication();

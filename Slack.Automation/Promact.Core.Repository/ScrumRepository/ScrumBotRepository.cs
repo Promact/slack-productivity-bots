@@ -78,7 +78,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl,null);
                                 var responseContent = response.Content.ReadAsStringAsync().Result;
                                 var user = JsonConvert.DeserializeObject<User>(responseContent);
                                 var employeeId = "1";
@@ -89,7 +89,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         else
                         {
                             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl,null);
                             var responseContent = response.Content.ReadAsStringAsync().Result;
                             var user = JsonConvert.DeserializeObject<User>(responseContent);
                             var employeeId = "1";

@@ -80,7 +80,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, groupName);
-                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl,null);
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 var project = JsonConvert.DeserializeObject<ProjectAc>(responseContent);
                 return project;
@@ -103,7 +103,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, groupName);
-                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl,null);
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 var user = JsonConvert.DeserializeObject<User>(responseContent);
                 return user;
