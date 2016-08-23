@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ProjectUserCall
 {
-    public class ProjectUserCallRepository:IProjectUserCallRepository
+    public class ProjectUserCallRepository : IProjectUserCallRepository
     {
         private readonly IHttpClientRepository _httpClientRepository;
         public ProjectUserCallRepository(IHttpClientRepository httpClientRepository)
@@ -67,6 +67,51 @@ namespace Promact.Core.Repository.ProjectUserCall
                 management = JsonConvert.DeserializeObject<List<User>>(responseContent);
             }
             return management;
+        }
+
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns>object of ProjectAc</returns>
+        public async Task<ProjectAc> GetProjectDetails(string groupName)
+        {
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, groupName);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var project = JsonConvert.DeserializeObject<ProjectAc>(responseContent);
+                return project;
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+
+        /// <summary>
+        /// This method is used to fetch list of users/employees of the given group name. - JJ
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns>list of object of User</returns>
+        public async Task<User> GetUsersByGroupName(string groupName,string userName)
+        {
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, groupName);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var user = JsonConvert.DeserializeObject<User>(responseContent);
+                return user;
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

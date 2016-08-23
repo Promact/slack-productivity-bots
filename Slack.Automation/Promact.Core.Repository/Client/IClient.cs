@@ -1,4 +1,6 @@
-﻿using Promact.Erp.DomainModel.Models;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using System.Threading.Tasks;
 

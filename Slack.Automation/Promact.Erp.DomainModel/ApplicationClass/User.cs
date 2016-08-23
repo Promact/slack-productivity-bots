@@ -1,25 +1,46 @@
-﻿namespace Promact.Erp.DomainModel.ApplicationClass
+﻿
+using Newtonsoft.Json;
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class User
     {
-        /// <summary>
-        /// EmployeeId
-        /// </summary>
+        public User()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        [JsonProperty("Id")]
         public string Id { get; set; }
 
-        /// <summary>
-        /// Employee Email
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Employee FirstName or Slack UserName
-        /// </summary>
+        [Required]
+        [StringLength(255)]
+        [JsonProperty("FirstName")]
         public string FirstName { get; set; }
 
-        /// <summary>
-        /// Employee LastName
-        /// </summary>
+        [Required]
+        [StringLength(255)]
+        [JsonProperty("LastName")]
         public string LastName { get; set; }
+
+        [JsonProperty("IsActive")]
+        public bool IsActive { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [JsonProperty("Email")]
+        public string Email { get; set; }
+
+        [StringLength(255)]
+        [JsonProperty("Password")]
+        public string Password { get; set; }
+
+        [JsonProperty("UserName")]
+        public string UserName { get; set; }
+
+        [JsonProperty("UniqueName")]
+        public string UniqueName { get { return FirstName + "-" + Email; } }
     }
 }

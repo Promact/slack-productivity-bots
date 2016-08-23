@@ -4,7 +4,6 @@ using Microsoft.Owin.Security;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;

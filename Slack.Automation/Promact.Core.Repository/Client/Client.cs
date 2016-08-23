@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -12,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -19,16 +19,17 @@ namespace Promact.Core.Repository.Client
 {
     public class Client : IClient
     {
-        private readonly IHttpClientRepository _httpClientRepository;
+        private HttpClient _chatUpdateMessage;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IEmailService _email;
         private readonly IAttachmentRepository _attachmentRepository;
-        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository, IHttpClientRepository httpClientRepository)
+        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository)
         {
+            _chatUpdateMessage = new HttpClient();
+            _chatUpdateMessage.BaseAddress = new Uri(AppSettingsUtil.ChatUpdateUrl);
             _projectUser = projectUser;
             _email = email;
             _attachmentRepository = attachmentRepository;
-            _httpClientRepository = httpClientRepository;
         }
 
         /// <summary>
@@ -82,6 +83,10 @@ namespace Promact.Core.Repository.Client
                 var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = "LeaveBot", Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
+            }
+            var userDetail = await _projectUser.GetUserByUsername(leave.Username); 
+            foreach (var teamLeader in teamLeaders)
+            {
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);
