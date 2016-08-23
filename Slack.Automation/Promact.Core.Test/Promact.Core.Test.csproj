@@ -80,6 +80,7 @@
     <Compile Include="LeaveRequestRepositoryTest.cs" />
     <Compile Include="ProjectUserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScrumBotRepositoryTest.cs" />
     <Compile Include="SlackRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -26,8 +26,9 @@ namespace Promact.Erp.Util
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
      
        
-        public static string ProjectDetailsUrl = "project/fetchProject/";
-       
+        public static string ProjectDetailsUrl = "fetchProject/";
+        public static string UsersDetailByGroupUrl = "fetchProjectUsers/";
+
         public static string UserDetailByUserNameUrl = "project/fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
         public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";

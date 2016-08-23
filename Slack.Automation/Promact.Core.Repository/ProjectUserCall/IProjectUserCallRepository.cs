@@ -8,7 +8,8 @@ namespace Promact.Core.Repository.ProjectUserCall
     {
         Task<User> GetUserByUsername(string userName);
         Task<List<User>> GetTeamLeaderUserName(string userName);
-       Task<List<User>> GetManagementUserName();
-                Task<ProjectAc> GetProjectDetails(string groupName);
+        Task<List<User>> GetManagementUserName();
+        Task<ProjectAc> GetProjectDetails(string groupName);
+        Task<User> GetUsersByGroupName(string groupName,string userName);
     }
 }

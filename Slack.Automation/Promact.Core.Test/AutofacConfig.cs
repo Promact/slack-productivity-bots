@@ -10,6 +10,7 @@ using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Net.Http;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.ScrumRepository;
 
 namespace Promact.Core.Test
 {
@@ -21,6 +22,7 @@ namespace Promact.Core.Test
             builder.RegisterType<PromactErpContext>().As<DbContext>();
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
+            builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();

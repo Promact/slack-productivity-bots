@@ -12,6 +12,8 @@ namespace Promact.Core.Repository.ScrumRepository
         //  void InitiateScrum(ScrumAnswer ScrumAnswer);
 
         Task<string> StartScrum(string GroupName);
-     //   string AddAnswer(string userName, string message,string groupName);
+        //   string AddAnswer(string userName, string message,string groupName);
+
+        Task<string> Leave(string GroupName, string Message);
     }
 }

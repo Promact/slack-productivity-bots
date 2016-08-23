@@ -12,7 +12,7 @@ namespace Promact.Erp.DomainModel.Models
         [Required]
         public int QuestionId { get; set; }
         [Required]
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
         [Required]
         public DateTime AnswerDate { get; set; }
     }

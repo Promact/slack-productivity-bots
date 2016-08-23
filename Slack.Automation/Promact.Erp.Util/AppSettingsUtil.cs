@@ -20,6 +20,24 @@ namespace Promact.Erp.Util
             }
         }
 
+
+        public static string ProjectUrl
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ProjectUrl"].ToString();
+            }
+        }
+
+
+        public static string UserUrl
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["UserUrl"].ToString();
+            }
+        }
+
         public static string IncomingWebHookUrl
         {
             get
