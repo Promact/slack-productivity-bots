@@ -109,5 +109,19 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["LeaveManagementAuthorizationUrl"].ToString();
             }
         }
+        public static string ChatPostUrl
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ChatPostUrl"].ToString();
+            }
+        }
+        public static string tsakmailId
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["tsakmailId"].ToString();
+            }
+        }
     }
 }

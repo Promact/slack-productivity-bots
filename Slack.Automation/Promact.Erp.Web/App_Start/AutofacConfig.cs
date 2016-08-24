@@ -11,6 +11,7 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackRepository;
+using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
 using Promact.Erp.DomainModel.Models;
@@ -52,6 +53,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>().InstancePerDependency();
             builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
+            builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
 
             var container = builder.Build();
 

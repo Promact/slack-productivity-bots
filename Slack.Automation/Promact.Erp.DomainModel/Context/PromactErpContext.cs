@@ -18,6 +18,8 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<Question> Question { get; set; }
         public DbSet<Scrum> Scrum { get; set; }
         public DbSet<ScrumAnswer> ScrumAnswer { get; set; }
+        public DbSet<TaskMailDetails> TaskMailDetails { get; set; }
+        public DbSet<TaskMail> TaskMail { get; set; }
 
         public static PromactErpContext Create()
         {

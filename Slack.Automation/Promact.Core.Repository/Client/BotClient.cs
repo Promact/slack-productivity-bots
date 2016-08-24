@@ -214,7 +214,7 @@ namespace Promact.Core.Repository.Client
                     tsk.Wait();
                     strMessage = tsk.Result;
                     //dynamic Data = System.Web.Helpers.Json.Decode(strMessage);
-                    dynamic Data = Newtonsoft.Json.JsonConvert.DeserializeObject(strMessage);
+                   dynamic Data = Newtonsoft.Json.JsonConvert.DeserializeObject(strMessage);
                     switch ((String)Data.type)
                     {
                         case "message":
@@ -259,6 +259,7 @@ namespace Promact.Core.Repository.Client
                         do
                         {
                             result = await _webSocket.ReceiveAsync(buffer, System.Threading.CancellationToken.None);
+                            await _webSocket.SendAsync(buffer, 0, true, CancellationToken.None);
                             ms.Write(buffer.Array, buffer.Offset, result.Count);
                         } while (!result.EndOfMessage);
 

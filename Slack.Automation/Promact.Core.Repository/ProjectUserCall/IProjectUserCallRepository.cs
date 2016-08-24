@@ -11,5 +11,6 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<List<User>> GetManagementUserName(string accessToken);
         Task<ProjectAc> GetProjectDetails(string groupName);
         Task<User> GetUsersByGroupName(string groupName,string userName);
+        Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
     }
 }
