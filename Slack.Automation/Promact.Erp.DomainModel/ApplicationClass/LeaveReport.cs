@@ -9,9 +9,19 @@ namespace Promact.Erp.DomainModel.ApplicationClass
    public class LeaveReport
     {
         /// <summary>
+        /// Id of the employee
+        /// </summary>
+        public string EmployeeId { get; set; }
+
+        /// <summary>
         /// Name of the employee
         /// </summary>
         public string EmployeeName { get; set; }
+
+        /// <summary>
+        /// User Name of the employee
+        /// </summary>
+        public string EmployeeUserName { get; set; }
 
         /// <summary>
         /// Total number of sick leaves alloted

@@ -12,11 +12,13 @@ var core_1 = require('@angular/core');
 var leaveReport_service_1 = require('../leaveReport.service');
 var router_1 = require('@angular/router');
 var filter_pipe_1 = require('../filter.pipe');
+//declare let jsPDF: any;
+//declare let get: any;
 var LeaveReportComponent = (function () {
     function LeaveReportComponent(leaveReportService, router) {
         this.leaveReportService = leaveReportService;
         this.router = router;
-        this.mode = 'Observable';
+        this.leaveReports = [];
     }
     LeaveReportComponent.prototype.ngOnInit = function () {
         this.getLeaveReports();
@@ -26,35 +28,12 @@ var LeaveReportComponent = (function () {
         this.leaveReportService.getLeaveReports()
             .subscribe(function (leaveReports) { return _this.leaveReports = leaveReports; }, function (error) { return _this.errorMessage = error; });
     };
-    LeaveReportComponent.prototype.leaveDetails = function (employeeName) {
-        var link = ['/detail', employeeName];
+    LeaveReportComponent.prototype.leaveDetails = function (employeeId) {
+        var link = ['/detail', employeeId];
         this.router.navigate(link);
-    };
-    LeaveReportComponent.prototype.exportData = function () {
-        var columns = ["Employee Name", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
-        var rows = [];
-        for (var key in this.leaveReports) {
-            rows.push([
-                this.leaveReports[key].EmployeeName,
-                this.leaveReports[key].TotalSickLeave,
-                this.leaveReports[key].TotalCasualLeave,
-                this.leaveReports[key].UtilisedCasualLeave,
-                this.leaveReports[key].BalanceCasualLeave
-            ]);
-        }
-        ;
-        var doc = new jsPDF('p', 'pt');
-        doc.autoTable(columns, rows, {
-            styles: { fillColor: [100, 255, 255] },
-            columnStyles: {
-                id: { fillColor: 255 }
-            },
-        });
-        doc.save('table.pdf');
     };
     LeaveReportComponent = __decorate([
         core_1.Component({
-            selector: '',
             templateUrl: './app/leaveReport/leaveReportList/leaveReportList.html',
             pipes: [filter_pipe_1.FilterPipe]
         }), 

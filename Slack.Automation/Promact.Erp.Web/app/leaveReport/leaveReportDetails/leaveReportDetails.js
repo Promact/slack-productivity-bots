@@ -15,9 +15,10 @@ var LeaveReportDetailsComponent = (function () {
     function LeaveReportDetailsComponent(leaveReportService, route) {
         this.leaveReportService = leaveReportService;
         this.route = route;
-        this.mode = 'Observable';
+        this.leaveReportDetail = [];
     }
     LeaveReportDetailsComponent.prototype.ngOnInit = function () {
+        this.leaveReportDetail = [];
         this.getLeaveReportDetail();
     };
     LeaveReportDetailsComponent.prototype.getLeaveReportDetail = function () {
@@ -31,7 +32,6 @@ var LeaveReportDetailsComponent = (function () {
     };
     LeaveReportDetailsComponent = __decorate([
         core_1.Component({
-            selector: '',
             templateUrl: './app/leaveReport/leaveReportDetails/leaveReportDetails.html',
         }), 
         __metadata('design:paramtypes', [leaveReport_service_1.LeaveReportService, router_1.ActivatedRoute])

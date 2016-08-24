@@ -44,7 +44,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,null);
         }
 
         /// <summary>

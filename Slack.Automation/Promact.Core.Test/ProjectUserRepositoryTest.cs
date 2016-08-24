@@ -101,5 +101,25 @@ namespace Promact.Core.Test
             }
             Assert.NotEqual(managementUsername, "divyangi");
         }
+
+        /// <summary>
+        /// Method GetUserByEmployeeId Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void GetUserById()
+        {
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            Assert.Equal(user.Email, "roshni@promactinfo.com");
+        }
+
+        /// <summary>
+        /// Method GetUserByEmployeeId Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void GetUserByIdFalse()
+        {
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            Assert.NotEqual(user.Email, "xyz@promactinfo.com");
+        }
     }
 }

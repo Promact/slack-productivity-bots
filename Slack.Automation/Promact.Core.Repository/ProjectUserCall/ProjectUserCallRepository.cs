@@ -27,7 +27,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<User> GetUserByUsername(string userName)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, userName);
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
             return userDetails;
@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectUserDetailsApplicationClass>> GetTeamLeaderUserName(string userName)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.TeamLeaderDetailsUrl, userName);
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var teamLeader = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return teamLeader;
@@ -54,17 +54,21 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectUserDetailsApplicationClass>> GetManagementUserName()
         {
             var requestUrl = string.Format("{0}", StringConstant.ManagementDetailsUrl);
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var management = JsonConvert.DeserializeObject<List<ProjectUserDetailsApplicationClass>>(responseContent);
             return management;
         }
 
-
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>user Details</returns>
         public async Task<User> GetUserByEmployeeId(string employeeId)
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
             var responseContent = response.Content.ReadAsStringAsync().Result;
             var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
             return userDetails;

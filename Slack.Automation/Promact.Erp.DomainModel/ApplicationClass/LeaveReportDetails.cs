@@ -14,6 +14,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         public string EmployeeName { get; set; }
 
         /// <summary>
+        /// User Name of the employee
+        /// </summary>
+        public string EmployeeUserName { get; set; }
+
+        /// <summary>
         /// Leave taken from which date
         /// </summary>
         public string LeaveFrom { get; set; }

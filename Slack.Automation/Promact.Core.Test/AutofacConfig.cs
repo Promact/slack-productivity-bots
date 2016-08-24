@@ -15,17 +15,20 @@ using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Net.Http;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.LeaveReportRepository;
+using Promact.Erp.DomainModel.Models;
 
 namespace Promact.Core.Test
 {
     public class AutofacConfig
-    {
+    {     
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<PromactErpContext>().As<DbContext>();
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
+            builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();

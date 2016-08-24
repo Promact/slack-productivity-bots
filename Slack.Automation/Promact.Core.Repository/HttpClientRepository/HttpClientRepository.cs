@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.HttpClientRepository
 {
-    public class HttpClientRepository:IHttpClientRepository
+    public class HttpClientRepository : IHttpClientRepository
     {
         private HttpClient _client;
         public HttpClientRepository()
         {
-            
+
         }
 
         /// <summary>
@@ -21,23 +22,21 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <param name="baseUrl"></param>
         /// <param name="contentUrl"></param>
         /// <returns>response</returns>
-        public async Task<HttpResponseMessage> GetAsync(string baseUrl,string contentUrl)
+        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
             {
                 _client = new HttpClient();
-                //_client.BaseAddress = new Uri(baseUrl);
-                var url = baseUrl + contentUrl;
-                var response = await _client.GetAsync(url);
+                _client.BaseAddress = new Uri(baseUrl);
+               // _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+                var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 return response;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-
         }
     }
 }

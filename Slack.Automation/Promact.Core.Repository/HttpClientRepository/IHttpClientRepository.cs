@@ -9,6 +9,6 @@ namespace Promact.Core.Repository.HttpClientRepository
 {
     public interface IHttpClientRepository
     {
-        Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl);
+        Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl, string accessToken);
     }
 }

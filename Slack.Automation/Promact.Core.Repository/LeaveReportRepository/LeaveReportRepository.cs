@@ -27,33 +27,34 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// <summary>
         /// Method that returns the list of employees with their leave status
         /// </summary>
-        /// <returns>List of employees with leave status</returns>
-        //public IEnumerable<LeaveReport> LeaveReport()
+        /// <returns>List of employees with leave status</returns>       
         public async Task<IEnumerable<LeaveReport>> LeaveReport()
         {
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList();
-           // List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.Fetch()).ToList();
             List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
             List<LeaveReport> leaveReports = new List<LeaveReport>();
             User user = new User();
-           
-                            
-           foreach (var leaveRequest in distinctLeaveRequests)
-            {
-                user = await _projectUserCall.GetUserByEmployeeId(leaveRequest.EmployeeId);
-                LeaveReport leaveReport = new LeaveReport
+
+            foreach (var leaveRequest in distinctLeaveRequests)
+                {
+                    user = await _projectUserCall.GetUserByEmployeeId(leaveRequest.EmployeeId);
+                    if (user != null)
                     {
-                     //EmployeeName = leaveRequest.EmployeeId,
-                        EmployeeName = user.FirstName,
-                        TotalCasualLeave = totalCasualLeaves,
-                        TotalSickLeave = totalSickLeaves,
-                        UtilisedCasualLeave = getUtilisedCasualLeavesByEmployee(leaveRequest.EmployeeId),
-                        BalanceCasualLeave = getBalanceCasualLeave(leaveRequest.EmployeeId),
-                        UtilisedSickLeave = null,
-                        BalanceSickLeave = null
-                    };
-                    leaveReports.Add(leaveReport);              
-            }
+                        LeaveReport leaveReport = new LeaveReport
+                        {
+                            EmployeeId = user.Id,
+                            EmployeeUserName = user.Email,
+                            EmployeeName = user.FirstName,
+                            TotalCasualLeave = totalCasualLeaves,
+                            TotalSickLeave = totalSickLeaves,
+                            UtilisedCasualLeave = getUtilisedCasualLeavesByEmployee(leaveRequest.EmployeeId),
+                            BalanceCasualLeave = getBalanceCasualLeave(leaveRequest.EmployeeId),
+                            UtilisedSickLeave = null,
+                            BalanceSickLeave = null
+                        };
+                        leaveReports.Add(leaveReport);
+                    }
+                }
             return leaveReports;
         }
 
@@ -71,7 +72,6 @@ namespace Promact.Core.Repository.LeaveReportRepository
             { 
              if (leave.Status == Condition.Approved)
                  {
-                  //utilisedCasualLeave = (leaveRequest.EndDate - leaveRequest.FromDate).TotalDays;
                     utilisedCasualLeave = utilisedCasualLeave + leave.EndDate.Date.Subtract(leave.FromDate).Days + 1;
                  }
             }
@@ -94,29 +94,35 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>Details of leave for an employee</returns>
-        public IEnumerable<LeaveReportDetails> LeaveReportDetails(string employeeId)
+        public async Task <IEnumerable<LeaveReportDetails>> LeaveReportDetails(string employeeId)
         {
-           // var leaveRequest = _leaveRequest.GetById(employeeId);
-
-            var leaves = _leaveRequest.Fetch(x => x.EmployeeId == employeeId).ToList();
-            List<LeaveReportDetails> leaveReportDetails = new List<LeaveReportDetails>();
-           
-            foreach (var leave in leaves)
+            User user = new User();
+            user = await _projectUserCall.GetUserByEmployeeId(employeeId);
+            if(user != null)
             {
-                LeaveReportDetails leaveReportDetail = new LeaveReportDetails();
-                if (leave.Status == Condition.Approved)
+                var leaves = _leaveRequest.Fetch(x => x.EmployeeId == employeeId).ToList();
+                List<LeaveReportDetails> leaveReportDetails = new List<LeaveReportDetails>();
+
+                foreach (var leave in leaves)
                 {
-                    leaveReportDetail.EmployeeName = leave.EmployeeId;
-                    leaveReportDetail.LeaveFrom = leave.FromDate.ToShortDateString();
-                    leaveReportDetail.StartDay = leave.FromDate.DayOfWeek.ToString();
-                    leaveReportDetail.LeaveUpto = leave.EndDate.ToShortDateString();
-                    leaveReportDetail.EndDay = leave.EndDate.DayOfWeek.ToString();
-                    leaveReportDetail.Reason = leave.Reason;
+                    LeaveReportDetails leaveReportDetail = new LeaveReportDetails();
+                    if (leave.Status == Condition.Approved)
+                    {
+                        leaveReportDetail.EmployeeUserName = user.Email;
+                        leaveReportDetail.EmployeeName = user.FirstName;
+                        leaveReportDetail.LeaveFrom = leave.FromDate.ToShortDateString();
+                        leaveReportDetail.StartDay = leave.FromDate.DayOfWeek.ToString();
+                        leaveReportDetail.LeaveUpto = leave.EndDate.ToShortDateString();
+                        leaveReportDetail.EndDay = leave.EndDate.DayOfWeek.ToString();
+                        leaveReportDetail.Reason = leave.Reason;
+                    }
+                    leaveReportDetails.Add(leaveReportDetail);
                 }
-                leaveReportDetails.Add(leaveReportDetail);
+                return leaveReportDetails;
             }
-            return leaveReportDetails;
+            return null;
         }
+           
 
     }
 }

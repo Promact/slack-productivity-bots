@@ -1,23 +1,4 @@
-﻿//import { provideRouter, RouterConfig }  from '@angular/router';
-
-//import { AppComponent } from './app.component';
-//const routes: RouterConfig = [
-//    {
-//        path: 'reports',
-//        component: AppComponent
-//    },
-//    //{
-//    //    path: '',
-//    //    redirectTo: '/main',
-//    //    pathMatch: 'full'
-//    //},
-//];
-
-//export const appRouterProviders = [
-//    provideRouter(routes)
-//];
-
-
+﻿
 import { Routes, RouterModule } from '@angular/router';
 import { LeaveReportComponent } from './leaveReport/leaveReportList/leaveReport';
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReportDetails/leaveReportDetails';

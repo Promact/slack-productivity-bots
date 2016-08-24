@@ -26,9 +26,9 @@ namespace Promact.Erp.Core.Controllers
         /// <returns>list of employees with their leave details</returns>
         [HttpGet]
         [Route("leaveReport")]
-        public IHttpActionResult LeaveReport()
+        public async Task<IHttpActionResult> LeaveReport()
         {
-            return Ok(_leaveReport.LeaveReport());
+            return Ok(await _leaveReport.LeaveReport());
         }
 
 
@@ -38,11 +38,11 @@ namespace Promact.Erp.Core.Controllers
         /// <returns>Details of leave for an employee </returns>
         [HttpGet]
         [Route("leaveReportDetails/{employeeId}")]
-        public IHttpActionResult LeaveReportDetails(string employeeId)
+        public async Task<IHttpActionResult> LeaveReportDetails(string employeeId)
         {
             if (employeeId != null)
             {
-                return Ok(_leaveReport.LeaveReportDetails(employeeId));
+                return Ok(await _leaveReport.LeaveReportDetails(employeeId));
             }
             else
             {

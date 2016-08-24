@@ -1,4 +1,6 @@
-﻿export class LeaveReport{  
+﻿export class LeaveReport{
+    EmployeeId: string;
+    EmployeeUserName: string; 
     EmployeeName: string;
     TotalSickLeave: number; 
     TotalCasualLeave : number;
