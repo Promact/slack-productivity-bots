@@ -159,6 +159,8 @@
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\Scrum.cs" />
     <Compile Include="Models\ScrumAnswer.cs" />
+    <Compile Include="Models\TaskMail.cs" />
+    <Compile Include="Models\TaskMailDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

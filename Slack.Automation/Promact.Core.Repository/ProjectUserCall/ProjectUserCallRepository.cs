@@ -7,6 +7,7 @@ using Promact.Erp.Util;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using System;
 
 namespace Promact.Core.Repository.ProjectUserCall
 {
@@ -128,6 +129,22 @@ namespace Promact.Core.Repository.ProjectUserCall
             catch (System.Exception ex)
             {
                 throw;
+            }
+        }
+
+        public async Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken)
+        {
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsByUserNameUrl, userName);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl, accessToken);
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var project = JsonConvert.DeserializeObject<ProjectAc>(responseContent);
+                return project;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
             }
         }
     }

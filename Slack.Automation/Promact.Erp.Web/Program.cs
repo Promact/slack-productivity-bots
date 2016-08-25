@@ -1,7 +1,10 @@
 ﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.Bot;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ScrumRepository;
+using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.DomainModel.Models;
 
 namespace Promact.Erp.Web
 {
@@ -9,12 +12,16 @@ namespace Promact.Erp.Web
     {
         private static BotClient _client;
         private static IScrumBotRepository _scrumBotRepository;
+        private static ITaskMailRepository _taskMailRepository;
+
         public static void Main(IComponentContext container)
         {
             _scrumBotRepository = container.Resolve<IScrumBotRepository>();
 
+            _taskMailRepository = container.Resolve<ITaskMailRepository>();
             //create a new slack client
-            _client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            //_client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail 
+            _client = new BotClient("xoxb-71985530755-ZFMwfQPVez6RBX5zJUEBhFy0");//taskmail
 
             //connect to the slack service
             _client.ConnectClientThread();
@@ -58,9 +65,18 @@ namespace Promact.Erp.Web
                     //    var reply = _scrumBotRepository.StartScrum(e.channel);
                     //}
                 }
-                // else
-                //Taskmail bot
-                //ProcessMessage(e.UserInfo.Name, e.GroupInfo.name, e.Text);
+                else
+                {
+                    var text = e.Text.ToLower();
+                    if (text == "task mail")
+                    {
+                         _taskMailRepository.StartTaskMail(e.UserInfo.Name, "bcd34169-1434-40e9-abf5-c9e0e9d20cd8").Wait();
+                    }
+                    else
+                    {
+
+                    }
+                }
             }
             catch (System.Exception ex)
             {

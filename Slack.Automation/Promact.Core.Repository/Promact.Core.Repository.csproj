@@ -115,6 +115,8 @@
     <Compile Include="ScrumRepository\ScrumBotRepository.cs" />
     <Compile Include="SlackRepository\ISlackRepository.cs" />
     <Compile Include="SlackRepository\SlackRepository.cs" />
+    <Compile Include="TaskMailRepository\ITaskMailRepository.cs" />
+    <Compile Include="TaskMailRepository\TaskMailRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Erp.DomainModel\Promact.Erp.DomainModel.csproj">
