@@ -33,4 +33,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Completed,
         Roadblock
     }
+    public enum TaskMailQuestion
+    {
+        YourTask=1,
+        HoursSpent=2,
+        Status=3,
+        Comment=4,
+        SendEmail=5
+    }
 }

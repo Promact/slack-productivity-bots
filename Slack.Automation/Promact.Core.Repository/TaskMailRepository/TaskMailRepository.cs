@@ -36,11 +36,9 @@ namespace Promact.Core.Repository.TaskMailRepository
             try
             {
                 var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
-                //var project = await _projectUserRepository.GetProjectDetailsByUserName(userName, accessToken);
                 TaskMail taskMail = new TaskMail();
                 taskMail.CreatedOn = DateTime.UtcNow;
                 taskMail.EmployeeId = user.Id;
-                //taskMail.ProjectId = project.Id;
                 _taskMail.Insert(taskMail);
                 _taskMail.Save();
                 var question = _questionRepository.FirstOrDefault(x => x.Type == 2);
@@ -57,8 +55,6 @@ namespace Promact.Core.Repository.TaskMailRepository
 
                 throw ex;
             }
-            //var text = string.Format("?token=xoxp-4652768210-17616325616-62499499863-cfbd7e4114&channel={0}&text={1}&username={2}&as_user=true&pretty=1", userName,HttpUtility.UrlEncode("Hello"), "tsakmail");
-            //await _httpClientRepository.GetAsync(AppSettingsUtil.ChatPostUrl, text, accessToken);
         }
         public async Task<string> QuestionAndAnswer(string userName, string accessToken, string answer)
         {
@@ -74,22 +70,23 @@ namespace Promact.Core.Repository.TaskMailRepository
                 {
                     var nextQuestion = _questionRepository.FirstOrDefault(x => x.OrderNumber == (previousQuestion.OrderNumber + 1));
                     questionText = nextQuestion.QuestionStatement;
-                    switch (previousQuestion.OrderNumber)
+                    var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
+                    switch (question)
                     {
-                        case 1:
+                        case TaskMailQuestion.YourTask:
                             taskDetails.Description = answer;
                             break;
-                        case 2:
+                        case TaskMailQuestion.HoursSpent:
                             taskDetails.Hours = Convert.ToDecimal(answer);
                             break;
-                        case 3:
+                        case TaskMailQuestion.Status:
                             var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer);
                             taskDetails.Status = status;
                             break;
-                        case 4:
+                        case TaskMailQuestion.Comment:
                             taskDetails.Comment = answer;
                             break;
-                        case 5:
+                        case TaskMailQuestion.SendEmail:
                             {
                                 answer = answer.ToLower();
                                 questionText = StringConstant.ThankYou;
