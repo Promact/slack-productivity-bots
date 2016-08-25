@@ -22,7 +22,7 @@ var FilterPipe = (function () {
         if (employeeName == "") {
             return leaveReports.filter(function (y) { return y.UtilisedCasualLeave == utilisedCasualLeave; });
         }
-        return leaveReports.filter(function (x) { return x.EmployeeName.startsWith(employeeName) || x.UtilisedCasualLeave == utilisedCasualLeave; });
+        return leaveReports.filter(function (x) { return x.EmployeeName.toLowerCase().startsWith(employeeName.toLowerCase()) || x.UtilisedCasualLeave == utilisedCasualLeave; });
     };
     FilterPipe = __decorate([
         core_1.Pipe({ name: 'filter' }),

@@ -3,8 +3,7 @@ import { LeaveReport } from '../leaveReport.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { FilterPipe } from '../filter.pipe';
-//declare let jsPDF: any;
-//declare let get: any;
+declare let jsPDF: any;
 
 
 @Component({
@@ -27,9 +26,10 @@ export class LeaveReportComponent implements OnInit {
     getLeaveReports() {
         this.leaveReportService.getLeaveReports()
             .subscribe(
-            leaveReports => this.leaveReports = leaveReports,
+            leaveReports => this.leaveReports = leaveReports,               
             error => this.errorMessage = <any>error
-            );
+        );
+        return this.leaveReports;
     }
 
     leaveDetails(employeeId: string) {
@@ -37,30 +37,30 @@ export class LeaveReportComponent implements OnInit {
         this.router.navigate(link);
     }
 
-    //exportData() {
+    exportDataToPdf() {
+        var columns = ["Employee Name", "Employee Username","Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+        var rows: any = [];
+        for (var key in this.leaveReports) {
+            rows.push([
+                this.leaveReports[key].EmployeeName,
+                this.leaveReports[key].EmployeeUserName,
+                this.leaveReports[key].TotalSickLeave,
+                this.leaveReports[key].TotalCasualLeave,
+                this.leaveReports[key].UtilisedCasualLeave,
+                this.leaveReports[key].BalanceCasualLeave
+                ]);
+        };
 
-    //    var columns = ["Employee Name", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
-    //    var rows: any = [];
-    //    for (var key in this.leaveReports) {
-    //        rows.push([
-    //            this.leaveReports[key].EmployeeName,
-    //            this.leaveReports[key].TotalSickLeave,
-    //            this.leaveReports[key].TotalCasualLeave,
-    //            this.leaveReports[key].UtilisedCasualLeave,
-    //            this.leaveReports[key].BalanceCasualLeave
-    //            ]);
-    //    };
+        var doc = new jsPDF('p','pt','a4');
 
-    //    var doc = new jsPDF('p', 'pt');
-
-    //    doc.autoTable(columns, rows, {
-    //        styles: { fillColor: [100, 255, 255] },
-    //        columnStyles: {
-    //            id: { fillColor: 255 }
-    //        },
-    //    });
-    //    doc.save('table.pdf');
-
-    //}
-
+        doc.autoTable(columns, rows, {
+            styles: {
+                theme: 'plain',
+                overflow: 'linebreak',
+                pageBreak: 'auto', 
+                tableWidth: 'auto',
+            },
+        });
+        doc.save('Report.pdf');
+    }    
 }

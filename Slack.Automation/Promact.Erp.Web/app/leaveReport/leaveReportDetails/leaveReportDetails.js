@@ -30,6 +30,32 @@ var LeaveReportDetailsComponent = (function () {
     LeaveReportDetailsComponent.prototype.goBack = function () {
         window.history.back();
     };
+    LeaveReportDetailsComponent.prototype.exportDataToPdf = function () {
+        var columns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
+        var rows = [];
+        for (var key in this.leaveReportDetail) {
+            rows.push([
+                this.leaveReportDetail[key].EmployeeName,
+                this.leaveReportDetail[key].EmployeeUserName,
+                this.leaveReportDetail[key].LeaveFrom,
+                this.leaveReportDetail[key].StartDay,
+                this.leaveReportDetail[key].LeaveUpto,
+                this.leaveReportDetail[key].EndDay,
+                this.leaveReportDetail[key].Reason
+            ]);
+        }
+        ;
+        var doc = new jsPDF('p', 'pt', 'a4');
+        doc.autoTable(columns, rows, {
+            styles: {
+                theme: 'plain',
+                overflow: 'linebreak',
+                pageBreak: 'auto',
+                tableWidth: 'auto',
+            },
+        });
+        doc.save('ReportDetail.pdf');
+    };
     LeaveReportDetailsComponent = __decorate([
         core_1.Component({
             templateUrl: './app/leaveReport/leaveReportDetails/leaveReportDetails.html',

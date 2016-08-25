@@ -12,8 +12,6 @@ var core_1 = require('@angular/core');
 var leaveReport_service_1 = require('../leaveReport.service');
 var router_1 = require('@angular/router');
 var filter_pipe_1 = require('../filter.pipe');
-//declare let jsPDF: any;
-//declare let get: any;
 var LeaveReportComponent = (function () {
     function LeaveReportComponent(leaveReportService, router) {
         this.leaveReportService = leaveReportService;
@@ -27,10 +25,36 @@ var LeaveReportComponent = (function () {
         var _this = this;
         this.leaveReportService.getLeaveReports()
             .subscribe(function (leaveReports) { return _this.leaveReports = leaveReports; }, function (error) { return _this.errorMessage = error; });
+        return this.leaveReports;
     };
     LeaveReportComponent.prototype.leaveDetails = function (employeeId) {
         var link = ['/detail', employeeId];
         this.router.navigate(link);
+    };
+    LeaveReportComponent.prototype.exportDataToPdf = function () {
+        var columns = ["Employee Name", "Employee Username", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+        var rows = [];
+        for (var key in this.leaveReports) {
+            rows.push([
+                this.leaveReports[key].EmployeeName,
+                this.leaveReports[key].EmployeeUserName,
+                this.leaveReports[key].TotalSickLeave,
+                this.leaveReports[key].TotalCasualLeave,
+                this.leaveReports[key].UtilisedCasualLeave,
+                this.leaveReports[key].BalanceCasualLeave
+            ]);
+        }
+        ;
+        var doc = new jsPDF('p', 'pt', 'a4');
+        doc.autoTable(columns, rows, {
+            styles: {
+                theme: 'plain',
+                overflow: 'linebreak',
+                pageBreak: 'auto',
+                tableWidth: 'auto',
+            },
+        });
+        doc.save('Report.pdf');
     };
     LeaveReportComponent = __decorate([
         core_1.Component({

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'my-app',
     template: ` 
                 <h1>Welcome to leave analysis</h1>
-                <a routerLink="/report" routerLinkActive="active">Leave Reports</a>
+                <h3><a routerLink="/report" routerLinkActive="active">Leave Reports</a></h3>
                 <router-outlet></router-outlet>
 `
 

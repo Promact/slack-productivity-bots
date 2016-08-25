@@ -2,6 +2,7 @@
 import { LeaveReportDetail } from '../leaveReportDetails.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { ActivatedRoute } from '@angular/router';
+declare let jsPDF: any;
 
 @Component({
     templateUrl: './app/leaveReport/leaveReportDetails/leaveReportDetails.html',
@@ -33,4 +34,32 @@ export class LeaveReportDetailsComponent {
     goBack() {
         window.history.back();
     }
+
+    exportDataToPdf() {
+        var columns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day","Reason"];
+        var rows: any = [];
+        for (var key in this.leaveReportDetail) {
+            rows.push([
+                this.leaveReportDetail[key].EmployeeName,
+                this.leaveReportDetail[key].EmployeeUserName,
+                this.leaveReportDetail[key].LeaveFrom,
+                this.leaveReportDetail[key].StartDay,
+                this.leaveReportDetail[key].LeaveUpto,
+                this.leaveReportDetail[key].EndDay,
+                this.leaveReportDetail[key].Reason
+            ]);
+        };
+
+        var doc = new jsPDF('p', 'pt', 'a4');
+
+        doc.autoTable(columns, rows, {
+            styles: {
+                theme: 'plain',
+                overflow: 'linebreak',
+                pageBreak: 'auto',
+                tableWidth: 'auto',
+            },
+        });
+        doc.save('ReportDetail.pdf');
+    }    
 }

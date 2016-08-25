@@ -1,5 +1,5 @@
 ﻿export class LeaveReportDetail {
-    EmployeeUsername: string;
+    EmployeeUserName: string;
     EmployeeName: string;
     LeaveFrom: string;
     StartDay:string;

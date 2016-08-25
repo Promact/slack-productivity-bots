@@ -19,8 +19,8 @@ export class FilterPipe implements PipeTransform {
             return leaveReports.filter(y => y.UtilisedCasualLeave == utilisedCasualLeave);
              
         }
-        
-        return leaveReports.filter(x => x.EmployeeName.startsWith(employeeName) || x.UtilisedCasualLeave == utilisedCasualLeave);
+
+        return leaveReports.filter(x => x.EmployeeName.toLowerCase().startsWith(employeeName.toLowerCase()) || x.UtilisedCasualLeave == utilisedCasualLeave);
              
     }
 }
