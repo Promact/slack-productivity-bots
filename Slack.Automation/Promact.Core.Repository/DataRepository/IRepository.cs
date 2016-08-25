@@ -7,8 +7,10 @@ namespace Promact.Core.Repository.DataRepository
 {
     public interface IRepository<T> : IDisposable
     {
-        IEnumerable<T> List();
+        IQueryable<T> GetAll();
+
         T GetById(int? id);
+        T GetById(string id);
         void Insert(T entity);
         void Delete(int? id);
         void Update(T entity);

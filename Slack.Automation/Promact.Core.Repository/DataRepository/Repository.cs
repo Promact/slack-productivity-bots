@@ -21,9 +21,9 @@ namespace Promact.Core.Repository.DataRepository
         /// To get List of all from database 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<T> List()
+        public IQueryable<T> GetAll()
         {
-            return dbSet.AsEnumerable(); ;
+            return dbSet.AsQueryable(); ;
         }
 
         /// <summary>

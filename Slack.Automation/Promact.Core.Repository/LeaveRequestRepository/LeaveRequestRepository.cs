@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <returns>List of leave</returns>
         public IEnumerable<LeaveRequest> LeaveList()
         {
-            return _leaveRequestRepository.List();
+            return _leaveRequestRepository.GetAll();
         }
 
         /// <summary>

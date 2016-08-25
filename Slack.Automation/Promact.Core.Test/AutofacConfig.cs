@@ -11,11 +11,13 @@ using Promact.Core.Repository.AttachmentRepository;
 using System.Net.Http;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ScrumRepository;
+using Promact.Core.Repository.LeaveReportRepository;
+using Promact.Erp.DomainModel.Models;
 
 namespace Promact.Core.Test
 {
     public class AutofacConfig
-    {
+    {     
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
@@ -23,6 +25,7 @@ namespace Promact.Core.Test
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
+            builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();

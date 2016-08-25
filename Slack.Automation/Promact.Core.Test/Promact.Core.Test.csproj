@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacConfig.cs" />
+    <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
     <Compile Include="ProjectUserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,7 +85,9 @@
     <Compile Include="SlackRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

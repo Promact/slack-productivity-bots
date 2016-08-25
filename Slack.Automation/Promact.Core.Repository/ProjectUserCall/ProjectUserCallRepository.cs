@@ -130,5 +130,19 @@ namespace Promact.Core.Repository.ProjectUserCall
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>user Details</returns>
+        public async Task<User> GetUserByEmployeeId(string employeeId)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
+            var responseContent = response.Content.ReadAsStringAsync().Result;
+            var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
+            return userDetails;
+        }
     }
 }

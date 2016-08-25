@@ -234,6 +234,7 @@
   <ItemGroup>
     <Compile Include="ActionFilters\SampleActionFilter.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LeaveReportController.cs" />
     <Compile Include="Controllers\LeaveRequestController.cs" />
     <Compile Include="Controllers\MVCBaseController.cs" />
     <Compile Include="Controllers\OAuthController.cs" />
