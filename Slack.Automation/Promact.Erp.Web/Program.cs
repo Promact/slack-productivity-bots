@@ -64,9 +64,7 @@ namespace Promact.Erp.Web
                     //{
                     //    var reply = _scrumBotRepository.StartScrum(e.channel);
                     //}
-                }
-                else
-                {
+               
                     var text = e.Text.ToLower();
                     if (text == "task mail")
                     {
