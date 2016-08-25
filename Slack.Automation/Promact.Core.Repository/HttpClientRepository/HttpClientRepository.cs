@@ -19,7 +19,7 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <param name="baseUrl"></param>
         /// <param name="contentUrl"></param>
         /// <returns>response</returns>
-        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl,string accessToken)
+        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
             {
@@ -35,5 +35,7 @@ namespace Promact.Core.Repository.HttpClientRepository
                 throw ex;
             }
         }
+
+
     }
 }

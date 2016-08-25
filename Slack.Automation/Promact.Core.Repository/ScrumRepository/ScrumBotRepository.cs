@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.Bot;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,19 +23,21 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<Question> _questionRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IHttpClientRepository _httpClientRepository;
+        private static IClient _clientRepository;
 
         #endregion
 
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser, IClient clientRepository,
             IRepository<Scrum> scrumRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
             _questionRepository = questionRepository;
             _projectUser = projectUser;
+            _clientRepository = clientRepository;
             _httpClientRepository = httpClientRepository;
         }
 
@@ -55,53 +58,71 @@ namespace Promact.Core.Repository.ScrumRepository
             try
             {
                 var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
-                var questionCount = _questionRepository.Fetch(x => x.Type == 1).Count();
-                var firstQuestion = _questionRepository.Fetch(x => x.Type == 1).FirstOrDefault();
+                string message = "";
                 if (scrum.Any())
                 {
-                    if (CheckCondition(scrum.FirstOrDefault().Id, GroupName, questionCount))
+                    var questionCount = _questionRepository.Fetch(x => x.Type == 1).Count();
+                    var firstQuestion = _questionRepository.Fetch(x => x.Type == 1).FirstOrDefault();
+                    var employees = await _projectUser.GetUsersByGroupName(GroupName);
+                    var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.FirstOrDefault().Id).ToList();
+                    if ((employees.Count() * questionCount) > scrumAnswer.Count())
                     {
-                        var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.FirstOrDefault().Id).ToList();
                         if (scrumAnswer.Any())
                         {
                             var lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
                             var answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+                            var questionStatement = "";
                             if (answerListCount < questionCount)
                             {
                                 AddAnswer(lastScrumAnswer.ScrumID, lastScrumAnswer.QuestionId + 1, lastScrumAnswer.EmployeeId, Message);
 
                                 if (questionCount == answerListCount + 1)
-                                    return FetchQuestion(null, true);
+                                {
+                                    var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
+                                    var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                                    if (idlist.FirstOrDefault() != null)
+                                    {
+                                        var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
+                                        questionStatement = user.UserName + " " + FetchQuestion(null, true);
+                                    }
+                                    else
+                                        questionStatement = "Scrum of all employees has been recorded";
+                                }
                                 else
-                                    return FetchQuestion(lastScrumAnswer.QuestionId + 1, false);
+                                {
+                                    var user = await _projectUser.GetUserById(lastScrumAnswer.EmployeeId);
+                                    questionStatement = user.UserName + " " + FetchQuestion(lastScrumAnswer.QuestionId + 2, false);
+                                }
+                                message = questionStatement;
                             }
                             else
                             {
                                 var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
                                 var responseContent = response.Content.ReadAsStringAsync().Result;
                                 var user = JsonConvert.DeserializeObject<User>(responseContent);
-                                var employeeId = "1";
-                                AddAnswer(lastScrumAnswer.ScrumID, firstQuestion.Id, employeeId, Message);
-                                return FetchQuestion(firstQuestion.Id + 1, false);
+                                AddAnswer(lastScrumAnswer.ScrumID, firstQuestion.Id, user.Id, Message);
+                                message = user.UserName + " " + FetchQuestion(firstQuestion.Id + 1, false);
                             }
                         }
                         else
                         {
                             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
                             var responseContent = response.Content.ReadAsStringAsync().Result;
                             var user = JsonConvert.DeserializeObject<User>(responseContent);
-                            var employeeId = "1";
-                            AddAnswer(scrum.FirstOrDefault().Id, firstQuestion.Id, employeeId, Message);
-                            return FetchQuestion(firstQuestion.Id + 1, false);
+                            AddAnswer(scrum.FirstOrDefault().Id, firstQuestion.Id, user.Id, Message);
+                            message = user.UserName + " " + FetchQuestion(firstQuestion.Id + 1, false);
                         }
                     }
-                    else
-                        return "Your scrum time has already been completed";
+                    //else
+                    //    message = "Your scrum time has already been completed";
                 }
-                else
-                    return "Sorry. Your scrum time has not been initiated.";
+                //else
+                //    message = "Sorry. Your scrum time has not been initiated.";
+
+                PostMessages(GroupName, "tsakmail", message);
+                return message;
             }
             catch (Exception ex)
             {
@@ -147,6 +168,7 @@ namespace Promact.Core.Repository.ScrumRepository
         //    }
         //}
 
+
         /// <summary>
         /// This method will be called when the keyword "scrum time" is encountered
         /// </summary>
@@ -157,28 +179,42 @@ namespace Promact.Core.Repository.ScrumRepository
             try
             {
                 var scrumList = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
+                string message = "";
                 if (!(scrumList.Any()))
                 {
-                    Scrum scrum = new Scrum();
-                    scrum.CreatedOn = DateTime.UtcNow;
-                    scrum.GroupName = GroupName;
-                    scrum.ScrumDate = DateTime.UtcNow.Date;
-
                     var project = await _projectUser.GetProjectDetails(GroupName);
-                    scrum.ProjectId = project.Id;
-                    scrum.TeamLeaderId = project.TeamLeaderId;
+                    if (project != null)
+                    {
+                        var employees = await _projectUser.GetUsersByGroupName(GroupName);
+                        if (employees.Count != 0)
+                        {
+                            Scrum scrum = new Scrum();
+                            scrum.CreatedOn = DateTime.UtcNow;
+                            scrum.GroupName = GroupName;
+                            scrum.ScrumDate = DateTime.UtcNow.Date;
+                            scrum.ProjectId = project.Id;
+                            scrum.TeamLeaderId = project.TeamLeaderId;
+                            _scrumRepository.Insert(scrum);
+                            _scrumRepository.Save();
 
-                    _scrumRepository.Insert(scrum);
-                    _scrumRepository.Save();
-
-                    var question = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.Id).FirstOrDefault();
-                    if (question != null)
-                        return question.QuestionStatement;
+                            var firstEmployee = employees.FirstOrDefault();
+                            var question = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.Id).FirstOrDefault();
+                            if (question != null)
+                                message = firstEmployee.UserName + " " + question.QuestionStatement;
+                            else
+                                message = "Sorry I have nothing to ask you.";
+                        }
+                        else
+                            message = "Sorry. No employees found for this project.";
+                    }
                     else
-                        return "Sorry I have nothing to ask you";
+                        message = "No project found for this group.";
                 }
                 else
-                    return "Sorry scrum time has already been started for this group";
+                    message = "Sorry scrum time has already been started for this group.";
+                PostMessages(GroupName, "tsakmail", message);
+                //  WriteMessage(message);
+                return message;
             }
             catch (Exception ex)
             {
@@ -196,11 +232,14 @@ namespace Promact.Core.Repository.ScrumRepository
             try
             {
                 var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).FirstOrDefault();
-
                 var name = Text.Split(new char[0]);
-                var employee = await _projectUser.GetUsersByGroupName(GroupName, name[1]);
+                //    var employee = await _projectUser.GetUsersByGroupName(GroupName, name[1]);
+                var employee = await _projectUser.GetUserByUsername(name[1], null);
                 if (employee == null)
+                {
+                    PostMessages(GroupName, "tsakmail", "Sorry." + name + " is not a member of this project.");
                     return "Sorry." + name + " is not a member of this project.";
+                }
                 else
                 {
                     var questionList = _questionRepository.Fetch(x => x.Type == 1).ToList();
@@ -218,7 +257,15 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
 
-                return FetchQuestion(null, true);
+                var employees = await _projectUser.GetUsersByGroupName(GroupName);
+                var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.Id).ToList();
+
+                var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
+                var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
+                var returnMsg = user.UserName + " " + FetchQuestion(null, true);
+                PostMessages(GroupName, "tsakmail", returnMsg);
+                return returnMsg;
             }
             catch (Exception ex)
             {
@@ -228,6 +275,38 @@ namespace Promact.Core.Repository.ScrumRepository
 
         #endregion
 
+
+        //private void WriteMessage(string message)
+        //{
+        //    try
+        //    {
+        //        // ArraySegment<Byte> buffer = new ArraySegment<byte>(new Byte[8192]);
+        //        //var bytes = new Byte[8192];
+        //        //bytes = Encoding.ASCII.GetBytes(message);
+        //        //var len = bytes.Length;
+        //        // var buffer = new ArraySegment<byte>(bytes, 0, len-1);
+
+        //        //ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
+        //        //buffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
+        //        //_webSocket = new ClientWebSocket();
+        //        //Task tsk = _webSocket.ConnectAsync(new Uri("wss://mpmulti-0yj2.slack-msgs.com/websocket/3PAzcxoBhkXzN9iBvwT1gSZy4En0QBmb9ht8DJVEPHugTiEXk1qdk4jGj2jdET3oXoeOJ2SDyLR1YEP3SrOMLNydmB7rae-z2aSVWlzYDrK3kaSvWqmmN9x_esGpSJ-6Ps-UQtiY6RpfKxlTVeXbww=="), System.Threading.CancellationToken.None);
+        //        //tsk.Wait();
+        //        //await _webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+
+        //        BotClient _botClient = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");
+        //        _botClient.WriteMessage(message);
+
+        //        //while (1 == 1)
+        //        //{
+        //        //    await _webSocket.SendAsync(buffer, WebSocketMessageType.Binary, false, CancellationToken.None);
+        //        //}
+        //    }
+        //    catch (System.Net.WebSockets.WebSocketException ex)
+        //    {
+        //        //DisconnectSlack();
+        //        throw ex;
+        //    }
+        //}
 
         #region Private Methods
 
@@ -276,17 +355,45 @@ namespace Promact.Core.Repository.ScrumRepository
             }
         }
 
-        private bool CheckCondition(int ScrumId, string GroupName, int QuestionCount)
+        private async void PostMessages(string GroupName, string UserName, string Message)
         {
             try
             {
-                var scrumAnswers = _scrumAnswerRepository.Fetch(x => x.ScrumID == ScrumId).ToList();
+                PostMessageArguments args = new PostMessageArguments();
+                args.Channel = GroupName;
+                args.Username = UserName;
+                args.Text = Message;
+                args.as_user = true;
+                args.parse = "full";
+                args.link_names = 1;
+                args.unfurl_links = true;
+                args.unfurl_media = true;
+                args.icon_url = "";
+                args.icon_emoji = "";
 
-                //check the no. of emp[loyees in this group
-                //multiply the question count with the no. of employees 
-                // if they are the same return false
+                string strURL =
+                    "https://slack.com/api/chat.postMessage?token=" + "xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG" +
+                    "&channel=" + System.Web.HttpUtility.UrlEncode(args.Channel) +
+                    "&text=" + System.Web.HttpUtility.UrlEncode(args.Text) +
+                     "&as_user=" + args.as_user.ToString() +
+                  "&parse=" + System.Web.HttpUtility.UrlEncode(args.parse) +
+                  "&link_names=" + System.Web.HttpUtility.UrlEncode(args.link_names.ToString()) +
+                  "&unfurl_links=" + args.unfurl_links.ToString() +
+                  "&unfurl_media=" + args.unfurl_media.ToString();
+                _clientRepository.WebRequestMethod("hi", strURL);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-                return true;
+
+        public async void fortest(string message)
+        {
+            try
+            {
+                PostMessages("U1TB1EN87", "tsakmail", "Hello");
             }
             catch (Exception ex)
             {
@@ -294,7 +401,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 throw;
             }
         }
-
         #endregion
 
     }

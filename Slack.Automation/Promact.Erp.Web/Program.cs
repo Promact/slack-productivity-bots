@@ -2,7 +2,6 @@
 using Promact.Core.Repository.Bot;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ScrumRepository;
-using Promact.Erp.DomainModel.ApplicationClass.Bot;
 
 namespace Promact.Erp.Web
 {
@@ -10,7 +9,6 @@ namespace Promact.Erp.Web
     {
         private static BotClient _client;
         private static IScrumBotRepository _scrumBotRepository;
-
         public static void Main(IComponentContext container)
         {
             _scrumBotRepository = container.Resolve<IScrumBotRepository>();
@@ -35,15 +33,30 @@ namespace Promact.Erp.Web
                 }
                 if (e.GroupInfo != null)
                 {
-                    var simpleText = e.Text.Split(null);
-                    if (e.Text.ToLower().Equals("scrum time"))
-                        _scrumBotRepository.StartScrum(e.GroupInfo.name);
-                    else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length==2)
-                        _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
-                    else
+                    if (e.UserInfo.Name != "tsakmail")
                     {
-
+                        var simpleText = e.Text.Split(null);
+                        if (e.Text.ToLower().Equals("scrum time"))
+                        {
+                            var reply = _scrumBotRepository.StartScrum(e.GroupInfo.name);
+                            //  _client.WriteMessage("ok");
+                        }
+                        else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length == 2)
+                        {
+                            _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
+                        }
+                        else
+                        {
+                            _scrumBotRepository.AddScrumAnswer(e.UserInfo.Name, e.Text, e.GroupInfo.name);
+                        }
                     }
+                }
+                else
+                {
+                    //if (e.UserInfo.Name != "tsakmail")
+                    //{
+                    //    var reply = _scrumBotRepository.StartScrum(e.channel);
+                    //}
                 }
                 // else
                 //Taskmail bot

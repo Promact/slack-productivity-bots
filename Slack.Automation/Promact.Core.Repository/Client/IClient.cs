@@ -11,5 +11,6 @@ namespace Promact.Core.Repository.Client
         Task UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText);
         void SendMessage(SlashCommand leave, string replyText);
         Task SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest,string accessToken);
+         void WebRequestMethod(string Json, string url);
     }
 }
