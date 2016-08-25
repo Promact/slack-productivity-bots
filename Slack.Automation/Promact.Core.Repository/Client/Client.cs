@@ -124,7 +124,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="text"></param>
         /// <param name="url">Json string and url</param>
-        private void WebRequestMethod(string Json, string url)
+        public void WebRequestMethod(string Json, string url)
         {
             try
             {
