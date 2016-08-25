@@ -233,7 +233,6 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).FirstOrDefault();
                 var name = Text.Split(new char[0]);
-                //    var employee = await _projectUser.GetUsersByGroupName(GroupName, name[1]);
                 var employee = await _projectUser.GetUserByUsername(name[1]);
                 if (employee == null)
                 {
@@ -259,11 +258,16 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 var employees = await _projectUser.GetUsersByGroupName(GroupName);
                 var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.Id).ToList();
-
                 var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
                 var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
-                var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
-                var returnMsg = user.UserName + " " + FetchQuestion(null, true);
+                string returnMsg = "";
+                if (idlist != null)
+                {
+                    var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
+                    returnMsg = user.UserName + " " + FetchQuestion(null, true);
+                }
+                else
+                    returnMsg = "Scrum of all employees has been recorded";
                 PostMessages(GroupName, "tsakmail", returnMsg);
                 return returnMsg;
             }
@@ -388,7 +392,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
         }
 
-               
+
         #endregion
 
     }

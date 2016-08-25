@@ -16,7 +16,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method LeaveApply Testing with True Value
+        /// Method StartScrum Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateNoQuestion()
@@ -25,8 +25,28 @@ namespace Promact.Core.Test
             //_leaveRequestRepository.ApplyLeave(leave);
             //Assert.NotEqual(51, leave.Id);
             var msg = await _scrumBotRepository.StartScrum("trainees");
-            Assert.Equal("Sorry I have nothing to ask you", msg);
+            Assert.Equal("Sorry scrum time has already been started for this group.", msg);
             //  Assert.NotEqual(51, leave.Id);
+        }
+
+        /// <summary>
+        /// Method Leave Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void Leave()
+        {
+            var msg = await _scrumBotRepository.Leave("trainees", "leave trainees");
+            Assert.Equal("Sorry trainees is not a member of this project.", msg);
+        }
+
+        /// <summary>
+        /// Method AddScrumAnswer Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddScrumAnswer()
+        {
+            var msg = await _scrumBotRepository.AddScrumAnswer("nidhi", "I have done a lot", "trainees");
+            Assert.Equal("Scrum of all employees has been recorded", msg);
         }
     }
 }

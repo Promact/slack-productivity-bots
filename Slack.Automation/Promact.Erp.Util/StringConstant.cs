@@ -37,7 +37,7 @@ namespace Promact.Erp.Util
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
         public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";
         public static string UserDetailsUrl = "userDetails/";
-      
+        public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
         public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
