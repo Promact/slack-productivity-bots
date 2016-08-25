@@ -84,11 +84,28 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="groupName"></param>
         /// <returns>list of object of User</returns>
-        public async Task<User> GetUsersByGroupName(string groupName,string userName)
+        public async Task<List<User>> GetUsersByGroupName(string groupName)
         {
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, groupName);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var user = JsonConvert.DeserializeObject<List<User>>(responseContent);
+                return user;
+            }
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<User> GetUserById(string EmployeeId)
+        {
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsByIdUrl, EmployeeId);
                 var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 var user = JsonConvert.DeserializeObject<User>(responseContent);
@@ -97,6 +114,22 @@ namespace Promact.Core.Repository.ProjectUserCall
             catch (System.Exception ex)
             {
                 throw;
+            }
+        }
+
+        public async Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken)
+        {
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsByUserNameUrl, userName);
+                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUrl, requestUrl);
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                var project = JsonConvert.DeserializeObject<ProjectAc>(responseContent);
+                return project;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
             }
         }
     }
