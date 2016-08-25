@@ -8,7 +8,8 @@ namespace Promact.Core.Repository.TaskMailRepository
 {
     public interface ITaskMailRepository
     {
-        Task StartTaskMail(string userName, string accessToken);
-        Task SendFirstQuestion(string userName, string accessToken);
+        Task<string> StartTaskMail(string userName, string accessToken);
+        Task<string> QuestionAndAnswer(string userName, string accessToken, string answer);
+
     }
 }

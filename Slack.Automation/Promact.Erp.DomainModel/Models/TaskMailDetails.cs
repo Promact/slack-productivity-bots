@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Promact.Erp.DomainModel.Models
         public string Description { get; set; }
         public decimal Hours { get; set; }
         public string Comment { get; set; }
+        public TaskMailStatus Status { get; set; }
 
         public int TaskId { get; set; }
         [ForeignKey("TaskId")]

@@ -37,5 +37,7 @@ namespace Promact.Erp.Util
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
         public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
+        public static string ThankYou = "Thank You";
+        public static string InternalError = "Internal Error";
     }
 }

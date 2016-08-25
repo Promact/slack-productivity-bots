@@ -26,4 +26,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Balance,
         Help
     }
+
+    public enum TaskMailStatus
+    {
+        Inprogress,
+        Completed,
+        Roadblock
+    }
 }

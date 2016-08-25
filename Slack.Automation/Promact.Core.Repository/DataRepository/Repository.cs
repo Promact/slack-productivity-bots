@@ -163,6 +163,23 @@ namespace Promact.Core.Repository.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method to search database using Linq Expression and get LastOrDefault Value corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T LastOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return dbSet.LastOrDefault(predicate);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         private bool disposed = false;
 
         /// <summary>
