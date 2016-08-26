@@ -41,7 +41,7 @@ namespace Promact.Erp.Core.Controllers
             {
                 var slackText = _attachmentRepository.SlackText(leave.Text);
                 var action = (SlackAction)Enum.Parse(typeof(SlackAction), slackText[0]);
-                var accessToken = await _attachmentRepository.AccessToken(leave.Username);
+                var accessToken = await _attachmentRepository.AccessToken(leave.Username + "@promactinfo.com");
                 switch (action)
                 {
                     case SlackAction.Apply:
