@@ -25,18 +25,7 @@ namespace Promact.Erp.Core.Controllers
             _slackRepository = slackRepository;
             _client = client;
             _attachmentRepository = attachmentRepository;
-            UserManager = userManager;
-        }
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
+            _userManager = userManager;
         }
         /// <summary>
         /// Slack Call for Slash Command
@@ -54,7 +43,7 @@ namespace Promact.Erp.Core.Controllers
             {
                 var slackText = _attachmentRepository.SlackText(leave.Text);
                 var action = (SlackAction)Enum.Parse(typeof(SlackAction), slackText[0]);
-                var providerInfo = await UserManager.GetLoginsAsync(UserManager.FindByNameAsync(leave.Username + "@promactinfo.com").Result.Id);
+                var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(leave.Username + "@promactinfo.com").Result.Id);
                 var accessToken = _attachmentRepository.AccessToken(providerInfo);
                 switch (action)
                 {
