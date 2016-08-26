@@ -165,10 +165,10 @@ namespace Promact.Erp.Util
         public static string ProjectIdForTest = "2";
         public static string TeamLeaderIdForTest = "5c84049f-f861-406d-b420-e1bf03c9e06e";
 
-        #endregion
+        
         public static string Admin = "Admin";
         public static string Employee = "Employee";
         public static string TeamLeader = "TeamLeader";
-        
+        #endregion
     }
 }
