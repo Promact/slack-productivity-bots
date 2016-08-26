@@ -1,16 +1,9 @@
 ﻿using Autofac;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
-using Promact.Erp.DomainModel.ApplicationClass.Bot;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace Promact.Erp.Web
 {
@@ -20,7 +13,8 @@ namespace Promact.Erp.Web
         private static ISlackUserRepository _slackUserDetails;
         public static void Main(IComponentContext container)
         {
-            SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");
+            SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            //SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");//scrummeeting
 
             try
             {

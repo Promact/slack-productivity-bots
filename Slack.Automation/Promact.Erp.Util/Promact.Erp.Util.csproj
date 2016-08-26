@@ -57,6 +57,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LeaveApproveAndRejected.tt</DependentUpon>
     </Compile>
+    <Compile Include="Email Templates\TaskMail.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TaskMail.tt</DependentUpon>
+    </Compile>
     <Compile Include="Email\EmailService.cs" />
     <Compile Include="Email\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +78,10 @@
     <Content Include="Email Templates\LeaveApproveAndRejected.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>LeaveApproveAndRejected.cs</LastGenOutput>
+    </Content>
+    <Content Include="Email Templates\TaskMail.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>TaskMail.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

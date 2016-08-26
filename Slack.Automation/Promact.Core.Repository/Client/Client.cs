@@ -103,7 +103,7 @@ namespace Promact.Core.Repository.Client
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest Class object</param>
+        /// <param name="leaveRequest">LeaveRequest template object</param>
         /// <returns>template emailBody as string</returns>
         private string EmailServiceTemplate(LeaveRequest leaveRequest)
         {

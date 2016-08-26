@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 using System.Linq;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.Util;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Newtonsoft.Json;
-using Promact.Core.Repository.Client;
-using System.Web;
-using Promact.Core.Repository.Bot;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Erp.Util.Email;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -26,8 +22,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _user;
+        private readonly IEmailService _emailService;
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<Question> questionRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<Question> questionRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService)
         {
             _taskMail = taskMail;
             _projectUserRepository = projectUserRepository;
@@ -36,6 +33,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _httpClientRepository = httpClientRepository;
             _attachmentRepository = attachmentRepository;
             _user = user;
+            _emailService = emailService;
         }
         public async Task<string> StartTaskMail(string userName)
         {
@@ -123,7 +121,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 }
                                 catch (Exception)
                                 {
-                                    questionText = string.Format("{0}{1}{2}",StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                    questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                             }
 
@@ -139,7 +137,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 }
                                 catch (Exception)
                                 {
-                                    questionText = string.Format("{0}{1}{2}",StringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                    questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                             }
                             break;
@@ -163,6 +161,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                         taskList.Add(taskDetail);
                                     }
+                                    var emailBody = EmailServiceTemplateTaskMail(taskList);
+                                    EmailApplication email = new EmailApplication();
+                                    email.Body = emailBody;
+                                    email.From = "rajdeep@promactinfo.com";
+                                    email.To = "siddhartha@promactinfo.com";
+                                    email.Subject = "Daily Task Mail";
+                                    _emailService.Send(email);
                                     //SendMail
                                 }
                             }
@@ -181,6 +186,24 @@ namespace Promact.Core.Repository.TaskMailRepository
                 questionText = ex.ToString();
                 throw;
             }
+        }
+        /// <summary>
+        /// Method to generate template body
+        /// </summary>
+        /// <param name="leaveRequest">TaskMail template object</param>
+        /// <returns>template emailBody as string</returns>
+        private string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
+        {
+            ;
+            Erp.Util.Email_Templates.TaskMail leaveTemplate = new Erp.Util.Email_Templates.TaskMail();
+            // Assigning Value in template page
+            leaveTemplate.Session = new Dictionary<string, object>
+            {
+                {StringConstant.TaskMailDescription, taskMail},
+            };
+            leaveTemplate.Initialize();
+            var emailBody = leaveTemplate.TransformText();
+            return emailBody;
         }
     }
 }

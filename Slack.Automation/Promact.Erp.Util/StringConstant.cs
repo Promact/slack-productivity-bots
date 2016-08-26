@@ -46,5 +46,10 @@ namespace Promact.Erp.Util
         public static string SlackUserListUrl = "https://slack.com/api/users.list";
         public static string TaskMailBotStatusErrorMessage = "Status should be completed/inprogress/roadblock";
         public static string TaskMailBotHourErrorMessage = "Please enter numeric value";
+        public static string TaskMailDescription = "Descriptions";
+        public static string TaskMailHours = "Hours";
+        public static string TaskMailComment = "Comment";
+        public static string TaskMailStatus = "Status";
+
     }
 }
