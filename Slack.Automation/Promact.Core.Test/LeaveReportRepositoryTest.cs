@@ -28,7 +28,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTest()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport();
+            var leaveReports = await _leaveReportRepository.LeaveReport(null);
             Assert.Equal(1,leaveReports.Count());
         }
 
@@ -38,7 +38,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportDetailTest()
         {
-            var leaveReport = await  _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            var leaveReport = await  _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
             Assert.NotNull(leaveReport);
         }
 
@@ -48,7 +48,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTestFalse()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport();
+            var leaveReports = await _leaveReportRepository.LeaveReport(null);
             Assert.NotEqual(5,leaveReports.Count());
         }
 
@@ -58,7 +58,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportDetailTestFalse()
         {
-            var leaveReport = await _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            var leaveReport = await _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
             Assert.Null(leaveReport);
         }
     }

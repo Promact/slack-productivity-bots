@@ -1,4 +1,5 @@
-﻿using Promact.Core.Repository.DataRepository;
+﻿using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
@@ -11,13 +12,17 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class LeaveReportController : ApiController
+    public class LeaveReportController : WebApiBaseController
     {
         private readonly ILeaveReportRepository _leaveReport;
+        private readonly IAttachmentRepository _attachmentRepository;
+        private ApplicationUserManager _userManager;
 
-        public LeaveReportController(ILeaveReportRepository leaveReport)
+        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
         {
-            this._leaveReport = leaveReport;
+            _leaveReport = leaveReport;
+            _attachmentRepository = attachmentRepository;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -28,7 +33,10 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaveReport")]
         public async Task<IHttpActionResult> LeaveReport()
         {
-            return Ok(await _leaveReport.LeaveReport());
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var login = await _userManager.GetLoginsAsync(user.Id);
+            var acccessToken = _attachmentRepository.AccessToken(login);
+            return Ok(await _leaveReport.LeaveReport(acccessToken));
         }
 
 
@@ -42,13 +50,15 @@ namespace Promact.Erp.Core.Controllers
         {
             if (employeeId != null)
             {
-                return Ok(await _leaveReport.LeaveReportDetails(employeeId));
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var login = await _userManager.GetLoginsAsync(user.Id);
+                var acccessToken = _attachmentRepository.AccessToken(login);
+                return Ok(await _leaveReport.LeaveReportDetails(employeeId,acccessToken));
             }
             else
             {
                 return BadRequest();
             }
         }
-
     }
 }
