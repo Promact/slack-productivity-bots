@@ -4,29 +4,28 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Erp.DomainModel.ApplicationClass.Bot;
 using SlackAPI;
-using SlackAPI.WebSocketMessages;
 using System;
 
 namespace Promact.Erp.Web
 {
     public class Program
     {
-        private static BotClient _client;
+      //  private static BotClient _client;
         private static IScrumBotRepository _scrumBotRepository;
         //    private static SlackAPI.SlackClient _client;
-       // private static SlackSocketClient client;
+        private static SlackSocketClient client;
         public static void Main(IComponentContext container)
         {
             _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-            //working old
-            //create a new slack client
-            _client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            ////working old
+            ////create a new slack client
+            //_client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
 
-            //connect to the slack service
-            _client.ConnectClientThread();
+            ////connect to the slack service
+            //_client.ConnectClientThread();
 
-            _client.Message += new BotClient.MessageEventHandler(ClientMessage);
-            //working old
+            //_client.Message += new BotClient.MessageEventHandler(ClientMessage);
+            ////working old
 
 
 
@@ -52,25 +51,22 @@ namespace Promact.Erp.Web
 
 
 
-            ////client = new SlackSocketClient("xoxp-4652768210-6777564806-63945169157-4b5b10871d");//julie
-            //client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
-            //client.Connect((connected) =>
-            //{
-            //    var x = 9;
-            //    var y = 10;
-            //    //This is called once the client has emitted the RTM start command
-            //}, () =>
-            //{
-            //    var x = 9;
-            //    var y = 10;
-            //    //This is called once the RTM client has connected to the end point
-            //});
-            //client.OnMessageReceived += (message) =>
-            //{
-            //    var x = 9;
-            //    var y = 10;
-            //    //Handle each message as you receive them
-            //};
+            //client = new SlackSocketClient("xoxp-4652768210-6777564806-63945169157-4b5b10871d");//julie
+            SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            client.Connect((connected) =>
+            {
+                
+                //This is called once the client has emitted the RTM start command
+            }, () =>
+            {
+                
+                //This is called once the RTM client has connected to the end point
+            });
+            client.OnMessageReceived += (message) =>
+            {
+                
+                //Handle each message as you receive them
+            };
 
         }
 
