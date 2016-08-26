@@ -116,7 +116,7 @@ namespace Promact.Core.Repository.AttachmentRepository
 
         public async Task<string> AccessToken(string username)
         {
-            var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username + "@promactinfo.com").Result.Id);
+            var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
             var accessToken = "";
             foreach (var provider in providerInfo)
             {
