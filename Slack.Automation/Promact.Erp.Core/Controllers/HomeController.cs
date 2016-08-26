@@ -82,7 +82,7 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email ,string slackUserName)
         {
             var user = UserManager.FindByEmail(email);
             if (user!=null)
@@ -98,7 +98,7 @@ namespace Promact.Erp.Core.Controllers
             }
             if (user == null)
             {
-                user = new ApplicationUser() { Email = email, UserName = email };
+                user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
                 //Creating a user with email only. Password not required
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)

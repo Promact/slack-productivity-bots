@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -11,9 +13,11 @@ namespace Promact.Erp.Core.Controllers
     public class OAuthController : WebApiBaseController
     {
         private readonly IHttpClientRepository _httpClientRepository;
-        public OAuthController(IHttpClientRepository httpClientRepository)
+        private readonly IRepository<SlackUserDetails> _slackUserDetails;
+        public OAuthController(IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails)
         {
             _httpClientRepository = httpClientRepository;
+            _slackUserDetails = slackUserDetails;
         }
         /// <summary>
         /// Method to get refresh Token from OAuth and send app clientSecretId
@@ -43,11 +47,20 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/SlackRequest")]
         public async Task<IHttpActionResult> OAuth(string code)
         {
-            var request = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", AppSettingsUtil.OAuthClientId, AppSettingsUtil.OAuthClientSecret, code);
-            var response = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, request, null);
-            var responseContent = response.Content.ReadAsStringAsync().Result;
-            var Json = JsonConvert.DeserializeObject<SlackOAuthResponse>(responseContent);
-            return Ok(Json);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", AppSettingsUtil.OAuthClientId, AppSettingsUtil.OAuthClientSecret, code);
+            var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
+            var slackOAuthResponseContent = slackOAuthResponse.Content.ReadAsStringAsync().Result;
+            var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponseContent);
+            var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
+            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl,userDetailsRequest,null);
+            var userDetailsResponseContent = userDetailsResponse.Content.ReadAsStringAsync().Result;
+            var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponseContent);
+            foreach (var user in slackUsers.Members)
+            {
+                _slackUserDetails.Insert(user);
+                _slackUserDetails.Save();
+            }
+            return Ok(slackOAuth);
         }
     }
 }

@@ -27,6 +27,15 @@ namespace Promact.Core.Repository.Bot
             _team = data.team;
         }
 
+
+        public String channel
+        {
+            get
+            {
+                return _channel;
+            }
+        }
+
         public string Text
         {
             get

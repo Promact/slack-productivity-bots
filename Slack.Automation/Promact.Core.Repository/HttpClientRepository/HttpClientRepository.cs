@@ -25,7 +25,10 @@ namespace Promact.Core.Repository.HttpClientRepository
             {
                 _client = new HttpClient();
                 _client.BaseAddress = new Uri(baseUrl);
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+                if (accessToken != null)
+                {
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+                }
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 return response;

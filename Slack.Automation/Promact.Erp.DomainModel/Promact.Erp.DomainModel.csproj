@@ -125,6 +125,7 @@
     <Compile Include="ApplicationClass\Bot\BotDetails.cs" />
     <Compile Include="ApplicationClass\Bot\Channel.cs" />
     <Compile Include="ApplicationClass\Bot\Group.cs" />
+    <Compile Include="ApplicationClass\Bot\ListBot.cs" />
     <Compile Include="ApplicationClass\Bot\Message.cs" />
     <Compile Include="ApplicationClass\Bot\MetaData.cs" />
     <Compile Include="ApplicationClass\Bot\PostMessageArguments.cs" />
@@ -139,6 +140,8 @@
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackOAuthResponse.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetails.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachment.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachmentAction.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashChatUpdateResponse.cs" />
