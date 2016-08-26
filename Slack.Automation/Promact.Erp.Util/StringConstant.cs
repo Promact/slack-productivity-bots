@@ -37,10 +37,12 @@ namespace Promact.Erp.Util
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
         public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
+        public static string ProjectUsersByTeamLeaderId = "projectUsersById/"; 
         public static string ProjectUserDetailsUrl = "project/userDetails/";
         public static string ProjectTeamLeaderDetailsUrl = "project/teamLeadersDetails/";
         public static string ProjectManagementDetailsUrl = "project/Admin";
         public static string UserDetailUrl = "userDetail/";
+        public static string LoginUserDetail = "getByUserName/";
         public static string ThankYou = "Thank You";
         public static string InternalError = "Internal Error";
         public static string SlackUserListUrl = "https://slack.com/api/users.list";
@@ -127,5 +129,9 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "10.0";
+        public static string Admin = "Admin";
+        public static string Employee = "Employee";
+        public static string TeamLeader = "TeamLeader";
+        
     }
 }
