@@ -9,53 +9,39 @@ using Promact.Erp.Util;
 using System;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class LeaveRequestController : MVCBaseController
+    public class LeaveRequestController : WebApiBaseController
     {
         private readonly ISlackRepository _slackRepository;
         private readonly IClient _client;
         private readonly IAttachmentRepository _attachmentRepository;
-        private ApplicationUserManager _userManager;
 
-        public LeaveRequestController(ISlackRepository slackRepository, IClient client, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public LeaveRequestController(ISlackRepository slackRepository, IClient client, IAttachmentRepository attachmentRepository)
         {
             _slackRepository = slackRepository;
             _client = client;
             _attachmentRepository = attachmentRepository;
-            UserManager = userManager;
-        }
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
         }
         /// <summary>
         /// Slack Call for Slash Command
         /// </summary>
         /// <param name="blog"></param>
         /// <returns></returns>
-        //[HttpPost]
-        //[Route("leaves/slackcall")]
-        public async Task<ActionResult> SlackRequest()
+        [HttpPost]
+        [Route("leaves/slackcall")]
+        public async Task<IHttpActionResult> SlackRequest()
         {
-            var request = HttpContext.Request.Form;
-            //var request = HttpContext.Current.Request.Form;
+            //var request = HttpContext.Request.Form;
+            var request = HttpContext.Current.Request.Form;
             var leave = _attachmentRepository.SlashCommandTransfrom(request);
             try
             {
                 var slackText = _attachmentRepository.SlackText(leave.Text);
                 var action = (SlackAction)Enum.Parse(typeof(SlackAction), slackText[0]);
-                var providerInfo = await UserManager.GetLoginsAsync(UserManager.FindByNameAsync(leave.Username + "@promactinfo.com").Result.Id);
-                var accessToken = _attachmentRepository.AccessToken(providerInfo);
+                var accessToken = await _attachmentRepository.AccessToken(leave.Username);
                 switch (action)
                 {
                     case SlackAction.Apply:
@@ -80,13 +66,13 @@ namespace Promact.Erp.Core.Controllers
                         _slackRepository.SlackLeaveHelp(leave);
                         break;
                 }
-                return View();
+                return Ok();
             }
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
                 _client.SendMessage(leave, StringConstant.SlackErrorMessage);
-                return View(ex.ToString());
+                return BadRequest(ex.ToString());
             }
         }
 
@@ -97,10 +83,10 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public ActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
+        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             _slackRepository.UpdateLeave(leaveResponse);
-            return View();
+            return Ok();
         }
     }
 }

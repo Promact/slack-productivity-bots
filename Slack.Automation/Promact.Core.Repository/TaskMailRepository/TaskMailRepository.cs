@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Promact.Core.Repository.Client;
 using System.Web;
 using Promact.Core.Repository.Bot;
+using System.Collections.Generic;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -21,6 +23,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IProjectUserCallRepository _projectUserRepository;
         private readonly IRepository<Question> _questionRepository;
         private readonly IHttpClientRepository _httpClientRepository;
+        string questionText = "";
         public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<Question> questionRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository)
         {
             _taskMail = taskMail;
@@ -29,47 +32,146 @@ namespace Promact.Core.Repository.TaskMailRepository
             _taskMailDetail = taskMailDetail;
             _httpClientRepository = httpClientRepository;
         }
-        public async Task StartTaskMail(string userName, string accessToken)
+        public async Task<string> StartTaskMail(string userName, string accessToken)
         {
-            var user = await _projectUserRepository.GetUserByUsername(userName,accessToken);
-            //var project = await _projectUserRepository.GetProjectDetailsByUserName(userName, accessToken);
-            TaskMail taskMail = new TaskMail();
-            taskMail.CreatedOn = DateTime.UtcNow;
-            taskMail.EmployeeId = user.Id;
-            //taskMail.ProjectId = project.Id;
-            _taskMail.Insert(taskMail);
-            _taskMail.Save();
-            var question = _questionRepository.FirstOrDefault(x => x.Type == 2);
-            TaskMailDetails taskDetails = new TaskMailDetails();
-            taskDetails.QuestionId = question.Id;
-            taskDetails.TaskId = taskMail.Id;
-            var questionText = question.QuestionStatement;
-            //var text = string.Format("?token=xoxp-4652768210-17616325616-62499499863-cfbd7e4114&channel={0}&text={1}&username={2}&as_user=true&pretty=1", AppSettingsUtil.tsakmailId,HttpUtility.UrlEncode(questionText), userName);
-            //await _httpClientRepository.GetAsync(AppSettingsUtil.ChatPostUrl, text, accessToken);
+            try
+            {
+                TaskMailQuestion question = new TaskMailQuestion();
+                var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                TaskMail taskMail;
+                try
+                {
+                    taskMail = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
+                }
+                catch (Exception)
+                {
+                    taskMail = null;
+                }
+
+                if (taskMail != null)
+                {
+                    var taskMailDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
+                    var previousQuestion = _questionRepository.FirstOrDefault(x => x.Id == taskMailDetail.QuestionId);
+                    question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
+                }
+                if (taskMail == null || question == TaskMailQuestion.SendEmail)
+                {
+                    taskMail = new TaskMail();
+                    taskMail.CreatedOn = DateTime.UtcNow;
+                    taskMail.EmployeeId = user.Id;
+                    _taskMail.Insert(taskMail);
+                    _taskMail.Save();
+                    var firstQuestion = _questionRepository.FirstOrDefault(x => x.Type == 2);
+                    TaskMailDetails taskDetails = new TaskMailDetails();
+                    taskDetails.QuestionId = firstQuestion.Id;
+                    taskDetails.TaskId = taskMail.Id;
+                    questionText = firstQuestion.QuestionStatement;
+                    _taskMailDetail.Insert(taskDetails);
+                    _taskMailDetail.Save();
+                }
+                else
+                {
+                    var questionText = await QuestionAndAnswer(userName, accessToken, "");
+                }
+                return questionText;
+            }
+            catch (Exception ex)
+            {
+                questionText = ex.ToString();
+                throw;
+            }
         }
-
-        public async Task SendFirstQuestion(string userName,string accessToken)
+        public async Task<string> QuestionAndAnswer(string userName, string accessToken, string answer)
         {
-            var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
-            //var task = _taskMail.FirstOrDefault(x => x.EmployeeId == user.Id && x.CreatedOn.ToShortDateString() == DateTime.UtcNow.ToShortDateString());
-            //var question = _questionRepository.FirstOrDefault(x => x.Type == 2);
-            //TaskMailDetails taskDetails = new TaskMailDetails();
-            //taskDetails.QuestionId = question.Id;
-            //taskDetails.TaskId = task.Id;
-            //var questionText = question.QuestionStatement;
-            //var text = string.Format("&channel={0}&text={1}&username={2}&as_user=true&pretty =1", AppSettingsUtil.tsakmailId, questionText, userName);
-            //await _httpClientRepository.GetAsync(AppSettingsUtil.ChatPostUrl, text, accessToken);
+            try
+            {
+                List<TaskMailDetails> taskList = new List<TaskMailDetails>();
+                var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var taskMail = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
+                var taskDetails = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
+                var previousQuestion = _questionRepository.FirstOrDefault(x => x.Id == taskDetails.QuestionId);
+                if (previousQuestion.OrderNumber <= 5)
+                {
+                    var nextQuestion = _questionRepository.FirstOrDefault(x => x.OrderNumber == (previousQuestion.OrderNumber + 1));
 
-            //var taskDetails = _taskMailDetail.Fetch(x => x.TaskId == task.Id);
+                    var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
+                    switch (question)
+                    {
+                        case TaskMailQuestion.YourTask:
+                            {
+                                taskDetails.Description = answer;
+                                questionText = nextQuestion.QuestionStatement;
+                                taskDetails.QuestionId = nextQuestion.Id;
+                            }
+                            break;
+                        case TaskMailQuestion.HoursSpent:
+                            {
+                                try
+                                {
+                                    taskDetails.Hours = Convert.ToDecimal(answer);
+                                    questionText = nextQuestion.QuestionStatement;
+                                    taskDetails.QuestionId = nextQuestion.Id;
+                                }
+                                catch (Exception)
+                                {
+                                    questionText = previousQuestion.QuestionStatement;
+                                }
+                            }
 
-            //if(taskDetails==null)
-            //{
-            //    var recentQuestion = question.ElementAt(taskDetails.Count());
-            //    TaskMailDetails taskDeatil = new TaskMailDetails();
-            //    taskDeatil.QuestionId = recentQuestion.Id;
-                
-            //}
-            
+                            break;
+                        case TaskMailQuestion.Status:
+                            {
+                                try
+                                {
+                                    var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer);
+                                    taskDetails.Status = status;
+                                    questionText = nextQuestion.QuestionStatement;
+                                    taskDetails.QuestionId = nextQuestion.Id;
+                                }
+                                catch (Exception)
+                                {
+                                    questionText = previousQuestion.QuestionStatement;
+                                }
+                            }
+                            break;
+                        case TaskMailQuestion.Comment:
+                            {
+                                taskDetails.Comment = answer;
+                                questionText = nextQuestion.QuestionStatement;
+                                taskDetails.QuestionId = nextQuestion.Id;
+                            }
+                            break;
+                        case TaskMailQuestion.SendEmail:
+                            {
+                                answer = answer.ToLower();
+                                questionText = StringConstant.ThankYou;
+                                if (answer == "yes")
+                                {
+
+                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date);
+                                    foreach (var item in taskMailList)
+                                    {
+                                        var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
+                                        taskList.Add(taskDetail);
+                                    }
+                                    //SendMail
+                                }
+                            }
+                            break;
+                        default:
+                            questionText = StringConstant.InternalError;
+                            break;
+                    }
+                    _taskMailDetail.Update(taskDetails);
+                    _taskMail.Save();
+                }
+                return questionText;
+            }
+            catch (Exception ex)
+            {
+                questionText = ex.ToString();
+                throw;
+            }
         }
     }
 }
