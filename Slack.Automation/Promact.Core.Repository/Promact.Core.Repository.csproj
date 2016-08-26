@@ -117,6 +117,8 @@
     <Compile Include="ScrumRepository\ScrumBotRepository.cs" />
     <Compile Include="SlackRepository\ISlackRepository.cs" />
     <Compile Include="SlackRepository\SlackRepository.cs" />
+    <Compile Include="SlackUserRepository\ISlackUserRepository.cs" />
+    <Compile Include="SlackUserRepository\SlackUserRepository.cs" />
     <Compile Include="TaskMailRepository\ITaskMailRepository.cs" />
     <Compile Include="TaskMailRepository\TaskMailRepository.cs" />
   </ItemGroup>

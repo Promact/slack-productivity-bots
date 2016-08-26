@@ -1,6 +1,9 @@
 ﻿using Autofac;
+using Promact.Core.Repository.DataRepository;
+using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass.Bot;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -14,6 +17,7 @@ namespace Promact.Erp.Web
     public class Bot
     {
         private static ITaskMailRepository _taskMailRepository;
+        private static ISlackUserRepository _slackUserDetails;
         public static void Main(IComponentContext container)
         {
             SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");
@@ -21,28 +25,24 @@ namespace Promact.Erp.Web
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
-
-                //ListBot bots;
+                _slackUserDetails = container.Resolve<ISlackUserRepository>();
                 MessageReceived messageReceive = new MessageReceived();
-                messageReceive.text = "hello";
                 messageReceive.ok = true;
                 Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                client.Connect((connected) =>
-                {
-                    //bots = new ListBot(connected.bots);
-                });
+                client.Connect((connected) =>{});
 
                 client.OnMessageReceived += (message) =>
                 {
+                    var user = _slackUserDetails.GetById(message.user);
                     string replyText = "";
                     var text = message.text;
                     if (text.ToLower() == "task mail")
                     {
-                        replyText = _taskMailRepository.StartTaskMail("siddhartha", "bcd34169-1434-40e9-abf5-c9e0e9d20cd8").Result;
+                        replyText = _taskMailRepository.StartTaskMail(user.Name).Result;
                     }
                     else
                     {
-                        replyText = _taskMailRepository.QuestionAndAnswer("siddhartha", "bcd34169-1434-40e9-abf5-c9e0e9d20cd8", text).Result;
+                        replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text).Result;
                     }
                     client.SendMessage(showMethod, message.channel, replyText);
                 };

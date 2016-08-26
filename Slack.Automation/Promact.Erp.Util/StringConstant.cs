@@ -31,7 +31,7 @@ namespace Promact.Erp.Util
 
         public static string UserDetailByUserNameUrl = "project/fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
-        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";
+        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read&client_id=";
         public static string UserDetailsUrl = "userDetails/";
         public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
         public static string ManagementDetailsUrl = "managementDetails";
@@ -43,5 +43,8 @@ namespace Promact.Erp.Util
         public static string UserDetailUrl = "userDetail/";
         public static string ThankYou = "Thank You";
         public static string InternalError = "Internal Error";
+        public static string SlackUserListUrl = "https://slack.com/api/users.list";
+        public static string TaskMailBotStatusErrorMessage = "Status should be completed/inprogress/roadblock";
+        public static string TaskMailBotHourErrorMessage = "Please enter numeric value";
     }
 }

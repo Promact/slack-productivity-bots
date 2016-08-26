@@ -140,6 +140,8 @@
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackOAuthResponse.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetails.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachment.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachmentAction.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashChatUpdateResponse.cs" />

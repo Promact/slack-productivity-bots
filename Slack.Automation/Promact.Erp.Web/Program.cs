@@ -55,7 +55,7 @@ namespace Promact.Erp.Web
                     var text = e.Text.ToLower();
                     if (text == "task mail")
                     {
-                         _taskMailRepository.StartTaskMail(e.channel, "bcd34169-1434-40e9-abf5-c9e0e9d20cd8").Wait();
+                         //_taskMailRepository.StartTaskMail(e.channel, "bcd34169-1434-40e9-abf5-c9e0e9d20cd8").Wait();
                     }
                     else
                     {

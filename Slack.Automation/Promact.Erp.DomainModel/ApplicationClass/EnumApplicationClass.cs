@@ -29,9 +29,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
 
     public enum TaskMailStatus
     {
-        Inprogress,
-        Completed,
-        Roadblock
+        inprogress,
+        completed,
+        roadblock
     }
     public enum TaskMailQuestion
     {

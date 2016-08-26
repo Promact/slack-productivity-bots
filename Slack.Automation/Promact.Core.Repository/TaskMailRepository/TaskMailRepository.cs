@@ -13,6 +13,7 @@ using System.Web;
 using Promact.Core.Repository.Bot;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Core.Repository.AttachmentRepository;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -23,25 +24,31 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IProjectUserCallRepository _projectUserRepository;
         private readonly IRepository<Question> _questionRepository;
         private readonly IHttpClientRepository _httpClientRepository;
+        private readonly IAttachmentRepository _attachmentRepository;
+        private readonly IRepository<ApplicationUser> _user;
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<Question> questionRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<Question> questionRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user)
         {
             _taskMail = taskMail;
             _projectUserRepository = projectUserRepository;
             _questionRepository = questionRepository;
             _taskMailDetail = taskMailDetail;
             _httpClientRepository = httpClientRepository;
+            _attachmentRepository = attachmentRepository;
+            _user = user;
         }
-        public async Task<string> StartTaskMail(string userName, string accessToken)
+        public async Task<string> StartTaskMail(string userName)
         {
             try
             {
+                var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 TaskMailQuestion question = new TaskMailQuestion();
-                var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
                 TaskMail taskMail;
                 try
                 {
-                    taskMail = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
+                    taskMail = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
                 }
                 catch (Exception)
                 {
@@ -58,7 +65,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 {
                     taskMail = new TaskMail();
                     taskMail.CreatedOn = DateTime.UtcNow;
-                    taskMail.EmployeeId = user.Id;
+                    taskMail.EmployeeId = oAuthUser.Id;
                     _taskMail.Insert(taskMail);
                     _taskMail.Save();
                     var firstQuestion = _questionRepository.FirstOrDefault(x => x.Type == 2);
@@ -71,7 +78,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 }
                 else
                 {
-                    var questionText = await QuestionAndAnswer(userName, accessToken, "");
+                    var questionText = await QuestionAndAnswer(userName, "");
                 }
                 return questionText;
             }
@@ -81,13 +88,15 @@ namespace Promact.Core.Repository.TaskMailRepository
                 throw;
             }
         }
-        public async Task<string> QuestionAndAnswer(string userName, string accessToken, string answer)
+        public async Task<string> QuestionAndAnswer(string userName, string answer)
         {
             try
             {
+                var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 List<TaskMailDetails> taskList = new List<TaskMailDetails>();
-                var user = await _projectUserRepository.GetUserByUsername(userName, accessToken);
-                var taskMail = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
+                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var taskMail = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
                 var taskDetails = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
                 var previousQuestion = _questionRepository.FirstOrDefault(x => x.Id == taskDetails.QuestionId);
                 if (previousQuestion.OrderNumber <= 5)
@@ -99,7 +108,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     {
                         case TaskMailQuestion.YourTask:
                             {
-                                taskDetails.Description = answer;
+                                taskDetails.Description = answer.ToLower();
                                 questionText = nextQuestion.QuestionStatement;
                                 taskDetails.QuestionId = nextQuestion.Id;
                             }
@@ -114,7 +123,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 }
                                 catch (Exception)
                                 {
-                                    questionText = previousQuestion.QuestionStatement;
+                                    questionText = string.Format("{0}{1}{2}",StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                             }
 
@@ -123,20 +132,20 @@ namespace Promact.Core.Repository.TaskMailRepository
                             {
                                 try
                                 {
-                                    var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer);
+                                    var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer.ToLower());
                                     taskDetails.Status = status;
                                     questionText = nextQuestion.QuestionStatement;
                                     taskDetails.QuestionId = nextQuestion.Id;
                                 }
                                 catch (Exception)
                                 {
-                                    questionText = previousQuestion.QuestionStatement;
+                                    questionText = string.Format("{0}{1}{2}",StringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                             }
                             break;
                         case TaskMailQuestion.Comment:
                             {
-                                taskDetails.Comment = answer;
+                                taskDetails.Comment = answer.ToLower();
                                 questionText = nextQuestion.QuestionStatement;
                                 taskDetails.QuestionId = nextQuestion.Id;
                             }
@@ -148,7 +157,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 if (answer == "yes")
                                 {
 
-                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == user.Id && x.CreatedOn.Date == DateTime.UtcNow.Date);
+                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date);
                                     foreach (var item in taskMailList)
                                     {
                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
