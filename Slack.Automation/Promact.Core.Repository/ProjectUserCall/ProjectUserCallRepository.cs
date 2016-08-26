@@ -137,7 +137,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>user Details</returns>
-        public async Task<User> GetUserByEmployeeId(string employeeId)
+        public async Task<User> GetUserByEmployeeId(string employeeId,string accessToken)
         {
             try
             {
