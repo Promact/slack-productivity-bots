@@ -258,12 +258,11 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 var employees = await _projectUser.GetUsersByGroupName(GroupName);
                 var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.Id).ToList();
-                var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
-                var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                 string returnMsg = "";
-                if (idlist != null)
+                if (idList != null && idList.Count > 0)
                 {
-                    var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
+                    var user = await _projectUser.GetUserById(idList.FirstOrDefault());
                     returnMsg = user.UserName + " " + FetchQuestion(null, true);
                 }
                 else
