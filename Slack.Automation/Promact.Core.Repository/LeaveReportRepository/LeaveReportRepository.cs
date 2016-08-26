@@ -1,4 +1,5 @@
-﻿using Promact.Core.Repository.DataRepository;
+﻿using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
@@ -28,7 +29,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method that returns the list of employees with their leave status
         /// </summary>
         /// <returns>List of employees with leave status</returns>       
-        public async Task<IEnumerable<LeaveReport>> LeaveReport()
+        public async Task<IEnumerable<LeaveReport>> LeaveReport(string accessToken)
         {
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList();
             List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
@@ -37,8 +38,8 @@ namespace Promact.Core.Repository.LeaveReportRepository
 
             foreach (var leaveRequest in distinctLeaveRequests)
                 {
-                    user = await _projectUserCall.GetUserByEmployeeId(leaveRequest.EmployeeId);
-                    if (user != null)
+                user = await getEmployeeById(leaveRequest.EmployeeId,accessToken);
+                if (user != null)
                     {
                         LeaveReport leaveReport = new LeaveReport
                         {
@@ -94,10 +95,10 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>Details of leave for an employee</returns>
-        public async Task <IEnumerable<LeaveReportDetails>> LeaveReportDetails(string employeeId)
+        public async Task <IEnumerable<LeaveReportDetails>> LeaveReportDetails(string employeeId,string accessToken)
         {
             User user = new User();
-            user = await _projectUserCall.GetUserByEmployeeId(employeeId);
+            user = await getEmployeeById(employeeId,accessToken);
             if(user != null)
             {
                 var leaves = _leaveRequest.Fetch(x => x.EmployeeId == employeeId).ToList();
@@ -122,7 +123,18 @@ namespace Promact.Core.Repository.LeaveReportRepository
             }
             return null;
         }
-           
 
+        /// <summary>
+        /// Method to get user details from the Oauth server using id and access token
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
+        private async Task<User> getEmployeeById(string employeeId,string accessToken)
+        {
+            User user = new User();
+            user = await _projectUserCall.GetUserByEmployeeId(employeeId,accessToken);
+            return user;
+        }
     }
 }

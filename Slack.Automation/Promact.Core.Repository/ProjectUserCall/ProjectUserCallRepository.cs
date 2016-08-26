@@ -153,12 +153,16 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>user Details</returns>
-        public async Task<User> GetUserByEmployeeId(string employeeId)
+        public async Task<User> GetUserByEmployeeId(string employeeId,string accessToken)
         {
+            User userDetails = new User();
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl,null);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, accessToken);
             var responseContent = response.Content.ReadAsStringAsync().Result;
-            var userDetails = JsonConvert.DeserializeObject<User>(responseContent);
+            if (response.StatusCode != HttpStatusCode.Forbidden)
+            {
+                userDetails = JsonConvert.DeserializeObject<User>(responseContent);
+            }
             return userDetails;
         }
     }

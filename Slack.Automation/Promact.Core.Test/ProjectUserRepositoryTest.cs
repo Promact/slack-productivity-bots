@@ -104,7 +104,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void GetUserById()
         {
-            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
             Assert.Equal(user.Email, "roshni@promactinfo.com");
         }
 
@@ -114,7 +114,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void GetUserByIdFalse()
         {
-            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
             Assert.NotEqual(user.Email, "xyz@promactinfo.com");
         }
     }
