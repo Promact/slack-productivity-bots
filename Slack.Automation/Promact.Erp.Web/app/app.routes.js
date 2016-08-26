@@ -12,7 +12,7 @@ var appRoutes = [
         component: leaveReportDetails_1.LeaveReportDetailsComponent
     },
     {
-        path: '',
+        path: 'Home/AfterLogIn',
         redirectTo: '/report',
         pathMatch: 'full'
     }
