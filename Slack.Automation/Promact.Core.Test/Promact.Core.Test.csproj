@@ -101,6 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachmentRepositoryTest.cs" />
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
