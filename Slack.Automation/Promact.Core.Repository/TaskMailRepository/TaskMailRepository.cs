@@ -112,7 +112,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
         /// <summary>
-        /// Method to conduct task mail after begin start
+        /// Method to conduct task mail after started
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="answer"></param>
