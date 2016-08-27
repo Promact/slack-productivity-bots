@@ -22,6 +22,9 @@ namespace Promact.Core.Test
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
         }
 
+        /// <summary>
+        /// Test case to check creating attchment of slack used generically
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachment()
         {
@@ -31,6 +34,9 @@ namespace Promact.Core.Test
             Assert.Equal(response.Color, StringConstant.Color);
         }
 
+        /// <summary>
+        /// Test case to check creating text corresponding to leave details and user which is to be send on slack as reply
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public void ReplyText()
         {
@@ -40,6 +46,9 @@ namespace Promact.Core.Test
             Assert.NotEqual(response, null);
         }
 
+        /// <summary>
+        /// Test case to check break string by spaces only if spaces are not between quotes
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public void SlackText()
         {
@@ -48,6 +57,9 @@ namespace Promact.Core.Test
             Assert.Equal(response, "All");
         }
 
+        /// <summary>
+        /// Test cases to check transform NameValueCollection to SlashCommand class
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public void SlashCommandTransfrom()
         {

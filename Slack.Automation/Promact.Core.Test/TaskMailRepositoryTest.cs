@@ -1,10 +1,5 @@
 ﻿using Autofac;
 using Promact.Core.Repository.TaskMailRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Promact.Core.Test
 {
@@ -12,6 +7,12 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly ITaskMailRepository _taskMailRepository;
+        public TaskMailRepositoryTest()
+        {
+            _componentContext = AutofacConfig.RegisterDependancies();
+            _taskMailRepository = _componentContext.Resolve<ITaskMailRepository>();
+        }
+
 
     }
 }
