@@ -86,10 +86,6 @@ namespace Promact.Core.Repository.Client
                 var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = "LeaveBot", Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
-            }
-            //var userDetail = await _projectUser.GetUserByUsername(leave.Username,accessToken); 
-            foreach (var teamLeader in teamLeaders)
-            {
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);

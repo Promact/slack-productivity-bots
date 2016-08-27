@@ -271,15 +271,24 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
-                                                    // transforming task mail details to template page and getting as string
-                                                    var emailBody = EmailServiceTemplateTaskMail(taskList);
-                                                    EmailApplication email = new EmailApplication();
-                                                    email.Body = emailBody;
-                                                    email.From = "rajdeep@promactinfo.com";
-                                                    email.To = "siddhartha@promactinfo.com";
-                                                    email.Subject = "Daily Task Mail";
-                                                    // Email send 
-                                                    _emailService.Send(email);
+                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userName, accessToken);
+                                                    var managements = await _projectUserRepository.GetManagementUserName(accessToken);
+                                                    foreach (var management in managements)
+                                                    {
+                                                        teamLeaders.Add(management);
+                                                    }
+                                                    foreach (var teamLeader in teamLeaders)
+                                                    {
+                                                        // transforming task mail details to template page and getting as string
+                                                        var emailBody = EmailServiceTemplateTaskMail(taskList);
+                                                        EmailApplication email = new EmailApplication();
+                                                        email.Body = emailBody;
+                                                        email.From = oAuthUser.Email;
+                                                        email.To = teamLeader.Email;
+                                                        email.Subject = StringConstant.TaskMailSubject;
+                                                        // Email send 
+                                                        _emailService.Send(email);
+                                                    }
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:
