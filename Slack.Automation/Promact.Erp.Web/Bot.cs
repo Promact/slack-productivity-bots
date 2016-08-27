@@ -13,9 +13,8 @@ namespace Promact.Erp.Web
         private static ISlackUserRepository _slackUserDetails;
         public static void Main(IComponentContext container)
         {
-            //SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
-            SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");//scrummeeting
-
+            SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            //SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");//scrummeeting
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
@@ -24,7 +23,6 @@ namespace Promact.Erp.Web
                 messageReceive.ok = true;
                 Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
                 client.Connect((connected) =>{});
-
                 client.OnMessageReceived += (message) =>
                 {
                     var user = _slackUserDetails.GetById(message.user);
