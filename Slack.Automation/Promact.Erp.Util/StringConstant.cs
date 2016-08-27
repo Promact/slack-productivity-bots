@@ -50,6 +50,7 @@ namespace Promact.Erp.Util
         public static string TaskMailHours = "Hours";
         public static string TaskMailComment = "Comment";
         public static string TaskMailStatus = "Status";
-
+        public static string SendTaskMailConfirmationErrorMessage = "Please enter yes or no";
+        public static string RequestToStartTaskMail = "Please start task mail";
     }
 }

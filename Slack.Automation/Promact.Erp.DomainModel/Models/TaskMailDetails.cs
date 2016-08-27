@@ -15,6 +15,7 @@ namespace Promact.Erp.DomainModel.Models
         public decimal Hours { get; set; }
         public string Comment { get; set; }
         public TaskMailStatus Status { get; set; }
+        public SendEmailConfirmation SendEmailConfirmation { get; set; }
 
         public int TaskId { get; set; }
         [ForeignKey("TaskId")]

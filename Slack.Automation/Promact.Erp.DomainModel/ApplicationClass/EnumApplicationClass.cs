@@ -39,6 +39,13 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         HoursSpent=2,
         Status=3,
         Comment=4,
-        SendEmail=5
+        SendEmail=5,
+        ConfirmSendEmail=6,
+        TaskMailSend=7
+    }
+    public enum SendEmailConfirmation
+    {
+        no,
+        yes
     }
 }
