@@ -40,7 +40,7 @@ namespace Promact.Core.Test
         public void LeaveList()
         {
             var leaves = _leaveRequestRepository.LeaveList();
-            Assert.Equal(83, leaves.Count());
+            Assert.NotEqual(0, leaves.Count());
         }
 
         /// <summary>
@@ -59,13 +59,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveListByUserId()
         {
-            int status = 0;
+            var status = new Condition();
             var leaves = _leaveRequestRepository.LeaveListByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
             foreach (var leave in leaves)
             {
-                status = leave.Id;
+                status = leave.Status;
             }
-            Assert.Equal(50, status);
+            Assert.Equal(Condition.Pending, status);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Promact.Core.Test
         public void LeaveListStatusByUserId()
         {
             var leaves = _leaveRequestRepository.LeaveListStatusByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
-            Assert.Equal(Condition.Cancel, leaves.Status);
+            Assert.NotEqual(Condition.Cancel, leaves.Status);
         }
 
         /// <summary>
