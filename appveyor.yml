@@ -2,10 +2,8 @@ version: 1.0.{build}
 branches:
   only:
   - dev
-configuration: Release
-platform: Any CPU
 before_build:
-- ps: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\""
+- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\""
 build:
   parallel: true
   verbosity: detailed
