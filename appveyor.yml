@@ -8,4 +8,4 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-- cmd: '".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" ".\Slack.Automation\Promact.Core.Test\bin\Debug\Promact.Core.Test.dll" -appveyor
+- cmd: '".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" ".\Slack.Automation\Promact.Core.Test\bin\Debug\Promact.Core.Test.dll" -appveyor'
