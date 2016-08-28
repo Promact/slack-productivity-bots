@@ -8,4 +8,4 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-- cmd: xunit.console.clr4 **\*.Test.dll /appveyor
+- cmd: xunit.console.clr4 ".\Slack.Automation\Promact.Core.Test\bin\Debug\Promact.Core.Test.dll" /appveyor
