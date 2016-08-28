@@ -8,6 +8,6 @@ before_build:
 - ps: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \nnpm install \".\\Slack.Automation\\Promact.Erp.Web\""
 build:
   parallel: true
-  verbosity: normal
+  verbosity: detailed
 test_script:
 - cmd: xunit.console.clr4 **\Promact.Core.Test.dll /appveyor
