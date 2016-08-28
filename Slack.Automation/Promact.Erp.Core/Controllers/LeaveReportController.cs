@@ -1,11 +1,4 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Core.Repository.LeaveReportRepository;
-using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Promact.Core.Repository.LeaveReportRepository;
 using System.Threading.Tasks;
 using System.Web.Http;
 
