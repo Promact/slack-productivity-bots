@@ -15,6 +15,7 @@ namespace Promact.Core.Test
     {
         private  IComponentContext _componentContext;
         private  ILeaveReportRepository _leaveReportRepository;
+        string accessToken = "9846dae2-6a9c-44c9-9429-06b99c5ad222";
 
         public LeaveReportRepositoryTest()
         {
@@ -28,7 +29,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTest()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport(null);
+            var leaveReports = await _leaveReportRepository.LeaveReport(accessToken);
             Assert.Equal(1,leaveReports.Count());
         }
 
@@ -38,7 +39,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportDetailTest()
         {
-            var leaveReport = await  _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
+            var leaveReport = await  _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc", accessToken);
             Assert.NotNull(leaveReport);
         }
 
@@ -48,7 +49,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTestFalse()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport(null);
+            var leaveReports = await _leaveReportRepository.LeaveReport(accessToken);
             Assert.NotEqual(5,leaveReports.Count());
         }
 
@@ -58,7 +59,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportDetailTestFalse()
         {
-            var leaveReport = await _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc",null);
+            var leaveReport = await _leaveReportRepository.LeaveReportDetails("4f044cd8-5bcf-4080-b330-58eb184d79bc", accessToken);
             Assert.Null(leaveReport);
         }
     }
