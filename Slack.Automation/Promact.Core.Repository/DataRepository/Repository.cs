@@ -21,9 +21,9 @@ namespace Promact.Core.Repository.DataRepository
         /// To get List of all from database 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<T> List()
+        public IQueryable<T> GetAll()
         {
-            return dbSet.AsEnumerable(); ;
+            return dbSet.AsQueryable(); ;
         }
 
         /// <summary>
@@ -160,6 +160,23 @@ namespace Promact.Core.Repository.DataRepository
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Method to search database using Linq Expression and get LastOrDefault Value corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T LastOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return dbSet.LastOrDefault(predicate);
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

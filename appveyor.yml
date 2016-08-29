@@ -1,0 +1,11 @@
+version: 1.0.{build}
+branches:
+  only:
+  - dev
+before_build:
+- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\""
+build:
+  parallel: true
+  verbosity: minimal
+test_script:
+- cmd: '".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" ".\Slack.Automation\Promact.Core.Test\bin\Debug\Promact.Core.Test.dll" -appveyor'

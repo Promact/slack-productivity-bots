@@ -10,21 +10,19 @@ using System.Web.Mvc;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class HomeController : HomeControllerBase
+    public class HomeController : MVCBaseController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private IHttpClientRepository _httpClientRepository;
 
         public HomeController()
         {
         }
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, IHttpClientRepository httpClientRepository)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
-            _httpClientRepository = httpClientRepository;
         }
 
         public ApplicationSignInManager SignInManager
@@ -84,7 +82,7 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email ,string slackUserName)
         {
             var user = UserManager.FindByEmail(email);
             if (user!=null)
@@ -100,7 +98,7 @@ namespace Promact.Erp.Core.Controllers
             }
             if (user == null)
             {
-                user = new ApplicationUser() { Email = email, UserName = email };
+                user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
                 //Creating a user with email only. Password not required
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)

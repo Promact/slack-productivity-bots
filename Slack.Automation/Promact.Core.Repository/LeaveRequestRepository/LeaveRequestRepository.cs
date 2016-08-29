@@ -2,6 +2,7 @@
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
 {
@@ -29,7 +30,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <returns>List of leave</returns>
         public IEnumerable<LeaveRequest> LeaveList()
         {
-            return _leaveRequestRepository.List();
+            return _leaveRequestRepository.GetAll();
         }
 
         /// <summary>
@@ -63,12 +64,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <returns>latest leave details of a particular user</returns>
         public LeaveRequest LeaveListStatusByUserId(string userId)
         {
-            var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
-            LeaveRequest leave = new LeaveRequest();
-            foreach (var leaves in leaveList)
-            {
-                leave = leaves;
-            }
+            var leave = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId).Last();
             return leave;
         }
 

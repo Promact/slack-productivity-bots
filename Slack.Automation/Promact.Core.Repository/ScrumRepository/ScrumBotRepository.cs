@@ -98,7 +98,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
                                 var responseContent = response.Content.ReadAsStringAsync().Result;
                                 var user = JsonConvert.DeserializeObject<User>(responseContent);
                                 AddAnswer(lastScrumAnswer.ScrumID, firstQuestion.Id, user.Id, Message);
@@ -108,7 +108,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         else
                         {
                             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl);
+                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
                             var responseContent = response.Content.ReadAsStringAsync().Result;
                             var user = JsonConvert.DeserializeObject<User>(responseContent);
                             AddAnswer(scrum.FirstOrDefault().Id, firstQuestion.Id, user.Id, Message);
@@ -234,7 +234,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).FirstOrDefault();
                 var name = Text.Split(new char[0]);
                 //    var employee = await _projectUser.GetUsersByGroupName(GroupName, name[1]);
-                var employee = await _projectUser.GetUserByUsername(name[1]);
+                var employee = await _projectUser.GetUserByUsername(name[1], null);
                 if (employee == null)
                 {
                     PostMessages(GroupName, "tsakmail", "Sorry." + name + " is not a member of this project.");
@@ -388,7 +388,18 @@ namespace Promact.Core.Repository.ScrumRepository
             }
         }
 
-               
+
+        public async void fortest(string message)
+        {
+            try
+            {
+                PostMessages("U1TB1EN87", "tsakmail", "Hello");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         #endregion
 
     }

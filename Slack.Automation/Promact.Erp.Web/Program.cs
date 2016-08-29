@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.Bot;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ScrumRepository;
-using Promact.Erp.DomainModel.ApplicationClass.Bot;
+using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.DomainModel.Models;
 
 namespace Promact.Erp.Web
 {
@@ -10,13 +12,16 @@ namespace Promact.Erp.Web
     {
         private static BotClient _client;
         private static IScrumBotRepository _scrumBotRepository;
+        private static ITaskMailRepository _taskMailRepository;
 
         public static void Main(IComponentContext container)
         {
             _scrumBotRepository = container.Resolve<IScrumBotRepository>();
 
+            _taskMailRepository = container.Resolve<ITaskMailRepository>();
             //create a new slack client
-            _client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            _client = new BotClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail 
+            //_client = new BotClient("xoxb-71985530755-ZFMwfQPVez6RBX5zJUEBhFy0");//taskmail
 
             //connect to the slack service
             _client.ConnectClientThread();
@@ -35,19 +40,41 @@ namespace Promact.Erp.Web
                 }
                 if (e.GroupInfo != null)
                 {
-                    var simpleText = e.Text.Split(null);
-                    if (e.Text.ToLower().Equals("scrum time"))
-                        _scrumBotRepository.StartScrum(e.GroupInfo.name);
-                    else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length==2)
-                        _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
+                    if (e.UserInfo.Name != "tsakmail")
+                    {
+                        var simpleText = e.Text.Split(null);
+                        if (e.Text.ToLower().Equals("scrum time"))
+                        {
+                            var reply = _scrumBotRepository.StartScrum(e.GroupInfo.name);
+                            //  _client.WriteMessage("ok");
+                        }
+                        else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length == 2)
+                        {
+                            _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
+                        }
+                        else
+                        {
+                            _scrumBotRepository.AddScrumAnswer(e.UserInfo.Name, e.Text, e.GroupInfo.name);
+                        }
+                    }
+                }
+                else
+                {
+                    //if (e.UserInfo.Name != "tsakmail")
+                    //{
+                    //    var reply = _scrumBotRepository.StartScrum(e.channel);
+                    //}
+               
+                    var text = e.Text.ToLower();
+                    if (text == "task mail")
+                    {
+                         //_taskMailRepository.StartTaskMail(e.channel, "bcd34169-1434-40e9-abf5-c9e0e9d20cd8").Wait();
+                    }
                     else
                     {
 
                     }
                 }
-                // else
-                //Taskmail bot
-                //ProcessMessage(e.UserInfo.Name, e.GroupInfo.name, e.Text);
             }
             catch (System.Exception ex)
             {
