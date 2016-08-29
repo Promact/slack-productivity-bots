@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using System;
 
 namespace Promact.Core.Repository.ProjectUserCall
 {

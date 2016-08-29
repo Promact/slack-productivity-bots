@@ -26,12 +26,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachment()
         {
-            SlackUserDetails slackUserDetails = new SlackUserDetails();
-            slackUserDetails.Id = "asfdhjdf";
-            slackUserDetails.Name = "siddharthashaw";
-            slackUserDetails.TeamId = "promact";
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, "asfdhjdf");
+            Assert.NotEqual(slackUserDetails.Id, "asfdyjdfyjhjdf");
         }
 
         /// <summary>
@@ -40,8 +36,16 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void GetById()
         {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
             var slackUser = _slackUserRepository.GetById("asfdhjdf");
-            Assert.NotEqual(slackUser.Name, "siddharthashaw");
+            Assert.Equal(slackUser.Name, "siddharthashaw");
         }
+
+        private SlackUserDetails slackUserDetails = new SlackUserDetails()
+        {
+            Id = "asfdhjdf",
+            Name = "siddharthashaw",
+            TeamId = "promact"
+        };
     }
 }
