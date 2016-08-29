@@ -47,7 +47,7 @@ namespace Promact.Erp.Core.Controllers
                     case SlackAction.Apply:
                         {
                             var leaveRequest = await _slackRepository.LeaveApply(slackText, leave, accessToken);
-                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest,accessToken);
+                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
                         }
                         break;
                     case SlackAction.List:

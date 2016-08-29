@@ -40,18 +40,31 @@ namespace Promact.Erp.Web
                 }
                 if (e.GroupInfo != null)
                 {
-                    var simpleText = e.Text.Split(null);
-                    if (e.Text.ToLower().Equals("scrum time"))
-                        _scrumBotRepository.StartScrum(e.GroupInfo.name);
-                    else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length==2)
-                        _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
-                    else
+                    if (e.UserInfo.Name != "tsakmail")
                     {
-
+                        var simpleText = e.Text.Split(null);
+                        if (e.Text.ToLower().Equals("scrum time"))
+                        {
+                            var reply = _scrumBotRepository.StartScrum(e.GroupInfo.name);
+                            //  _client.WriteMessage("ok");
+                        }
+                        else if (simpleText[0].ToLower().Equals("leave") && simpleText.Length == 2)
+                        {
+                            _scrumBotRepository.Leave(e.GroupInfo.name, e.Text);
+                        }
+                        else
+                        {
+                            _scrumBotRepository.AddScrumAnswer(e.UserInfo.Name, e.Text, e.GroupInfo.name);
+                        }
                     }
                 }
                 else
                 {
+                    //if (e.UserInfo.Name != "tsakmail")
+                    //{
+                    //    var reply = _scrumBotRepository.StartScrum(e.channel);
+                    //}
+               
                     var text = e.Text.ToLower();
                     if (text == "task mail")
                     {

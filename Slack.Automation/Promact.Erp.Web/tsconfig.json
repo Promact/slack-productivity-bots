@@ -6,9 +6,14 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "removeComments": false,
-    "noImplicitAny": true,
+    "removeComments": true,
+    "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules",
+    "typings/main",
+    "typings/main.d.ts"
+  ]
 }
