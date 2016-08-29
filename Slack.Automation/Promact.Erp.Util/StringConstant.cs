@@ -54,5 +54,14 @@ namespace Promact.Erp.Util
         public static string RequestToStartTaskMail = "Please start task mail";
         public static string AlreadyMailSend = "You have already sended mail for today. No more task mail for today";
         public static string TaskMailSubject = "Task Mail";
+        public static string FirstNameForTest = "siddhartha";
+        public static string AccessTokenForTest = "94d56876-fb02-45a9-8b01-c56046482d17";
+        public static string EmailForTest = "siddhartha@promactinfo.com";
+        public static string StringIdForTest = "asjdfjasndlkmasdml41fgdf4g2df42";
+        public static string LastNameForTest = "shaw";
+        public static string UserDetailsFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}";
+        public static string SlashCommandText = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016";
+        public static string PromactStringName = "Promact";
+        public static string QuestionForTest = "On which task you worked on Today?";
     }
 }

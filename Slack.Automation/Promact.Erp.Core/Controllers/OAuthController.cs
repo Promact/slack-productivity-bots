@@ -49,12 +49,10 @@ namespace Promact.Erp.Core.Controllers
         {
             var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", AppSettingsUtil.OAuthClientId, AppSettingsUtil.OAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
-            var slackOAuthResponseContent = slackOAuthResponse.Content.ReadAsStringAsync().Result;
-            var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponseContent);
+            var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
             var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl,userDetailsRequest,null);
-            var userDetailsResponseContent = userDetailsResponse.Content.ReadAsStringAsync().Result;
-            var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponseContent);
+            var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             foreach (var user in slackUsers.Members)
             {
                 _slackUserDetails.Insert(user);

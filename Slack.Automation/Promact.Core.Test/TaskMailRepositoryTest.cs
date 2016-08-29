@@ -1,12 +1,15 @@
 ﻿using Autofac;
+using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.DataRepository;
+using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -17,6 +20,7 @@ namespace Promact.Core.Test
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
+        private readonly Mock<IHttpClientRepository> _mockHttpClient;
 
         public TaskMailRepositoryTest()
         {
@@ -24,6 +28,7 @@ namespace Promact.Core.Test
             _taskMailRepository = _componentContext.Resolve<ITaskMailRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
         }
 
         /// <summary>
@@ -32,10 +37,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void StartTaskMail()
         {
+            var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             _slackUserRepository.AddSlackUser(slackUserDetails);
             _botQuestionRepository.AddQuestion(question);
-            var response = await _taskMailRepository.StartTaskMail(slackUserName);
-            Assert.NotEqual(response, question.QuestionStatement);
+            var responses = await _taskMailRepository.StartTaskMail(StringConstant.FirstNameForTest);
+            Assert.Equal(responses, question.QuestionStatement);
         }
 
         /// <summary>
@@ -44,24 +52,26 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void QuestionAndAnswer()
         {
-            var firstResponse = await _taskMailRepository.StartTaskMail(slackUserName);
-            var secondResponse = await _taskMailRepository.QuestionAndAnswer(slackUserName, answer);
+            var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            var firstResponse = await _taskMailRepository.StartTaskMail(StringConstant.FirstNameForTest);
+            var secondResponse = await _taskMailRepository.QuestionAndAnswer(StringConstant.FirstNameForTest, answer);
             Assert.NotEqual(secondResponse, StringConstant.RequestToStartTaskMail);
         }
 
-        private static string slackUserName = "siddhartha";
         private static string answer = null;
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
-            Id = "asfdhjdf",
-            Name = "siddharthashaw",
-            TeamId = "promact"
+            Id = StringConstant.StringIdForTest,
+            Name = StringConstant.FirstNameForTest,
+            TeamId = StringConstant.PromactStringName
         };
         private Question question = new Question()
         {
             CreatedOn = DateTime.UtcNow,
             OrderNumber = 1,
-            QuestionStatement = "On which task you worked on Today?",
+            QuestionStatement = StringConstant.QuestionForTest,
             Type = 2
         };
     }

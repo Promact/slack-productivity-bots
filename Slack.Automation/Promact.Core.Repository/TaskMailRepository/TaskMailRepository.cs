@@ -70,7 +70,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // if exist then check the whether the task mail was completed or not
                     taskMailDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
                     previousQuestion = _botQuestionRepository.FindById(taskMailDetail.QuestionId);
-                    //previousQuestion = _questionRepository.FirstOrDefault(x => x.Id == taskMailDetail.QuestionId);
                     question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
                 }
                 // if previous task mail completed then it will start a new one
@@ -91,7 +90,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                         _taskMail.Insert(taskMail);
                         _taskMail.Save();
                         var firstQuestion = _botQuestionRepository.FindByQuestionType(2);
-                        //var firstQuestion = _questionRepository.FirstOrDefault(x => x.Type == 2);
                         TaskMailDetails taskDetails = new TaskMailDetails();
                         taskDetails.QuestionId = firstQuestion.Id;
                         taskDetails.TaskId = taskMail.Id;
@@ -140,13 +138,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                     var taskDetails = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
                     // getting inform of previous question asked to user
                     var previousQuestion = _botQuestionRepository.FindById(taskDetails.QuestionId);
-                    //var previousQuestion = _questionRepository.FirstOrDefault(x => x.Id == taskDetails.QuestionId);
                     // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
                     if (previousQuestion.OrderNumber <= 7)
                     {
                         // getting next question to be asked to user
                         var nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber((previousQuestion.OrderNumber + 1), 2);
-                        //var nextQuestion = _questionRepository.FirstOrDefault(x => x.OrderNumber == (previousQuestion.OrderNumber + 1) && x.Type == 2);
                         // Converting question Ordr to enum
                         var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
                         switch (question)
@@ -247,7 +243,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     // if previous question was send email of task and it was not null/wrong value then it will say thank you and task mail stopped
                                                     taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
                                                     nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(7, 2);
-                                                    //nextQuestion = _questionRepository.FirstOrDefault(x => x.Type == 2 && x.OrderNumber == 7);
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     questionText = StringConstant.ThankYou;
                                                 }
