@@ -15,7 +15,7 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IClient _client;
         private readonly ISlackRepository _slackRepository;
-        string accessToken = "";
+        string accessToken = "94d56876-fb02-45a9-8b01-c56046482d17";
         public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();

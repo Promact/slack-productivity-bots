@@ -31,11 +31,28 @@ namespace Promact.Erp.Util
         public static string UserDetailsByIdUrl = "fetchUserById/";
         public static string UserDetailByUserNameUrl = "fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
-        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands&client_id=";
+        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read&client_id=";
         public static string UserDetailsUrl = "userDetails/";
         public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
         public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
+        public static string ProjectUserDetailsUrl = "project/userDetails/";
+        public static string ProjectTeamLeaderDetailsUrl = "project/teamLeadersDetails/";
+        public static string ProjectManagementDetailsUrl = "project/Admin";
+        public static string UserDetailUrl = "userDetail/";
+        public static string ThankYou = "Thank You";
+        public static string InternalError = "Internal Error";
+        public static string SlackUserListUrl = "https://slack.com/api/users.list";
+        public static string TaskMailBotStatusErrorMessage = "Status should be completed/inprogress/roadblock";
+        public static string TaskMailBotHourErrorMessage = "Please enter numeric value";
+        public static string TaskMailDescription = "Descriptions";
+        public static string TaskMailHours = "Hours";
+        public static string TaskMailComment = "Comment";
+        public static string TaskMailStatus = "Status";
+        public static string SendTaskMailConfirmationErrorMessage = "Please enter yes or no";
+        public static string RequestToStartTaskMail = "Please start task mail";
+        public static string AlreadyMailSend = "You have already sended mail for today. No more task mail for today";
+        public static string TaskMailSubject = "Task Mail";
     }
 }

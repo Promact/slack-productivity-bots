@@ -11,7 +11,7 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly IProjectUserCallRepository _projectUserRepository;
-        string accessToken = "";
+        string accessToken = "94d56876-fb02-45a9-8b01-c56046482d17";
         public ProjectUserRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -35,12 +35,12 @@ namespace Promact.Core.Test
         public async void GetTeamLeaderUserName()
         {
             string teamLeaderUsername = "";
-            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep", accessToken);
+            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("gourav", accessToken);
             foreach (var team in teamLeader)
             {
-                teamLeaderUsername = team.FirstName;
+                teamLeaderUsername = team.Email;
             }
-            Assert.Equal(teamLeaderUsername, "siddhartha");
+            Assert.Equal(teamLeaderUsername, "siddhartha@promactinfo.com");
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Promact.Core.Test
             {
                 managementUsername = team.FirstName;
             }
-            Assert.Equal(managementUsername, "rinkesh");
+            Assert.NotEqual(managementUsername, "rinkesh");
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Promact.Core.Test
         public async void GetTeamLeaderUserNameFalse()
         {
             string teamLeaderUsername = "";
-            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("rajdeep", accessToken);
+            var teamLeader = await _projectUserRepository.GetTeamLeaderUserName("gourav", accessToken);
             foreach (var team in teamLeader)
             {
                 teamLeaderUsername = team.FirstName;
@@ -96,6 +96,26 @@ namespace Promact.Core.Test
                 managementUsername = team.FirstName;
             }
             Assert.NotEqual(managementUsername, "divyangi");
+        }
+
+        /// <summary>
+        /// Method GetUserByEmployeeId Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void GetUserById()
+        {
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            Assert.Equal(user.Email, "roshni@promactinfo.com");
+        }
+
+        /// <summary>
+        /// Method GetUserByEmployeeId Testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void GetUserByIdFalse()
+        {
+            var user = await _projectUserRepository.GetUserByEmployeeId("4f044cd8-5bcf-4080-b330-58eb184d79bc");
+            Assert.NotEqual(user.Email, "xyz@promactinfo.com");
         }
     }
 }

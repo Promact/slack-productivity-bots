@@ -8,8 +8,10 @@ namespace Promact.Erp.DomainModel.Models
 {
     public class TaskMail : ModelBase
     {
+        /// <summary>
+        /// Employee Id from OAuth server for user start task mail
+        /// </summary>
         public string EmployeeId { get; set; }
-        public int ProjectId { get; set; }
         public ICollection<TaskMailDetails> TaskMailDetails { get; set; }
     }
 }

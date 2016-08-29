@@ -27,6 +27,7 @@ namespace Promact.Core.Repository.Bot
             _team = data.team;
         }
 
+
         public String channel
         {
             get

@@ -214,7 +214,7 @@ namespace Promact.Core.Repository.Client
                     tsk.Wait();
                     strMessage = tsk.Result;
                     //dynamic Data = System.Web.Helpers.Json.Decode(strMessage);
-                   dynamic Data = Newtonsoft.Json.JsonConvert.DeserializeObject(strMessage);
+                    dynamic Data = Newtonsoft.Json.JsonConvert.DeserializeObject(strMessage);
                     switch ((String)Data.type)
                     {
                         case "message":

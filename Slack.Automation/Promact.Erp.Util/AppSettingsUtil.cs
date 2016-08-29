@@ -4,6 +4,9 @@ namespace Promact.Erp.Util
 {
     public class AppSettingsUtil
     {
+        /// <summary>
+        /// Property to get SlackChatUpdateUrl from web config
+        /// </summary>
         public static string ChatUpdateUrl
         {
             get
@@ -12,6 +15,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get ProjectUserUrl from web config
+        /// </summary>
         public static string ProjectUserUrl
         {
             get
@@ -20,7 +26,9 @@ namespace Promact.Erp.Util
             }
         }
 
-
+        /// <summary>
+        /// Property to get ProjectUrl from web config
+        /// </summary>
         public static string ProjectUrl
         {
             get
@@ -29,7 +37,9 @@ namespace Promact.Erp.Util
             }
         }
 
-
+        /// <summary>
+        /// Property to get UserUrl from web config
+        /// </summary>
         public static string UserUrl
         {
             get
@@ -38,6 +48,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get IncomingWebHookUrl from web config
+        /// </summary>
         public static string IncomingWebHookUrl
         {
             get
@@ -46,6 +59,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get OAuthUrl from web config
+        /// </summary>
         public static string OAuthUrl
         {
             get
@@ -54,6 +70,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get ClientId from web config
+        /// </summary>
         public static string ClientId
         {
             get
@@ -62,6 +81,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get ClientSecret from web config
+        /// </summary>
         public static string ClientSecret
         {
             get
@@ -70,6 +92,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get ClientReturnUrl from web config
+        /// </summary>
         public static string ClientReturnUrl
         {
             get
@@ -78,6 +103,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get ProviderName from web config
+        /// </summary>
         public static string ProviderName
         {
             get
@@ -86,6 +114,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get OAuthClientId from web config
+        /// </summary>
         public static string OAuthClientId
         {
             get
@@ -94,6 +125,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get OAuthClientSecret from web config
+        /// </summary>
         public static string OAuthClientSecret
         {
             get
@@ -102,6 +136,9 @@ namespace Promact.Erp.Util
             }
         }
 
+        /// <summary>
+        /// Property to get LeaveManagementAuthorizationUrl from web config
+        /// </summary>
         public static string LeaveManagementAuthorizationUrl
         {
             get
@@ -109,6 +146,10 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["LeaveManagementAuthorizationUrl"].ToString();
             }
         }
+
+        /// <summary>
+        /// Property to get ChatPostUrl from web config
+        /// </summary>
         public static string ChatPostUrl
         {
             get
@@ -116,6 +157,10 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["ChatPostUrl"].ToString();
             }
         }
+
+        /// <summary>
+        /// Property to get tsakmailId from web config
+        /// </summary>
         public static string tsakmailId
         {
             get

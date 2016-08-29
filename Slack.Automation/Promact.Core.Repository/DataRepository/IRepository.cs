@@ -7,8 +7,10 @@ namespace Promact.Core.Repository.DataRepository
 {
     public interface IRepository<T> : IDisposable
     {
-        IEnumerable<T> List();
+        IQueryable<T> GetAll();
+
         T GetById(int? id);
+        T GetById(string id);
         void Insert(T entity);
         void Delete(int? id);
         void Update(T entity);
@@ -17,5 +19,6 @@ namespace Promact.Core.Repository.DataRepository
         IQueryable<T> Fetch(Func<T, bool> predicate);
         bool Any(Func<T, bool> predicate);
         bool All(Func<T, bool> predicate);
+        T LastOrDefault(Expression<Func<T, bool>> predicate);
     }
 }

@@ -17,6 +17,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Cancel
     }
 
+    /// <summary>
+    /// Slack Slash Command Actions
+    /// </summary>
     public enum SlackAction
     {
         Apply,
@@ -25,5 +28,38 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Status,
         Balance,
         Help
+    }
+
+    /// <summary>
+    /// Daily Task Mail Progress Status
+    /// </summary>
+    public enum TaskMailStatus
+    {
+        inprogress,
+        completed,
+        roadblock
+    }
+
+    /// <summary>
+    /// Daily Task Mail Question Order
+    /// </summary>
+    public enum TaskMailQuestion
+    {
+        YourTask=1,
+        HoursSpent=2,
+        Status=3,
+        Comment=4,
+        SendEmail=5,
+        ConfirmSendEmail=6,
+        TaskMailSend=7
+    }
+
+    /// <summary>
+    /// Daily Task Mail Email Sending Confirmation
+    /// </summary>
+    public enum SendEmailConfirmation
+    {
+        no,
+        yes
     }
 }

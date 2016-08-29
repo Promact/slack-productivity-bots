@@ -6,11 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.AttachmentRepository
 {
     public class AttachmentRepository:IAttachmentRepository
     {
+        private readonly ApplicationUserManager _userManager;
+        public AttachmentRepository(ApplicationUserManager userManager)
+        {
+            _userManager = userManager;
+        }
         /// <summary>
         /// Method to create attchment of slack used generically
         /// </summary>
@@ -108,10 +114,16 @@ namespace Promact.Core.Repository.AttachmentRepository
             return leave;
         }
 
-        public string AccessToken(IList<UserLoginInfo> info)
+        /// <summary>
+        /// Method to get accessToken for Promact OAuth corresponding to username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>access token from AspNetUserLogin table</returns>
+        public async Task<string> AccessToken(string username)
         {
+            var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
             var accessToken = "";
-            foreach (var provider in info)
+            foreach (var provider in providerInfo)
             {
                 if(provider.LoginProvider == AppSettingsUtil.ProviderName)
                 {
