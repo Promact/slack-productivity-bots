@@ -11,7 +11,7 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly IProjectUserCallRepository _projectUserRepository;
-        string accessToken = "";
+        string accessToken = "9846dae2-6a9c-44c9-9429-06b99c5ad222";
         public ProjectUserRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
