@@ -168,5 +168,16 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["tsakmailId"].ToString();
             }
         }
+
+        /// <summary>
+        /// Property to get tsakmail Access Token from web config
+        /// </summary>
+        public static string TaskmailAccessToken
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["TaskmailAccessToken"].ToString();
+            }
+        }
     }
 }

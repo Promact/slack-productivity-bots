@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.Util;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -14,8 +15,7 @@ namespace Promact.Erp.Web
         public static void Main(IComponentContext container)
         {
             // assigning bot token on Slack Socket Client
-            SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
-            //SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");//scrummeeting
+            SlackSocketClient client = new SlackSocketClient(AppSettingsUtil.TaskmailAccessToken);
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
