@@ -167,9 +167,19 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     try
                                     {
                                         // if previous question was hour of task and it was not null/wrong value then it will ask next question
-                                        taskDetails.Hours = Convert.ToDecimal(answer);
-                                        questionText = nextQuestion.QuestionStatement;
-                                        taskDetails.QuestionId = nextQuestion.Id;
+                                        var hour = Convert.ToDecimal(answer);
+                                        // checking range of hours
+                                        if (hour>0 && hour<8)
+                                        {
+                                            taskDetails.Hours = hour;
+                                            questionText = nextQuestion.QuestionStatement;
+                                            taskDetails.QuestionId = nextQuestion.Id;
+                                        }
+                                        else
+                                        {
+                                            // if previous question was hour of task and it was null or wrong value then it will ask for hour again
+                                            questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        }
                                     }
                                     catch (Exception)
                                     {
