@@ -114,6 +114,11 @@ namespace Promact.Core.Repository.AttachmentRepository
             return leave;
         }
 
+        /// <summary>
+        /// Method to get accessToken for Promact OAuth corresponding to username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>access token from AspNetUserLogin table</returns>
         public async Task<string> AccessToken(string username)
         {
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);

@@ -13,6 +13,11 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
+using System.Web;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using Promact.Core.Repository.SlackUserRepository;
+using Promact.Core.Repository.TaskMailRepository;
 
 namespace Promact.Core.Test
 {
@@ -22,6 +27,10 @@ namespace Promact.Core.Test
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<PromactErpContext>().As<DbContext>();
+            builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
+            builder.RegisterType<ApplicationUserManager>().AsSelf();
+            builder.RegisterType<ApplicationSignInManager>().AsSelf();
+            builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
@@ -33,6 +42,8 @@ namespace Promact.Core.Test
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
             builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
+            builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
+            builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             var container = builder.Build();
             return container;
         }

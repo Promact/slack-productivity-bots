@@ -1,16 +1,9 @@
 ﻿using Autofac;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
-using Promact.Erp.DomainModel.ApplicationClass.Bot;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace Promact.Erp.Web
 {
@@ -20,17 +13,20 @@ namespace Promact.Erp.Web
         private static ISlackUserRepository _slackUserDetails;
         public static void Main(IComponentContext container)
         {
-            SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");
-
+            // assigning bot token on Slack Socket Client
+            SlackSocketClient client = new SlackSocketClient("xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG");//tsakmail
+            //SlackSocketClient client = new SlackSocketClient("xoxb-72838792578-wclIZGTziSmKtqVjrymcWABA");//scrummeeting
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
+                // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
                 Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+                // Telling Slack Socket Client to the bot whose access token was given early
                 client.Connect((connected) =>{});
-
+                // Method will hit when someone send some text in task mail bot
                 client.OnMessageReceived += (message) =>
                 {
                     var user = _slackUserDetails.GetById(message.user);
@@ -44,6 +40,7 @@ namespace Promact.Erp.Web
                     {
                         replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text).Result;
                     }
+                    // Method to send back response to task mail bot
                     client.SendMessage(showMethod, message.channel, replyText);
                 };
             }

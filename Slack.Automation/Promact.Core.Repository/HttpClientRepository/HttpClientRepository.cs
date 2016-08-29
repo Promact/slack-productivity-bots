@@ -19,12 +19,13 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <param name="baseUrl"></param>
         /// <param name="contentUrl"></param>
         /// <returns>response</returns>
-        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl,string accessToken)
+        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
             {
                 _client = new HttpClient();
                 _client.BaseAddress = new Uri(baseUrl);
+                // Added access token to request header if provided by user
                 if (accessToken != null)
                 {
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
@@ -38,5 +39,7 @@ namespace Promact.Core.Repository.HttpClientRepository
                 throw ex;
             }
         }
+
+
     }
 }

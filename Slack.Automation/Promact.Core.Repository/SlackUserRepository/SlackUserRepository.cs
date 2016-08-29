@@ -15,12 +15,22 @@ namespace Promact.Core.Repository.SlackUserRepository
         {
             _slackUserDetails = slackUserDetails;
         }
+
+        /// <summary>
+        /// Method to add slack user 
+        /// </summary>
+        /// <param name="slackUserDetails"></param>
         public void AddSlackUser(SlackUserDetails slackUserDetails)
         {
             _slackUserDetails.Insert(slackUserDetails);
             _slackUserDetails.Save();
         }
 
+        /// <summary>
+        /// Method to get slack user information by their slack user id
+        /// </summary>
+        /// <param name="slackId"></param>
+        /// <returns></returns>
         public SlackUserDetails GetById(string slackId)
         {
             var user = _slackUserDetails.FirstOrDefault(x => x.Id == slackId);

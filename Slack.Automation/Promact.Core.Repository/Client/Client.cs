@@ -45,7 +45,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
+            //var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -86,10 +86,6 @@ namespace Promact.Core.Repository.Client
                 var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = "LeaveBot", Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
-            }
-            //var userDetail = await _projectUser.GetUserByUsername(leave.Username,accessToken); 
-            foreach (var teamLeader in teamLeaders)
-            {
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);
@@ -103,7 +99,7 @@ namespace Promact.Core.Repository.Client
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest Class object</param>
+        /// <param name="leaveRequest">LeaveRequest template object</param>
         /// <returns>template emailBody as string</returns>
         private string EmailServiceTemplate(LeaveRequest leaveRequest)
         {
@@ -129,7 +125,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="text"></param>
         /// <param name="url">Json string and url</param>
-        private void WebRequestMethod(string Json, string url)
+        public void WebRequestMethod(string Json, string url)
         {
             try
             {
