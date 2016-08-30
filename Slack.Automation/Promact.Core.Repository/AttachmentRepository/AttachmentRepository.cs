@@ -100,16 +100,16 @@ namespace Promact.Core.Repository.AttachmentRepository
         {
             SlashCommand leave = new SlashCommand()
             {
-                ChannelId = value.Get("channel_id"),
-                ChannelName = value.Get("channel_name"),
-                Command = value.Get("command"),
-                ResponseUrl = value.Get("response_url"),
-                TeamDomain = value.Get("team_domain"),
-                TeamId = value.Get("team_id"),
-                Text = value.Get("text"),
-                Token = value.Get("token"),
-                UserId = value.Get("user_id"),
-                Username = value.Get("user_name"),
+                ChannelId = value.Get(StringConstant.ChannelId),
+                ChannelName = value.Get(StringConstant.ChannelName),
+                Command = value.Get(StringConstant.Command),
+                ResponseUrl = value.Get(StringConstant.ResponseUrl),
+                TeamDomain = value.Get(StringConstant.TeamDomain),
+                TeamId = value.Get(StringConstant.TeamId),
+                Text = value.Get(StringConstant.Text),
+                Token = value.Get(StringConstant.Token),
+                UserId = value.Get(StringConstant.UserId),
+                Username = value.Get(StringConstant.UserName),
             };
             return leave;
         }

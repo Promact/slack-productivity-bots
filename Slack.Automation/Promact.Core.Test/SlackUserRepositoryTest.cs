@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Promact.Core.Test
         public void SlackResponseAttachment()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, "asfdyjdfyjhjdf");
+            Assert.Equal(slackUserDetails.Id, StringConstant.StringIdForTest);
         }
 
         /// <summary>
@@ -37,15 +38,15 @@ namespace Promact.Core.Test
         public void GetById()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUser = _slackUserRepository.GetById("asfdhjdf");
-            Assert.Equal(slackUser.Name, "siddharthashaw");
+            var slackUser = _slackUserRepository.GetById(StringConstant.StringIdForTest);
+            Assert.Equal(slackUser.Name, StringConstant.FirstNameForTest);
         }
 
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
-            Id = "asfdhjdf",
-            Name = "siddharthashaw",
-            TeamId = "promact"
+            Id = StringConstant.StringIdForTest,
+            Name = StringConstant.FirstNameForTest,
+            TeamId = StringConstant.PromactStringName
         };
     }
 }

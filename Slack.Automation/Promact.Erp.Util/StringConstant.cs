@@ -24,8 +24,8 @@ namespace Promact.Erp.Util
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate] [EndDate] [LeaveType] [RejoinDate]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
-     
-       
+
+
         public static string ProjectDetailsUrl = "fetchProject/";
         public static string UsersDetailByGroupUrl = "fetchProjectUsers/";
         public static string UserDetailsByIdUrl = "fetchUserById/";
@@ -57,11 +57,39 @@ namespace Promact.Erp.Util
         public static string FirstNameForTest = "siddhartha";
         public static string AccessTokenForTest = "94d56876-fb02-45a9-8b01-c56046482d17";
         public static string EmailForTest = "siddhartha@promactinfo.com";
-        public static string StringIdForTest = "asjdfjasndlkmasdml41fgdf4g2df42";
+        public static string StringIdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148";
         public static string LastNameForTest = "shaw";
         public static string UserDetailsFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}";
         public static string SlashCommandText = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016";
         public static string PromactStringName = "Promact";
         public static string QuestionForTest = "On which task you worked on Today?";
+        public static string TeamLeaderDetailsFromOauthServer = "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+        public static string CommentAndDescriptionForTest = "Doing Test Task";
+        public static string ManagementDetailsFromOauthServer = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+        public static string TeamLeaderEmailForTest = "gourav@promactinfo.com";
+        public static string ManagementFirstForTest = "roshni";
+        public static string ManagementEmailForTest = "roshni@promactinfo.com";
+        public static string LeaveReasonForTest = "Testing";
+        public static string LeaveTypeForTest = "Casual";
+        public static string ChannelId = "channel_id";
+        public static string ChannelName = "channel_name";
+        public static string Command = "command";
+        public static string ResponseUrl = "response_url";
+        public static string TeamDomain = "team_domain";
+        public static string TeamId = "team_id";
+        public static string Text = "text";
+        public static string Token = "token";
+        public static string UserId = "user_id";
+        public static string UserName = "user_name";
+        public static string LeaveBot = "LeaveBot";
+        public static string UnderConstruction = "Still under Construction";
+        public static string Hello = "Hello All";
+        public static string All = "All";
+        public static string StringHourForTest = "4";
+        public static string AfterLogIn = "AfterLogIn";
+        public static string Home = "Home";
+        public static string Index = "Index";
+        public static string WebConfig = "~/web.config";
+        public static string MailSetting = "system.net/mailSettings";
     }
 }

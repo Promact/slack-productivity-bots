@@ -49,7 +49,6 @@ namespace Promact.Core.Test
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
-            //builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();

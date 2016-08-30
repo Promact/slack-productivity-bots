@@ -20,17 +20,15 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IRepository<TaskMailDetails> _taskMailDetail;
         private readonly IProjectUserCallRepository _projectUserRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
-        private readonly IHttpClientRepository _httpClientRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _user;
         private readonly IEmailService _emailService;
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IHttpClientRepository httpClientRepository, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository)
         {
             _taskMail = taskMail;
             _projectUserRepository = projectUserRepository;
             _taskMailDetail = taskMailDetail;
-            _httpClientRepository = httpClientRepository;
             _attachmentRepository = attachmentRepository;
             _user = user;
             _emailService = emailService;

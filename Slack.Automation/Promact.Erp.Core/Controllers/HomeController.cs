@@ -69,7 +69,7 @@ namespace Promact.Erp.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("AfterLogIn", "Home");
+                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
             }
             //BaseUrl of OAuth and clientId of App to be set 
             var url = string.Format("{0}?clientId={1}", AppSettingsUtil.OAuthUrl, AppSettingsUtil.ClientId);
@@ -90,11 +90,11 @@ namespace Promact.Erp.Core.Controllers
                 UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
                 await UserManager.AddLoginAsync(user.Id, info);
                 await SignInManager.SignInAsync(user, false, false);
-                return RedirectToAction("AfterLogIn", "Home");
+                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
             }
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("AfterLogIn", "Home");
+                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
             }
             if (user == null)
             {
@@ -110,7 +110,7 @@ namespace Promact.Erp.Core.Controllers
                     {
                         //Signing user with username or email only
                         await SignInManager.SignInAsync(user, false, false);
-                        return RedirectToAction("AfterLogIn", "Home");
+                        return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                     }
                 }
             }
@@ -124,7 +124,7 @@ namespace Promact.Erp.Core.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(StringConstant.Index, StringConstant.Home);
         }
 
         private IAuthenticationManager AuthenticationManager

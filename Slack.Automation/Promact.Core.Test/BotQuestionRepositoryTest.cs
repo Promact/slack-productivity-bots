@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +71,7 @@ namespace Promact.Core.Test
         {
             CreatedOn = DateTime.UtcNow,
             OrderNumber = 1,
-            QuestionStatement = "On which task you worked on Today?",
+            QuestionStatement = StringConstant.QuestionForTest,
             Type = 2
         };
     }
