@@ -10,6 +10,7 @@ using Promact.Erp.Util;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Linq;
+using System.Globalization;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -38,8 +39,8 @@ namespace Promact.Core.Repository.SlackRepository
         {
             LeaveRequest leaveRequest = new LeaveRequest();
             leaveRequest.Reason = slackRequest[1];
-            leaveRequest.FromDate = DateTime.ParseExact(slackRequest[2], "dd-MM-yyyy", null);
-            leaveRequest.EndDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", null);
+            leaveRequest.FromDate = DateTime.ParseExact(slackRequest[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leaveRequest.EndDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leaveRequest.Type = slackRequest[4];
             leaveRequest.RejoinDate = Convert.ToDateTime(slackRequest[5]);
             leaveRequest.Status = Condition.Pending;
