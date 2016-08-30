@@ -103,7 +103,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             }
             catch (System.Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -119,7 +119,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             }
             catch (System.Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
