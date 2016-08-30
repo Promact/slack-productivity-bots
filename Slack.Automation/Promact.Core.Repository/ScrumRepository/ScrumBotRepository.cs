@@ -128,7 +128,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -188,7 +188,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -243,7 +243,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -277,7 +277,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -308,7 +308,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
