@@ -32,7 +32,7 @@ namespace Promact.Erp.Web
                     var user = _slackUserDetails.GetById(message.user);
                     string replyText = "";
                     var text = message.text;
-                    if (text.ToLower() == "task mail")
+                    if (text.ToLower() == StringConstant.TaskMailSubject.ToLower())
                     {
                         replyText = _taskMailRepository.StartTaskMail(user.Name).Result;
                     }

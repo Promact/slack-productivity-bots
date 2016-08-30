@@ -16,8 +16,8 @@ namespace Promact.Erp.Util.Email
         /// <param name="email">email.from, email.to, email.body, email.subject</param>
         public void Send(EmailApplication email)
         {
-            Configuration configurationFile = WebConfigurationManager.OpenWebConfiguration("~/web.config");
-            MailSettingsSectionGroup mailSettings = configurationFile.GetSectionGroup("system.net/mailSettings") as MailSettingsSectionGroup;
+            Configuration configurationFile = WebConfigurationManager.OpenWebConfiguration(StringConstant.WebConfig);
+            MailSettingsSectionGroup mailSettings = configurationFile.GetSectionGroup(StringConstant.MailSetting) as MailSettingsSectionGroup;
             MailMessage message = new MailMessage();
             message.From = new MailAddress(email.From);
             message.To.Add(new MailAddress(email.To));

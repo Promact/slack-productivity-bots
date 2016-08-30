@@ -19,7 +19,7 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <param name="baseUrl"></param>
         /// <param name="contentUrl"></param>
         /// <returns>response</returns>
-        public async Task<HttpResponseMessage> GetAsync(string baseUrl, string contentUrl, string accessToken)
+        public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
             {
@@ -32,7 +32,8 @@ namespace Promact.Core.Repository.HttpClientRepository
                 }
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
-                return response;
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                return responseContent;
             }
             catch (Exception ex)
             {

@@ -28,9 +28,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachment()
         {
-            string hello = "Hello";
+            string hello = StringConstant.Hello;
             var response = _attachmentRepository.SlackResponseAttachment("1", hello).Last();
-            Assert.Equal(response.Title, hello);
+            Assert.Equal(response.Title, StringConstant.Hello);
             Assert.Equal(response.Color, StringConstant.Color);
         }
 
@@ -41,8 +41,8 @@ namespace Promact.Core.Test
         public void ReplyText()
         {
             LeaveRequest leave = new LeaveRequest();
-            leave.Reason = "testing";
-            var response = _attachmentRepository.ReplyText("siddhartha",leave);
+            leave.Reason = StringConstant.Reason;
+            var response = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest,leave);
             Assert.NotEqual(response, null);
         }
 
@@ -52,9 +52,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackText()
         {
-            string hello = "Hello All";
+            string hello = StringConstant.Hello;
             var response = _attachmentRepository.SlackText(hello).Last();
-            Assert.Equal(response, "All");
+            Assert.Equal(response, StringConstant.All);
         }
 
         /// <summary>

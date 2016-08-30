@@ -4,6 +4,7 @@ using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
@@ -61,6 +62,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
+            builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
 
             var container = builder.Build();
 

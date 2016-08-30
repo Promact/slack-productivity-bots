@@ -96,6 +96,8 @@
   <ItemGroup>
     <Compile Include="AttachmentRepository\AttachmentRepository.cs" />
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
+    <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
+    <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="Bot\MessageEditEventArgs.cs" />
     <Compile Include="Bot\MessageEventArgs.cs" />
     <Compile Include="Bot\Rtm.cs" />

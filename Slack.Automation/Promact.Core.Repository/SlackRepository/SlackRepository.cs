@@ -193,7 +193,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leave"></param>
         public void SlackLeaveBalance(SlashCommand leave)
         {
-            var replyText = "Still on Construction";
+            var replyText = StringConstant.UnderConstruction;
             _client.SendMessage(leave, replyText);
         }
 

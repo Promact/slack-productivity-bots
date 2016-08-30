@@ -45,7 +45,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            //var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
+            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = "LeaveBot", Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = StringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
                 EmailApplication email = new EmailApplication();
