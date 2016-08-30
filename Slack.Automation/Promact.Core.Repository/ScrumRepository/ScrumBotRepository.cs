@@ -23,21 +23,19 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<Question> _questionRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IHttpClientRepository _httpClientRepository;
-        private static IClient _clientRepository;
 
         #endregion
 
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser, IClient clientRepository,
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
             IRepository<Scrum> scrumRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
             _questionRepository = questionRepository;
             _projectUser = projectUser;
-            _clientRepository = clientRepository;
             _httpClientRepository = httpClientRepository;
         }
 
@@ -380,7 +378,7 @@ namespace Promact.Core.Repository.ScrumRepository
                   "&link_names=" + System.Web.HttpUtility.UrlEncode(args.link_names.ToString()) +
                   "&unfurl_links=" + args.unfurl_links.ToString() +
                   "&unfurl_media=" + args.unfurl_media.ToString();
-                _clientRepository.WebRequestMethod("hi", strURL);
+                //_clientRepository.WebRequestMethod("hi", strURL);
             }
             catch (Exception ex)
             {
