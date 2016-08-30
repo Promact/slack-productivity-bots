@@ -108,6 +108,7 @@
     <Compile Include="ProjectUserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrumBotRepositoryTest.cs" />
+    <Compile Include="SlackChannelRepositoryTest.cs" />
     <Compile Include="SlackRepositoryTest.cs" />
     <Compile Include="SlackUserRepositoryTest.cs" />
     <Compile Include="TaskMailRepositoryTest.cs" />
