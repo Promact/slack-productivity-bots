@@ -22,7 +22,7 @@ namespace Promact.Erp.Util
         public static string Color = "#3AA3E3";
         public static string AttachmentType = "default";
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
-        public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate] [EndDate] [LeaveType] [RejoinDate]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
+        public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
 
 
@@ -99,5 +99,8 @@ namespace Promact.Erp.Util
         public static string ClientReturnUrl = "http://localhost:28182/Home/ExtrenalLoginCallBack";
         public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
         public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
+        public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list",Environment.NewLine);
+        public static string SlashCommandLeaveCancelErrorMessage = "Please enter a valid leave cancel command. Example :- /leaves cancel 75";
+        public static string SlashCommandLeaveStatusErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves status username{0}/leaves status",Environment.NewLine);
     }
 }
