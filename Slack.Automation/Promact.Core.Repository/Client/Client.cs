@@ -83,7 +83,7 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = StringConstant.LeaveBot, Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
                 EmailApplication email = new EmailApplication();

@@ -22,12 +22,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     /// </summary>
     public enum SlackAction
     {
-        Apply,
-        List,
-        Cancel,
-        Status,
-        Balance,
-        Help
+        apply,
+        list,
+        cancel,
+        status,
+        balance,
+        help
     }
 
     /// <summary>
