@@ -91,5 +91,13 @@ namespace Promact.Erp.Util
         public static string Index = "Index";
         public static string WebConfig = "~/web.config";
         public static string MailSetting = "system.net/mailSettings";
+        public static string SlackChatUpdateUrl = "https://slack.com/api/chat.update";
+        public static string ProjectUserUrl = "http://localhost:35716/api/ProjectUser/";
+        public static string ProjectUrl = "http://localhost:35716/api/Project/";
+        public static string UserUrl = "http://localhost:35716/api/User/";
+        public static string OAuthUrl = "http://localhost:35716/OAuth/ExternalLogin";
+        public static string ClientReturnUrl = "http://localhost:28182/Home/ExtrenalLoginCallBack";
+        public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
+        public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
     }
 }
