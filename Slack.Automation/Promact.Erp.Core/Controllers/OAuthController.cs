@@ -34,7 +34,7 @@ namespace Promact.Erp.Core.Controllers
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
             oAuth.RefreshToken = refreshToken;
-            oAuth.ReturnUrl = AppSettingsUtil.ClientReturnUrl;
+            oAuth.ReturnUrl = StringConstant.ClientReturnUrl;
             return Ok(oAuth);
         }
 

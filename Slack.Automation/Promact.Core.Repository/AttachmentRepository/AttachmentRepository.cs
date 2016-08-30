@@ -125,7 +125,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             var accessToken = "";
             foreach (var provider in providerInfo)
             {
-                if(provider.LoginProvider == AppSettingsUtil.ProviderName)
+                if(provider.LoginProvider == StringConstant.PromactStringName)
                 {
                     accessToken = provider.ProviderKey;
                 }
