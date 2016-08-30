@@ -42,7 +42,7 @@ namespace Promact.Core.Repository.SlackRepository
             leaveRequest.FromDate = DateTime.ParseExact(slackRequest[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leaveRequest.EndDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leaveRequest.Type = slackRequest[4];
-            leaveRequest.RejoinDate = Convert.ToDateTime(slackRequest[5]);
+            leaveRequest.RejoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leaveRequest.Status = Condition.Pending;
             var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
             leaveRequest.EmployeeId = user.Id;
