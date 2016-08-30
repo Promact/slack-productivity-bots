@@ -14,8 +14,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// This method will be called when the keyword "scrum time" is encountered
         /// </summary>
         /// <param name="GroupName"></param>
+        /// <param name="UserName"></param>
         /// <returns></returns>
-        Task<string> StartScrum(string GroupName);
+        Task<string> StartScrum(string GroupName,string UserName);
 
         /// <summary>
         /// This method is called whenever a message other than "scrumn time" is written in the group during scrum meeting. - JJ
@@ -30,7 +31,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// This method will be called when the keyword "leave" is received as reply of a group member. - JJ
         /// </summary>
         /// <param name="GroupName"></param>
+        /// <param name="UserName"></param>
+        /// <param name="LeaveApplicant"></param>
         /// <returns>Question to the next person</returns>
-        Task<string> Leave(string GroupName, string Message);
+        Task<string> Leave(string GroupName,string UserName, string LeaveApplicant);
     }
 }

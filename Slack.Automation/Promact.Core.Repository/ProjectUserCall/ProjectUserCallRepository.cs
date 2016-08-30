@@ -71,12 +71,12 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="groupName"></param>
         /// <returns>object of ProjectAc</returns>
-        public async Task<ProjectAc> GetProjectDetails(string groupName)
+        public async Task<ProjectAc> GetProjectDetails(string groupName, string accessToken)
         {
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, groupName);
-                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl,null);
+                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl,accessToken);
                 var project = JsonConvert.DeserializeObject<ProjectAc>(response);
                 return project;
             }
@@ -92,13 +92,14 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// This method is used to fetch list of users/employees of the given group name. - JJ
         /// </summary>
         /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
         /// <returns>list of object of User</returns>
-        public async Task<List<User>> GetUsersByGroupName(string groupName)
+        public async Task<List<User>> GetUsersByGroupName(string groupName,string accessToken)
         {
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, groupName);
-                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl,null);
+                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl,accessToken);
                 var user = JsonConvert.DeserializeObject<List<User>>(response);
                 return user;
             }
@@ -109,7 +110,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         }
 
 
-        public async Task<User> GetUserById(string EmployeeId)
+        public async Task<User> GetUserById(string EmployeeId, string accessToken)
         {
             try
             {
