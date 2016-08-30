@@ -43,7 +43,11 @@ namespace Promact.Core.Test
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
-            builder.RegisterType<Client>().As<IClient>();
+            var clientMock = new Mock<IClient>();
+            var clientMockObject = clientMock.Object;
+            builder.RegisterInstance(clientMock).As<Mock<IClient>>();
+            builder.RegisterInstance(clientMockObject).As<IClient>();
+            //builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
