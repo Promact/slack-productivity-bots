@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using Moq;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
 using System.Linq;
@@ -20,12 +22,16 @@ namespace Promact.Core.Test
         private readonly IClient _client;
         private readonly ISlackRepository _slackRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly Mock<IClient> _mockClient;
+        private readonly IAttachmentRepository _attachmentRepository;
         public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _client = _componentContext.Resolve<IClient>();
             _slackRepository = _componentContext.Resolve<ISlackRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _mockClient = _componentContext.Resolve<Mock<IClient>>();
+            _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
         }
 
         /// <summary>
@@ -42,6 +48,10 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
+            LeaveRequest leaveRequest = new LeaveRequest();
+            leaveRequest.Reason = StringConstant.Reason;
+            var replyText = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest, leaveRequest);
+            _mockClient.Setup(x => x.SendMessage(leave, replyText));
             var leaveDetails = await _slackRepository.LeaveApply(slackText, leave, StringConstant.AccessTokenForTest);
             Assert.Equal(leaveDetails.Status, Condition.Pending);
         }
