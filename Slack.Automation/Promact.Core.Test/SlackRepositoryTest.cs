@@ -36,7 +36,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             SlashCommand leave = new SlashCommand() { Text = StringConstant.SlashCommandText, Username = StringConstant.FirstNameForTest, ResponseUrl = AppSettingsUtil.IncomingWebHookUrl };
             var slackText = leave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element

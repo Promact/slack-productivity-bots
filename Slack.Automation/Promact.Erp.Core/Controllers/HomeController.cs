@@ -72,7 +72,7 @@ namespace Promact.Erp.Core.Controllers
                 return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
             }
             //BaseUrl of OAuth and clientId of App to be set 
-            var url = string.Format("{0}?clientId={1}", AppSettingsUtil.OAuthUrl, AppSettingsUtil.ClientId);
+            var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, AppSettingsUtil.ClientId);
             //make call to the OAuth Server
             return Redirect(url);
         }
@@ -87,7 +87,7 @@ namespace Promact.Erp.Core.Controllers
             var user = UserManager.FindByEmail(email);
             if (user!=null)
             {
-                UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
+                UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
                 await UserManager.AddLoginAsync(user.Id, info);
                 await SignInManager.SignInAsync(user, false, false);
                 return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
@@ -104,7 +104,7 @@ namespace Promact.Erp.Core.Controllers
                 if (result.Succeeded)
                 {
                     //Adding external Oauth details
-                    UserLoginInfo info = new UserLoginInfo(AppSettingsUtil.ProviderName, accessToken);
+                    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
                     result = await UserManager.AddLoginAsync(user.Id, info);
                     if (result.Succeeded)
                     {
@@ -141,7 +141,7 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult SlackOAuth()
         {
-            return Redirect(AppSettingsUtil.LeaveManagementAuthorizationUrl+StringConstant.OAuthAuthorizationScopeAndClientId+AppSettingsUtil.OAuthClientId);
+            return Redirect(StringConstant.LeaveManagementAuthorizationUrl+StringConstant.OAuthAuthorizationScopeAndClientId+AppSettingsUtil.OAuthClientId);
         }
     }
 }
