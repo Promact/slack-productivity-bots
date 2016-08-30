@@ -19,7 +19,7 @@ namespace Promact.Core.Test
         /// Method StartScrum Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void ScrumInitiateNoQuestion()
+        public void ScrumInitiateNoQuestion()
         {
             //LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = "testing", RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = "Casual", CreatedOn = DateTime.UtcNow, EmployeeId = "fc172bd7-42d9-4cbf-baa8-130be02d25ed" };
             //_leaveRequestRepository.ApplyLeave(leave);
@@ -33,7 +33,7 @@ namespace Promact.Core.Test
         /// Method AddScrumAnswer Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void AddScrumAnswer()
+        public void AddScrumAnswer()
         {
             var msg =  _scrumBotRepository.AddScrumAnswer("julie", "did a lot of work", "trainees");
            // Assert.Equal("Sorry I have nothing to ask you", msg);
@@ -43,7 +43,7 @@ namespace Promact.Core.Test
         /// Method Leave Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void Leave()
+        public void Leave()
         {
             var msg =  _scrumBotRepository.Leave("trainees", "did a lot of work");
            // Assert.Equal("Sorry I have nothing to ask you", msg);

@@ -126,7 +126,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -218,7 +218,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -269,7 +269,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -327,7 +327,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -351,11 +351,11 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        private async void PostMessages(string GroupName, string UserName, string Message)
+        private void PostMessages(string GroupName, string UserName, string Message)
         {
             try
             {
@@ -384,12 +384,12 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
 
-        public async void fortest(string message)
+        public void fortest(string message)
         {
             try
             {
@@ -398,7 +398,7 @@ namespace Promact.Core.Repository.ScrumRepository
             catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
         #endregion
