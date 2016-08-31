@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettingsUtil.cs" />
     <Compile Include="Email Templates\LeaveApplication.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
