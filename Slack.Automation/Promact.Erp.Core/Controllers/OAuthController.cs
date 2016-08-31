@@ -3,7 +3,6 @@ using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -51,14 +50,43 @@ namespace Promact.Erp.Core.Controllers
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
-            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl,userDetailsRequest,null);
+            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl, userDetailsRequest, null);
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             foreach (var user in slackUsers.Members)
             {
-                _slackUserDetails.Insert(user);
-                _slackUserDetails.Save();
+                if (user.Name != "slackbot")
+                {
+                    _slackUserDetails.Insert(user);
+                    _slackUserDetails.Save();
+                }
             }
             return Ok(slackOAuth);
+        }
+
+        /// <summary>
+        /// Method to handle the slack event. Event is when a new user will join the team
+        /// </summary>
+        /// <param name="slackEvent"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("slack/eventAlert")]
+        public IHttpActionResult SlackEvent(SlackEventApiAC slackEvent)
+        {
+            if (slackEvent.Type == "url_verification")
+            {
+                return Ok(slackEvent.Challenge);
+            }
+            if (slackEvent.Type == "team_join")
+            {
+                slackEvent.Event.User.TeamId = slackEvent.TeamId;
+                _slackUserDetails.Insert(slackEvent.Event.User);
+                _slackUserDetails.Save();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
