@@ -37,7 +37,6 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaves/slackcall")]
         public async Task<IHttpActionResult> SlackRequest()
         {
-            //var request = HttpContext.Request.Form;
             var request = HttpContext.Current.Request.Form;
             var leave = _attachmentRepository.SlashCommandTransfrom(request);
             try
