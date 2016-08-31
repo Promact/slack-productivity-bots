@@ -340,6 +340,9 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReportDetails.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReportDetails\leaveReportDetails.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReportList\leaveReport.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\mock\test.connection.ts" />
