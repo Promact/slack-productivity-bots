@@ -1,12 +1,12 @@
 ﻿
 import { Routes, RouterModule } from '@angular/router';
-import { LeaveReportComponent } from './leaveReport/leaveReportList/leaveReport';
-import { LeaveReportDetailsComponent } from './leaveReport/leaveReportDetails/leaveReportDetails';
+import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveReport-List.component';
+import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 
 const appRoutes: Routes = [
     {
         path: 'report',
-        component: LeaveReportComponent
+        component: LeaveReportListComponent
     },
     {
         path: 'detail/:id',
