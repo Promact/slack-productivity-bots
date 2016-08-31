@@ -4,6 +4,7 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
+using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -27,8 +28,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken)
         {
-            var clientId = AppSettingsUtil.ClientId;
-            var clientSecret = AppSettingsUtil.ClientSecret;
+            var clientId = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User);
+            var clientSecret = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientSecret, EnvironmentVariableTarget.User);
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -46,7 +47,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/SlackRequest")]
         public async Task<IHttpActionResult> OAuth(string code)
         {
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", AppSettingsUtil.OAuthClientId, AppSettingsUtil.OAuthClientSecret, code);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientSecret, EnvironmentVariableTarget.User), code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
