@@ -1,6 +1,7 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.LeaveReportRepository;
+using Promact.Erp.DomainModel.Models;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -27,11 +28,10 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaveReport")]
         public async Task<IHttpActionResult> LeaveReport()
         {
-            //var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            //var login = await _userManager.GetLoginsAsync(user.Id);
-            //var acccessToken = _attachmentRepository.AccessToken(login);
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
-            return Ok(await _leaveReport.LeaveReport(accessToken));
+            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var userName = loginUser.UserName;
+            return Ok(await _leaveReport.LeaveReport(accessToken, userName));
         }
 
 
@@ -45,8 +45,6 @@ namespace Promact.Erp.Core.Controllers
         {
             if (employeeId != null)
             {
-                //var user = await _userManager.FindByNameAsync(User.Identity.Name);
-                //var login = await _userManager.GetLoginsAsync(user.Id);
                 var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
                 return Ok(await _leaveReport.LeaveReportDetails(employeeId,accessToken));
             }
