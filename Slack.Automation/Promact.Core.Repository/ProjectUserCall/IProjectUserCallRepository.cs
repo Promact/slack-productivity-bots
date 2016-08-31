@@ -53,5 +53,9 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
         Task<double> CasualLeave(string slackUserName, string accessToken);
+        Task<List<User>> GetUsersByGroupName(string groupName);
+        Task<User> GetUserById(string EmployeeId);
+        Task<User> GetUserByEmployeeId(string employeeId, string accessToken);
+        Task<User> GetUserByUserName(string userName, string accessToken);
     }
 }
