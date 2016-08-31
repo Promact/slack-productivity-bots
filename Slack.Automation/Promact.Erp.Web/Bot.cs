@@ -15,7 +15,7 @@ namespace Promact.Erp.Web
         public static void Main(IComponentContext container)
         {
             // assigning bot token on Slack Socket Client
-            SlackSocketClient client = new SlackSocketClient(AppSettingsUtil.TaskmailAccessToken);
+            SlackSocketClient client = new SlackSocketClient(Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.User));
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
