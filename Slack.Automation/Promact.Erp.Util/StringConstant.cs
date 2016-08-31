@@ -102,5 +102,16 @@ namespace Promact.Erp.Util
         public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list",Environment.NewLine);
         public static string SlashCommandLeaveCancelErrorMessage = "Please enter a valid leave cancel command. Example :- /leaves cancel 75";
         public static string SlashCommandLeaveStatusErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves status username{0}/leaves status",Environment.NewLine);
+        public static string Host = "Host";
+        public static string Port = "Port";
+        public static string From = "From";
+        public static string Password = "Password";
+        public static string EnableSsl = "EnableSsl";
+        public static string IncomingWebHookUrl = "IncomingWebHookUrl";
+        public static string TaskmailAccessToken = "DailyTaskMailAccessToken";
+        public static string SlackOAuthClientId = "SlackOAuthClientId";
+        public static string SlackOAuthClientSecret = "SlackOAuthClientSecret";
+        public static string PromactOAuthClientId = "PromactOAuthClientId";
+        public static string PromactOAuthClientSecret = "PromactOAuthClientSecret";
     }
 }
