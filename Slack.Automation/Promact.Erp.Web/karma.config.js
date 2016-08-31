@@ -49,6 +49,7 @@ module.exports = function(config) {
 
 
     // Our built application code
+    { pattern: 'app/**/*.ts', included: false, watched: true },
     { pattern: 'app/**/*.js', included: false, watched: true },
     { pattern: 'app/**/*.js.map', included: false, watched: true },
     { pattern: 'app/**/*.html', included: false, watched: true },
@@ -95,7 +96,8 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'IE'],
+   // browsers: ['Chrome', 'Firefox', 'IE'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode

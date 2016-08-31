@@ -1,11 +1,11 @@
 ﻿import { Component } from '@angular/core';
-import { LeaveReportDetail } from '../leaveReportDetails.model';
+import { LeaveReportDetail } from './leaveReport-Details.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { ActivatedRoute } from '@angular/router';
 declare let jsPDF: any;
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReportDetails/leaveReportDetails.html',
+    templateUrl: './app/leaveReport/leaveReport-Details/leaveReport-Details.html',
 })
 
 export class LeaveReportDetailsComponent {
@@ -18,7 +18,6 @@ export class LeaveReportDetailsComponent {
     }
 
     ngOnInit() {
-        this.leaveReportDetail = [];
         this.getLeaveReportDetail();
     }
 

@@ -54,5 +54,6 @@ namespace Promact.Erp.Util
         public static string RequestToStartTaskMail = "Please start task mail";
         public static string AlreadyMailSend = "You have already sended mail for today. No more task mail for today";
         public static string TaskMailSubject = "Task Mail";
+        public static string xy = "getByUserName/";
     }
 }
