@@ -1,8 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 
-import { LeaveReport } from './leaveReport.model';
-import { LeaveReportDetail } from './leaveReportDetails.model';
+import { LeaveReport } from './leaveReport-List/leaveReport-List.model';
+import { LeaveReportDetail } from './leaveReport-Details/leaveReport-Details.model';
 
 import { Observable } from 'rxjs/Rx';
 

@@ -9,7 +9,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
 {
     public interface ILeaveReportRepository
     {
-        Task<IEnumerable<LeaveReport>> LeaveReport(string accessToken);
+        Task<IEnumerable<LeaveReport>> LeaveReport(string accessToken,string userName);
 
         Task <IEnumerable<LeaveReportDetails>> LeaveReportDetails(string employeeId, string accessToken);
         

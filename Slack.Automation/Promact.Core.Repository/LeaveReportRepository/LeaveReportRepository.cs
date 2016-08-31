@@ -16,9 +16,6 @@ namespace Promact.Core.Repository.LeaveReportRepository
         private readonly IRepository<LeaveRequest> _leaveRequest;
         private readonly IProjectUserCallRepository _projectUserCall;
 
-        private int totalCasualLeaves = 14;
-        private int totalSickLeaves = 7;
-
         public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IProjectUserCallRepository projectUserCall)
         {
             _leaveRequest = leaveRequest;
@@ -29,34 +26,49 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method that returns the list of employees with their leave status
         /// </summary>
         /// <returns>List of employees with leave status</returns>       
-        public async Task<IEnumerable<LeaveReport>> LeaveReport(string accessToken)
+        public async Task<IEnumerable<LeaveReport>> LeaveReport(string accessToken,string userName )
         {
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList();
-            List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
             List<LeaveReport> leaveReports = new List<LeaveReport>();
             User user = new User();
+            User loginUser = await _projectUserCall.GetUserByUserName(userName, accessToken);
 
-            foreach (var leaveRequest in distinctLeaveRequests)
+            if (loginUser.Role == "Admin")
+            {
+               
+                List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
+
+                foreach (var leaveRequest in distinctLeaveRequests)
                 {
-                user = await getEmployeeById(leaveRequest.EmployeeId,accessToken);
-                if (user != null)
+                    user = await getEmployeeById(leaveRequest.EmployeeId, accessToken);
+                    if (user != null)
                     {
                         LeaveReport leaveReport = new LeaveReport
                         {
+                            Role = user.Role,
                             EmployeeId = user.Id,
                             EmployeeUserName = user.Email,
                             EmployeeName = (user.FirstName + " " + user.LastName),
-                            TotalCasualLeave = totalCasualLeaves,
-                            TotalSickLeave = totalSickLeaves,
+                            TotalCasualLeave = user.NumberOfCasualLeave,
+                            TotalSickLeave = user.NumberOfSickLeave,
                             UtilisedCasualLeave = getUtilisedCasualLeavesByEmployee(leaveRequest.EmployeeId),
-                            BalanceCasualLeave = getBalanceCasualLeave(leaveRequest.EmployeeId),
+                            BalanceCasualLeave = user.NumberOfCasualLeave - getUtilisedCasualLeavesByEmployee(leaveRequest.EmployeeId),
                             UtilisedSickLeave = null,
                             BalanceSickLeave = null
                         };
                         leaveReports.Add(leaveReport);
                     }
+
                 }
-            return leaveReports;
+                return leaveReports;
+            }
+            //else if (loginUser.Role == "Employee")
+            //{
+            //    var userId = loginUser.Id; 
+            //    List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
+            //    List<LeaveRequest> distinctLeaveRequest = leaveRequests.
+            //} 
+            return null;
         }
 
 
@@ -77,17 +89,6 @@ namespace Promact.Core.Repository.LeaveReportRepository
                  }
             }
             return utilisedCasualLeave;
-        }
-
-        /// <summary>
-        /// Method to calculate balance casual leaves for eac employee
-        /// </summary>
-        /// <param name="employeeId"></param>
-        /// <returns>Casual leaves left for that particular employee</returns>
-        private int getBalanceCasualLeave(string employeeId)
-        {
-            var balanceCasualLeaves = totalCasualLeaves - getUtilisedCasualLeavesByEmployee(employeeId);
-            return balanceCasualLeaves;
         }
 
         /// <summary>

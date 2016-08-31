@@ -1,5 +1,5 @@
 ﻿import { Injectable, Pipe, PipeTransform } from '@angular/core';
-import { LeaveReport } from './leaveReport.model';
+import { LeaveReport } from './leaveReport-List/leaveReport-List.model';
 
 @Pipe({ name: 'filter' })
 
