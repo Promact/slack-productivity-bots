@@ -30,8 +30,7 @@ namespace Promact.Erp.Core.Controllers
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            var userName = loginUser.UserName;
-            return Ok(await _leaveReport.LeaveReport(accessToken, userName));
+            return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
         }
 
 
