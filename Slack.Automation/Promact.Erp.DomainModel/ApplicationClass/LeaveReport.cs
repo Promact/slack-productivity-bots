@@ -54,6 +54,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// </summary>
         public int? BalanceSickLeave { get; set; }
 
+        /// <summary>
+        /// Role of the user
+        /// </summary>
         public string Role { get; set; }
 
     }

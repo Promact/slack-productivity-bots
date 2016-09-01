@@ -28,6 +28,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         [JsonProperty("IsActive")]
         public bool IsActive { get; set; }
 
+        [JsonProperty("Role")]
         public string Role { get; set; }
 
         [Required]
