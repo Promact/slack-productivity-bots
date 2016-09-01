@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using NLog;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util;
@@ -12,6 +13,7 @@ namespace Promact.Erp.Web
     {
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
+        private static ILogger _logger;
         public static void Main(IComponentContext container)
         {
             // assigning bot token on Slack Socket Client
@@ -20,6 +22,7 @@ namespace Promact.Erp.Web
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
+                _logger = container.Resolve<ILogger>();
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
@@ -46,8 +49,9 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                client.CloseSocket();
-                throw ex;
+                _logger.Error(ex, StringConstant.LoggerErrorMessageTaskMailBot);
+                //client.CloseSocket();
+                //throw;
             }
         }
     }

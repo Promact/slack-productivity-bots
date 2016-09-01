@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.Owin;
+using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
@@ -20,13 +21,15 @@ namespace Promact.Erp.Core.Controllers
         private readonly IClient _client;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManager;
+        private readonly ILogger _logger;
 
-        public LeaveRequestController(ISlackRepository slackRepository, IClient client, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
+        public LeaveRequestController(ISlackRepository slackRepository, IClient client, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager, ILogger logger)
         {
             _slackRepository = slackRepository;
             _client = client;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
+            _logger = logger;
         }
         /// <summary>
         /// Slack Call for Slash Command
@@ -76,6 +79,7 @@ namespace Promact.Erp.Core.Controllers
             catch (Exception ex)
             {
                 _client.SendMessage(leave, StringConstant.SlackErrorMessage);
+                _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest);
                 return BadRequest(ex.ToString());
             }
         }
@@ -89,9 +93,17 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaves/slackbuttoncall")]
         public IHttpActionResult SlackButtonRequest()
         {
+            try
+            {
             SlashChatUpdateResponse leaveResponse = new SlashChatUpdateResponse();
             _slackRepository.UpdateLeave(leaveResponse);
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest);
+                throw;
+            }
         }
     }
 }
