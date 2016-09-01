@@ -255,3 +255,4 @@ paket-files/
 **/app/**/*.js
 **/app/**/*.js.map
 typings/
+opencoverCoverage.xml

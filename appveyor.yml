@@ -10,18 +10,3 @@ build:
   verbosity: minimal
 test_script:
 - cmd: '".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" ".\Slack.Automation\Promact.Core.Test\bin\Release\Promact.Core.Test.dll" -appveyor'
-deploy:
-- provider: WebDeploy
-  server: https://promactslack.scm.azurewebsites.net/msdeploy.axd
-  website: promactslack.azurewebsites.net
-  username: $promactslack
-  password:
-    secure: DDuj4/J2qihNGCqj/3CMk3YdUEZvgCGt+OteQCG76aU/Jrz0Tek8yzF7RqrXwUwNvaTWw4YbK8Hecc3psGJVVw==
-notifications:
-- provider: Slack
-  auth_token:
-    secure: a8gvDGvmvaulk5ajhx+cTq9Eebui6VidpqGMXmx7HKu5SHwnSKZGveU/BclA+/hifPjQMWUNyvWIFX8LpSDcPQ==
-  channel: sci-oauth-dev
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: false
