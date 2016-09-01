@@ -6,6 +6,7 @@ platform: Any CPU
 before_build:
 - cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\""
 build:
+  project: .\Slack.Automation\Promact.ERP.sln
   parallel: true
   verbosity: minimal
 test_script:
