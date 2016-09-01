@@ -92,15 +92,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
                     leaveReports.Add(leaveReport);
                 }
             }
-                return leaveReports;
-            }
-            //else if (loginUser.Role == "Employee")
-            //{
-            //    var userId = loginUser.Id; 
-            //    List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
-            //    List<LeaveRequest> distinctLeaveRequest = leaveRequests.
-            //} 
-            return null;
+            return leaveReports;
         }
 
         /// <summary>
