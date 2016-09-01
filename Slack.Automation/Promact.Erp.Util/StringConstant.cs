@@ -124,5 +124,6 @@ namespace Promact.Erp.Util
         public static string LoggerErrorMessageTaskMailBot = "Error in Task Mail Bot";
         public static string SlackGroupListUrl = "https://slack.com/api/groups.list";
         public static string SlackChannelListUrl = "https://slack.com/api/channels.list";
+        public static string SlackBotStringName = "slackbot";
     }
 }

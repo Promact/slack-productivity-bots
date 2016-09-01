@@ -71,7 +71,7 @@ namespace Promact.Erp.Core.Controllers
                 var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
                 foreach (var user in slackUsers.Members)
                 {
-                    if (user.Name != "slackbot")
+                    if (user.Name != StringConstant.SlackBotStringName)
                     {
                         _slackUserDetails.Insert(user);
                         _slackUserDetails.Save();
