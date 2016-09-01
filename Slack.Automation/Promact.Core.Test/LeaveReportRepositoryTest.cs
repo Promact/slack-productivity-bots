@@ -16,6 +16,7 @@ namespace Promact.Core.Test
         private  IComponentContext _componentContext;
         private  ILeaveReportRepository _leaveReportRepository;
         string accessToken = "9846dae2-6a9c-44c9-9429-06b99c5ad222";
+        string username = "";
 
         public LeaveReportRepositoryTest()
         {
@@ -29,7 +30,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTest()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport(accessToken);
+            var leaveReports = await _leaveReportRepository.LeaveReport(username,accessToken);
             Assert.Equal(1,leaveReports.Count());
         }
 
@@ -49,7 +50,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveReportTestFalse()
         {
-            var leaveReports = await _leaveReportRepository.LeaveReport(accessToken);
+            var leaveReports = await _leaveReportRepository.LeaveReport(username,accessToken);
             Assert.NotEqual(5,leaveReports.Count());
         }
 

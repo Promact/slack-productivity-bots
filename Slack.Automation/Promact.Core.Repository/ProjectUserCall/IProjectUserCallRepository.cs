@@ -16,5 +16,6 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<User> GetUserById(string EmployeeId);
         Task<User> GetUserByEmployeeId(string employeeId, string accessToken);
         Task<User> GetUserByUserName(string userName, string accessToken);
+        Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken);
     }
 }

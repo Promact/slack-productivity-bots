@@ -4,6 +4,7 @@
         <tr>
             <th>Employee Name</th>
             <th>Employee UserName</th>
+            <th>Role</th>
             <th>Total Sick Leave</th>
             <th>Total Casual Leave</th>
             <th>Utilised Casual Leave</th>
@@ -19,6 +20,7 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
         <td>
             <input type="text" [(ngModel)]="UtilisedCasualLeave" placeholder="UtilisedCasualLeave">
         </td>
@@ -26,7 +28,8 @@
     <tbody>
         <tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave ">
             <td><a routerLink="/detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
-            <td>{{leaveReport.EmployeeUserName}}</td>   
+            <td>{{leaveReport.EmployeeUserName}}</td> 
+            <td>{{leaveReport.Role}}</td>  
             <td>{{leaveReport.TotalSickLeave}}</td>
             <td>{{leaveReport.TotalCasualLeave}}</td>
             <td>{{leaveReport.UtilisedCasualLeave}}</td>
