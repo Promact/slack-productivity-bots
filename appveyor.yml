@@ -3,6 +3,9 @@ pull_requests:
   do_not_increment_build_number: true
 configuration: Release
 platform: Any CPU
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
 before_build:
 - cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings tslint typescript \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\""
 build:
