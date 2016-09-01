@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Promact.Core.Repository.HttpClientRepository;
+using NLog;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -15,40 +14,15 @@ namespace Promact.Erp.Core.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private readonly ILogger _logger;
 
-        public HomeController()
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = logger;
         }
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
-
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set
-            {
-                _signInManager = value;
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
         public ActionResult Index()
         {
             return View();
@@ -68,14 +42,22 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult ExtrenalLogin()
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                if (User.Identity.IsAuthenticated)
+                {
+                    return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                }
+                //BaseUrl of OAuth and clientId of App to be set 
+                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
+                //make call to the OAuth Server
+                return Redirect(url);
             }
-            //BaseUrl of OAuth and clientId of App to be set 
-            var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
-            //make call to the OAuth Server
-            return Redirect(url);
+            catch (Exception ex)
+            {
+                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerExtrenalLogin);
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -83,39 +65,47 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email ,string slackUserName)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName)
         {
-            var user = UserManager.FindByEmail(email);
-            if (user!=null)
+            try
             {
-                UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                await UserManager.AddLoginAsync(user.Id, info);
-                await SignInManager.SignInAsync(user, false, false);
-                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
-            }
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
-            }
-            if (user == null)
-            {
-                user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
-                //Creating a user with email only. Password not required
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
+                var user = _userManager.FindByEmail(email);
+                if (user != null)
                 {
-                    //Adding external Oauth details
                     UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                    result = await UserManager.AddLoginAsync(user.Id, info);
+                    await _userManager.AddLoginAsync(user.Id, info);
+                    await _signInManager.SignInAsync(user, false, false);
+                    return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                }
+                if (User.Identity.IsAuthenticated)
+                {
+                    return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                }
+                if (user == null)
+                {
+                    user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
+                    //Creating a user with email only. Password not required
+                    var result = await _userManager.CreateAsync(user);
                     if (result.Succeeded)
                     {
-                        //Signing user with username or email only
-                        await SignInManager.SignInAsync(user, false, false);
-                        return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                        //Adding external Oauth details
+                        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
+                        result = await _userManager.AddLoginAsync(user.Id, info);
+                        if (result.Succeeded)
+                        {
+                            //Signing user with username or email only
+                            await _signInManager.SignInAsync(user, false, false);
+                            return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
+                        }
                     }
                 }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack);
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -124,8 +114,16 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut();
-            return RedirectToAction(StringConstant.Index, StringConstant.Home);
+            try
+            {
+                AuthenticationManager.SignOut();
+                return RedirectToAction(StringConstant.Index, StringConstant.Home);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerLogoff);
+                throw ex;
+            }
         }
 
         private IAuthenticationManager AuthenticationManager
@@ -142,7 +140,7 @@ namespace Promact.Erp.Core.Controllers
         /// <returns></returns>
         public ActionResult SlackOAuth()
         {
-            return Redirect(StringConstant.LeaveManagementAuthorizationUrl+StringConstant.OAuthAuthorizationScopeAndClientId+ Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
+            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User));
         }
     }
 }
