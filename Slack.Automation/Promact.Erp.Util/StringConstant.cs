@@ -31,7 +31,7 @@ namespace Promact.Erp.Util
         public static string UserDetailsByIdUrl = "fetchUserById/";
         public static string UserDetailByUserNameUrl = "fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
-        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read&client_id=";
+        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read,groups:read&client_id=";
         public static string UserDetailsUrl = "userDetails/";
         public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
         public static string ManagementDetailsUrl = "managementDetails";
@@ -113,5 +113,16 @@ namespace Promact.Erp.Util
         public static string SlackOAuthClientSecret = "SlackOAuthClientSecret";
         public static string PromactOAuthClientId = "PromactOAuthClientId";
         public static string PromactOAuthClientSecret = "PromactOAuthClientSecret";
+        public static string LoggerErrorMessageLeaveRequestControllerSlackRequest = "Error in Leave Request Controller-Slack Request";
+        public static string LoggerErrorMessageLeaveRequestControllerSlackButtonRequest = "Error in Leave Request Controller-Slack Button Request";
+        public static string LoggerErrorMessageHomeControllerExtrenalLogin = "Error in Home Controller-Extrenal Login ";
+        public static string LoggerErrorMessageHomeControllerExtrenalLoginCallBack = "Error in Home Controller-Extrenal Login CallBack ";
+        public static string LoggerErrorMessageHomeControllerLogoff = "Error in Home Controller-LogOff";
+        public static string LoggerErrorMessageOAuthControllerRefreshToken = "Error in OAuth Controller-Refresh Token";
+        public static string LoggerErrorMessageOAuthControllerSlackOAuth = "Error in OAuth Controller-Slack OAuth";
+        public static string LoggerErrorMessageOAuthControllerSlackEvent = "Error in OAuth Controller-Slack Event";
+        public static string LoggerErrorMessageTaskMailBot = "Error in Task Mail Bot";
+        public static string SlackGroupListUrl = "https://slack.com/api/groups.list";
+        public static string SlackChannelListUrl = "https://slack.com/api/channels.list";
     }
 }
