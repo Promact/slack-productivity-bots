@@ -72,7 +72,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Get a particular leave detail using leaveId
         /// </summary>
         /// <param name="leaveId"></param>
-        /// <returns></returns>
+        /// <returns>leave</returns>
         public LeaveRequest LeaveById(int leaveId)
         {
             var leave = _leaveRequestRepository.FirstOrDefault(x => x.Id == leaveId);
