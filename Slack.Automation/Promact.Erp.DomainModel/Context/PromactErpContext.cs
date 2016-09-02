@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
+using System.Data.Common;
 using System.Data.Entity;
 
 namespace Promact.Erp.DomainModel.Context
@@ -9,6 +10,10 @@ namespace Promact.Erp.DomainModel.Context
     {
         public PromactErpContext()
             : base("DefaultConnection", throwIfV1Schema: false)
+        {
+
+        }
+        public PromactErpContext(DbConnection dbConnection):base(dbConnection,true)
         {
 
         }
@@ -22,6 +27,7 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<TaskMailDetails> TaskMailDetails { get; set; }
         public DbSet<TaskMail> TaskMail { get; set; }
         public DbSet<SlackUserDetails> SlackUserDetails { get; set; }
+        public DbSet<SlackChannelDetails> SlackChannelDetails { get; set; }
 
         public static PromactErpContext Create()
         {

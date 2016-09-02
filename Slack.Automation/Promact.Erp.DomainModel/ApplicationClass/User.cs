@@ -33,14 +33,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         [JsonProperty("Email")]
         public string Email { get; set; }
 
-        [StringLength(255)]
-        [JsonProperty("Password")]
-        public string Password { get; set; }
-
         [JsonProperty("UserName")]
         public string UserName { get; set; }
 
         [JsonProperty("UniqueName")]
         public string UniqueName { get { return FirstName + "-" + Email; } }
+
+        public string SlackUserName { get; set; }
     }
 }

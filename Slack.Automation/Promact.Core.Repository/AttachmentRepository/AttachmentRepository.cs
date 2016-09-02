@@ -18,7 +18,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             _userManager = userManager;
         }
         /// <summary>
-        /// Method to create attchment of slack used generically
+        /// Method to create attchment of slack with a text as reply, can be used generically
         /// </summary>
         /// <param name="leaveRequestId"></param>
         /// <param name="replyText"></param>
@@ -61,7 +61,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         }
 
         /// <summary>
-        /// Method will create text corresponding to leave details and user which is to be send on slack as reply
+        /// Method will create text corresponding to leave details and user, which will to be send on slack as reply
         /// </summary>
         /// <param name="username"></param>
         /// <param name="leave"></param>
@@ -95,21 +95,21 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// Method to transform NameValueCollection to SlashCommand class
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns>leave of class SlashCommand</returns>
         public SlashCommand SlashCommandTransfrom(NameValueCollection value)
         {
             SlashCommand leave = new SlashCommand()
             {
-                ChannelId = value.Get("channel_id"),
-                ChannelName = value.Get("channel_name"),
-                Command = value.Get("command"),
-                ResponseUrl = value.Get("response_url"),
-                TeamDomain = value.Get("team_domain"),
-                TeamId = value.Get("team_id"),
-                Text = value.Get("text"),
-                Token = value.Get("token"),
-                UserId = value.Get("user_id"),
-                Username = value.Get("user_name"),
+                ChannelId = value.Get(StringConstant.ChannelId),
+                ChannelName = value.Get(StringConstant.ChannelName),
+                Command = value.Get(StringConstant.Command),
+                ResponseUrl = value.Get(StringConstant.ResponseUrl),
+                TeamDomain = value.Get(StringConstant.TeamDomain),
+                TeamId = value.Get(StringConstant.TeamId),
+                Text = value.Get(StringConstant.Text),
+                Token = value.Get(StringConstant.Token),
+                UserId = value.Get(StringConstant.UserId),
+                Username = value.Get(StringConstant.UserName),
             };
             return leave;
         }
@@ -125,7 +125,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             var accessToken = "";
             foreach (var provider in providerInfo)
             {
-                if(provider.LoginProvider == AppSettingsUtil.ProviderName)
+                if(provider.LoginProvider == StringConstant.PromactStringName)
                 {
                     accessToken = provider.ProviderKey;
                 }

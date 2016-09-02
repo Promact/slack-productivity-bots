@@ -18,6 +18,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
+using Effort;
+using Promact.Core.Repository.BotQuestionRepository;
+using Moq;
 
 namespace Promact.Core.Test
 {
@@ -26,7 +29,12 @@ namespace Promact.Core.Test
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<PromactErpContext>().As<DbContext>();
+            var dataContext = new PromactErpContext(DbConnectionFactory.CreateTransient());
+            builder.RegisterInstance(dataContext).As<DbContext>().SingleInstance();
+            var httpClientMock = new Mock<IHttpClientRepository>();
+            var httpClientMockObject = httpClientMock.Object;
+            builder.RegisterInstance(httpClientMock).As<Mock<IHttpClientRepository>>();
+            builder.RegisterInstance(httpClientMockObject).As<IHttpClientRepository>();
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
@@ -35,15 +43,19 @@ namespace Promact.Core.Test
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
-            builder.RegisterType<Client>().As<IClient>();
+            var clientMock = new Mock<IClient>();
+            var clientMockObject = clientMock.Object;
+            builder.RegisterInstance(clientMock).As<Mock<IClient>>();
+            builder.RegisterInstance(clientMockObject).As<IClient>();
+            //builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
-            builder.RegisterType<HttpClientRepository>().As<IHttpClientRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
+            builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             var container = builder.Build();
             return container;
         }

@@ -1,10 +1,6 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.Models
 {
@@ -23,6 +19,7 @@ namespace Promact.Erp.DomainModel.Models
         /// <summary>
         /// Number of hours send in a single task
         /// </summary>
+        [Range(0,8.0)]
         public decimal Hours { get; set; }
 
         /// <summary>

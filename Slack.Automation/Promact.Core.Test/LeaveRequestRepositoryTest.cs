@@ -2,6 +2,7 @@
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using System;
 using System.Linq;
 using Xunit;
@@ -28,9 +29,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void ApplyLeave()
         {
-            LeaveRequest leave = new LeaveRequest() { FromDate=DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason="testing", RejoinDate=DateTime.UtcNow, Status= Condition.Pending, Type="Casual", CreatedOn = DateTime.UtcNow, EmployeeId= "fc172bd7-42d9-4cbf-baa8-130be02d25ed" };
             _leaveRequestRepository.ApplyLeave(leave);
-            Assert.NotEqual(51, leave.Id);
+            Assert.Equal(1, leave.Id);
         }
 
         /// <summary>
@@ -39,8 +39,11 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveList()
         {
+            _leaveRequestRepository.ApplyLeave(leave);
+            _leaveRequestRepository.ApplyLeave(leave);
+            _leaveRequestRepository.ApplyLeave(leave);
             var leaves = _leaveRequestRepository.LeaveList();
-            Assert.NotEqual(0, leaves.Count());
+            Assert.Equal(3, leaves.Count());
         }
 
         /// <summary>
@@ -49,7 +52,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void CancelLeave()
         {
-            var leaves = _leaveRequestRepository.CancelLeave(50);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.CancelLeave(1);
             Assert.Equal(Condition.Cancel, leaves.Status);
         }
 
@@ -59,8 +63,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveListByUserId()
         {
+            _leaveRequestRepository.ApplyLeave(leave);
+            _leaveRequestRepository.ApplyLeave(leave);
             var status = new Condition();
-            var leaves = _leaveRequestRepository.LeaveListByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
+            var leaves = _leaveRequestRepository.LeaveListByUserId(StringConstant.StringIdForTest);
             foreach (var leave in leaves)
             {
                 status = leave.Status;
@@ -74,7 +80,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveListStatusByUserId()
         {
-            var leaves = _leaveRequestRepository.LeaveListStatusByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(StringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Cancel, leaves.Status);
         }
 
@@ -84,7 +91,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveById()
         {
-            var leaves = _leaveRequestRepository.LeaveById(30);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveById(1);
             Assert.Equal(Condition.Pending, leaves.Status);
         }
 
@@ -94,7 +102,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void UpdateLeave()
         {
-            var leaves = _leaveRequestRepository.LeaveById(40);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveById(1);
             leaves.Status = Condition.Rejected;
             _leaveRequestRepository.UpdateLeave(leaves);
             Assert.Equal(Condition.Rejected, leaves.Status);
@@ -107,7 +116,6 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void ApplyLeaveFalse()
         {
-            LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = "testing", RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = "Casual", CreatedOn = DateTime.UtcNow, EmployeeId = "fc172bd7-42d9-4cbf-baa8-130be02d25ed" };
             _leaveRequestRepository.ApplyLeave(leave);
             Assert.NotEqual(31, leave.Id);
         }
@@ -118,6 +126,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveListFalse()
         {
+            _leaveRequestRepository.ApplyLeave(leave);
             var leaves = _leaveRequestRepository.LeaveList();
             Assert.NotEqual(20, leaves.Count());
         }
@@ -128,7 +137,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void CancelLeaveFalse()
         {
-            var leaves = _leaveRequestRepository.CancelLeave(25);
+            _leaveRequestRepository.ApplyLeave(leave);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.CancelLeave(2);
             Assert.NotEqual(Condition.Pending, leaves.Status);
         }
 
@@ -139,7 +150,8 @@ namespace Promact.Core.Test
         public void LeaveListByUserIdFalse()
         {
             int Id = 0;
-            var leaves = _leaveRequestRepository.LeaveListByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveListByUserId(StringConstant.StringIdForTest);
             foreach (var leave in leaves)
             {
                 Id = leave.Id;
@@ -153,7 +165,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveListStatusByUserIdFalse()
         {
-            var leaves = _leaveRequestRepository.LeaveListStatusByUserId("c8735a71-619f-47b7-9da2-6761d1cc1972");
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(StringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
@@ -163,7 +176,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void LeaveByIdFalse()
         {
-            var leaves = _leaveRequestRepository.LeaveById(30);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveById(1);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
@@ -173,10 +187,24 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void UpdateLeaveFalse()
         {
-            var leaves = _leaveRequestRepository.LeaveById(40);
+            _leaveRequestRepository.ApplyLeave(leave);
+            var leaves = _leaveRequestRepository.LeaveById(1);
             leaves.Status = Condition.Rejected;
             _leaveRequestRepository.UpdateLeave(leaves);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
+
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void NumberOfLeaveTaken()
+        {
+            _leaveRequestRepository.ApplyLeave(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
+            Assert.NotEqual(10,casualLeave);
+        }
+
+        private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = StringConstant.LeaveTypeForTest, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
     }
 }

@@ -3,7 +3,9 @@ using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using NLog;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
@@ -37,11 +39,12 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
+            builder.Register(c => LogManager.GetCurrentClassLogger()).As<ILogger>();
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
             
             // register mvc controller
-            builder.RegisterControllers(typeof(LeaveRequestController).Assembly);
+            builder.RegisterControllers(typeof(HomeController).Assembly);
 
             // register webapi controller
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
@@ -61,6 +64,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
+            builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
 
             var container = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using Promact.Core.Repository.DataRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,7 +73,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Get a particular leave detail using leaveId
         /// </summary>
         /// <param name="leaveId"></param>
-        /// <returns></returns>
+        /// <returns>leave</returns>
         public LeaveRequest LeaveById(int leaveId)
         {
             var leave = _leaveRequestRepository.FirstOrDefault(x => x.Id == leaveId);
@@ -87,6 +88,23 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         {
             _leaveRequestRepository.Update(leave);
             _leaveRequestRepository.Save();
+        }
+
+        /// <summary>
+        /// Method to get number of leave taken by a user
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>number of leave taken</returns>
+        public double NumberOfLeaveTaken(string employeeId)
+        {
+            double casualLeaveTaken = 0.0;
+            var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == employeeId);
+            foreach (var leave in leaveList)
+            {
+                var leaveTaken = leave.EndDate.Day - leave.FromDate.Day;
+                casualLeaveTaken += Convert.ToDouble(leaveTaken);
+            }
+            return casualLeaveTaken;
         }
     }
 }

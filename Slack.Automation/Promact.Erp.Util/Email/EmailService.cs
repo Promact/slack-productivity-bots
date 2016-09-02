@@ -16,8 +16,6 @@ namespace Promact.Erp.Util.Email
         /// <param name="email">email.from, email.to, email.body, email.subject</param>
         public void Send(EmailApplication email)
         {
-            Configuration configurationFile = WebConfigurationManager.OpenWebConfiguration("~/web.config");
-            MailSettingsSectionGroup mailSettings = configurationFile.GetSectionGroup("system.net/mailSettings") as MailSettingsSectionGroup;
             MailMessage message = new MailMessage();
             message.From = new MailAddress(email.From);
             message.To.Add(new MailAddress(email.To));
@@ -26,10 +24,10 @@ namespace Promact.Erp.Util.Email
             message.BodyEncoding = Encoding.UTF8;
             message.IsBodyHtml = true;
             SmtpClient client = new SmtpClient();
-            client.Host = mailSettings.Smtp.Network.Host;
-            client.Port = mailSettings.Smtp.Network.Port;
-            client.Credentials = new System.Net.NetworkCredential(mailSettings.Smtp.From, mailSettings.Smtp.Network.Password);
-            client.EnableSsl = mailSettings.Smtp.Network.EnableSsl;
+            client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.User);
+            client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.User));
+            client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.User));
+            client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.User));
             try
             {
                 client.Send(message);
