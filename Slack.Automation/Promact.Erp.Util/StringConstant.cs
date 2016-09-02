@@ -125,5 +125,6 @@ namespace Promact.Erp.Util
         public static string SlackGroupListUrl = "https://slack.com/api/groups.list";
         public static string SlackChannelListUrl = "https://slack.com/api/channels.list";
         public static string SlackBotStringName = "slackbot";
+        public static string CasualLeaveUrl = "casual/leave/";
     }
 }

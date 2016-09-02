@@ -50,5 +50,12 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leave"></param>
         void UpdateLeave(LeaveRequest leave);
+
+        /// <summary>
+        /// Method to get number of leave taken by a user
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns>number of leave taken</returns>
+        double NumberOfLeaveTaken(string employeeId);
     }
 }

@@ -47,7 +47,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// Method to check leave Balance from slack
         /// </summary>
         /// <param name="leave"></param>
-        void SlackLeaveBalance(SlashCommand leave);
+        Task SlackLeaveBalance(SlashCommand leave,string accessToken);
 
         /// <summary>
         /// Method for gettin help on slack regards Leave slash command
