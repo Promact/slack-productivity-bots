@@ -101,7 +101,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == employeeId);
             foreach (var leave in leaveList)
             {
-                var leaveTaken = leave.EndDate.Date.Subtract(leave.FromDate.Date);
+                var leaveTaken = leave.EndDate.Day - leave.FromDate.Day;
                 casualLeaveTaken += Convert.ToDouble(leaveTaken);
             }
             return casualLeaveTaken;
