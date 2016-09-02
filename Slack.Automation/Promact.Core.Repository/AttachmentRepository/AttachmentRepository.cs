@@ -18,7 +18,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             _userManager = userManager;
         }
         /// <summary>
-        /// Method to create attchment of slack used generically
+        /// Method to create attchment of slack with a text as reply, can be used generically
         /// </summary>
         /// <param name="leaveRequestId"></param>
         /// <param name="replyText"></param>
