@@ -62,37 +62,50 @@ namespace Promact.Erp.Web
 
         public static void ScrumMain(IComponentContext container)
         {
-            SlackSocketClient client = new SlackSocketClient(Environment.GetEnvironmentVariable(StringConstant.ScrumMeetingBotToken, EnvironmentVariableTarget.User));//scrummeeting
+            SlackSocketClient client = new SlackSocketClient(Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.User));//scrumBot
             try
             {
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
                 _slackChannelDetails = container.Resolve<ISlackChannelRepository>();
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
+                // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
                 Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                // Telling Slack Socket Client to the bot whose access token was given early
+                //Connecting the bot of the given token 
                 client.Connect((connected) => { });
-                // Method will hit when someone send some text 
+                // Method will be called when someone sends message
                 client.OnMessageReceived += (message) =>
                 {
                     var user = _slackUserDetails.GetById(message.user);
                     var channel = _slackChannelDetails.GetById(message.channel);
                     string replyText = "";
-                    if (user != null && channel != null)
+                    string text = message.text;
+                    if (user != null && channel != null && user.Name != Environment.GetEnvironmentVariable(StringConstant.ScrumBotName, EnvironmentVariableTarget.User))
                     {
-                        string text = message.text;
+
                         var simpleText = text.Split(null);
+                        //start scrum or re-start scrum
                         if (text.ToLower().Equals(StringConstant.ScrumTime))
                             replyText = _scrumBotRepository.StartScrum(channel.Name, user.Name).Result;
+                        //a particular employee is on leave
                         else if (simpleText[0].ToLower().Equals(StringConstant.Leave) && simpleText.Length == 2)
-                            replyText = _scrumBotRepository.Leave(channel.Name, user.Name, simpleText[1]).Result;
+                        {
+                            int pFrom = text.IndexOf("<@") + "<@".Length;
+                            int pTo = text.LastIndexOf(">");
+                            string applicantId = text.Substring(pFrom, pTo - pFrom);
+                            string applicant = _slackUserDetails.GetById(applicantId).Name;
+                            replyText = _scrumBotRepository.Leave(channel.Name, user.Name, applicant).Result;
+                        }
+                        //all other texts
                         else
                             replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                     }
+                    else if (user != null && text.ToLower().Equals(StringConstant.ScrumHelp))
+                        replyText = StringConstant.ScrumHelpMessage;
                     // Method to send back response through bot
-                    client.SendMessage(showMethod, message.channel, replyText);
+                    if (!String.IsNullOrEmpty(replyText))
+                        client.SendMessage(showMethod, message.channel, replyText);
                 };
             }
             catch (Exception ex)

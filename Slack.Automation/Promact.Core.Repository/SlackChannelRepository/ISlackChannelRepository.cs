@@ -1,15 +1,20 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
     public interface ISlackChannelRepository
     {
+        /// <summary>
+        /// Method to add slack channel 
+        /// </summary>
+        /// <param name="slackUserDetails"></param>
         void AddSlackChannel(SlackChannelDetails slackChannelDetails);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slackId"></param>
+        /// <returns></returns>
         SlackChannelDetails GetById(string slackId);
     }
 }

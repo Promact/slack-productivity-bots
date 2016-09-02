@@ -99,7 +99,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, groupName);
-                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl,accessToken);
+                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
                 var user = JsonConvert.DeserializeObject<List<User>>(response);
                 return user;
             }
@@ -115,7 +115,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             try
             {
                 var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsByIdUrl, EmployeeId);
-                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, null);
+                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
                 var user = JsonConvert.DeserializeObject<User>(response);
                 return user;
             }
@@ -147,10 +147,17 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>user Details</returns>
         public async Task<User> GetUserByEmployeeId(string employeeId)
         {
-            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
-            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl,null);
-            var userDetails = JsonConvert.DeserializeObject<User>(response);
-            return userDetails;
+            try
+            {
+                var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, employeeId);
+                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null);
+                var userDetails = JsonConvert.DeserializeObject<User>(response);
+                return userDetails;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

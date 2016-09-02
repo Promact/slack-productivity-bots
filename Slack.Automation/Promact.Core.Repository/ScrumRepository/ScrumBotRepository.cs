@@ -3,9 +3,11 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
+using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,10 +31,9 @@ namespace Promact.Core.Repository.ScrumRepository
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
-            IAttachmentRepository attachmentRepository, IRepository<Scrum> scrumRepository,
-            IRepository<ApplicationUser> applicationUser, IClient clientRepository,
-            IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository)
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser, IRepository<Scrum> scrumRepository,
+            IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
+            IRepository<ApplicationUser> applicationUser, IClient clientRepository)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -47,36 +48,37 @@ namespace Promact.Core.Repository.ScrumRepository
         #endregion
 
 
-        #region Public Methods          
+        #region Public Methods   
+
 
         /// <summary>
-        /// This method is called whenever a message other than "scrum time" is written in the group during scrum meeting.
+        /// This method is called whenever a message other than "scrumn time" or "leave username" is written in the group during scrum meeting. - JJ
         /// </summary>
         /// <param name="UserName"></param>
         /// <param name="Message"></param>
         /// <param name="GroupName"></param>
-        /// <returns>Question statement</returns>
+        /// <returns>The next Question Statement</returns>
         public async Task<string> AddScrumAnswer(string UserName, string Message, string GroupName)
         {
             try
             {
                 var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
                 string message = "";
-                // getting user name from user's slack name
-                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                // getting access token for that user
-
-                var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
-
                 if (scrum.Any())
                 {
+                    // getting user name from user's slack name
+                    var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                    // getting access token for that user
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+
                     var questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
                     var questionCount = questions.Count();
-                    var firstQuestion = questions.OrderBy(x => x.OrderNumber).FirstOrDefault();
                     var employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+
                     var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.FirstOrDefault().Id).ToList();
                     if ((employees.Count() * questionCount) > scrumAnswer.Count())
                     {
+                        var firstQuestion = questions.OrderBy(x => x.OrderNumber).FirstOrDefault();
                         if (scrumAnswer.Any())
                         {
                             var lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
@@ -84,25 +86,30 @@ namespace Promact.Core.Repository.ScrumRepository
                             var questionStatement = "";
                             if (answerListCount < questionCount)
                             {
-                                var question = questions.Where(x => x.OrderNumber == lastScrumAnswer.Question.OrderNumber + 1).FirstOrDefault();
+                                var prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
+                                var question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
                                 AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message);
 
                                 if (questionCount == answerListCount + 1)
                                 {
+                                    //if the employee who answered now has answered all the questions
                                     var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
                                     var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                                     if (idlist.FirstOrDefault() != null)
                                     {
+                                        //first question to the next employee
                                         var user = await _projectUser.GetUserById(idlist.FirstOrDefault(), accessToken);
-                                        questionStatement = user.UserName + " " + FetchQuestion(null, true);
+                                        questionStatement = StringConstant.GoodDay + "<@" + user.SlackUserName + ">!\n" + FetchQuestion(null, true);
                                     }
                                     else
+                                        //all employees have been asked questions
                                         questionStatement = StringConstant.ScrumComplete;
                                 }
                                 else
                                 {
+                                    //next question to the same employee
                                     var user = await _projectUser.GetUserById(lastScrumAnswer.EmployeeId, accessToken);
-                                    questionStatement = user.UserName + " " + FetchQuestion(question.Id, false);
+                                    questionStatement = "<@" + user.SlackUserName + ">" + " " + FetchQuestion(question.Id, false);
                                 }
                                 message = questionStatement;
                             }
@@ -111,7 +118,7 @@ namespace Promact.Core.Repository.ScrumRepository
                                 //A particular employee's first answer
                                 var user = await _projectUser.GetUserBySlackUserName(UserName, accessToken);
                                 AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
-                                message = user.UserName + " " + FetchQuestion(firstQuestion.Id, false);
+                                message = StringConstant.GoodDay + "<@" + user.SlackUserName + ">!\n" + FetchQuestion(firstQuestion.Id, false);
                             }
                         }
                         else
@@ -119,15 +126,15 @@ namespace Promact.Core.Repository.ScrumRepository
                             //First Employee's first answer
                             var user = await _projectUser.GetUserBySlackUserName(UserName, accessToken);
                             AddAnswer(scrum.FirstOrDefault().Id, firstQuestion.Id, user.Id, Message);
-                            message = user.UserName + " " + FetchQuestion(firstQuestion.Id, false);
+                            message = "<@" + user.SlackUserName + ">" + " " + FetchQuestion(firstQuestion.Id, false);
                         }
                     }
                 }
                 return message;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return String.Empty;
             }
         }
 
@@ -147,15 +154,30 @@ namespace Promact.Core.Repository.ScrumRepository
                 // getting user name from user's slack name
                 var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
                 // getting access token for that user
-
                 var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
-
+                var questionList = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                 if (!(scrumList.Any()))
                 {
-                    var project = await _projectUser.GetProjectDetails(GroupName, accessToken);
+                    ProjectAc project;
+                    try
+                    {
+                        project = await _projectUser.GetProjectDetails(GroupName, accessToken);
+                    }
+                    catch (Exception)
+                    {
+                        return StringConstant.ServerClosed;
+                    }
                     if (project != null)
                     {
-                        var employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                        List<User> employees;
+                        try
+                        {
+                            employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                        }
+                        catch (Exception)
+                        {
+                            return StringConstant.ServerClosed;
+                        }
                         if (employees.Count != 0)
                         {
                             Scrum scrum = new Scrum();
@@ -168,9 +190,9 @@ namespace Promact.Core.Repository.ScrumRepository
                             _scrumRepository.Save();
 
                             var firstEmployee = employees.FirstOrDefault();
-                            var question = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).FirstOrDefault();
+                            var question = questionList.FirstOrDefault();
                             if (question != null)
-                                message = firstEmployee.UserName + " " + question.QuestionStatement;
+                                message = StringConstant.GoodDay + "<@" + firstEmployee.SlackUserName + ">!\n" + question.QuestionStatement;
                             else
                                 message = StringConstant.NoQuestion;
                         }
@@ -179,15 +201,15 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                     else
                         message = StringConstant.NoProjectFound;
+
                 }
                 else
-                    message = StringConstant.ScrumTimeStarted;
-
+                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken);
                 return message;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return String.Empty;
             }
         }
 
@@ -200,56 +222,46 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             try
             {
-                // getting user name from user's slack name
-                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                // getting access token for that user
-                var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);           
-              
-                var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).FirstOrDefault();
-                var employee = await _projectUser.GetUserBySlackUserName(LeaveApplicant, accessToken);
-                if (employee == null)
-                    return "Sorry." + LeaveApplicant + " is not a member of this project.";
-                else
-                {
-                    var questionList = _questionRepository.Fetch(x => x.Type == 1).ToList();
-                    foreach (var question in questionList)
-                    {
-                        var answer = new ScrumAnswer();
-                        answer.Answer = StringConstant.Leave;
-                        answer.AnswerDate = DateTime.UtcNow;
-                        answer.CreatedOn = DateTime.UtcNow;
-                        answer.EmployeeId = employee.Id;
-                        answer.QuestionId = question.Id;
-                        answer.ScrumId = scrum.Id;
-                        _scrumAnswerRepository.Insert(answer);
-                        _scrumAnswerRepository.Save();
-                    }
-                }
-
-                var employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
-                var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
-                var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
-                var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                 var returnMsg = "";
-                if (idList != null && idList.Count > 0)
+                var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).FirstOrDefault();
+                if (scrum != null)
                 {
-                    var user = await _projectUser.GetUserById(idList.FirstOrDefault(), accessToken);
-                    returnMsg = user.UserName + " " + FetchQuestion(null, true);
+                    // getting user name from user's slack name
+                    var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                    // getting access token for that user
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+
+                    var employee = await _projectUser.GetUserBySlackUserName(LeaveApplicant, accessToken);
+                    if (employee == null)
+                        return "Sorry." + LeaveApplicant + " is not a member of this project.";
+                    else
+                    {
+                        var questionList = _questionRepository.Fetch(x => x.Type == 1).ToList();
+                        foreach (var question in questionList)
+                        {
+                            var answer = new ScrumAnswer();
+                            answer.Answer = StringConstant.Leave;
+                            answer.AnswerDate = DateTime.UtcNow;
+                            answer.CreatedOn = DateTime.UtcNow;
+                            answer.EmployeeId = employee.Id;
+                            answer.QuestionId = question.Id;
+                            answer.ScrumId = scrum.Id;
+                            _scrumAnswerRepository.Insert(answer);
+                            _scrumAnswerRepository.Save();
+                        }
+                    }
+
+                    returnMsg = await GetQuestion(scrum.Id, GroupName, accessToken);
                 }
-                else
-                    returnMsg = StringConstant.ScrumComplete;
                 return returnMsg;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return StringConstant.ServerClosed;
             }
         }
 
-        #endregion
 
-
-        #region Private Methods
 
         /// <summary>
         /// This method is used to add Scrum answer to the database
@@ -259,7 +271,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="EmployeeId"></param>
         /// <param name="Message"></param>
         /// <returns></returns>
-        private bool AddAnswer(int ScrumID, int QuestionId, string EmployeeId, string Message)
+        public bool AddAnswer(int ScrumID, int QuestionId, string EmployeeId, string Message)
         {
             try
             {
@@ -280,6 +292,58 @@ namespace Promact.Core.Repository.ScrumRepository
             }
         }
 
+        #endregion
+
+
+        #region Private Methods
+
+        /// <summary>
+        /// Used to fetch the next question based on the given parameters
+        /// </summary>
+        /// <param name="ScrumId"></param>
+        /// <param name="GroupName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
+        private async Task<string> GetQuestion(int ScrumId, string GroupName, string accessToken)
+        {
+            try
+            {
+                var returnMsg = "";
+                var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == ScrumId).ToList();
+                if (scrumAnswer.Any())
+                {
+                    var questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
+                    var questionCount = questions.Count();
+                    var lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
+                    var answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+                    var employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                    if (answerListCount == questionCount)
+                    {
+                        var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
+                        var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                        if (idList != null && idList.Count > 0)
+                        {
+                            var user = await _projectUser.GetUserById(idList.FirstOrDefault(), accessToken);
+                            returnMsg = StringConstant.GoodDay + "<@" + user.SlackUserName + ">!\n" + FetchQuestion(null, true);
+                        }
+                        else
+                            returnMsg = StringConstant.ScrumComplete;
+                    }
+                    else
+                    {
+                        var user = await _projectUser.GetUserById(lastScrumAnswer.EmployeeId, accessToken);
+                        returnMsg = "<@" + user.SlackUserName + ">" + " " + FetchQuestion(lastScrumAnswer.QuestionId, false);
+                    }
+                }
+                return returnMsg;
+            }
+            catch (Exception)
+            {
+                return String.Empty;
+            }
+        }
+
+
         /// <summary>
         /// This method fetches the Question statement of next question of the given questionId
         /// </summary>
@@ -298,7 +362,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 else
                 {
                     var orderNumber = _questionRepository.FirstOrDefault(x => x.Id == QuestionId).OrderNumber;
-                    var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == orderNumber + 1);
+                    var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == orderNumber + 1 && x.Type == 1);
                     if (question != null)
                         return question.QuestionStatement;
                     else

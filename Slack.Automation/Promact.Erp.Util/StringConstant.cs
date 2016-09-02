@@ -53,13 +53,17 @@ namespace Promact.Erp.Util
         public static string TaskMailComment = "Comment";
         public static string TaskMailStatus = "Status";
         public static string ScrumTime = "scrum time";
+        public static string ScrumHelp = "scrum help";
+        public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nHope this helped.";
         public static string Leave = "leave";
-        public static string ScrumMeetingBotToken = "ScrumMeetingBotToken";
+        public static string ScrumBotToken = "ScrumBotToken";
+        public static string ScrumBotName = "ScrumBotName";
+        public static string ServerClosed = "Sorry :worried: .\n <@julie> : . We cannot process your request due to technical glitches.Please try after some time";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
-        public static string ScrumTimeStarted = "Sorry scrum time has already been started for this group.";
         public static string NoProjectFound = "No project found for this group.";
-        public static string ScrumComplete = "Scrum of all employees has been recorded";
+        public static string ScrumComplete = "Scrum concluded.\nGood luck team :thumbsup:";
+        public static string GoodDay = "Good Day ";
         public static string SendTaskMailConfirmationErrorMessage = "Please enter yes or no";
         public static string RequestToStartTaskMail = "Please start task mail";
         public static string AlreadyMailSend = "You have already sended mail for today. No more task mail for today";
@@ -109,7 +113,7 @@ namespace Promact.Erp.Util
         public static string ClientReturnUrl = "http://localhost:28182/Home/ExtrenalLoginCallBack";
         public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
         public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
-        public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list",Environment.NewLine);
+        public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list", Environment.NewLine);
         public static string SlashCommandLeaveCancelErrorMessage = "Please enter a valid leave cancel command. Example :- /leaves cancel 75";
         public static string SlashCommandLeaveStatusErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves status username{0}/leaves status",Environment.NewLine);
         public static string Host = "Host";
@@ -140,11 +144,30 @@ namespace Promact.Erp.Util
 
         #region String Constants for Test Cases
 
-        public static string UserName = "julie";
-        public static string GroupName = "trainees";
+        public static string UserNameForTest = "apoorvapatel";
+        public static string GroupName = "testbotgroup";
         public static string AnswerStatement = "Completed bot";
         public static string LeaveApplicant = "ankit";
+        public static string ChannelIdForTest = "231asd";
+        public static string ScrumQuestionForTest = "What did you do yesterday?";
+        public static string ChannelNameForTest = "testbotgroup";
 
+        //public static string ProjectDetailsFromOauth = "{\"id\":1,\"name\":\"trainees\",\"slackChannelName\":\"trainees\",\"isActive\":true,\"teamLeaderId\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
+        public static string ProjectDetailsFromOauth = "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
+
+        //public static string EmployeeDetailsFromOauth = "[{\"Id\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"FirstName\":\"Julie\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"Julie-julie@promactinfo.com\"}]";        
+        public static string EmployeeDetailsFromOauth = "{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}";
+        //public static string EmployeesListFromOauth = "[{\"Id\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"FirstName\":\"Julie\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"Julie-julie@promactinfo.com\"}]";
+        public static string EmployeesListFromOauth = "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+
+        //  public static string UserBySlackUserName = "{\"Id\":\"7d412023-f9af-46b8-ab0f-2860ef6e49fb\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
+        public static string UserBySlackUserName = "{\"Id\":\"fce9e5de-0c3e-410f-8602-068e211d5f4d\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
+        public static string UserBySlackUserNameForLeaveApplicant = "{\"Id\":\"fce9e5de-0c3e-410f-8602-068e211d5f4d\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
+        public static string UserIdForTest = "577696c8-136f-4865-8328-09e7d48ac58d";
+
+        public static string scrumAnswerForTest = "Worked on testing";
+        public static string ProjectIdForTest = "2";
+        public static string TeamLeaderIdForTest = "5c84049f-f861-406d-b420-e1bf03c9e06e";
         #endregion
     }
 }
