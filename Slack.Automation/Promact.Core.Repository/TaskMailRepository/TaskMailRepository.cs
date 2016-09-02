@@ -115,7 +115,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="answer"></param>
-        /// <returns></returns>
+        /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> QuestionAndAnswer(string userName, string answer)
         {
             try

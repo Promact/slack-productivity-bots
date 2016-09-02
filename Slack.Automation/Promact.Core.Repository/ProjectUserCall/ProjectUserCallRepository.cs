@@ -2,6 +2,7 @@
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -149,6 +150,21 @@ namespace Promact.Core.Repository.ProjectUserCall
             var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl,null);
             var userDetails = JsonConvert.DeserializeObject<User>(response);
             return userDetails;
+        }
+
+        /// <summary>
+        /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>Number of casual leave allowed</returns>
+        public async Task<double> CasualLeave(string slackUserName, string accessToken)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.CasualLeaveUrl, slackUserName);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var responseContent = JsonConvert.DeserializeObject<string>(response);
+            var casualLeave = Convert.ToDouble(responseContent);
+            return casualLeave;
         }
     }
 }

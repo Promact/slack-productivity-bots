@@ -233,9 +233,14 @@ namespace Promact.Core.Repository.SlackRepository
         /// Method to check leave Balance from slack
         /// </summary>
         /// <param name="leave"></param>
-        public void SlackLeaveBalance(SlashCommand leave)
+        /// <param name="accessToken"></param>
+        public async Task SlackLeaveBalance(SlashCommand leave,string accessToken)
         {
-            var replyText = StringConstant.UnderConstruction;
+            var casualLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
+            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+            var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
+            var casualLeaveLeft = casualLeave - casualLeaveTaken;
+            var replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave,Environment.NewLine,casualLeaveLeft);
             _client.SendMessage(leave, replyText);
         }
 

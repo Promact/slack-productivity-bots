@@ -67,7 +67,7 @@ namespace Promact.Erp.Core.Controllers
                         await _slackRepository.SlackLeaveStatus(slackText, leave, accessToken);
                         break;
                     case SlackAction.balance:
-                        _slackRepository.SlackLeaveBalance(leave);
+                        await _slackRepository.SlackLeaveBalance(leave,accessToken);
                         break;
                     default:
                         _slackRepository.SlackLeaveHelp(leave);

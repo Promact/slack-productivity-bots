@@ -17,8 +17,9 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// Method to use System.Net.Http.HttpClient's GetAsync method
         /// </summary>
         /// <param name="baseUrl"></param>
-        /// <param name="contentUrl"></param>
-        /// <returns>response</returns>
+        /// <param name="contentUrl"></param>        
+        /// <param name="accessToken"></param>
+        /// <returns>responseContent</returns>
         public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
