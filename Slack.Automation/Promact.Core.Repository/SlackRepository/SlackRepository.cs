@@ -45,10 +45,17 @@ namespace Promact.Core.Repository.SlackRepository
             leaveRequest.RejoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leaveRequest.Status = Condition.Pending;
             var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
-            leaveRequest.EmployeeId = user.Id;
             leaveRequest.CreatedOn = DateTime.UtcNow;
-            _leaveRepository.ApplyLeave(leaveRequest);
-            replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+            if (user != null)
+            {
+                leaveRequest.EmployeeId = user.Id;
+                _leaveRepository.ApplyLeave(leaveRequest);
+                replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+            }
+            else
+            {
+                replyText = StringConstant.SorryYouCannotApplyLeave;
+            }
             _client.SendMessage(leave, replyText);
             return leaveRequest;
         }
@@ -135,18 +142,19 @@ namespace Promact.Core.Repository.SlackRepository
         public void UpdateLeave(SlashChatUpdateResponse leaveResponse)
         {
             var leave = _leaveRepository.LeaveById(leaveResponse.CallbackId);
-            if (leaveResponse.Actions.Value == StringConstant.Approved)
-            {
-                leave.Status = Condition.Approved;
-            }
-            else
-            {
-                leave.Status = Condition.Rejected;
-            }
             if (leave.Status == Condition.Pending)
             {
-                _leaveRepository.UpdateLeave(leave);
+                if (leaveResponse.Actions.Value == StringConstant.Approved)
+                {
+                    leave.Status = Condition.Approved;
+                }
+                else
+                {
+                    leave.Status = Condition.Rejected;
+                }
             }
+            _leaveRepository.UpdateLeave(leave);
+
             var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
                             leave.Status,
                             leaveResponse.User.Name,
@@ -234,14 +242,23 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leave"></param>
         /// <param name="accessToken"></param>
-        public async Task SlackLeaveBalance(SlashCommand leave,string accessToken)
+        public async Task SlackLeaveBalance(SlashCommand leave, string accessToken)
         {
-            var casualLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
-            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
-            var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
-            var casualLeaveLeft = casualLeave - casualLeaveTaken;
-            var replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave,Environment.NewLine,casualLeaveLeft);
-            _client.SendMessage(leave, replyText);
+            try
+            {
+                var casualLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
+                var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
+                var casualLeaveLeft = casualLeave - casualLeaveTaken;
+                var replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave, Environment.NewLine, casualLeaveLeft);
+                _client.SendMessage(leave, replyText);
+            }
+            catch (Exception ex)
+            {
+                replyText = StringConstant.LeaveBalanceErrorMessage;
+                _client.SendMessage(leave, replyText);
+                throw ex;
+            }
         }
 
         /// <summary>

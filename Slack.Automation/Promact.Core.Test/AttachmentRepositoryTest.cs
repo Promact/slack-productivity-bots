@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
@@ -16,10 +17,12 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly IAttachmentRepository _attachmentRepository;
+        private readonly ApplicationUserManager _userManager;
         public AttachmentRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
         }
 
         /// <summary>
@@ -66,6 +69,20 @@ namespace Promact.Core.Test
             NameValueCollection value = new NameValueCollection();
             var response = _attachmentRepository.SlashCommandTransfrom(value);
             Assert.Equal(response.ChannelName, null);
+        }
+
+        /// <summary>
+        /// Test case to check Method AccessToken of Attachment Repository 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void AccessToken()
+        {
+            var user = new ApplicationUser() { Email = StringConstant.EmailForTest, UserName = StringConstant.EmailForTest, SlackUserName = StringConstant.FirstNameForTest};
+            var result = _userManager.CreateAsync(user).Result;
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            var secondResult = _userManager.AddLoginAsync(user.Id, info).Result;
+            var accessToken = _attachmentRepository.AccessToken(user.Email).Result;
+            Assert.Equal(accessToken, StringConstant.AccessTokenForTest);
         }
     }
 }
