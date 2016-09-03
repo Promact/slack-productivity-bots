@@ -23,7 +23,7 @@ namespace Promact.Erp.Util
         public static string AttachmentType = "default";
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
-        public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
+        public static string SlackErrorMessage = "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
 
 
         public static string ProjectDetailsUrl = "fetchProject/";
@@ -127,5 +127,15 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "10.0";
+        public static string SlackChannelIdForTest = "DA4ADFD44";
+        public static string MessageTsForTest = "5212201241.15452124";
+        public static string SorryYouCannotApplyLeave = "Sorry you can't apply leave. Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+        public static string LeaveListCommandForTest = "list siddhartha";
+        public static string LeaveCancelCommandForTest = "list 2";
+        public static string Cancel = "Cancel";
+        public static string FalseStringNameForTest = "Tester";
+        public static string LeaveBalanceErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+        public static string LeaveBalanceReplyTextForTest = "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
+        public static string OrElseString = "Or Else Sorry";
     }
 }
