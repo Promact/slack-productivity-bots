@@ -71,7 +71,10 @@ namespace Promact.Erp.Core.Controllers
                     case SlackAction.apply:
                         {
                             var leaveRequest = await _slackRepository.LeaveApply(slackText, leave, accessToken);
-                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                            if (leaveRequest.Id != 0)
+                            {
+                                await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                            }
                         }
                         break;
                     case SlackAction.list:
@@ -95,7 +98,8 @@ namespace Promact.Erp.Core.Controllers
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
-                _client.SendMessage(leave, StringConstant.SlackErrorMessage);
+                var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveBalanceErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
+                _client.SendMessage(leave, replyText);
                 _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest);
                 return BadRequest(ex.ToString());
             }
