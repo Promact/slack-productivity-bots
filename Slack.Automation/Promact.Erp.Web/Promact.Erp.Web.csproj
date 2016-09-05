@@ -213,6 +213,8 @@
   <ItemGroup>
     <Content Include="app\leaveReport\leaveReportDetails\leaveReportDetails.html" />
     <Content Include="app\leaveReport\leaveReportList\leaveReportList.html" />
+    <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
+    <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -258,7 +260,9 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="styles.css" />
     <Content Include="systemjs.config.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -329,6 +333,8 @@
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
+    <TypeScriptCompile Include="app\enums\taskMailStatus.ts" />
+    <TypeScriptCompile Include="app\http.service.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
@@ -336,6 +342,13 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReportDetails\leaveReportDetails.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReportList\leaveReport.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\taskmail\filter.pipe.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.component.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.model.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.routes.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.service.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

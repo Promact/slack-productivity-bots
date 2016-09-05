@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +24,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="answer"></param>
         /// <returns>questionText in string format containing question statement</returns>
         Task<string> QuestionAndAnswer(string userName, string answer);
-
+        Task<List<TaskMailReportAc>> TaskMailReport(string userName);
+        Task<List<TaskMailReportAc>> TaskMailDetailsReport(int id);
     }
 }

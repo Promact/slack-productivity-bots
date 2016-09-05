@@ -127,5 +127,8 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "10.0";
+
+        public static string ProjectInformationUrl = "featchUserRole/";
+
     }
 }
