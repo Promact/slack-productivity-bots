@@ -332,13 +332,13 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\mock\test.connection.ts" />
