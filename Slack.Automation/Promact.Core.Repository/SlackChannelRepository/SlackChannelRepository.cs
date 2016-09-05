@@ -25,7 +25,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// Method to get slack channel information by their slack channel id
         /// </summary>
         /// <param name="slackId"></param>
-        /// <returns></returns>
+        /// <returns>object of SlackChannelDetails</returns>
         public SlackChannelDetails GetById(string slackId)
         {
             var channel = _slackChannelDetailsContext.FirstOrDefault(x => x.Id == slackId);

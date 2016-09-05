@@ -24,8 +24,7 @@ namespace Promact.Erp.Util
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "Sorry, I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
-
-
+        
         public static string ProjectDetailsUrl = "fetchProject/";
         public static string UsersDetailByGroupUrl = "fetchProjectUsers/";
         public static string UserDetailsByIdUrl = "fetchUserById/";
@@ -63,6 +62,8 @@ namespace Promact.Erp.Util
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
         public static string NoProjectFound = "No project found for this group.";
         public static string ScrumComplete = "Scrum concluded.\nGood luck team :thumbsup:";
+        public static string ScrumNotStarted = "Scrum has not been initiated yet";
+        public static string ScrumAlreadyConducted = "Scrum for today has been concluded";
         public static string GoodDay = "Good Day ";
         public static string SendTaskMailConfirmationErrorMessage = "Please enter yes or no";
         public static string RequestToStartTaskMail = "Please start task mail";
@@ -147,27 +148,21 @@ namespace Promact.Erp.Util
         public static string UserNameForTest = "apoorvapatel";
         public static string GroupName = "testbotgroup";
         public static string AnswerStatement = "Completed bot";
-        public static string LeaveApplicant = "ankit";
+        public static string LeaveApplicant = "apoorvapatel";
         public static string ChannelIdForTest = "231asd";
         public static string ScrumQuestionForTest = "What did you do yesterday?";
         public static string ChannelNameForTest = "testbotgroup";
-
-        //public static string ProjectDetailsFromOauth = "{\"id\":1,\"name\":\"trainees\",\"slackChannelName\":\"trainees\",\"isActive\":true,\"teamLeaderId\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
         public static string ProjectDetailsFromOauth = "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
-
-        //public static string EmployeeDetailsFromOauth = "[{\"Id\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"FirstName\":\"Julie\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"Julie-julie@promactinfo.com\"}]";        
         public static string EmployeeDetailsFromOauth = "{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}";
-        //public static string EmployeesListFromOauth = "[{\"Id\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"FirstName\":\"Julie\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"Julie-julie@promactinfo.com\"}]";
-        public static string EmployeesListFromOauth = "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
-
-        //  public static string UserBySlackUserName = "{\"Id\":\"7d412023-f9af-46b8-ab0f-2860ef6e49fb\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
+        public static string EmployeesListFromOauth = "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
         public static string UserBySlackUserName = "{\"Id\":\"fce9e5de-0c3e-410f-8602-068e211d5f4d\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
         public static string UserBySlackUserNameForLeaveApplicant = "{\"Id\":\"fce9e5de-0c3e-410f-8602-068e211d5f4d\",\"FirstName\":null,\"LastName\":null,\"IsActive\":false,\"Email\":null,\"Password\":null,\"UserName\":null,\"UniqueName\":\"-\"}";
         public static string UserIdForTest = "577696c8-136f-4865-8328-09e7d48ac58d";
-
+        public static string TestUser = "pranali";
         public static string scrumAnswerForTest = "Worked on testing";
         public static string ProjectIdForTest = "2";
         public static string TeamLeaderIdForTest = "5c84049f-f861-406d-b420-e1bf03c9e06e";
+
         #endregion
     }
 }

@@ -11,10 +11,10 @@ namespace Promact.Core.Repository.SlackChannelRepository
         void AddSlackChannel(SlackChannelDetails slackChannelDetails);
 
         /// <summary>
-        /// 
+        /// Method to get slack channel information by their slack channel id
         /// </summary>
         /// <param name="slackId"></param>
-        /// <returns></returns>
+        /// <returns>object of SlackChannelDetails</returns>
         SlackChannelDetails GetById(string slackId);
     }
 }

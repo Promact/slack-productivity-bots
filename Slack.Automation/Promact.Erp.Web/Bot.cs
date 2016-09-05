@@ -93,9 +93,16 @@ namespace Promact.Erp.Web
                         {
                             int pFrom = text.IndexOf("<@") + "<@".Length;
                             int pTo = text.LastIndexOf(">");
-                            string applicantId = text.Substring(pFrom, pTo - pFrom);
-                            string applicant = _slackUserDetails.GetById(applicantId).Name;
-                            replyText = _scrumBotRepository.Leave(channel.Name, user.Name, applicant).Result;
+                            try
+                            {
+                                string applicantId = text.Substring(pFrom, pTo - pFrom);
+                                string applicant = _slackUserDetails.GetById(applicantId).Name;
+                                replyText = _scrumBotRepository.Leave(channel.Name, user.Name, applicant).Result;
+                            }
+                            catch (Exception)
+                            {
+                                replyText = StringConstant.ScrumHelpMessage;
+                            }
                         }
                         //all other texts
                         else
