@@ -22,7 +22,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases to check add method of bot question repository
+        /// Test cases to check add method of bot question repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void AddQuestion()
@@ -32,7 +32,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case to check FindById method of bot question repository
+        /// Test case to check FindById method of bot question repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void FindById()
@@ -43,7 +43,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case to check FindByQuestionType method of bot question repository
+        /// Test case to check FindByQuestionType method of bot question repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void FindByQuestionType()
@@ -54,7 +54,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case to check FindByQuestionType method of bot question repository
+        /// Test case to check FindByQuestionType method of bot question repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void FindByTypeAndOrderNumber()
@@ -62,6 +62,56 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1,2);
             Assert.Equal(responseQuestion.QuestionStatement, question.QuestionStatement);
+        }
+
+        /// <summary>
+        /// Test cases to check add method of bot question repository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void AddQuestionFalse()
+        {
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            Assert.NotEqual(20, question.Id);
+        }
+
+        /// <summary>
+        /// Test case to check FindById method of bot question repository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void FindByIdFalse()
+        {
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            var responseQuestion = _botQuestionRepository.FindById(3);
+            Assert.NotEqual(StringConstant.TaskMailBotStatusErrorMessage, responseQuestion.QuestionStatement);
+        }
+
+        /// <summary>
+        /// Test case to check FindByQuestionType method of bot question repository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void FindByQuestionTypeFalse()
+        {
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            _botQuestionRepository.AddQuestion(question);
+            var responseQuestion = _botQuestionRepository.FindByQuestionType(2);
+            Assert.NotEqual(responseQuestion.OrderNumber, 5);
+        }
+
+        /// <summary>
+        /// Test case to check FindByQuestionType method of bot question repository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void FindByTypeAndOrderNumberFalse()
+        {
+            _botQuestionRepository.AddQuestion(question);
+            var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1, 2);
+            Assert.NotEqual(responseQuestion.QuestionStatement, StringConstant.TaskMailBotStatusErrorMessage);
         }
 
         /// <summary>
