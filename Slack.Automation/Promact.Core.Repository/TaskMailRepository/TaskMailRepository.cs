@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
+using Newtonsoft.Json;
+using System.Data.Entity;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using System.Net.Mail;
@@ -23,6 +25,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _user;
         private readonly IEmailService _emailService;
+        
         string questionText = "";
         public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository)
         {
@@ -349,6 +352,102 @@ namespace Promact.Core.Repository.TaskMailRepository
             leaveTemplate.Initialize();
             var emailBody = leaveTemplate.TransformText();
             return emailBody;
+        }
+
+        public async Task<List<TaskMailReportAc>> TaskMailReport(string userId)
+        {
+            var user = _user.FirstOrDefault(x => x.Id == userId);
+            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+            var Json = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var role = Json.FirstOrDefault(x => x.UserName == user.UserName);
+            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
+            if (role.Role == "Admin")
+            {
+                List<TaskMail> taskMails = new List<TaskMail>();
+                foreach (var j in Json)
+                {
+                    var employeeId = _user.FirstOrDefault(x => x.UserName == j.UserName);
+                    if (employeeId != null)
+                    {
+                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
+                        taskMails.ForEach(taskMail =>
+                        {
+                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                            {
+                                Id = taskMail.Id,
+                                UserName = j.Name,
+                                CreatedOn = taskMail.CreatedOn
+                            };
+                            taskMailReportAc.Add(taskmailReportAc);
+                        });
+                    }
+                }
+               // return taskMailReportAc;//.OrderByDescending(o => o.CreatedOn).ToList();
+
+            }
+            else if (role.Role == "TeamLeader")
+            {
+                List<TaskMail> taskMails = new List<TaskMail>();
+                foreach (var j in Json)
+                {
+                    var employeeId = _user.FirstOrDefault(x => x.UserName == j.UserName);
+                    if (employeeId != null)
+                    {
+                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
+                        taskMails.ForEach(taskMail =>
+                        {
+                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                            {
+                                Id = taskMail.Id,
+                                UserName = j.Name,
+                                CreatedOn = taskMail.CreatedOn
+                            };
+                            taskMailReportAc.Add(taskmailReportAc);
+                        });
+                    }
+                }
+               // 
+            }
+            else
+            {
+                List<TaskMail> taskMails = new List<TaskMail>();
+                var employee = _user.FirstOrDefault(x => x.UserName == role.UserName);
+                taskMails = _taskMail.Fetch(x => x.EmployeeId == employee.Id).OrderByDescending(o => o.CreatedOn).ToList();
+                taskMails.ForEach(taskMail =>
+                {
+                    TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                    {
+                        Id = taskMail.Id,
+                        UserName = role.Name,
+                        CreatedOn = taskMail.CreatedOn
+                    };
+                    taskMailReportAc.Add(taskmailReportAc);
+                });
+
+               // return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
+            }
+            return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
+        }
+
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReport(int id)
+        {
+            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
+            IEnumerable<TaskMailDetails> taskMailDetails =await _taskMailDetail.FetchAsync(x => x.TaskId == id);
+            List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
+            taskmailDetails = taskMailDetails.ToList();
+            taskmailDetails.ForEach(taskMail =>
+            {
+                TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                {
+                    Id = taskMail.Id,
+                    Description = taskMail.Description,
+                    Comment=taskMail.Comment,
+                    Status = taskMail.Status,
+                    Hours = taskMail.Hours
+                };
+                taskMailReportAc.Add(taskmailReportAc);
+            });
+            return taskMailReportAc;
         }
     }
 }

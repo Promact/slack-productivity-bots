@@ -1,0 +1,54 @@
+﻿<!--<div class="taskmail-list">
+    <div class="card-title-block d-flex">
+        <div class="title items">
+            <h3>Task Mail Details</h3>
+        </div>
+        <div class="items text-right">
+
+        </div>
+    </div>
+    </div>-->
+<div>
+    <table class="table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Hours</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let taskMail of taskMails">
+                <td>{{taskMail.Id}}</td>
+                <td>{{taskMail.Description}}</td>
+                <td>{{taskMail.StatusName}}</td>
+                <td>{{taskMail.Hours}}</td>
+                <td>{{taskMail.Comment}}</td>
+                
+
+            </tr>
+        </tbody>
+    </table>
+    <!--<table>
+        <tr>
+            <td>Id</td>
+            <td>{{taskMail.Id}}</td>
+        </tr>
+        <tr>
+            <td>
+                Description
+            </td>
+            <td>{{taskMail.Description}}</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>{{taskMail.StatusName}}</td>
+        </tr>
+        <tr>
+            <td>Hours</td>
+            <td>{{taskMail.Hours}}</td>
+        </tr>
+    </table>-->
+</div>

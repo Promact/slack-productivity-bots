@@ -246,6 +246,7 @@
     <Compile Include="Controllers\LeaveRequestController.cs" />
     <Compile Include="Controllers\MVCBaseController.cs" />
     <Compile Include="Controllers\OAuthController.cs" />
+    <Compile Include="Controllers\TaskReportController.cs" />
     <Compile Include="Controllers\WebApiBaseController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
