@@ -39,7 +39,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, null)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = await _leaveReportRepository.LeaveReport();
             Assert.Equal(1,leaveReports.Count());
@@ -53,7 +53,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, null)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReport = await  _leaveReportRepository.LeaveReportDetails(StringConstant.StringIdForTest);
             Assert.NotNull(leaveReport);
@@ -67,7 +67,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, null)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = await _leaveReportRepository.LeaveReport();
             Assert.NotEqual(5,leaveReports.Count());
@@ -81,7 +81,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(AppSettingsUtil.ProjectUserUrl, requestUrl, null)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReport = await _leaveReportRepository.LeaveReportDetails(StringConstant.StringIdForTest);
             Assert.NotNull(leaveReport);

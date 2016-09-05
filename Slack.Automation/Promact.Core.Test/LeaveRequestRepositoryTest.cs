@@ -194,6 +194,17 @@ namespace Promact.Core.Test
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with True Value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void NumberOfLeaveTaken()
+        {
+            _leaveRequestRepository.ApplyLeave(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
+            Assert.NotEqual(10,casualLeave);
+        }
+
         private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = StringConstant.LeaveTypeForTest, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
     }
 }

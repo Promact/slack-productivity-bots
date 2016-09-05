@@ -28,7 +28,7 @@ namespace Promact.Core.Repository.Client
         public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository)
         {
             _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri(AppSettingsUtil.ChatUpdateUrl);
+            _chatUpdateMessage.BaseAddress = new Uri(StringConstant.SlackChatUpdateUrl);
             _projectUser = projectUser;
             _email = email;
             _attachmentRepository = attachmentRepository;
@@ -45,7 +45,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.ChatUpdateUrl, responseUrl,leaveResponse.Token);
+            var response = await _httpClientRepository.GetAsync(StringConstant.SlackChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.FirstName, Username = StringConstant.LeaveBot, Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
-                WebRequestMethod(textJson, AppSettingsUtil.IncomingWebHookUrl);
+                WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);

@@ -23,21 +23,19 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<Question> _questionRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IHttpClientRepository _httpClientRepository;
-        private static IClient _clientRepository;
 
         #endregion
 
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser, IClient clientRepository,
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
             IRepository<Scrum> scrumRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
             _questionRepository = questionRepository;
             _projectUser = projectUser;
-            _clientRepository = clientRepository;
             _httpClientRepository = httpClientRepository;
         }
 
@@ -98,7 +96,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                                var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
+                                var response = await _httpClientRepository.GetAsync(StringConstant.UserUrl, requestUrl, null);
                                 //var responseContent = response.Content.ReadAsStringAsync().Result;
                                 var user = JsonConvert.DeserializeObject<User>(response);
                                 AddAnswer(lastScrumAnswer.ScrumID, firstQuestion.Id, user.Id, Message);
@@ -108,7 +106,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         else
                         {
                             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailByUserNameUrl, UserName);
-                            var response = await _httpClientRepository.GetAsync(AppSettingsUtil.UserUrl, requestUrl, null);
+                            var response = await _httpClientRepository.GetAsync(StringConstant.UserUrl, requestUrl, null);
                             //var responseContent = response.Content.ReadAsStringAsync().Result;
                             var user = JsonConvert.DeserializeObject<User>(response);
                             AddAnswer(scrum.FirstOrDefault().Id, firstQuestion.Id, user.Id, Message);
@@ -126,7 +124,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -218,7 +216,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -269,7 +267,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -327,7 +325,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -351,11 +349,11 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        private async void PostMessages(string GroupName, string UserName, string Message)
+        private void PostMessages(string GroupName, string UserName, string Message)
         {
             try
             {
@@ -380,16 +378,16 @@ namespace Promact.Core.Repository.ScrumRepository
                   "&link_names=" + System.Web.HttpUtility.UrlEncode(args.link_names.ToString()) +
                   "&unfurl_links=" + args.unfurl_links.ToString() +
                   "&unfurl_media=" + args.unfurl_media.ToString();
-                _clientRepository.WebRequestMethod("hi", strURL);
+                //_clientRepository.WebRequestMethod("hi", strURL);
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
 
-        public async void fortest(string message)
+        public void fortest(string message)
         {
             try
             {
@@ -398,7 +396,7 @@ namespace Promact.Core.Repository.ScrumRepository
             catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
         #endregion

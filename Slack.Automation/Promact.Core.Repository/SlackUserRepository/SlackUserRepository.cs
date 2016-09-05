@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// Method to get slack user information by their slack user id
         /// </summary>
         /// <param name="slackId"></param>
-        /// <returns></returns>
+        /// <returns>user</returns>
         public SlackUserDetails GetById(string slackId)
         {
             var user = _slackUserDetails.FirstOrDefault(x => x.Id == slackId);
