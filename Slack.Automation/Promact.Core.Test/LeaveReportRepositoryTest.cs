@@ -18,8 +18,8 @@ namespace Promact.Core.Test
 {
     public class LeaveReportRepositoryTest
     {
-        private  IComponentContext _componentContext;
-        private  ILeaveReportRepository _leaveReportRepository;
+        private IComponentContext _componentContext;
+        private ILeaveReportRepository _leaveReportRepository;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
 
@@ -35,27 +35,29 @@ namespace Promact.Core.Test
         /// Method that returns the list of employees with their leave status
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveReportTest()
+        public void LeaveReportTest()
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
+            var requestUrl = string.Format("{0}{1}", StringConstant.LoginUserDetail, StringConstant.TestUserName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
+            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.EmployeeIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestIdUrl, StringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = await _leaveReportRepository.LeaveReport();
-            Assert.Equal(1,leaveReports.Count());
+            var leaveReports = _leaveReportRepository.LeaveReport(StringConstant.TestAccessToken,StringConstant.TestUserName).Result;
+            Assert.Equal(1, leaveReports.Count());
         }
 
         /// <summary>
         /// Method that returns the details of leave for an employee
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveReportDetailTest()
+        public void LeaveReportDetailTest()
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.EmployeeIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = await  _leaveReportRepository.LeaveReportDetails(StringConstant.StringIdForTest);
+            var leaveReport = _leaveReportRepository.LeaveReportDetails(StringConstant.EmployeeIdForTest, StringConstant.TestAccessToken).Result;
             Assert.NotNull(leaveReport);
         }
 
@@ -63,29 +65,45 @@ namespace Promact.Core.Test
         /// Method that returns the list of employees with their leave status
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveReportTestFalse()
+        public void LeaveReportTestFalse()
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
+            var requestUrl = string.Format("{0}{1}", StringConstant.LoginUserDetail, StringConstant.TestUserName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
+            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.EmployeeIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestIdUrl, StringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = await _leaveReportRepository.LeaveReport();
-            Assert.NotEqual(5,leaveReports.Count());
+            var leaveReports = _leaveReportRepository.LeaveReport(StringConstant.TestAccessToken, StringConstant.TestUserName).Result;
+            Assert.NotEqual(2, leaveReports.Count());
         }
 
         /// <summary>
         /// Method that returns the details of leave for an employee
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveReportDetailTestFalse()
+        public void LeaveReportDetailTestFalse()
         {
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, null)).Returns(response);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.EmployeeIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = await _leaveReportRepository.LeaveReportDetails(StringConstant.StringIdForTest);
-            Assert.NotNull(leaveReport);
+            var leaveReport = _leaveReportRepository.LeaveReportDetails(StringConstant.EmployeeIdForTest, StringConstant.TestAccessToken).Result;
+            Assert.NotEqual(2, leaveReport.Count());
         }
-        private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = StringConstant.LeaveTypeForTest, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
+
+        /// <summary>
+        /// A mock leave request object
+        /// </summary>
+        private LeaveRequest leave = new LeaveRequest()
+        {
+            FromDate = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow,
+            Reason = StringConstant.LeaveReasonForTest,
+            RejoinDate = DateTime.UtcNow,
+            Status = Condition.Approved,
+            Type = StringConstant.LeaveTypeForTest,
+            CreatedOn = DateTime.UtcNow,
+            EmployeeId = StringConstant.EmployeeIdForTest
+        };
     }
 }

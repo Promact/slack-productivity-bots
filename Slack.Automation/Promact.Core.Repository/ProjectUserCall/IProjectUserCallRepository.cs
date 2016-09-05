@@ -54,9 +54,29 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>Number of casual leave allowed</returns>
         Task<double> CasualLeave(string slackUserName, string accessToken);
         Task<List<User>> GetUsersByGroupName(string groupName);
-        Task<User> GetUserById(string EmployeeId);
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>User Details</returns>
         Task<User> GetUserByEmployeeId(string employeeId, string accessToken);
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get logged in user details by their username
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>User Details</returns>
         Task<User> GetUserByUserName(string userName, string accessToken);
+
+        /// <summary>
+        /// Method to call an api from oauth server and get all the users including in a project using teamleader id
+        /// </summary>
+        /// <param name="teamLeaderId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>list of users in a project</returns>
         Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken);
     }
 }
