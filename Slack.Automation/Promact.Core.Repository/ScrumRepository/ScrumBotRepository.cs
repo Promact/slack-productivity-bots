@@ -63,6 +63,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 List<Scrum> scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
                 string message = "";
+             
                 if (scrum.Any())
                 {
                     // getting user name from user's slack name

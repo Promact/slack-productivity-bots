@@ -332,7 +332,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method Leave Testing with True Value
+        /// Method Leave Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void Leave()
