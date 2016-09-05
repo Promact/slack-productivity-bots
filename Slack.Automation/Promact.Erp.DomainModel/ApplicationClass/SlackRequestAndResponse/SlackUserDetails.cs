@@ -5,10 +5,14 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
     public class SlackUserDetails
     {
         /// <summary>
+        /// Primary Key Id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// User Id of Slack for user
         /// </summary>
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Team Id of Slack user

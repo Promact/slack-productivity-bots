@@ -279,7 +279,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method SlackLeaveHelp from Slack respository
+        /// Test cases for checking method SlackLeaveHelp from Slack respository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void SlackLeaveHelp()
@@ -290,6 +290,21 @@ namespace Promact.Core.Test
             _mockClient.Verify(x => x.SendMessage(slackLeave, replyText), Times.Once);
         }
 
+        /// <summary>
+        /// Test cases for checking method SlackLeaveHelp from Slack respository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void SlackLeaveHelpFalse()
+        {
+            var replyText = StringConstant.InternalError;
+            _mockClient.Setup(x => x.SendMessage(slackLeave, replyText));
+            _slackRepository.SlackLeaveHelp(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(slackLeave, replyText), Times.Never);
+        }
+
+        /// <summary>
+        /// Private User variable to be used in test cases
+        /// </summary>
         private User user = new User()
         {
             Id = StringConstant.StringIdForTest,
@@ -300,6 +315,9 @@ namespace Promact.Core.Test
             UserName = StringConstant.EmailForTest
         };
 
+        /// <summary>
+        /// Private leave response to be used for test cases
+        /// </summary>
         private SlashChatUpdateResponse leaveResponse = new SlashChatUpdateResponse()
         {
             MessageTs = StringConstant.MessageTsForTest,
@@ -308,6 +326,9 @@ namespace Promact.Core.Test
             User = new SlashChatUpdateResponseChannelUser() { Id = StringConstant.StringIdForTest, Name = StringConstant.FirstNameForTest }
         };
 
+        /// <summary>
+        /// Private leave details to be used in test cases
+        /// </summary>
         private LeaveRequest leave = new LeaveRequest()
         {
             FromDate = DateTime.UtcNow,
@@ -318,13 +339,15 @@ namespace Promact.Core.Test
             Type = StringConstant.LeaveTypeForTest,
             CreatedOn = DateTime.UtcNow,
             EmployeeId = StringConstant.StringIdForTest };
+
+        /// <summary>
+        /// Private slack command to be used in test cases
+        /// </summary>
         private SlashCommand slackLeave = new SlashCommand()
         {
             Text = StringConstant.SlashCommandText,
             Username = StringConstant.FirstNameForTest,
             ResponseUrl = Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User)
         };
-
-
     }
 }

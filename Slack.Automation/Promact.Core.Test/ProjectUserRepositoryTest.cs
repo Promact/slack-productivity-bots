@@ -161,7 +161,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method CasualLeave testing with true value
+        /// Method CasualLeave testing with false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void CasualLeaveFalse()
