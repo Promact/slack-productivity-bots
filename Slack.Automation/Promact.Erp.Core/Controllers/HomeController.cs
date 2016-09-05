@@ -28,18 +28,33 @@ namespace Promact.Erp.Core.Controllers
             return View();
         }
 
-        /// <summary>
-        /// After Login from OAuth server Page will be redirected to this page
-        /// </summary>
-        /// <returns></returns>
+        /**
+        * @api {post} Home/AfterLogIn
+        * @apiVersion 1.0.0
+        * @apiName AfterLogIn
+        * @apiGroup AfterLogIn    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"After Login from OAuth server Page will be redirected to this page and will open a view of application"
+        * }
+        */
         public ActionResult AfterLogIn()
         {
             return View();
         }
 
-        /// <summary>
-        /// External Login Method. It will call and external OAuth for Login
-        /// <returns></returns>
+        /**
+        * @api {post} Home/ExtrenalLogin
+        * @apiVersion 1.0.0
+        * @apiName ExtrenalLogin
+        * @apiGroup ExtrenalLogin    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Will redirect to OAuth server for external login"
+        * }
+        */
         public ActionResult ExtrenalLogin()
         {
             try
@@ -65,6 +80,20 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns></returns>
+        /**
+        * @api {post} Home/SlackOAuth
+        * @apiVersion 1.0.0
+        * @apiName SlackOAuth
+        * @apiGroup SlackOAuth 
+        * @apiParam {string} Name  accessToken
+        * @apiParam {string} Name  email
+        * @apiParam {string} Name  slackUserName
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Redirect to a view page of application and user will be added from external OAuth"
+        * }
+        */
         public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName)
         {
             try
@@ -108,10 +137,17 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method to signOut from our application not from OAuth server
-        /// </summary>
-        /// <returns></returns>
+        /**
+        * @api {post} Home/LogOff
+        * @apiVersion 1.0.0
+        * @apiName LogOff
+        * @apiGroup LogOff    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"SignOut from our application"
+        * }
+        */
         public ActionResult LogOff()
         {
             try
@@ -134,10 +170,17 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app
-        /// </summary>
-        /// <returns></returns>
+        /**
+        * @api {post} Home/SlackOAuth
+        * @apiVersion 1.0.0
+        * @apiName SlackOAuth
+        * @apiGroup SlackOAuth    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app"
+        * }
+        */
         public ActionResult SlackOAuth()
         {
             return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User));
