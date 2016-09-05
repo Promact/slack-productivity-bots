@@ -25,15 +25,15 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
-
         #endregion
 
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser, IRepository<Scrum> scrumRepository,
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository,
+            IProjectUserCallRepository projectUser, IRepository<Scrum> scrumRepository,
             IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
-            IRepository<ApplicationUser> applicationUser, IClient clientRepository)
+            IRepository<ApplicationUser> applicationUser)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -41,7 +41,6 @@ namespace Promact.Core.Repository.ScrumRepository
             _projectUser = projectUser;
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
-            _clientRepository = clientRepository;
             _httpClientRepository = httpClientRepository;
         }
 
