@@ -179,5 +179,8 @@ namespace Promact.Erp.Util
         public static string EmptyString = "";
         #endregion
 
+
+        public static string ProjectInformationUrl = "featchUserRole/";
+
     }
 }

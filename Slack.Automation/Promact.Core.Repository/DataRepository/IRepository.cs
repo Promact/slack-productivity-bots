@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.DataRepository
 {
@@ -17,8 +18,10 @@ namespace Promact.Core.Repository.DataRepository
         void Save();
         T FirstOrDefault(Expression<Func<T, bool>> predicate);
         IQueryable<T> Fetch(Func<T, bool> predicate);
+        Task<IEnumerable<T>> FetchAsync(Expression<Func<T, bool>> predicate);
         bool Any(Func<T, bool> predicate);
         bool All(Func<T, bool> predicate);
         T LastOrDefault(Expression<Func<T, bool>> predicate);
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
     }
 }

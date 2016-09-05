@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.DataRepository
 {
@@ -130,6 +131,24 @@ namespace Promact.Core.Repository.DataRepository
         }
 
         /// <summary>
+        /// Method fetches the IQueryable based on expression.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> FetchAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+
+                return await dbSet.Where(predicate).ToListAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Method to search database using Linq Expression and return true or false for any existance of data in database
         /// </summary>
         /// <param name="predicate"></param>
@@ -203,5 +222,20 @@ namespace Promact.Core.Repository.DataRepository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return await dbSet.FirstOrDefaultAsync(predicate);
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        
     }
 }

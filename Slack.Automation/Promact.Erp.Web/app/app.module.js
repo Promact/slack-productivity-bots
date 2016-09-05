@@ -17,6 +17,8 @@ var app_routes_1 = require('./app.routes');
 var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leaveReport-List.component');
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
+var http_service_1 = require("./http.service");
+var taskmail_service_1 = require('./taskmail/taskmail.service');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -31,7 +33,7 @@ var AppModule = (function () {
             ],
             declarations: [app_component_1.AppComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
             bootstrap: [app_component_1.AppComponent],
-            providers: [leaveReport_service_1.LeaveReportService]
+            providers: [http_service_1.HttpService, leaveReport_service_1.LeaveReportService, taskmail_service_1.TaskService]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);

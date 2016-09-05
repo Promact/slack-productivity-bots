@@ -35,6 +35,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<ProjectAc> GetProjectDetails(string groupName, string accessToken);
 
         Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
+        
+        //Task<User> GetUserById(string EmployeeId);
+        //Task<User> GetUserByEmployeeId(string employeeId);
+        Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
 
         /// <summary>
         /// This method is used to fetch list of users/employees of the given group name. - JJ
