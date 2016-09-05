@@ -212,7 +212,5 @@ namespace Promact.Core.Repository.ProjectUserCall
                 throw ex;
             }
         }
-
-
     }
 }
