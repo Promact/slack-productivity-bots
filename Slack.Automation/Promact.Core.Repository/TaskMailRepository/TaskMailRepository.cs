@@ -354,6 +354,11 @@ namespace Promact.Core.Repository.TaskMailRepository
             return emailBody;
         }
 
+        /// <summary>
+        /// Method geting the user/users information 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailReport(string userId)
         {
             var user = _user.FirstOrDefault(x => x.Id == userId);
@@ -361,7 +366,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             var Json = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
             var role = Json.FirstOrDefault(x => x.UserName == user.UserName);
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (role.Role == "Admin")
+            if (role.Role == StringConstant.RoleAdmin)
             {
                 List<TaskMail> taskMails = new List<TaskMail>();
                 foreach (var j in Json)
@@ -382,10 +387,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                         });
                     }
                 }
-               // return taskMailReportAc;//.OrderByDescending(o => o.CreatedOn).ToList();
-
             }
-            else if (role.Role == "TeamLeader")
+            else if (role.Role == StringConstant.RoleTeamLeader)
             {
                 List<TaskMail> taskMails = new List<TaskMail>();
                 foreach (var j in Json)
@@ -406,7 +409,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         });
                     }
                 }
-               // 
+               
             }
             else
             {
@@ -424,11 +427,16 @@ namespace Promact.Core.Repository.TaskMailRepository
                     taskMailReportAc.Add(taskmailReportAc);
                 });
 
-               // return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
+              
             }
             return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
         }
 
+        /// <summary>
+        ///Fetches the task mail details of the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReport(int id)
         {
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();

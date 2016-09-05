@@ -265,5 +265,9 @@ namespace Promact.Erp.Util
         public static string UpdateAnswer= "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
         #endregion
 
+        public static string RoleAdmin = "Admin";
+        public static string RoleTeamLeader = "TeamLeader";
+        public static string RoleEmployee = "Employee";
+
     }
 }
