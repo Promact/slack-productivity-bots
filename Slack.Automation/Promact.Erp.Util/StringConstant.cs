@@ -130,5 +130,9 @@ namespace Promact.Erp.Util
 
         public static string ProjectInformationUrl = "featchUserRole/";
 
+        public static string RoleAdmin = "Admin";
+        public static string RoleTeamLeader = "TeamLeader";
+        public static string RoleEmployee = "Employee";
+
     }
 }
