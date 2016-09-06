@@ -1,5 +1,4 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.Client;
+﻿using Newtonsoft.Json;
 using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
@@ -130,6 +129,10 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                     }
                 }
+                //else
+                //    message = "Sorry. Your scrum time has not been initiated.";
+
+                //PostMessages(GroupName, "tsakmail", message);
                 return message;
             }
             catch (Exception)
@@ -202,8 +205,9 @@ namespace Promact.Core.Repository.ScrumRepository
                         message = StringConstant.NoProjectFound;
                 }
                 else
-                    //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
-                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
+                    message = "Sorry scrum time has already been started for this group.";
+                //PostMessages(GroupName, "tsakmail", message);
+                //  WriteMessage(message);
                 return message;
             }
             catch (Exception ex)
@@ -231,22 +235,36 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 if (!(scrumList.Any()))
                 {
-                    ProjectAc project;
-                    try
+                    //PostMessages(GroupName, "tsakmail", "Sorry." + name + " is not a member of this project.");
+                    return "Sorry." + name + " is not a member of this project.";
+                }
+                else
+                {
+                    var questionList = _questionRepository.Fetch(x => x.Type == 1).ToList();
+                    foreach (var question in questionList)
                     {
-                        project = await _projectUser.GetProjectDetails(GroupName, accessToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        //  return StringConstant.ServerClosed;
-                        throw ex;
+                        var answer = new ScrumAnswer();
+                        answer.Answer = "leave";
+                        answer.AnswerDate = DateTime.UtcNow;
+                        answer.CreatedOn = DateTime.UtcNow;
+                        answer.EmployeeId = employee.Id;
+                        answer.QuestionId = question.Id;
+                        answer.ScrumID = scrum.Id;
+                        _scrumAnswerRepository.Insert(answer);
+                        _scrumAnswerRepository.Save();
                     }
                     return StringConstant.ScrumHelp;
                 }
-                else
-                    //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
-                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
-                return message;
+
+                var employees = await _projectUser.GetUsersByGroupName(GroupName);
+                var scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumID == scrum.Id).ToList();
+
+                var list = scrumAnswer.Select(x => x.EmployeeId).ToList();
+                var idlist = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                var user = await _projectUser.GetUserById(idlist.FirstOrDefault());
+                var returnMsg = user.UserName + " " + FetchQuestion(null, true);
+                //PostMessages(GroupName, "tsakmail", returnMsg);
+                return returnMsg;
             }
             catch (Exception ex)
             {
@@ -414,31 +432,45 @@ namespace Promact.Core.Repository.ScrumRepository
             }
         }
 
+        //private void PostMessages(string GroupName, string UserName, string Message)
+        //{
+        //    try
+        //    {
+        //        PostMessageArguments args = new PostMessageArguments();
+        //        args.Channel = GroupName;
+        //        args.Username = UserName;
+        //        args.Text = Message;
+        //        args.as_user = true;
+        //        args.parse = "full";
+        //        args.link_names = 1;
+        //        args.unfurl_links = true;
+        //        args.unfurl_media = true;
+        //        args.icon_url = "";
+        //        args.icon_emoji = "";
 
-        /// <summary>
-        /// This method fetches the Question statement of next question of the given questionId
-        /// </summary>
-        /// <param name="QuestionId"></param>
-        /// <param name="isFirstQuestion"></param>
-        /// <returns></returns>
-        private string FetchQuestion(int? QuestionId, bool isFirstQuestion)
+        //        string strURL =
+        //            "https://slack.com/api/chat.postMessage?token=" + "xoxb-61375498279-ZBxCBFUkvnlR4muKNiUh7tCG" +
+        //            "&channel=" + System.Web.HttpUtility.UrlEncode(args.Channel) +
+        //            "&text=" + System.Web.HttpUtility.UrlEncode(args.Text) +
+        //             "&as_user=" + args.as_user.ToString() +
+        //          "&parse=" + System.Web.HttpUtility.UrlEncode(args.parse) +
+        //          "&link_names=" + System.Web.HttpUtility.UrlEncode(args.link_names.ToString()) +
+        //          "&unfurl_links=" + args.unfurl_links.ToString() +
+        //          "&unfurl_media=" + args.unfurl_media.ToString();
+        //        //_clientRepository.WebRequestMethod("hi", strURL);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+
+        public void fortest(string message)
         {
             try
             {
-                if (isFirstQuestion)
-                {
-                    var question = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).FirstOrDefault();
-                    return question.QuestionStatement;
-                }
-                else
-                {
-                    var orderNumber = _questionRepository.FirstOrDefault(x => x.Id == QuestionId).OrderNumber;
-                    var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == orderNumber + 1 && x.Type == 1);
-                    if (question != null)
-                        return question.QuestionStatement;
-                    else
-                        return String.Empty;
-                }
+                //PostMessages("U1TB1EN87", "tsakmail", "Hello");
             }
             catch (Exception ex)
             {

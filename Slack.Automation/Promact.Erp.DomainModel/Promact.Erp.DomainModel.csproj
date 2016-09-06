@@ -122,15 +122,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationClass\Bot\BotDetails.cs" />
-    <Compile Include="ApplicationClass\Bot\Channel.cs" />
-    <Compile Include="ApplicationClass\Bot\Group.cs" />
-    <Compile Include="ApplicationClass\Bot\ListBot.cs" />
-    <Compile Include="ApplicationClass\Bot\Message.cs" />
-    <Compile Include="ApplicationClass\Bot\MetaData.cs" />
-    <Compile Include="ApplicationClass\Bot\PostMessageArguments.cs" />
-    <Compile Include="ApplicationClass\Bot\User.cs" />
-    <Compile Include="ApplicationClass\Bot\Utility.cs" />
     <Compile Include="ApplicationClass\EmailApplication.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
