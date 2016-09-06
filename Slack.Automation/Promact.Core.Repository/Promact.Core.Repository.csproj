@@ -98,10 +98,6 @@
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
     <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
-    <Compile Include="Bot\MessageEditEventArgs.cs" />
-    <Compile Include="Bot\MessageEventArgs.cs" />
-    <Compile Include="Bot\Rtm.cs" />
-    <Compile Include="Client\BotClient.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
     <Compile Include="DataRepository\IRepository.cs" />
