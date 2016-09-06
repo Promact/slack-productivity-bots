@@ -28,7 +28,7 @@ namespace Promact.Core.Test
 
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
-            Id = StringConstant.StringIdForTest,
+            UserId = StringConstant.StringIdForTest,
             Name = StringConstant.UserNameForTest,
             TeamId = StringConstant.PromactStringName
         };
