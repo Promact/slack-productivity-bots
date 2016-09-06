@@ -13,6 +13,7 @@ using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.ScrumRepository;
+using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -42,7 +43,7 @@ namespace Promact.Erp.Web.App_Start
             builder.Register(c => LogManager.GetCurrentClassLogger()).As<ILogger>();
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
-            
+
             // register mvc controller
             builder.RegisterControllers(typeof(HomeController).Assembly);
 
@@ -66,6 +67,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
 
+            builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac

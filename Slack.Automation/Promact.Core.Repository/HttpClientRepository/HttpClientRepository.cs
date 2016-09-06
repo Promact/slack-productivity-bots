@@ -27,7 +27,7 @@ namespace Promact.Core.Repository.HttpClientRepository
                 _client = new HttpClient();
                 _client.BaseAddress = new Uri(baseUrl);
                 // Added access token to request header if provided by user
-                if (accessToken != null)
+                if (accessToken != null && !String.IsNullOrEmpty(accessToken))
                 {
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
                 }

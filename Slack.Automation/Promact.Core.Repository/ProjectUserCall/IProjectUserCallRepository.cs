@@ -25,11 +25,25 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <returns>management details</returns>
         Task<List<User>> GetManagementUserName(string accessToken);
-        Task<ProjectAc> GetProjectDetails(string groupName);
-     
+
+
+        /// <summary>
+        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns>object of ProjectAc</returns>
+        Task<ProjectAc> GetProjectDetails(string groupName, string accessToken);
+
         Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
-        Task<List<User>> GetUsersByGroupName(string groupName);
-        Task<User> GetUserById(string EmployeeId);
+
+        /// <summary>
+        /// This method is used to fetch list of users/employees of the given group name. - JJ
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>list of object of User</returns>
+        Task<List<User>> GetUsersByGroupName(string groupName, string accessToken);
+
         Task<User> GetUserByEmployeeId(string employeeId);
 
         /// <summary>
