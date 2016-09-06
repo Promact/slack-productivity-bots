@@ -30,10 +30,9 @@ namespace Promact.Core.Repository.ScrumRepository
 
         #region Constructor
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository,
-            IProjectUserCallRepository projectUser, IRepository<Scrum> scrumRepository,
-            IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
-            IRepository<ApplicationUser> applicationUser)
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
+            IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository,
+            IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -117,7 +116,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 //A particular employee's first answer
-                                User user = employees.FirstOrDefault(x => x.SlackUserName == UserName);
+                                User user = employees.Where(x => x.SlackUserName == UserName).FirstOrDefault();
                                 AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
                                 message = "<@" + user.SlackUserName + "> " + FetchQuestion(firstQuestion.Id, false);
                             }
@@ -162,10 +161,10 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         project = await _projectUser.GetProjectDetails(GroupName, accessToken);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         //  return StringConstant.ServerClosed;
-                        return StringConstant.ErrorGetProject;
+                        throw ex;
                     }
                     if (project != null && project.Id > 0)
                     {
@@ -174,9 +173,9 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            return StringConstant.ErrorGetEmployees;
+                            throw ex;
                         }
                         if (employees.Count != 0)
                         {
@@ -204,14 +203,58 @@ namespace Promact.Core.Repository.ScrumRepository
                 }
                 else
                     //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
-                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null, null);
+                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
                 return message;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return String.Empty;
+                throw ex;
+                //return String.Empty;
             }
         }
+
+
+        /// <summary>
+        /// This method will be called when the keyword "scrum time" is encountered
+        /// </summary>
+        /// <param name="GroupName"></param>
+        /// <param name="UserName"></param>
+        /// <returns>The next question or the scrum complete message</returns>
+        public async Task<string> StartScrumTest(string GroupName, string UserName)
+        {
+            try
+            {
+                var scrumList = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
+                string message = "";
+                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+
+                if (!(scrumList.Any()))
+                {
+                    ProjectAc project;
+                    try
+                    {
+                        project = await _projectUser.GetProjectDetails(GroupName, accessToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        //  return StringConstant.ServerClosed;
+                        throw ex;
+                    }
+                    return StringConstant.ScrumHelp;
+                }
+                else
+                    //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
+                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
+                return message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                //return String.Empty;
+            }
+        }
+
 
 
         /// <summary>
@@ -250,18 +293,10 @@ namespace Promact.Core.Repository.ScrumRepository
                             //all the scrum questions are answered as "leave"
                             foreach (var question in questions)
                             {
-                                var answer = new ScrumAnswer();
-                                answer.Answer = StringConstant.Leave;
-                                answer.AnswerDate = DateTime.UtcNow;
-                                answer.CreatedOn = DateTime.UtcNow;
-                                answer.EmployeeId = employee.Id;
-                                answer.QuestionId = question.Id;
-                                answer.ScrumId = scrum.Id;
-                                _scrumAnswerRepository.Insert(answer);
-                                _scrumAnswerRepository.Save();
+                                AddAnswer(scrum.Id, question.Id, employee.Id, StringConstant.Leave);
                             }
                         }
-                        returnMsg = await GetQuestion(scrum.Id, GroupName, accessToken, scrumAnswer, questions, employees);
+                        returnMsg = await GetQuestion(scrum.Id, GroupName, accessToken, questions, employees);
                     }
                 }
                 else
@@ -319,14 +354,14 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="questions"></param>
         /// <param name="scrumAnswer"></param>
         /// <returns>The next question or the scrum complete message</returns>
-        private async Task<string> GetQuestion(int ScrumId, string GroupName, string accessToken, List<ScrumAnswer> scrumAnswer, List<Question> questions, List<User> employees)
+        private async Task<string> GetQuestion(int ScrumId, string GroupName, string accessToken, List<Question> questions, List<User> employees)
         {
             try
             {
                 string returnMsg = StringConstant.NoEmployeeFound;
-                if (scrumAnswer == null || questions == null || employees == null)
+                List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == ScrumId).ToList();
+                if (questions == null || employees == null)
                 {
-                    scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == ScrumId).ToList();
                     questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                     employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
                 }
