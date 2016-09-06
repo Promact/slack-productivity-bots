@@ -164,7 +164,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                     catch (Exception)
                     {
-                        return StringConstant.ServerClosed;
+                        //  return StringConstant.ServerClosed;
+                        return StringConstant.ErrorGetProject;
                     }
                     if (project != null && project.Id > 0)
                     {
@@ -175,7 +176,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                         catch (Exception)
                         {
-                            return StringConstant.ServerClosed;
+                            return StringConstant.ErrorGetEmployees;
                         }
                         if (employees.Count != 0)
                         {

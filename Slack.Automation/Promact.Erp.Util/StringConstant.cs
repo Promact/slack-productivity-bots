@@ -57,7 +57,9 @@ namespace Promact.Erp.Util
         public static string Leave = "leave";
         public static string ScrumBotToken = "ScrumBotToken";
         public static string ScrumBotName = "ScrumBotName";
-        public static string ServerClosed = "Sorry :worried: .\n <@julie> : . We cannot process your request due to technical glitches.Please try after some time";
+        public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
+        public static string ErrorGetProject = "Sorry :worried: \nProject could not be fetched";
+        public static string ErrorGetEmployees = "Sorry :worried: \nEmployees could not be fetched";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
         public static string NoProjectFound = "No project found for this group.";
