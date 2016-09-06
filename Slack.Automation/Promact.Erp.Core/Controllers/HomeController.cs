@@ -23,6 +23,17 @@ namespace Promact.Erp.Core.Controllers
             _logger = logger;
         }
 
+        /**
+        * @api {get} Home/Index
+        * @apiVersion 1.0.0
+        * @apiName Index
+        * @apiGroup Index    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Open the first/login page of the application"
+        * }
+        */
         public ActionResult Index()
         {
             return View();
@@ -78,8 +89,8 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} Home/ExtrenalLoginCallBack
         * @apiVersion 1.0.0
-        * @apiName SlackOAuth
-        * @apiGroup SlackOAuth 
+        * @apiName ExtrenalLoginCallBack
+        * @apiGroup ExtrenalLoginCallBack 
         * @apiParam {string} Name  accessToken
         * @apiParam {string} Name  email
         * @apiParam {string} Name  slackUserName
@@ -166,17 +177,17 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} Home/SlackOAuth
+        * @api {get} Home/SlackOAuthAuthorization
         * @apiVersion 1.0.0
-        * @apiName SlackOAuth
-        * @apiGroup SlackOAuth    
+        * @apiName SlackOAuthAuthorization
+        * @apiGroup SlackOAuthAuthorization    
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
         *     "Description":"Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app"
         * }
         */
-        public ActionResult SlackOAuth()
+        public ActionResult SlackOAuthAuthorization()
         {
             return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User));
         }
