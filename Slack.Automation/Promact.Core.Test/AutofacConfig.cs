@@ -21,6 +21,7 @@ using Promact.Core.Repository.TaskMailRepository;
 using Effort;
 using Promact.Core.Repository.BotQuestionRepository;
 using Moq;
+using Promact.Core.Repository.SlackChannelRepository;
 
 namespace Promact.Core.Test
 {
@@ -54,6 +55,7 @@ namespace Promact.Core.Test
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
+            builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             var container = builder.Build();

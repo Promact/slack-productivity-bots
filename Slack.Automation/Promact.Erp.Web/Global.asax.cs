@@ -18,7 +18,7 @@ namespace Promact.Erp.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bot.Main(container);
-            //Program.Main(container);
+            Bot.ScrumMain(container);
         }
     }
 }

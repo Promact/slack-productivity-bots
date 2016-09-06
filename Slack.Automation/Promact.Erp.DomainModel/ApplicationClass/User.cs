@@ -15,12 +15,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         [JsonProperty("Id")]
         public string Id { get; set; }
 
-        [Required]
+        //    [Required]
         [StringLength(255)]
         [JsonProperty("FirstName")]
         public string FirstName { get; set; }
 
-        [Required]
+        //  [Required]
         [StringLength(255)]
         [JsonProperty("LastName")]
         public string LastName { get; set; }
@@ -28,7 +28,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         [JsonProperty("IsActive")]
         public bool IsActive { get; set; }
 
-        [Required]
+        //   [Required]
         [EmailAddress]
         [JsonProperty("Email")]
         public string Email { get; set; }
