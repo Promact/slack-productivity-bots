@@ -29,8 +29,8 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} oAuth/RefreshToken
         * @apiVersion 1.0.0
-        * @apiName AfterLogIn
-        * @apiGroup AfterLogIn  
+        * @apiName RefreshToken
+        * @apiGroup RefreshToken  
         * @apiParam {string} Name    refreshToken
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
@@ -68,8 +68,8 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} oAuth/SlackRequest
         * @apiVersion 1.0.0
-        * @apiName AfterLogIn
-        * @apiGroup AfterLogIn  
+        * @apiName SlackOAuth
+        * @apiGroup SlackOAuth  
         * @apiParam {string} Name    code
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
@@ -130,7 +130,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       "Description":"This method will be hitted when there any changes in slack user list
+        *       "Description":"This method will be hitted when there is any changes in slack user list
         * }
         */
         [HttpPost]
