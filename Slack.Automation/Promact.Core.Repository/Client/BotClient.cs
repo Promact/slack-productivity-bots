@@ -85,7 +85,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         public void Dispose()
         {
-            DisconnectSlack();
+            //DisconnectSlack();
         }
 
         #endregion
@@ -220,10 +220,10 @@ namespace Promact.Core.Repository.Client
                         case "message":
                             if (Data.previous_message == null)
                             {
-                                MessageEventArgs messagEventArgs = new MessageEventArgs(this, Data);
+                               // MessageEventArgs messagEventArgs = new MessageEventArgs(this, Data);
                                 if (Message != null)
                                 {
-                                    Message(messagEventArgs);
+                                   // Message(messagEventArgs);
                                 }
                             }
                             else
@@ -285,31 +285,7 @@ namespace Promact.Core.Repository.Client
         }
 
 
-        //public async void WriteMessage(string message)
-        //{
-        //    try
-        //    {
-        //        // ArraySegment<Byte> buffer = new ArraySegment<byte>(new Byte[8192]);
-        //        //var bytes = new Byte[8192];
-        //        //bytes = Encoding.ASCII.GetBytes(message);
-        //        //var len = bytes.Length;
-        //        // var buffer = new ArraySegment<byte>(bytes, 0, len-1);
 
-        //        ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[1024]);
-        //        buffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
-        //        await _webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
-
-        //        //while (1 == 1)
-        //        //{
-        //        //    await _webSocket.SendAsync(buffer, WebSocketMessageType.Binary, false, CancellationToken.None);
-        //        //}
-        //    }
-        //    catch (System.Net.WebSockets.WebSocketException ex)
-        //    {
-        //        //DisconnectSlack();
-        //        throw ex;
-        //    }
-        //}
 
         #endregion
 

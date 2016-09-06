@@ -93,24 +93,44 @@ namespace Promact.Core.Test
         /// Method StartScrum Testing with No Question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void ScrumInitiateNoQuestion()
+        public async void ScrumInitiateTest()
         {
             var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
             var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
-            var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
 
             _slackUserRepository.AddSlackUser(slackUserDetails);
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
-            Assert.Equal(StringConstant.NoQuestion, msg);
+            var msg = await _scrumBotRepository.StartScrumTest(StringConstant.GroupName, StringConstant.UserNameForTest);
+            Assert.Equal(msg, StringConstant.ScrumHelp);
         }
+
+
+        ///// <summary>
+        ///// Method StartScrum Testing with No Question
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumInitiateNoQuestion()
+        //{
+        //    var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
+        //    var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
+        //    _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
+
+        //    var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //    var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //    _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
+
+        //    _slackUserRepository.AddSlackUser(slackUserDetails);
+        //    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //    await _userManager.CreateAsync(user);
+        //    await _userManager.AddLoginAsync(user.Id, info);
+
+        //    var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
+        //    Assert.Equal(msg, StringConstant.NoQuestion);
+        //}
 
 
         ///// <summary>
@@ -235,27 +255,27 @@ namespace Promact.Core.Test
         //}
 
 
-        /// <summary>
-        /// Method StartScrum Testing with existing scrum but no employee
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void ScrumInitiateHasScrumNoEmployee()
-        {
-            //var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
-            //var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
-            //_mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
+        ///// <summary>
+        ///// Method StartScrum Testing with existing scrum but no employee
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumInitiateHasScrumNoEmployee()
+        //{
+        //    //var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
+        //    //var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
+        //    //_mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
 
-            _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-          
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
+        //    _scrumDataRepository.Insert(scrum);
+        //    _scrumDataRepository.Save();
+        //    _slackUserRepository.AddSlackUser(slackUserDetails);
+        //    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
 
-            var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
-            Assert.Equal(StringConstant.NoEmployeeFound, msg);
-        }
+        //    await _userManager.CreateAsync(user);
+        //    await _userManager.AddLoginAsync(user.Id, info);
+
+        //    var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
+        //    Assert.Equal(msg, StringConstant.NoEmployeeFound);
+        //}
 
 
         ///// <summary>
@@ -280,27 +300,27 @@ namespace Promact.Core.Test
         //}
 
 
-        /// <summary>
-        /// Method StartScrum Testing with existing scrum but no scru, answer yet
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void ScrumInitiateHasScrumNoAnswer()
-        {
-            var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
-            var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
+        ///// <summary>
+        ///// Method StartScrum Testing with existing scrum but no scrum answer yet
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumInitiateHasScrumNoAnswer()
+        //{
+        //    var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //    var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //    _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
 
-            _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
-            _botQuestionRepository.AddQuestion(question);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
+        //    _scrumDataRepository.Insert(scrum);
+        //    _scrumDataRepository.Save();
+        //    _botQuestionRepository.AddQuestion(question);
+        //    _slackUserRepository.AddSlackUser(slackUserDetails);
+        //    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //    await _userManager.CreateAsync(user);
+        //    await _userManager.AddLoginAsync(user.Id, info);
 
-            var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
-            Assert.Equal(StringConstant.GoodDay + "<@" + StringConstant.LeaveApplicant + ">!\n" + StringConstant.ScrumQuestionForTest, msg);
-        }
+        //    var msg = await _scrumBotRepository.StartScrum(StringConstant.GroupName, StringConstant.UserNameForTest);
+        //    Assert.Equal(msg, StringConstant.GoodDay + "<@" + StringConstant.LeaveApplicant + ">!\n" + StringConstant.ScrumQuestionForTest);
+        //}
 
 
         ///// <summary>
@@ -385,5 +405,127 @@ namespace Promact.Core.Test
         //        Assert.Equal(StringConstant.ScrumNotStarted, msg);
         //    }
         //}
+
+        ///// <summary>
+        ///// Method AddScrumAnswer Testing with first employee's first answer
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumAnswerFirstEmployeeFirstAnswer()
+        //{
+        //    {
+        //        var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //        var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //        _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+        //        _slackUserRepository.AddSlackUser(slackUserDetails);
+        //        _botQuestionRepository.AddQuestion(question);
+        //        _botQuestionRepository.AddQuestion(question1);
+
+        //        _scrumDataRepository.Insert(scrum);
+        //        _scrumDataRepository.Save();
+
+        //        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //        await _userManager.CreateAsync(user);
+        //        await _userManager.AddLoginAsync(user.Id, info);
+
+        //        var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
+        //        //for reference msg = "<@apoorvapatel> What did you do yesterday?";
+        //        Assert.NotEqual(msg, null);
+        //    }
+        //}
+
+
+        ///// <summary>
+        ///// Method AddScrumAnswer Testing with next answer of an employee
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumAnswerNextAnswer()
+        //{
+        //    {
+        //        var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //        var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //        _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+        //        _slackUserRepository.AddSlackUser(slackUserDetails);
+        //        _botQuestionRepository.AddQuestion(question);
+        //        _botQuestionRepository.AddQuestion(question1);
+
+        //        _scrumDataRepository.Insert(scrum);
+        //        _scrumAnswerDataRepository.Insert(scrumAnswer);
+
+        //        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //        await _userManager.CreateAsync(user);
+        //        await _userManager.AddLoginAsync(user.Id, info);
+
+        //        var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
+        //        //for reference msg = "Good Day <@pranali>!\nWhat did you do yesterday?";
+        //        Assert.NotEqual(msg, null);
+        //    }
+        //}
+
+
+        ///// <summary>
+        ///// Method AddScrumAnswer Testing with next question to same employee as return message
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumAnswerNextQuestion()
+        //{
+        //    {
+        //        var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //        var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //        _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+        //        _slackUserRepository.AddSlackUser(slackUserDetails);
+        //        _botQuestionRepository.AddQuestion(question);
+        //        _botQuestionRepository.AddQuestion(question1);
+        //        Question question2 = new Question()
+        //        {
+        //            CreatedOn = DateTime.UtcNow,
+        //            OrderNumber = 3,
+        //            QuestionStatement = StringConstant.ScrumQuestionForTest,
+        //            Type = 1
+        //        };
+        //        _botQuestionRepository.AddQuestion(question2);
+        //        _scrumDataRepository.Insert(scrum);
+        //        _scrumAnswerDataRepository.Insert(scrumAnswer);
+
+        //        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //        await _userManager.CreateAsync(user);
+        //        await _userManager.AddLoginAsync(user.Id, info);
+
+        //        var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
+        //        //for reference msg = "<@apoorvapatel> What did you do yesterday?";
+        //        Assert.NotEqual(msg, null);
+        //    }
+        //}
+
+
+
+        ///// <summary>
+        ///// Method AddScrumAnswer Testing with next employee's first answer
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void ScrumAnswerNextEmployeeFirstAnswer()
+        //{
+        //    {
+        //        var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+        //        var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+        //        _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+        //        _slackUserRepository.AddSlackUser(slackUserDetails);
+        //        _botQuestionRepository.AddQuestion(question);
+        //        _botQuestionRepository.AddQuestion(question1);
+        //        _scrumDataRepository.Insert(scrum);
+        //        _scrumAnswerDataRepository.Insert(scrumAnswer);
+
+        //        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+        //        await _userManager.CreateAsync(user);
+        //        await _userManager.AddLoginAsync(user.Id, info);
+
+        //        var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
+        //        Assert.NotEqual(msg, null);
+        //    }
+        //}
+
     }
 }
