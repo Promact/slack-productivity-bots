@@ -35,7 +35,7 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {post} leaves/slackcall
         * @apiVersion 1.0.0
-        * @apiName LeaveRequest
+        * @apiName SlackRequest
         * @apiGroup LeaveRequest  
         * @apiParam {string} Name  Token
         * @apiParam {string} Name  TeamId
@@ -108,16 +108,9 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {post} leaves/slackbuttoncall
         * @apiVersion 1.0.0
-        * @apiName LeaveRequest
-        * @apiGroup LeaveRequest    
-        * @apiParam {SlashChatUpdateResponseAction} Name  Actions
-        * @apiParam {int} Name  CallbackId
-        * @apiParam {SlashChatUpdateResponseTeam} Name  Team
-        * @apiParam {SlashChatUpdateResponseChannelUser} Name  Channel
-        * @apiParam {SlashChatUpdateResponseChannelUser} Name  User
-        * @apiParam {string} Name  ActionTs
-        * @apiParam {string} Name  MessageTs
-        * @apiParam {string} Name  Token
+        * @apiName SlackButtonRequest
+        * @apiGroup SlackButtonRequest    
+        * @apiParam {SlashChatUpdateResponse} Name  leaveResponse
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
