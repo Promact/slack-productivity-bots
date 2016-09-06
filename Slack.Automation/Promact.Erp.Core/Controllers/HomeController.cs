@@ -29,7 +29,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {post} Home/AfterLogIn
+        * @api {get} Home/AfterLogIn
         * @apiVersion 1.0.0
         * @apiName AfterLogIn
         * @apiGroup AfterLogIn    
@@ -45,7 +45,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {post} Home/ExtrenalLogin
+        * @api {get} Home/ExtrenalLogin
         * @apiVersion 1.0.0
         * @apiName ExtrenalLogin
         * @apiGroup ExtrenalLogin    
@@ -75,13 +75,8 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method will recieve access token and email and user will register here
-        /// </summary>
-        /// <param name="accessToken"></param>
-        /// <returns></returns>
         /**
-        * @api {post} Home/SlackOAuth
+        * @api {get} Home/ExtrenalLoginCallBack
         * @apiVersion 1.0.0
         * @apiName SlackOAuth
         * @apiGroup SlackOAuth 
@@ -91,7 +86,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *     "Description":"Redirect to a view page of application and user will be added from external OAuth"
+        *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
         * }
         */
         public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName)
@@ -138,7 +133,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {post} Home/LogOff
+        * @api {get} Home/LogOff
         * @apiVersion 1.0.0
         * @apiName LogOff
         * @apiGroup LogOff    
@@ -171,7 +166,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {post} Home/SlackOAuth
+        * @api {get} Home/SlackOAuth
         * @apiVersion 1.0.0
         * @apiName SlackOAuth
         * @apiGroup SlackOAuth    

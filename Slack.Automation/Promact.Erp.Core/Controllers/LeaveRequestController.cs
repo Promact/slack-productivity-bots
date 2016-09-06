@@ -36,7 +36,17 @@ namespace Promact.Erp.Core.Controllers
         * @api {post} leaves/slackcall
         * @apiVersion 1.0.0
         * @apiName LeaveRequest
-        * @apiGroup LeaveRequest    
+        * @apiGroup LeaveRequest  
+        * @apiParam {string} Name  Token
+        * @apiParam {string} Name  TeamId
+        * @apiParam {string} Name  TeamDomain
+        * @apiParam {string} Name  ChannelId
+        * @apiParam {string} Name  ChannelName
+        * @apiParam {string} Name  UserId
+        * @apiParam {string} Name  Username
+        * @apiParam {string} Name  Command
+        * @apiParam {string} Name  Text
+        * @apiParam {string} Name  ResponseUrl
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -96,19 +106,26 @@ namespace Promact.Erp.Core.Controllers
         * @apiVersion 1.0.0
         * @apiName LeaveRequest
         * @apiGroup LeaveRequest    
+        * @apiParam {SlashChatUpdateResponseAction} Name  Actions
+        * @apiParam {int} Name  CallbackId
+        * @apiParam {SlashChatUpdateResponseTeam} Name  Team
+        * @apiParam {SlashChatUpdateResponseChannelUser} Name  Channel
+        * @apiParam {SlashChatUpdateResponseChannelUser} Name  User
+        * @apiParam {string} Name  ActionTs
+        * @apiParam {string} Name  MessageTs
+        * @apiParam {string} Name  Token
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *     "Description":"A message will be update in slack using slack chat post method"
+        *     "Description":"A message will be update in slack using slack chat update method"
         * }
         */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public IHttpActionResult SlackButtonRequest()
+        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             try
             {
-                SlashChatUpdateResponse leaveResponse = new SlashChatUpdateResponse();
                 _slackRepository.UpdateLeave(leaveResponse);
                 return Ok();
             }

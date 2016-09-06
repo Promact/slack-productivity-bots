@@ -25,11 +25,24 @@ namespace Promact.Erp.Core.Controllers
             _logger = logger;
             _slackChannelDetails = slackChannelDetails;
         }
-        /// <summary>
-        /// Method to get refresh Token from OAuth and send app clientSecretId
-        /// </summary>
-        /// <param name="refreshToken"></param>
-        /// <returns></returns>
+
+        /**
+        * @api {get} oAuth/RefreshToken
+        * @apiVersion 1.0.0
+        * @apiName AfterLogIn
+        * @apiGroup AfterLogIn  
+        * @apiParam {string} Name    refreshToken
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *   {
+        *       "ClientId":"dastvgs3rt2031srtgr54dgrf",
+        *       "ClientSecret":"frwhklsjelkjsktjlk656f5dyhddvsfdgv",
+        *       "RefreshToken":"acjshrkjajjsdfxo",
+        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack"
+        *   }
+        * }
+        */
         [HttpGet]
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken)
@@ -52,11 +65,18 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method to Authorize user/team from slack OAuth and get access token and basic information corresponding to user for the app
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
+        /**
+        * @api {get} oAuth/SlackRequest
+        * @apiVersion 1.0.0
+        * @apiName AfterLogIn
+        * @apiGroup AfterLogIn  
+        * @apiParam {string} Name    code
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This will add slack user, channel and group in application"
+        * }
+        */
         [HttpGet]
         [Route("oAuth/SlackRequest")]
         public async Task<IHttpActionResult> SlackOAuth(string code)
@@ -92,7 +112,7 @@ namespace Promact.Erp.Core.Controllers
                     _slackChannelDetails.Insert(channel);
                     _slackChannelDetails.Save();
                 }
-                return Ok(slackOAuth);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -101,11 +121,18 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method to handle the slack event. Event is when a new user will join the team
-        /// </summary>
-        /// <param name="slackEvent"></param>
-        /// <returns></returns>
+        /**
+        * @api {post} slack/eventAlert
+        * @apiVersion 1.0.0
+        * @apiName SlackEvent
+        * @apiGroup SlackEvent  
+        * @apiParam {SlackEventApiAC} Name    slackEvent
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there any changes in slack user list
+        * }
+        */
         [HttpPost]
         [Route("slack/eventAlert")]
         public IHttpActionResult SlackEvent(SlackEventApiAC slackEvent)
