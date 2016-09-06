@@ -2,7 +2,7 @@
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 
 import { LeaveReport } from './leaveReport.model';
-import { LeaveReportDetail } from './leaveReportDetails.model'
+import { LeaveReportDetail } from './leaveReportDetails.model';
 
 import { Observable } from 'rxjs/Rx';
 
