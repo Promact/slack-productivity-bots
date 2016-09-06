@@ -162,10 +162,11 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         project = await _projectUser.GetProjectDetails(GroupName, accessToken);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        throw ex;
                         //  return StringConstant.ServerClosed;
-                        return StringConstant.ErrorGetProject;
+                        //return StringConstant.ErrorGetProject;
                     }
                     if (project != null && project.Id > 0)
                     {
