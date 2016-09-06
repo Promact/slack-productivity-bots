@@ -213,25 +213,6 @@ namespace Promact.Core.Repository.ProjectUserCall
             }                        
         }
 
-        /// <summary>
-        /// Method to call an api from oauth server and get all the users including in a project using teamleader id
-        /// </summary>
-        /// <param name="teamLeaderId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>list of users in a project</returns>
-        public async Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken)
-        {
-            try
-            {
-                var requestUrl = string.Format("{0}{1}", StringConstant.ProjectUsersByTeamLeaderId, teamLeaderId);
-                var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
-                List<User> projectUsers = JsonConvert.DeserializeObject<List<User>>(response);
-                return projectUsers;
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-        }
+\
     }
 }
