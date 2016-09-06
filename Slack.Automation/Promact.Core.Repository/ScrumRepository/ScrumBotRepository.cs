@@ -242,9 +242,9 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                     return StringConstant.ScrumHelp;
                 }
-                else
-                    //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
-                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
+                //else
+                //    //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
+                //    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null);
                 return message;
             }
             catch (Exception ex)
