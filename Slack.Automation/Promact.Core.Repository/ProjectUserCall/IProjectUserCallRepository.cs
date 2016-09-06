@@ -45,6 +45,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<List<User>> GetUsersByGroupName(string groupName, string accessToken);
 
 
+
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName
         /// </summary>
