@@ -116,7 +116,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 //A particular employee's first answer
-                                User user = employees.FirstOrDefault(x => x.SlackUserName == UserName);
+                                User user = employees.Where(x => x.SlackUserName == UserName).FirstOrDefault();
                                 AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
                                 message = "<@" + user.SlackUserName + "> " + FetchQuestion(firstQuestion.Id, false);
                             }
