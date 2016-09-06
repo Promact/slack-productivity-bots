@@ -63,7 +63,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 List<Scrum> scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
                 string message = "";
-             
+
                 if (scrum.Any())
                 {
                     // getting user name from user's slack name
@@ -162,11 +162,10 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         project = await _projectUser.GetProjectDetails(GroupName, accessToken);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        throw ex;
                         //  return StringConstant.ServerClosed;
-                        //return StringConstant.ErrorGetProject;
+                        return StringConstant.ErrorGetProject;
                     }
                     if (project != null && project.Id > 0)
                     {

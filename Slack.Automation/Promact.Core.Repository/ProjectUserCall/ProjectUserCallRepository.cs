@@ -79,7 +79,9 @@ namespace Promact.Core.Repository.ProjectUserCall
                 var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
                 ProjectAc project = new ProjectAc();
                 if (response != null)
+                {
                     project = JsonConvert.DeserializeObject<ProjectAc>(response);
+                }
                 return project;
             }
             catch (System.Exception ex)
