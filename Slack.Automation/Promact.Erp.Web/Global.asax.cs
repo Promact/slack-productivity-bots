@@ -19,6 +19,7 @@ namespace Promact.Erp.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bot.Main(container);
             //Bot.ScrumMain(container);
+            //Program.Main(container);
         }
     }
 }
