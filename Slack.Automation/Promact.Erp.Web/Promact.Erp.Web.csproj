@@ -344,8 +344,8 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
-    <TypeScriptCompile Include="app\mock\mock.leaveReport.service.ts" />
-    <TypeScriptCompile Include="app\mock\test.connection.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
