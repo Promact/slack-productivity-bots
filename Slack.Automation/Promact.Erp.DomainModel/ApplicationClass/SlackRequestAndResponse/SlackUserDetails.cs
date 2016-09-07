@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Promact.Erp.DomainModel.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
-    public class SlackUserDetails
+    public class SlackUserDetails : ModelBase
     {
-        /// <summary>
-        /// Primary Key Id
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// User Id of Slack for user
         /// </summary>

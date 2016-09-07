@@ -7,9 +7,6 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ExternalLoginRepository
@@ -20,10 +17,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
-        public OAuthLoginRepository(ApplicationUserManager userManager)
+        public OAuthLoginRepository(ApplicationUserManager userManager, IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, IRepository<SlackChannelDetails> slackChannelDetails)
         {
             _userManager = userManager;
+            _httpClientRepository = httpClientRepository;
+            _slackUserDetails = slackUserDetails;
+            _slackChannelDetails = slackChannelDetails;
         }
+
+        /// <summary>
+        /// Method to add a new user in Application user table and store user's external login information in UserLogin table
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="slackUserName"></param>
+        /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName)
         {
             try
@@ -45,6 +53,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
         }
 
+        /// <summary>
+        /// Method to get OAuth Server's app information
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
             try
@@ -64,6 +77,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
         }
 
+        /// <summary>
+        /// Method to add Slack Users,channels and bots information 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
         {
             try
@@ -78,6 +96,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 {
                     if (user.Name != StringConstant.SlackBotStringName)
                     {
+                        user.CreatedOn = DateTime.UtcNow;
                         _slackUserDetails.Insert(user);
                         _slackUserDetails.Save();
                     }
@@ -104,6 +123,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
         }
 
+        /// <summary>
+        /// Method to update slack user table when there is any changes in slack
+        /// </summary>
+        /// <param name="slackEvent"></param>
         public void SlackEventUpdate(SlackEventApiAC slackEvent)
         {
             try
