@@ -158,6 +158,8 @@ namespace Promact.Erp.Util
         public static string Employee = "Employee";
         public static string TeamLeader = "TeamLeader";
         public static string EmptyString = "";
+        public static string VerificationUrl = "url_verification";
+        public static string TeamJoin = "team_join";
 
         #region String Constants for Test Cases
 
