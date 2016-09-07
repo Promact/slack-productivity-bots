@@ -263,17 +263,6 @@ namespace Promact.Core.Test
             Assert.NotEqual(false, result);
         }
 
-        /// <summary>
-        /// Test case for conduct task mail after started
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void GetUserRole()
-        {
-            var response = Task.FromResult(StringConstant.TaskMailReport);
-            var requestUrl = string.Format("{0}{1}", StringConstant.ProjectInformationUrl, StringConstant.EmailForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
-            var userRole =  _projectUserRepository.GetUserRole(StringConstant.EmailForTest,StringConstant.AccessTokenForTest);
-            Assert.Equal(3, userRole.Result.Count);
-        }
+      
     }
 }
