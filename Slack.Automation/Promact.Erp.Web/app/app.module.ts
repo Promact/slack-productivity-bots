@@ -8,7 +8,7 @@ import { routing }       from './app.routes';
 import { LeaveReportComponent } from './leaveReport/leaveReportList/leaveReport';
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReportDetails/leaveReportDetails';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
-import {HttpService} from "./http.service";
+//import {HttpService} from "./http.service";
 import { TaskService }   from './taskmail/taskmail.service';
 
 
@@ -24,7 +24,7 @@ import { TaskService }   from './taskmail/taskmail.service';
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportDetailsComponent],
     bootstrap: [AppComponent],
-    providers: [HttpService, LeaveReportService, TaskService]
+    providers: [LeaveReportService, TaskService]
 })
 
 export class AppModule { }

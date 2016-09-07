@@ -26,5 +26,8 @@ export class TaskMailDetailsComponent {
 
         });
     }
+    getTaskMailList() {
+        this.router.navigate(['task/']);
+    }
 
 }
