@@ -152,6 +152,8 @@ namespace Promact.Erp.Util
         public static string LeaveBalanceErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveBalanceReplyTextForTest = "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
         public static string OrElseString = "Or Else Sorry";
+        public static string VerificationUrl = "url_verification";
+        public static string TeamJoin = "team_join";
 
         #region String Constants for Test Cases
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using NLog;
+using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -12,15 +13,17 @@ namespace Promact.Erp.Core.Controllers
 {
     public class HomeController : MVCBaseController
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private readonly ApplicationSignInManager _signInManager;
+        private readonly ApplicationUserManager _userManager;
         private readonly ILogger _logger;
+        private readonly IOAuthLoginRepository _oAuthLoginRepository;
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _oAuthLoginRepository = oAuthLoginRepository;
         }
 
         /**
@@ -107,8 +110,6 @@ namespace Promact.Erp.Core.Controllers
                 var user = _userManager.FindByEmail(email);
                 if (user != null)
                 {
-                    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                    await _userManager.AddLoginAsync(user.Id, info);
                     await _signInManager.SignInAsync(user, false, false);
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
@@ -118,21 +119,10 @@ namespace Promact.Erp.Core.Controllers
                 }
                 if (user == null)
                 {
-                    user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
-                    //Creating a user with email only. Password not required
-                    var result = await _userManager.CreateAsync(user);
-                    if (result.Succeeded)
-                    {
-                        //Adding external Oauth details
-                        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                        result = await _userManager.AddLoginAsync(user.Id, info);
-                        if (result.Succeeded)
-                        {
-                            //Signing user with username or email only
-                            await _signInManager.SignInAsync(user, false, false);
-                            return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
-                        }
-                    }
+                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserName);
+                    //Signing user with username or email only
+                    await _signInManager.SignInAsync(user, false, false);
+                    return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 return View();
             }
