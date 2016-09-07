@@ -1,0 +1,44 @@
+﻿<center>
+<table>
+    <thead>
+        <tr>
+            <th>Employee Name</th>
+            <th>Employee UserName</th>
+            <th>Role</th>
+            <th>Total Sick Leave</th>
+            <th>Total Casual Leave</th>
+            <th>Utilised Casual Leave</th>
+            <th>Balance Casual Leave</th>
+            <!--<th>Utilised Sick Leave</th>
+            <th>Balance Sick Leave</th>-->
+        </tr>
+    </thead>
+    <tr>
+        <td>
+            <input type="text" [(ngModel)]="EmployeeName" placeholder="EmployeeName">
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            <input type="text" [(ngModel)]="UtilisedCasualLeave" placeholder="UtilisedCasualLeave">
+        </td>
+    </tr>
+    <tbody>
+        <tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave ">
+            <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
+            <td>{{leaveReport.EmployeeUserName}}</td> 
+            <td>{{leaveReport.Role}}</td>  
+            <td>{{leaveReport.TotalSickLeave}}</td>
+            <td>{{leaveReport.TotalCasualLeave}}</td>
+            <td>{{leaveReport.UtilisedCasualLeave}}</td>
+            <td>{{leaveReport.BalanceCasualLeave}}</td>
+            <!--<td>{{leaveReport.UtilisedSickLeave}}</td>
+            <td>{{leaveReport.BalanceSickLeave}}</td>-->
+        </tr>
+    </tbody>
+</table>
+ <button (click)="exportDataToPdf()">Export Data To Pdf</button>
+   
+    </center>

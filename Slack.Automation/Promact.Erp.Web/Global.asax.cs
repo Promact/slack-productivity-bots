@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Promact.Erp.Web.App_Start;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -13,11 +10,15 @@ namespace Promact.Erp.Web
     {
         protected void Application_Start()
         {
+            var container = AutofacConfig.RegisterDependancies();
+            DatabaseConfig.Initialize(container);
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //Bot.Main(container);
+            //Program.Main(container);
         }
     }
 }
