@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using NLog;
+using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -12,34 +13,62 @@ namespace Promact.Erp.Core.Controllers
 {
     public class HomeController : MVCBaseController
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private readonly ApplicationSignInManager _signInManager;
+        private readonly ApplicationUserManager _userManager;
         private readonly ILogger _logger;
+        private readonly IOAuthLoginRepository _oAuthLoginRepository;
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _oAuthLoginRepository = oAuthLoginRepository;
         }
 
+        /**
+        * @api {get} Home/Index
+        * @apiVersion 1.0.0
+        * @apiName Index
+        * @apiGroup Index    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Open the first/login page of the application"
+        * }
+        */
         public ActionResult Index()
         {
             return View();
         }
 
-        /// <summary>
-        /// After Login from OAuth server Page will be redirected to this page
-        /// </summary>
-        /// <returns></returns>
+        /**
+        * @api {get} Home/AfterLogIn
+        * @apiVersion 1.0.0
+        * @apiName AfterLogIn
+        * @apiGroup AfterLogIn    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"After Login from OAuth server Page will be redirected to this page and will open a view of application"
+        * }
+        */
         public ActionResult AfterLogIn()
         {
             return View();
         }
 
-        /// <summary>
-        /// External Login Method. It will call and external OAuth for Login
-        /// <returns></returns>
+        /**
+        * @api {get} Home/ExtrenalLogin
+        * @apiVersion 1.0.0
+        * @apiName ExtrenalLogin
+        * @apiGroup ExtrenalLogin    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Will redirect to OAuth server for external login"
+        * }
+        */
         public ActionResult ExtrenalLogin()
         {
             try
@@ -60,11 +89,20 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method will recieve access token and email and user will register here
-        /// </summary>
-        /// <param name="accessToken"></param>
-        /// <returns></returns>
+        /**
+        * @api {get} Home/ExtrenalLoginCallBack
+        * @apiVersion 1.0.0
+        * @apiName ExtrenalLoginCallBack
+        * @apiGroup ExtrenalLoginCallBack 
+        * @apiParam {string} Name  accessToken
+        * @apiParam {string} Name  email
+        * @apiParam {string} Name  slackUserName
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
+        * }
+        */
         public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName)
         {
             try
@@ -72,8 +110,6 @@ namespace Promact.Erp.Core.Controllers
                 var user = _userManager.FindByEmail(email);
                 if (user != null)
                 {
-                    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                    await _userManager.AddLoginAsync(user.Id, info);
                     await _signInManager.SignInAsync(user, false, false);
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
@@ -83,21 +119,10 @@ namespace Promact.Erp.Core.Controllers
                 }
                 if (user == null)
                 {
-                    user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
-                    //Creating a user with email only. Password not required
-                    var result = await _userManager.CreateAsync(user);
-                    if (result.Succeeded)
-                    {
-                        //Adding external Oauth details
-                        UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                        result = await _userManager.AddLoginAsync(user.Id, info);
-                        if (result.Succeeded)
-                        {
-                            //Signing user with username or email only
-                            await _signInManager.SignInAsync(user, false, false);
-                            return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
-                        }
-                    }
+                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserName);
+                    //Signing user with username or email only
+                    await _signInManager.SignInAsync(user, false, false);
+                    return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 return View();
             }
@@ -108,10 +133,17 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Method to signOut from our application not from OAuth server
-        /// </summary>
-        /// <returns></returns>
+        /**
+        * @api {get} Home/LogOff
+        * @apiVersion 1.0.0
+        * @apiName LogOff
+        * @apiGroup LogOff    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"SignOut from our application"
+        * }
+        */
         public ActionResult LogOff()
         {
             try
@@ -134,11 +166,18 @@ namespace Promact.Erp.Core.Controllers
             }
         }
 
-        /// <summary>
-        /// Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult SlackOAuth()
+        /**
+        * @api {get} Home/SlackOAuthAuthorization
+        * @apiVersion 1.0.0
+        * @apiName SlackOAuthAuthorization
+        * @apiGroup SlackOAuthAuthorization    
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app"
+        * }
+        */
+        public ActionResult SlackOAuthAuthorization()
         {
             return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User));
         }

@@ -33,7 +33,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <returns>user</returns>
         public SlackUserDetails GetById(string slackId)
         {
-            var user = _slackUserDetails.FirstOrDefault(x => x.Id == slackId);
+            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackId);
             return user;
         }
     }

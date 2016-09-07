@@ -123,6 +123,7 @@
     <Compile Include="BotQuestionRepositoryTest.cs" />
     <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
+    <Compile Include="OAuthLoginRepositoryTest.cs" />
     <Compile Include="ProjectUserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrumBotRepositoryTest.cs" />

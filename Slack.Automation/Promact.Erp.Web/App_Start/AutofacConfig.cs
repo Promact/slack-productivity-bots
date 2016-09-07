@@ -8,6 +8,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.DataRepository;
+using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
@@ -66,7 +67,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
-
+            builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             var container = builder.Build();
 
