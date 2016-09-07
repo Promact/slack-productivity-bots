@@ -2,6 +2,7 @@
     EmployeeId: string;
     EmployeeUserName: string; 
     EmployeeName: string;
+    Role: string;
     TotalSickLeave: number; 
     TotalCasualLeave : number;
     UtilisedCasualLeave :number;

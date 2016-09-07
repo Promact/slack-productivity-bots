@@ -17,17 +17,13 @@ var LeaveReportService = (function () {
     }
     LeaveReportService.prototype.getLeaveReports = function () {
         return this.http.get("leaveReport")
-            .map(this.extractData)
+            .map(function (res) { return res.json(); })
             .catch(this.handleError);
     };
     LeaveReportService.prototype.getLeaveReportDetail = function (Id) {
         return this.http.get("leaveReportDetails/" + Id)
-            .map(this.extractData)
+            .map(function (res) { return res.json(); })
             .catch(this.handleError);
-    };
-    LeaveReportService.prototype.extractData = function (res) {
-        var body = res.json();
-        return body || {};
     };
     LeaveReportService.prototype.handleError = function (error) {
         var errMsg = 'Server error';

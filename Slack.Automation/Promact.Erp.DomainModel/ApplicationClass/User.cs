@@ -28,13 +28,22 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         [JsonProperty("IsActive")]
         public bool IsActive { get; set; }
 
-        //   [Required]
+        [JsonProperty("Role")]
+        public string Role { get; set; }
+
+        [Required]
         [EmailAddress]
         [JsonProperty("Email")]
         public string Email { get; set; }
 
         [JsonProperty("UserName")]
         public string UserName { get; set; }
+
+        [JsonProperty("NumberOfCasualLeave")]
+        public double NumberOfCasualLeave { get; set; }
+
+        [JsonProperty("NumberOfSickLeave")]
+        public double NumberOfSickLeave { get; set; }
 
         [JsonProperty("UniqueName")]
         public string UniqueName { get { return FirstName + "-" + Email; } }
