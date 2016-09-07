@@ -14,8 +14,8 @@ var forms_1 = require('@angular/forms');
 var app_component_1 = require('./app.component');
 var http_1 = require('@angular/http');
 var app_routes_1 = require('./app.routes');
-var leaveReport_1 = require('./leaveReport/leaveReportList/leaveReport');
-var leaveReportDetails_1 = require('./leaveReport/leaveReportDetails/leaveReportDetails');
+var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leaveReport-List.component');
+var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
 var AppModule = (function () {
     function AppModule() {
@@ -29,7 +29,7 @@ var AppModule = (function () {
                 http_1.JsonpModule,
                 app_routes_1.routing
             ],
-            declarations: [app_component_1.AppComponent, leaveReport_1.LeaveReportComponent, leaveReportDetails_1.LeaveReportDetailsComponent],
+            declarations: [app_component_1.AppComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
             bootstrap: [app_component_1.AppComponent],
             providers: [leaveReport_service_1.LeaveReportService]
         }), 

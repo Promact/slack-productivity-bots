@@ -1,18 +1,18 @@
 "use strict";
 var router_1 = require('@angular/router');
-var leaveReport_1 = require('./leaveReport/leaveReportList/leaveReport');
-var leaveReportDetails_1 = require('./leaveReport/leaveReportDetails/leaveReportDetails');
+var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leaveReport-List.component');
+var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var appRoutes = [
     {
         path: 'report',
-        component: leaveReport_1.LeaveReportComponent
+        component: leaveReport_List_component_1.LeaveReportListComponent
     },
     {
         path: 'detail/:id',
-        component: leaveReportDetails_1.LeaveReportDetailsComponent
+        component: leaveReport_Details_component_1.LeaveReportDetailsComponent
     },
     {
-        path: '',
+        path: 'Home/AfterLogIn',
         redirectTo: '/report',
         pathMatch: 'full'
     }

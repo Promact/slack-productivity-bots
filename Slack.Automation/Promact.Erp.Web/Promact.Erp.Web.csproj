@@ -210,8 +210,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\leaveReport\leaveReportDetails\leaveReportDetails.html" />
-    <Content Include="app\leaveReport\leaveReportList\leaveReportList.html" />
+    <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />
+    <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -220,6 +220,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="karma-test-shim.js" />
+    <Content Include="karma.config.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="package.json" />
@@ -296,6 +298,7 @@
     <Content Include="typings.json" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
+    <Content Include="tslint.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -329,12 +332,18 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReport.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.spec.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReportDetails.model.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReportDetails\leaveReportDetails.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReportList\leaveReport.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\mock\mock.leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\mock\test.connection.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

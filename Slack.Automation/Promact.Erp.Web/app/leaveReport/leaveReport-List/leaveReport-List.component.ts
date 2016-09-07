@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { LeaveReport } from '../leaveReport.model';
+import { LeaveReport } from './leaveReport-List.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { FilterPipe } from '../filter.pipe';
@@ -7,11 +7,11 @@ declare let jsPDF: any;
 
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReportList/leaveReportList.html',
+    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
     pipes: [FilterPipe]
 })
 
-export class LeaveReportComponent implements OnInit {
+export class LeaveReportListComponent implements OnInit {
     leaveReports: LeaveReport[] = [];
     errorMessage: string;
     private EmployeeName: string;
