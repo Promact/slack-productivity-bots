@@ -15,19 +15,14 @@ export class LeaveReportService {
 
     getLeaveReports(): Observable<LeaveReport[]> {
         return this.http.get("leaveReport")
-            .map(this.extractData)
+            .map(res => res.json())
             .catch(this.handleError);
     }
 
     getLeaveReportDetail(Id: string): Observable<LeaveReportDetail[]> {
         return this.http.get("leaveReportDetails/" + Id)
-            .map(this.extractData)
+            .map(res => res.json())
             .catch(this.handleError);
-    }
-
-    private extractData(res: Response) {
-        let body = res.json();
-        return body || {};
     }
 
     private handleError(error: any) {

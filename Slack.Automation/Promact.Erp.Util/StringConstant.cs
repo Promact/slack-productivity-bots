@@ -144,6 +144,10 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "10.0";
+        public static string Admin = "Admin";
+        public static string Employee = "Employee";
+        public static string TeamLeader = "TeamLeader";
+        public static string EmptyString = "";
 
         #region String Constants for Test Cases
 
@@ -164,11 +168,6 @@ namespace Promact.Erp.Util
         public static string scrumAnswerForTest = "Worked on testing";
         public static string ProjectIdForTest = "2";
         public static string TeamLeaderIdForTest = "5c84049f-f861-406d-b420-e1bf03c9e06e";
-
-        
-        public static string Admin = "Admin";
-        public static string Employee = "Employee";
-        public static string TeamLeader = "TeamLeader";
         public static string EmployeeIdForTest = "2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf";
         public static string TestAccessToken = "05310c2a-3fd3-4fa7-a059-e88bfbfe5f99";
         public static string TestUserName = "roshni@promactinfo.com";
@@ -176,7 +175,7 @@ namespace Promact.Erp.Util
         public static string FirstUserName = "roshni@promactinfo.com";
         public static string FirstUserNameFalse = "gourav@promactinfo.com";
         public static string ProjectUsers = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
-        public static string EmptyString = "";
+
         #endregion
 
     }
