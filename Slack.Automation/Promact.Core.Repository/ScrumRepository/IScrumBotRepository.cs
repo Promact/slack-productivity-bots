@@ -42,12 +42,5 @@ namespace Promact.Core.Repository.ScrumRepository
         bool AddAnswer(int ScrumID, int QuestionId, string EmployeeId, string Message);
 
 
-        /// <summary>
-        /// This method will be called when the keyword "scrum time" is encountered
-        /// </summary>
-        /// <param name="GroupName"></param>
-        /// <param name="UserName"></param>
-        /// <returns>The next question or the scrum complete message</returns>
-        Task<string> StartScrumTest(string GroupName, string UserName);
     }
 }
