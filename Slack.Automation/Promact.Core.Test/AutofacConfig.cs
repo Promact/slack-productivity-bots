@@ -22,6 +22,7 @@ using Effort;
 using Promact.Core.Repository.BotQuestionRepository;
 using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
+using Promact.Core.Repository.ExternalLoginRepository;
 
 namespace Promact.Core.Test
 {
@@ -48,6 +49,7 @@ namespace Promact.Core.Test
             var clientMockObject = clientMock.Object;
             builder.RegisterInstance(clientMock).As<Mock<IClient>>();
             builder.RegisterInstance(clientMockObject).As<IClient>();
+            builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             //builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
