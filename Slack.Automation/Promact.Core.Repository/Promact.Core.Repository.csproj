@@ -98,14 +98,12 @@
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
     <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
-    <Compile Include="Bot\MessageEditEventArgs.cs" />
-    <Compile Include="Bot\MessageEventArgs.cs" />
-    <Compile Include="Bot\Rtm.cs" />
-    <Compile Include="Client\BotClient.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
     <Compile Include="DataRepository\IRepository.cs" />
     <Compile Include="DataRepository\Repository.cs" />
+    <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />
+    <Compile Include="ExternalLoginRepository\IOAuthLoginRepository.cs" />
     <Compile Include="HttpClientRepository\HttpClientRepository.cs" />
     <Compile Include="HttpClientRepository\IHttpClientRepository.cs" />
     <Compile Include="LeaveReportRepository\ILeaveReportRepository.cs" />

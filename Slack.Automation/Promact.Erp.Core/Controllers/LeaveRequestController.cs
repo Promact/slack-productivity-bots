@@ -31,11 +31,28 @@ namespace Promact.Erp.Core.Controllers
             _userManager = userManager;
             _logger = logger;
         }
-        /// <summary>
-        /// Slack Call for Slash Command
-        /// </summary>
-        /// <param name="blog"></param>
-        /// <returns></returns>
+
+        /**
+        * @api {post} leaves/slackcall
+        * @apiVersion 1.0.0
+        * @apiName SlackRequest
+        * @apiGroup LeaveRequest  
+        * @apiParam {string} Name  Token
+        * @apiParam {string} Name  TeamId
+        * @apiParam {string} Name  TeamDomain
+        * @apiParam {string} Name  ChannelId
+        * @apiParam {string} Name  ChannelName
+        * @apiParam {string} Name  UserId
+        * @apiParam {string} Name  Username
+        * @apiParam {string} Name  Command
+        * @apiParam {string} Name  Text
+        * @apiParam {string} Name  ResponseUrl
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"A message will be send user using incoming webhook"
+        * }
+        */
         [HttpPost]
         [Route("leaves/slackcall")]
         public async Task<IHttpActionResult> SlackRequest()
@@ -54,7 +71,10 @@ namespace Promact.Erp.Core.Controllers
                     case SlackAction.apply:
                         {
                             var leaveRequest = await _slackRepository.LeaveApply(slackText, leave, accessToken);
-                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                            if (leaveRequest.Id != 0)
+                            {
+                                await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                            }
                         }
                         break;
                     case SlackAction.list:
@@ -67,7 +87,7 @@ namespace Promact.Erp.Core.Controllers
                         await _slackRepository.SlackLeaveStatus(slackText, leave, accessToken);
                         break;
                     case SlackAction.balance:
-                        await _slackRepository.SlackLeaveBalance(leave,accessToken);
+                        await _slackRepository.SlackLeaveBalance(leave, accessToken);
                         break;
                     default:
                         _slackRepository.SlackLeaveHelp(leave);
@@ -78,26 +98,33 @@ namespace Promact.Erp.Core.Controllers
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
-                _client.SendMessage(leave, StringConstant.SlackErrorMessage);
+                var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveBalanceErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
+                _client.SendMessage(leave, replyText);
                 _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest);
                 return BadRequest(ex.ToString());
             }
         }
 
-        /// <summary>
-        /// Method to update the leave details. Response will be from slack interactive message button
-        /// </summary>
-        /// <param name="leaveResponse"></param>
-        /// <returns></returns>
+        /**
+        * @api {post} leaves/slackbuttoncall
+        * @apiVersion 1.0.0
+        * @apiName SlackButtonRequest
+        * @apiGroup SlackButtonRequest    
+        * @apiParam {SlashChatUpdateResponse} Name  leaveResponse
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *     "Description":"A message will be update in slack using slack chat update method"
+        * }
+        */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public IHttpActionResult SlackButtonRequest()
+        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             try
             {
-            SlashChatUpdateResponse leaveResponse = new SlashChatUpdateResponse();
-            _slackRepository.UpdateLeave(leaveResponse);
-            return Ok();
+                _slackRepository.UpdateLeave(leaveResponse);
+                return Ok();
             }
             catch (Exception ex)
             {

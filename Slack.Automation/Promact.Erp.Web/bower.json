@@ -1,0 +1,25 @@
+{
+  "name": "promacterp",
+  "description": "Slack custom integration",
+  "main": "",
+  "authors": [
+    "Siddhartha Shaw <siddhartha@promactinfo.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/Promact/slack-erp-custom-integration-mvc",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Scripts"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery-validation": "^1.15.1",
+    "jquery": "3.1.0",
+    "modernizr": "3.1.0",
+    "respond":"1.4.2"
+  }
+}
