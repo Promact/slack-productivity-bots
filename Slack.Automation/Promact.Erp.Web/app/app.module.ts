@@ -9,7 +9,7 @@ import { LeaveReportComponent } from './leaveReport/leaveReport.component';
 import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveReport-List.component';
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
-
+import { StringConstant } from './shared/stringConstant';
 
 
 @NgModule({
@@ -22,7 +22,7 @@ import { LeaveReportService } from './leaveReport/leaveReport.service';
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService]
+    providers: [LeaveReportService, StringConstant]
 })
 
 export class AppModule { }

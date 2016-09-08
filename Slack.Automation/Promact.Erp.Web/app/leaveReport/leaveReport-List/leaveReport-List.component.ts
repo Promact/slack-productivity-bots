@@ -3,6 +3,7 @@ import { LeaveReport } from './leaveReport-List.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { FilterPipe } from '../filter.pipe';
+import { StringConstant } from '../../shared/stringConstant';
 declare let jsPDF: any;
 
 
@@ -17,7 +18,7 @@ export class LeaveReportListComponent implements OnInit {
     private EmployeeName: string;
     private UtilisedCasualLeave: number;
 
-    constructor(private leaveReportService: LeaveReportService, private router: Router) { }
+    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant) { }
 
     ngOnInit() {
         this.getLeaveReports();
@@ -33,12 +34,12 @@ export class LeaveReportListComponent implements OnInit {
     }
 
     leaveDetails(employeeId: string) {
-        let link = ['/detail', employeeId];
+        let link = [this.stringConstant.detail, employeeId];
         this.router.navigate(link);
     }
 
     exportDataToPdf() {
-        var columns = ["Employee Name", "Employee Username","Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+        var columns = this.stringConstant.listColumns;
         var rows: any = [];
         for (var key in this.leaveReports) {
             rows.push([
@@ -51,16 +52,16 @@ export class LeaveReportListComponent implements OnInit {
                 ]);
         };
 
-        var doc = new jsPDF('p','pt','a4');
+        var doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
 
         doc.autoTable(columns, rows, {
             styles: {
-                theme: 'plain',
-                overflow: 'linebreak',
-                pageBreak: 'auto', 
-                tableWidth: 'auto',
+                theme: this.stringConstant.theme,
+                overflow: this.stringConstant.overflow,
+                pageBreak: this.stringConstant.pageBreak,
+                tableWidth: this.stringConstant.tableWidth,
             },
         });
-        doc.save('Report.pdf');
+        doc.save(this.stringConstant.save);
     }    
 }
