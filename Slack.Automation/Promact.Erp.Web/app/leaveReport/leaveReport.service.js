@@ -11,27 +11,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require("@angular/http");
 var Rx_1 = require('rxjs/Rx');
+var stringConstant_1 = require('../shared/stringConstant');
 var LeaveReportService = (function () {
-    function LeaveReportService(http) {
+    function LeaveReportService(http, stringConstant) {
         this.http = http;
+        this.stringConstant = stringConstant;
     }
     LeaveReportService.prototype.getLeaveReports = function () {
-        return this.http.get("leaveReport")
-            .map(function (res) { return res.json(); })
+        return this.http.get(this.stringConstant.leaveReport)
+            .map(function (res) { return res.json() || {}; })
             .catch(this.handleError);
     };
     LeaveReportService.prototype.getLeaveReportDetail = function (Id) {
-        return this.http.get("leaveReportDetails/" + Id)
-            .map(function (res) { return res.json(); })
+        return this.http.get(this.stringConstant.leaveReportDetails + Id)
+            .map(function (res) { return res.json() || {}; })
             .catch(this.handleError);
     };
     LeaveReportService.prototype.handleError = function (error) {
-        var errMsg = 'Server error';
+        var errMsg = this.stringConstant.serverError;
         return Rx_1.Observable.throw(errMsg);
     };
     LeaveReportService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [http_1.Http, stringConstant_1.StringConstant])
     ], LeaveReportService);
     return LeaveReportService;
 }());

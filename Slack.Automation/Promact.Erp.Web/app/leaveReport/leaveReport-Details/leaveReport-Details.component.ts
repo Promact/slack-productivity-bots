@@ -2,6 +2,8 @@
 import { LeaveReportDetail } from './leaveReport-Details.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { ActivatedRoute } from '@angular/router';
+import { StringConstant } from '../../shared/stringConstant';
+
 declare let jsPDF: any;
 
 @Component({
@@ -14,15 +16,14 @@ export class LeaveReportDetailsComponent {
     sub: any;
     Id: any;
 
-    constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute) {
-    }
+    constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute, private stringConstant: StringConstant) { }
 
     ngOnInit() {
         this.getLeaveReportDetail();
     }
 
-    getLeaveReportDetail() {        
-        this.sub = this.route.params.subscribe(params => this.Id = params['id']);
+    getLeaveReportDetail() {
+        this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => this.leaveReportDetail = leaveReportDetail,
@@ -35,7 +36,7 @@ export class LeaveReportDetailsComponent {
     }
 
     exportDataToPdf() {
-        var columns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day","Reason"];
+        var columns = this.stringConstant.detailColumns;
         var rows: any = [];
         for (var key in this.leaveReportDetail) {
             rows.push([
@@ -49,16 +50,16 @@ export class LeaveReportDetailsComponent {
             ]);
         };
 
-        var doc = new jsPDF('p', 'pt', 'a4');
+        var doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
 
         doc.autoTable(columns, rows, {
             styles: {
-                theme: 'plain',
-                overflow: 'linebreak',
-                pageBreak: 'auto',
-                tableWidth: 'auto',
+                theme: this.stringConstant.theme,
+                overflow: this.stringConstant.overflow,
+                pageBreak: this.stringConstant.pageBreak,
+                tableWidth: this.stringConstant.tableWidth,
             },
         });
-        doc.save('ReportDetail.pdf');
+        doc.save(this.stringConstant.save);
     }    
 }

@@ -18,6 +18,7 @@ var leaveReport_component_1 = require('./leaveReport/leaveReport.component');
 var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leaveReport-List.component');
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
+var stringConstant_1 = require('./shared/stringConstant');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -32,7 +33,7 @@ var AppModule = (function () {
             ],
             declarations: [app_component_1.AppComponent, leaveReport_component_1.LeaveReportComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
             bootstrap: [app_component_1.AppComponent],
-            providers: [leaveReport_service_1.LeaveReportService]
+            providers: [leaveReport_service_1.LeaveReportService, stringConstant_1.StringConstant]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);

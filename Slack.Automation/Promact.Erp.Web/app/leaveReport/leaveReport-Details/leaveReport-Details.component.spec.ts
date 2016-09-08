@@ -7,6 +7,7 @@ import { LeaveReportService } from '../leaveReport.service';
 import { TestConnection } from "../../shared/mock/test.connection";
 import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { Observable } from 'rxjs/Observable';
+import { StringConstant } from '../../shared/stringConstant';
 
 describe('LeaveReport Tests', () => {
     let leaveReportDetailsComponent: LeaveReportDetailsComponent;
@@ -24,13 +25,14 @@ describe('LeaveReport Tests', () => {
                 provide(ActivatedRoute, { useClass: MockActivatedRoute }),
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(LeaveReportService, { useClass: MockLeaveReportService }),
+                provide(StringConstant, { useClass: StringConstant }),
             ]
         });
     });
 
-    beforeEach(inject([LeaveReportService, ActivatedRoute], (leaveReportService: LeaveReportService, mockRouter: ActivatedRoute) => {
+    beforeEach(inject([LeaveReportService, ActivatedRoute, StringConstant], (leaveReportService: LeaveReportService, mockRouter: ActivatedRoute, stringConstant: StringConstant) => {
         router = mockRouter;
-        leaveReportDetailsComponent = new LeaveReportDetailsComponent(leaveReportService, router);
+        leaveReportDetailsComponent = new LeaveReportDetailsComponent(leaveReportService, router, stringConstant);
     }));
 
 
