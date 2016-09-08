@@ -9,6 +9,10 @@
     Slack' App Client Id 
   * ```SlackOAuthClientSecret``` =  srfg56r4dtu1dgjf5432j132fg :
     Slack' App Client Secret 
+  * ```ScrumBotName``` = Scrum Bot :
+      Slack's Scrum meeting Bot Name 
+  * ```ScrumBotToken``` = asldkmalsmfdl-zdfzxdvfxdl545d4f :
+      Slack's Scrum meeting Bot AccessToken 
 
 2. Email Variables 
   * ```From``` =  example@examples.com :
