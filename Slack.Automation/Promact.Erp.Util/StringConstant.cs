@@ -61,6 +61,7 @@ namespace Promact.Erp.Util
         public static string ScrumBotName = "ScrumBotName";
         public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
         public static string AlreadyAnswered = "But,<@{0}> your answers have been recorded today :worried:\n";
+        public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
         public static string NoProjectFound = "No project found for this group.";

@@ -219,7 +219,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         var employee = employees.FirstOrDefault(x => x.SlackUserName == LeaveApplicant);
                         if (employee == null)
-                            returnMsg = "Sorry. <@" + LeaveApplicant + "> is not a member of this project.\n";
+                            returnMsg = string.Format(StringConstant.NotAMember, LeaveApplicant);
                         else
                         {
                             var answerCount = 0;
