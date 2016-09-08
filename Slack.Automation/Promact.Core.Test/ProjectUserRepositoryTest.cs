@@ -33,7 +33,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             var user = _projectUserRepository.GetUserByUsername(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
-            Assert.NotEqual(user.Email, StringConstant.EmailForTest);
+            Assert.Equal(user.Email, StringConstant.ManagementEmailForTest);
         }
 
         /// <summary>
