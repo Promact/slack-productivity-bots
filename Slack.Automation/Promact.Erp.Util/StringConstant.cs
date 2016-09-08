@@ -81,7 +81,7 @@ namespace Promact.Erp.Util
         public static string UserDetailsFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
         public static string SlashCommandText = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016";
         public static string PromactStringName = "Promact";
-        public static string QuestionForTest = "On which task you worked on Today?";
+        public static string FirstQuestionForTest = "On which task you worked on Today?";
         public static string TeamLeaderDetailsFromOauthServer = "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
         public static string CommentAndDescriptionForTest = "Doing Test Task";
         public static string ManagementDetailsFromOauthServer = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
@@ -168,6 +168,17 @@ namespace Promact.Erp.Util
         public static string LeaveListTestForOwn = "list";
         public static string WrongLeaveCancelCommandForTest = "cancel aaa";
         public static string LeaveStatusTestForOwn = "status";
+        public static string SecondQuestionForTest = "How many hours you spent on this task?";
+        public static string ThirdQuestionForTest = "What is the Status of this task?";
+        public static string ForthQuestionForTest = "Mention if any Comment/Roadblock.";
+        public static string FifthQuestionForTest = "Do you want to send your task mail?";
+        public static string SixthQuestionForTest = "Are you sure to send mail? After sending email you won't be able to add any tak for today.";
+        public static string SeventhQuestionForTest = "Task Mail Complete";
+        public static string YouAreNotInExistInOAuthServer = "You Doesnot Exist In Promact OAuth Server";
+        public static string HourSpentForTest = "4";
+        public static string StatusOfWorkForTest = "completed";
+        public static string SendEmailYesForTest = "yes";
+        public static string SendEmailNoForTest = "no";
 
         #region String Constants for Test Cases
 

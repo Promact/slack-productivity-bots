@@ -121,7 +121,7 @@ namespace Promact.Core.Test
         {
             CreatedOn = DateTime.UtcNow,
             OrderNumber = 1,
-            QuestionStatement = StringConstant.QuestionForTest,
+            QuestionStatement = StringConstant.FirstQuestionForTest,
             Type = 2
         };
     }
