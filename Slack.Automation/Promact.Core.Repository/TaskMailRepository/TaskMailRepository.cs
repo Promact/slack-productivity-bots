@@ -42,17 +42,17 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> StartTaskMail(string userName)
         {
-            try
+            // getting user name from user's slack name
+            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            // getting access token for that user
+            if (user != null)
             {
-                // getting user name from user's slack name
-                var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
-                // getting access token for that user
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
                 TaskMailQuestion question = new TaskMailQuestion();
                 Question previousQuestion = new Question();
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 // getting user information from Promact Oauth Server
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
                 TaskMail taskMail;
                 try
                 {
@@ -101,13 +101,12 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
                     var questionText = await QuestionAndAnswer(userName, null);
                 }
-                return questionText;
             }
-            catch (Exception ex)
+            else
             {
-                questionText = ex.ToString();
-                throw;
+                questionText = StringConstant.YouAreNotInExistInOAuthServer;
             }
+            return questionText;
         }
 
         /// <summary>
@@ -118,10 +117,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> QuestionAndAnswer(string userName, string answer)
         {
-            try
+            // getting user name from user's slack name
+            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            if (user != null)
             {
-                // getting user name from user's slack name
-                var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
                 // getting access token for that user
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 List<TaskMailDetails> taskList = new List<TaskMailDetails>();
@@ -168,7 +167,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // if previous question was hour of task and it was not null/wrong value then it will ask next question
                                         var hour = Convert.ToDecimal(answer);
                                         // checking range of hours
-                                        if (hour>0 && hour<8)
+                                        if (hour > 0 && hour < 8)
                                         {
                                             taskDetails.Hours = hour;
                                             questionText = nextQuestion.QuestionStatement;
@@ -245,12 +244,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     questionText = StringConstant.ThankYou;
                                                 }
                                                 break;
-                                            default:
-                                                {
-                                                    // if previous question was send email of task and it was null or wrong value then it will ask for comment again
-                                                    questionText = string.Format("{0}{1}{2}", StringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
-                                                }
-                                                break;
                                         }
                                     }
                                     catch (Exception)
@@ -307,12 +300,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                 }
                                                 break;
-                                            default:
-                                                {
-                                                    // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                                    questionText = string.Format("{0}{1}{2}", StringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
-                                                }
-                                                break;
                                         }
                                     }
                                     catch (Exception)
@@ -322,11 +309,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                 }
                                 break;
-                            default:
-                                // if previous task mail was completed then ask user to start task mail
-                                questionText = StringConstant.RequestToStartTaskMail;
-                                break;
-
                         }
                         _taskMailDetail.Update(taskDetails);
                         _taskMail.Save();
@@ -337,14 +319,14 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // if previous task mail doesnot exist then ask user to start task mail
                     questionText = StringConstant.RequestToStartTaskMail;
                 }
-                return questionText;
             }
-            catch (Exception ex)
+            else
             {
-                questionText = ex.ToString();
-                throw;
+                questionText = StringConstant.YouAreNotInExistInOAuthServer;
             }
+            return questionText;
         }
+
         /// <summary>
         /// Method to generate template body
         /// </summary>

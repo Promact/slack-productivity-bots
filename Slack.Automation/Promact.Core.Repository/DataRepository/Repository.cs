@@ -37,16 +37,6 @@ namespace Promact.Core.Repository.DataRepository
         }
 
         /// <summary>
-        /// To search any data by its string Id number
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public virtual T GetById(string id)
-        {
-            return dbSet.Find(id);
-        }
-
-        /// <summary>
         /// Method to add data in database
         /// </summary>
         /// <param name="entity"></param>
@@ -63,17 +53,6 @@ namespace Promact.Core.Repository.DataRepository
         public void Delete(int? id)
         {
             dbSet.Remove(dbSet.Find(id));
-            db.SaveChanges();
-        }
-
-        /// <summary>
-        /// Method to delete data from database from its string Id
-        /// </summary>
-        /// <param name="id"></param>
-        public void Delete(string id)
-        {
-            T detail = dbSet.Find(id);
-            dbSet.Remove(detail);
             db.SaveChanges();
         }
 
@@ -122,57 +101,6 @@ namespace Promact.Core.Repository.DataRepository
             try
             {
                 return dbSet.Where<T>(predicate).AsQueryable();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Method to search database using Linq Expression and return true or false for any existance of data in database
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public bool Any(Func<T, bool> predicate)
-        {
-            try
-            {
-                return dbSet.Any(predicate);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Method to search database using Linq Expression and return true or false for corresponding to expression
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public bool All(Func<T, bool> predicate)
-        {
-            try
-            {
-                return dbSet.All(predicate);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Method to search database using Linq Expression and get LastOrDefault Value corresponding to expression
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public T LastOrDefault(Expression<Func<T, bool>> predicate)
-        {
-            try
-            {
-                return dbSet.LastOrDefault(predicate);
             }
             catch (Exception)
             {

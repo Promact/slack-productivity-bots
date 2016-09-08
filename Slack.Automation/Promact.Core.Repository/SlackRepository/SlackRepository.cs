@@ -118,14 +118,7 @@ namespace Promact.Core.Repository.SlackRepository
             try
             {
                 var leave = _leaveRepository.LeaveListStatusByUserId(userId);
-                if (leave != null)
-                {
-                    replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.Status);
-                }
-                else
-                {
-                    replyText = StringConstant.SlashCommandLeaveStatusErrorMessage;
-                }
+                replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.Status);
             }
             catch (Exception)
             {
@@ -174,15 +167,8 @@ namespace Promact.Core.Repository.SlackRepository
         {
             if (slackText.Count > 1)
             {
-                try
-                {
-                    var userName = slackText[1];
-                    replyText = await LeaveList(userName, accessToken);
-                }
-                catch (Exception)
-                {
-                    replyText = StringConstant.SlashCommandLeaveListErrorMessage;
-                }
+                var userName = slackText[1];
+                replyText = await LeaveList(userName, accessToken);
             }
             else
             {
@@ -219,16 +205,8 @@ namespace Promact.Core.Repository.SlackRepository
         {
             if (slackText.Count > 1)
             {
-                try
-                {
-                    var userName = slackText[1];
-                    var replyText = await LeaveStatus(userName, accessToken);
-
-                }
-                catch (Exception)
-                {
-                    replyText = StringConstant.SlashCommandLeaveStatusErrorMessage;
-                }
+                var userName = slackText[1];
+                var replyText = await LeaveStatus(userName, accessToken);
             }
             else
             {
@@ -236,6 +214,7 @@ namespace Promact.Core.Repository.SlackRepository
             }
             _client.SendMessage(leave, replyText);
         }
+
 
         /// <summary>
         /// Method to check leave Balance from slack

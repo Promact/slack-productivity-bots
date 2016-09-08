@@ -60,6 +60,10 @@ namespace Promact.Core.Test
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
+            var emailServiceMock = new Mock<IEmailService>();
+            var emailServiceMockObject = emailServiceMock.Object;
+            builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
+            builder.RegisterInstance(emailServiceMockObject).As<IEmailService>();
             var container = builder.Build();
             return container;
         }

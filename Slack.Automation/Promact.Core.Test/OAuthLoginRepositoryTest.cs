@@ -32,7 +32,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository
+        /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository with true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void AddNewUserFromExternalLogin()
