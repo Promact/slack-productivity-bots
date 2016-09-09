@@ -64,6 +64,7 @@ namespace Promact.Erp.Util
         public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
+        public static string WrongPerson = "<@{0}> please answer.";
         public static string NoProjectFound = "No project found for this group.";
         public static string ScrumComplete = "Scrum concluded.\nGood luck team :thumbsup:";
         public static string ScrumNotStarted = "Scrum has not been initiated yet";

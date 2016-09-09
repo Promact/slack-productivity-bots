@@ -50,6 +50,72 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
 
+        ///// <summary>
+        ///// This method is called whenever a message other than "scrumn time" or "leave username" is written in the group during scrum meeting. - JJ
+        ///// </summary>
+        ///// <param name="UserName"></param>
+        ///// <param name="Message"></param>
+        ///// <param name="GroupName"></param>
+        ///// <returns>The next Question Statement</returns>
+        //public async Task<string> AddScrumAnswer(string UserName, string Message, string GroupName)
+        //{
+        //    try
+        //    {
+        //        List<Scrum> scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.Now.Date).ToList();
+        //        string message = "";
+
+        //        if (scrum.Any())
+        //        {
+        //            // getting user name from user's slack name
+        //            var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+        //            // getting access token for that user
+        //            var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+        //            int firstScrumId = scrum.FirstOrDefault().Id;
+        //            List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
+        //            int questionCount = questions.Count();
+        //            //employees of the given group name fetched from the oauth server
+        //            List<User> employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+        //            //scrum answer of that day's scrum
+        //            List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == firstScrumId).ToList();
+        //            if ((employees.Count() * questionCount) > scrumAnswer.Count())
+        //            {
+        //                Question firstQuestion = questions.OrderBy(x => x.OrderNumber).FirstOrDefault();
+        //                ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
+        //                int answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+
+        //                if (scrumAnswer.Any())
+        //                {
+        //                    if (answerListCount < questionCount)
+        //                    {
+        //                        Question prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
+        //                        Question question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
+        //                        AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message);
+        //                    }
+        //                    else
+        //                    {
+        //                        //A particular employee's first answer
+        //                        User user = employees.Where(x => x.SlackUserName == UserName).FirstOrDefault();
+        //                        AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    //First Employee's first answer
+        //                    User user = employees.FirstOrDefault(x => x.SlackUserName == UserName);
+        //                    AddAnswer(firstScrumId, firstQuestion.Id, user.Id, Message);
+        //                }
+        //                message = await GetQuestion(firstScrumId, GroupName, accessToken, questions, employees);
+        //            }
+        //        }
+        //        return message;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return String.Empty;
+        //    }
+        //}
+
+
         /// <summary>
         /// This method is called whenever a message other than "scrumn time" or "leave username" is written in the group during scrum meeting. - JJ
         /// </summary>
@@ -89,20 +155,35 @@ namespace Promact.Core.Repository.ScrumRepository
                             {
                                 Question prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
                                 Question question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
-                                AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message);
+                                User user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                                if (user.SlackUserName.Equals(UserName))
+                                    AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message);
+                                else
+                                    return string.Format(StringConstant.WrongPerson, user.SlackUserName);
                             }
                             else
                             {
                                 //A particular employee's first answer
-                                User user = employees.Where(x => x.SlackUserName == UserName).FirstOrDefault();
-                                AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
+                                List<string> list = scrumAnswer.Select(x => x.EmployeeId).ToList();
+                                List<string> idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+
+                                User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                                if (user.SlackUserName.Equals(UserName))
+                                    //   User user = employees.Where(x => x.SlackUserName == UserName).FirstOrDefault();
+                                    AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message);
+                                else
+                                    return string.Format(StringConstant.WrongPerson, user.SlackUserName);
                             }
                         }
                         else
                         {
                             //First Employee's first answer
-                            User user = employees.FirstOrDefault(x => x.SlackUserName == UserName);
-                            AddAnswer(firstScrumId, firstQuestion.Id, user.Id, Message);
+                            //User user = employees.FirstOrDefault(x => x.SlackUserName == UserName);
+                            User user = employees.FirstOrDefault();
+                            if (user.SlackUserName.Equals(UserName))
+                                AddAnswer(firstScrumId, firstQuestion.Id, user.Id, Message);
+                            else
+                                return string.Format(StringConstant.WrongPerson, user.SlackUserName);
                         }
                         message = await GetQuestion(firstScrumId, GroupName, accessToken, questions, employees);
                     }
@@ -114,6 +195,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 return String.Empty;
             }
         }
+
 
 
 
