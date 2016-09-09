@@ -46,6 +46,7 @@ export class LeaveReportListComponent implements OnInit {
             rows.push([
                 this.leaveReports[key].EmployeeName,
                 this.leaveReports[key].EmployeeUserName,
+                this.leaveReports[key].Role,
                 this.leaveReports[key].TotalSickLeave,
                 this.leaveReports[key].TotalCasualLeave,
                 this.leaveReports[key].UtilisedCasualLeave,

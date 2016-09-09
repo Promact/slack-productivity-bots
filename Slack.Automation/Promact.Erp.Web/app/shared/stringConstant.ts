@@ -8,7 +8,7 @@ export class StringConstant{
     leaveReport = "leaveReport";
     leaveReportDetails = "leaveReportDetails/";
     serverError = 'Server error';
-    listColumns = ["Employee Name", "Employee Username", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+    listColumns = ["Employee Name", "Employee Username", "Role","Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
     theme = 'plain';
     overflow = 'linebreak';
     pageBreak = 'auto';
