@@ -17,6 +17,7 @@ export class LeaveReportListComponent implements OnInit {
     errorMessage: string;
     private EmployeeName: string;
     private UtilisedCasualLeave: number;
+    private Role: string;
 
     constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant) { }
 
