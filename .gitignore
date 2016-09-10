@@ -254,5 +254,6 @@ paket-files/
 **/app/*.js.map
 **/app/**/*.js
 **/app/**/*.js.map
+**/Scripts
 typings/
 opencoverCoverage.xml
