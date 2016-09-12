@@ -18,7 +18,9 @@
             <input type="text" [(ngModel)]="EmployeeName" placeholder="EmployeeName">
         </td>
         <td></td>
-        <td></td>
+        <td>
+            <input type="text" [(ngModel)]="Role" placeholder="Role">
+        </td>
         <td></td>
         <td></td>
         <td>
@@ -26,7 +28,7 @@
         </td>
     </tr>
     <tbody>
-        <tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave ">
+        <tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave : Role ">
             <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
             <td>{{leaveReport.EmployeeUserName}}</td> 
             <td>{{leaveReport.Role}}</td>  

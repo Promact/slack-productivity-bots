@@ -4,12 +4,13 @@ import { Injectable } from '@angular/core';
 import { ResponseOptions, Response } from "@angular/http";
 import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
 import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
+import { StringConstant } from '../stringConstant';
 
 @Injectable()
 
 export class MockLeaveReportService {
 
-    constructor(private connection: TestConnection) {  }
+    constructor(private connection: TestConnection, private stringConstant: StringConstant ) {  }
 
     getLeaveReports() {
         let mockLeaveReports = new Array<MockLeaveReport>();
@@ -20,7 +21,7 @@ export class MockLeaveReportService {
         mockLeaveReport.TotalSickLeave = 7;
         mockLeaveReport.TotalCasualLeave = 14;
         mockLeaveReports.push(mockLeaveReport)
-        let connection = this.getMockResponse("leaveReport", mockLeaveReports);
+        let connection = this.getMockResponse(this.stringConstant.leaveReport, mockLeaveReports);
         return connection;
     }
 
@@ -33,7 +34,7 @@ export class MockLeaveReportService {
             mockLeaveReportDetail.LeaveFrom = "1/1/16";
             mockLeaveReportDetails.push(mockLeaveReportDetail)
         }
-        let connection = this.getMockResponse("leaveReportDetails/" +Id, mockLeaveReportDetails);
+        let connection = this.getMockResponse(this.stringConstant.leaveReportDetails +Id, mockLeaveReportDetails);
         return connection;
     }
 
@@ -59,4 +60,6 @@ class MockLeaveReportDetails extends LeaveReportDetail {
         super();
     }
 }
+
+
 
