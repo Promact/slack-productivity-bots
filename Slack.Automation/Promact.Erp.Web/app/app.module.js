@@ -18,6 +18,8 @@ var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leave
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
 var taskmail_service_1 = require('./taskmail/taskmail.service');
+var ng2_bootstrap_1 = require('ng2-bootstrap/ng2-bootstrap');
+var ng2_bootstrap_2 = require('ng2-bootstrap/ng2-bootstrap');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -28,7 +30,9 @@ var AppModule = (function () {
                 forms_1.FormsModule,
                 http_1.HttpModule,
                 http_1.JsonpModule,
-                app_routes_1.routing
+                app_routes_1.routing,
+                ng2_bootstrap_2.Ng2BootstrapModule,
+                ng2_bootstrap_1.PaginationModule,
             ],
             declarations: [app_component_1.AppComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
             bootstrap: [app_component_1.AppComponent],

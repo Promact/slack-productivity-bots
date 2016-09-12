@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let taskMail of taskMails | filter: UserName : CreatedOn ">
+                <tr *ngFor="let taskMail of taskMails | filter: UserName : CreatedOn " >
                     <td>{{taskMail.Id}}</td>
                     <td>{{taskMail.UserName}}</td>
                     <td>{{taskMail.CreatedOns}}</td>
@@ -39,6 +39,16 @@
                 </tr>
             </tbody>
         </table>
-
+        <select  [ngModel]="viewby" (ngModelChange)="onChange($event)" name="sel2">
+            <option>2</option>
+            <option>3</option>
+            <option>5</option>
+            <option>10</option>
+            <option>20</option>
+            <option>30</option>
+            <option>40</option>
+            <option>50</option>
+        </select> records at a time.
+        <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)" class="pagination"  [itemsPerPage]="itemsPerPage"></pagination>
     </div>
 </div>

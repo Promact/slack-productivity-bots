@@ -11,7 +11,7 @@ export class MockTaskMailService {
 
     constructor(private connection: TestConnection) { }
 
-    getTaskMailReport() {
+    getTaskMailReport(currentPage: number, itemsPerPage: number) {
         let mockTaskMailModels = new Array<MockTaskmailModel>();
         let mockTaskMailModel = new MockTaskmailModel();
         mockTaskMailModel.Id = 1;

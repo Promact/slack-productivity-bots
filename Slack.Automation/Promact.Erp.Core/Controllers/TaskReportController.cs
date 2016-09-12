@@ -19,12 +19,21 @@ namespace Promact.Erp.Core.Controllers
             this._taskMailReport = taskMailReport;
         }
 
+        //[HttpGet]
+        //[Route("taskMailReport")]
+        //public async Task<IHttpActionResult> taskMailReport()
+        //{
+        //    string UserId = User.Identity.GetUserId();
+        //    IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId);
+        //    return Ok(taskMailReportAc);
+        //}
+
         [HttpGet]
-        [Route("taskMailReport")]
-        public async Task<IHttpActionResult> taskMailReport()
+        [Route("taskMailReport/{currentPage}/{itemsPerPage}")]
+        public async Task<IHttpActionResult> taskMailReport(int currentPage,int itemsPerPage)
         {
             string UserId = User.Identity.GetUserId();
-            IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId);
+            IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId,currentPage, itemsPerPage);
             return Ok(taskMailReportAc);
         }
 

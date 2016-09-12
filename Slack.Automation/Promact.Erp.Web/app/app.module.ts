@@ -8,8 +8,9 @@ import { routing }       from './app.routes';
 import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveReport-List.component';
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
-//import {HttpService} from "./http.service";
 import { TaskService }   from './taskmail/taskmail.service';
+import { PaginationModule } from 'ng2-bootstrap/ng2-bootstrap';
+import { Ng2BootstrapModule } from 'ng2-bootstrap/ng2-bootstrap';
 
 
 
@@ -20,7 +21,9 @@ import { TaskService }   from './taskmail/taskmail.service';
         FormsModule,
         HttpModule,
         JsonpModule,
-        routing
+        routing,
+        Ng2BootstrapModule,
+        PaginationModule,
     ],
     declarations: [AppComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
     bootstrap: [AppComponent],

@@ -24,7 +24,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="answer"></param>
         /// <returns>questionText in string format containing question statement</returns>
         Task<string> QuestionAndAnswer(string userName, string answer);
-        Task<List<TaskMailReportAc>> TaskMailReport(string userName);
+        Task<List<TaskMailReportAc>> TaskMailReport(string userName,int currentPage,int itemsPerPage);
         Task<List<TaskMailReportAc>> TaskMailDetailsReport(int id);
     }
 }

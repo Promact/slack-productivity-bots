@@ -43,7 +43,8 @@
     "systemjs": "0.19.27",
     "tslint": "^3.15.1",
     "typescript": "^1.8.10",
-    "zone.js": "^0.6.12"
+    "zone.js": "^0.6.12",
+    "ng2-bootstrap": "1.1.0"
   },
   "devDependencies": {
     "canonical-path": "0.0.2",
