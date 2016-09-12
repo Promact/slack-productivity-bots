@@ -16,5 +16,12 @@ namespace Promact.Erp.Util
                 return ConfigurationManager.AppSettings["OAuthUrl"].ToString();
             }
         }
+        public static string PromactErpUrl
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["PromactErpUrl"].ToString();
+            }
+        }
     }
 }

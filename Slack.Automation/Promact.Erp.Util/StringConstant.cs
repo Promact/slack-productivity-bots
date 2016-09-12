@@ -115,7 +115,7 @@ namespace Promact.Erp.Util
         public static string ProjectUrl = string.Format("{0}/api/Project/",AppSettingUtil.OAuthUrl);
         public static string UserUrl = string.Format("{0}/api/User/",AppSettingUtil.OAuthUrl);
         public static string OAuthUrl = string.Format("{0}/OAuth/ExternalLogin",AppSettingUtil.OAuthUrl);
-        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack",AppSettingUtil.OAuthUrl);
+        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack",AppSettingUtil.PromactErpUrl);
         public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
         public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
         public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list", Environment.NewLine);
