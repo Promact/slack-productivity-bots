@@ -98,7 +98,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         public double NumberOfLeaveTaken(string employeeId)
         {
             double casualLeaveTaken = 0.0;
-            var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == employeeId);
+            var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == employeeId && x.Status == Condition.Approved);
             foreach (var leave in leaveList)
             {
                 var leaveTaken = leave.EndDate.Day - leave.FromDate.Day;
