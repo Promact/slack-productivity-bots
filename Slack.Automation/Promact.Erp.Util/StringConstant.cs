@@ -174,7 +174,7 @@ namespace Promact.Erp.Util
         public static string FifthQuestionForTest = "Do you want to send your task mail?";
         public static string SixthQuestionForTest = "Are you sure to send mail? After sending email you won't be able to add any tak for today.";
         public static string SeventhQuestionForTest = "Task Mail Complete";
-        public static string YouAreNotInExistInOAuthServer = "You Doesnot Exist In Promact OAuth Server";
+        public static string YouAreNotInExistInOAuthServer = "You Don't Exist In Promact OAuth Server";
         public static string HourSpentForTest = "4";
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";

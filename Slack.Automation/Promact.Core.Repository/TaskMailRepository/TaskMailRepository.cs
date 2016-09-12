@@ -309,6 +309,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                 }
                                 break;
+                            default:
+                                {
+                                    questionText = StringConstant.RequestToStartTaskMail;
+                                }
+                                break;
                         }
                         _taskMailDetail.Update(taskDetails);
                         _taskMail.Save();
