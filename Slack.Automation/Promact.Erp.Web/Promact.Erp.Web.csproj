@@ -338,6 +338,7 @@
     <TypeScriptCompile Include="app\mock\mock.taskmailReport.service.ts" />
     <TypeScriptCompile Include="app\mock\test.connection.ts" />
     <TypeScriptCompile Include="app\taskmail\filter.pipe.ts" />
+    <TypeScriptCompile Include="app\taskmail\page.model.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.spec.ts" />

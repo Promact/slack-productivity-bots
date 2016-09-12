@@ -361,12 +361,17 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailReport(string userId)
+        public async Task<List<TaskMailReportAc>> TaskMailReport(string userId,int currentPage,int itemsPerPage)
         {
             var user = _user.FirstOrDefault(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
             var Json = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
             var role = Json.FirstOrDefault(x => x.UserName == user.UserName);
+            var skip=0;
+            if (currentPage == 1)
+            { skip = 0; }
+            else { skip = (currentPage * itemsPerPage) - itemsPerPage; }
+            var take = itemsPerPage;
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
             if (role.Role == StringConstant.RoleAdmin)
             {
@@ -432,7 +437,12 @@ namespace Promact.Core.Repository.TaskMailRepository
 
               
             }
-            return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
+            foreach (var taskMail in taskMailReportAc)
+            {
+                taskMail.TotalItems = taskMailReportAc.Count;
+            }
+            return taskMailReportAc.OrderByDescending(o => o.CreatedOn).Skip(skip).Take(take).ToList();
+            //return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
         }
 
         /// <summary>

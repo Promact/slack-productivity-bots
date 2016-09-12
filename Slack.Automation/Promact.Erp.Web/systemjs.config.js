@@ -12,7 +12,9 @@
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
     'rxjs': 'node_modules/rxjs',
     'jspdf': 'node_modules/jspdf',
-      'jspdf-autotable': 'node_modules/jspdf-autotable'
+    'jspdf-autotable': 'node_modules/jspdf-autotable',
+    'ng2-bootstrap': 'node_modules/ng2-bootstrap',
+    'moment': 'node_modules/moment/moment.js'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
@@ -22,6 +24,7 @@
       'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
       'jspdf': { defaultExtension: 'js' },
       'jspdf-autotable':{ defaultExtension: 'js'},
+      'ng2-bootstrap': { defaultExtension: 'js' }
   };
 
   var ngPackageNames = [

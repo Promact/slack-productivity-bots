@@ -7,6 +7,7 @@ export class taskmailModel {
     Description: string;
     Comment: string;
     Hours: number;
+    TotalItems: number;
     Status: TaskMailStatus;
     StatusName: string;
     

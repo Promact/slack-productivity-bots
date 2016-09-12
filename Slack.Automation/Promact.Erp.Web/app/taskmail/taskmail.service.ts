@@ -10,9 +10,15 @@ export class TaskService {
     private TaskMailUrl = 'api/TaskReport';  // URL to web api
     constructor(private http: Http) { }
     
-    getTaskMailReport():Observable<taskmailModel[]> {
+    //getTaskMailReport():Observable<taskmailModel[]> {
+    //    //return this.httpService.get("taskMailReport");
+    //    return this.http.get("taskMailReport")
+    //        .map(this.extractData)
+    //        .catch(this.handleError);
+    //}
+    getTaskMailReport(currentPage: number,itemsPerPage:number): Observable<taskmailModel[]> {
         //return this.httpService.get("taskMailReport");
-        return this.http.get("taskMailReport")
+        return this.http.get("taskMailReport/" + currentPage + "/" + itemsPerPage)
             .map(this.extractData)
             .catch(this.handleError);
     }

@@ -9,6 +9,8 @@ import {TaskMailStatus} from '../../enums/TaskMailStatus';
 })
 export class TaskMailDetailsComponent {
     taskMails: Array<taskmailModel>;
+    public currentPage: number;
+    public itemsPerPage: number;
     constructor(private route: ActivatedRoute,private router: Router, private taskService: TaskService) {
         this.taskMails = new Array<taskmailModel>();
     }
@@ -16,6 +18,8 @@ export class TaskMailDetailsComponent {
     ngOnInit() {
         this.route.params.subscribe(params => {
             let id = +params['id']; // (+) converts string 'id' to a number
+            this.currentPage = +params['currentPage'];
+            this.itemsPerPage = +params['itemsPerPage'];
             this.taskService.getTaskMailDetailsReport(id).subscribe(taskMails => {
                 this.taskMails = taskMails;
                  this.taskMails.forEach(taskMail => {
@@ -27,7 +31,8 @@ export class TaskMailDetailsComponent {
         });
     }
     getTaskMailList() {
-        this.router.navigate(['task/']);
+        this.router.navigate(['task/', this.currentPage, this.itemsPerPage]);
+
     }
 
 }
