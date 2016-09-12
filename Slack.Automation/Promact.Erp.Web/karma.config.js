@@ -29,7 +29,7 @@ module.exports = function(config) {
     // Zone.js dependencies
     'node_modules/zone.js/dist/zone.js',
     'node_modules/zone.js/dist/zone.js',
-    'node_modules/zone.js/dist/jasmine-patch.js',
+    //'node_modules/zone.js/dist/jasmine-patch.js',
     'node_modules/zone.js/dist/async-test.js',
     'node_modules/zone.js/dist/fake-async-test.js',
 
@@ -102,7 +102,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous

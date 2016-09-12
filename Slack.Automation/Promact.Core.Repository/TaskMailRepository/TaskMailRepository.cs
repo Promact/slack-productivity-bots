@@ -25,9 +25,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _user;
         private readonly IEmailService _emailService;
+        private readonly ApplicationUserManager _userManager;
         
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
         {
             _taskMail = taskMail;
             _projectUserRepository = projectUserRepository;
@@ -36,6 +37,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _user = user;
             _emailService = emailService;
             _botQuestionRepository = botQuestionRepository;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -384,7 +386,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMail> taskMails = new List<TaskMail>();
                 foreach (var j in Json)
                 {
-                    var employeeId = _user.FirstOrDefault(x => x.UserName == j.UserName);
+                    var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
                     if (employeeId != null)
                     {
                         taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
@@ -404,18 +406,19 @@ namespace Promact.Core.Repository.TaskMailRepository
             else if (role.Role == StringConstant.RoleTeamLeader)
             {
                 List<TaskMail> taskMails = new List<TaskMail>();
-                foreach (var j in Json)
+                foreach (var t in Json)
                 {
-                    var employeeId = _user.FirstOrDefault(x => x.UserName == j.UserName);
-                    if (employeeId != null)
+                    //var employeeId = _user.FirstOrDefault(x => x.UserName == t.UserName);
+                    var employeeIds = await _userManager.FindByNameAsync(t.UserName);
+                    if (employeeIds != null)
                     {
-                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
+                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeIds.Id).OrderByDescending(o => o.CreatedOn).ToList();
                         taskMails.ForEach(taskMail =>
                         {
                             TaskMailReportAc taskmailReportAc = new TaskMailReportAc
                             {
                                 Id = taskMail.Id,
-                                UserName = j.Name,
+                                UserName = t.Name,
                                 CreatedOn = taskMail.CreatedOn
                             };
                             taskMailReportAc.Add(taskmailReportAc);
@@ -427,7 +430,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             else
             {
                 List<TaskMail> taskMails = new List<TaskMail>();
-                var employee = _user.FirstOrDefault(x => x.UserName == role.UserName);
+                var employee = await _userManager.FindByNameAsync(role.UserName);//_user.FirstOrDefault(x => x.UserName == role.UserName);
                 taskMails = _taskMail.Fetch(x => x.EmployeeId == employee.Id).OrderByDescending(o => o.CreatedOn).ToList();
                 taskMails.ForEach(taskMail =>
                 {
