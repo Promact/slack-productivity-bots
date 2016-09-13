@@ -67,13 +67,31 @@ SET MSBUILD_PATH=%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe
 
 echo Handling .NET Web Application deployment.
 
-:: 1. Restore NuGet packages
+:: 1. Bower Install
+IF NOT DEFINED TYPINGS_CMD (
+  :: Install kudu sync
+  echo Installing Typings
+  call npm install typescript typings -g --silent
+  IF !ERRORLEVEL! NEQ 0 goto error
+
+  :: Locally just running "kuduSync" would also work
+  SET TYPINGS_CMD=%appdata%\npm\typings.cmd
+)
+:: 2. Bower Install
+if EXIST "%DEPLOYMENT_TARGET%\package.json" (
+    pushd "%DEPLOYMENT_TARGET%"
+    call :ExecuteCmd npm install
+    IF !ERRORLEVEL! NEQ 0 goto error
+    popd
+)
+
+:: 3. Restore NuGet packages
 IF /I "Convozo.sln" NEQ "" (
   call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
-:: 2. Build to the temporary path
+:: 4. Build to the temporary path
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\Promact.Erp.Web.csproj" /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="%DEPLOYMENT_TEMP%";AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release;UseSharedCompilation=false /p:SolutionDir="%DEPLOYMENT_SOURCE%\.\\" %SCM_BUILD_ARGS%
 ) ELSE (
@@ -82,7 +100,7 @@ IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
 
 IF !ERRORLEVEL! NEQ 0 goto error
 
-:: 3. Bower Install
+:: 5. Bower Install
 if EXIST "%DEPLOYMENT_TARGET%\bower.json" (
     pushd "%DEPLOYMENT_TARGET%"
     call :ExecuteCmd bower install
@@ -90,7 +108,7 @@ if EXIST "%DEPLOYMENT_TARGET%\bower.json" (
     popd
 )
 
-:: 4. KuduSync
+:: 6. KuduSync
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_TEMP%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
   IF !ERRORLEVEL! NEQ 0 goto error
