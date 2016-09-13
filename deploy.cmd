@@ -67,6 +67,14 @@ SET MSBUILD_PATH=%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe
 
 echo Handling .NET Web Application deployment.
 
+:: 3. Bower Install
+if EXIST "%DEPLOYMENT_TARGET%\package.json" (
+    pushd "%DEPLOYMENT_TARGET%"
+    call :ExecuteCmd npm install
+    IF !ERRORLEVEL! NEQ 0 goto error
+    popd
+)
+
 :: 1. Restore NuGet packages
 IF /I "Convozo.sln" NEQ "" (
   call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln"
