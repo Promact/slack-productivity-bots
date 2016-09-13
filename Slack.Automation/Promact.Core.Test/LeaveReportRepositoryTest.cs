@@ -142,7 +142,7 @@ namespace Promact.Core.Test
             Reason = StringConstant.LeaveReasonForTest,
             RejoinDate = DateTime.UtcNow,
             Status = Condition.Approved,
-            Type = StringConstant.LeaveTypeForTest,
+            Type = LeaveType.cl,
             CreatedOn = DateTime.UtcNow,
         };
     }

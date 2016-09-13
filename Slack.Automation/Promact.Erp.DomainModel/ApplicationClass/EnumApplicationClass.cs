@@ -27,7 +27,8 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         cancel,
         status,
         balance,
-        help
+        help,
+        update
     }
 
     /// <summary>
@@ -61,5 +62,14 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     {
         no,
         yes
+    }
+
+    /// <summary>
+    /// Type of leaves. cl - casual leave and sl - sick leave
+    /// </summary>
+    public enum LeaveType
+    {
+        cl,
+        sl
     }
 }

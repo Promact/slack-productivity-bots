@@ -13,7 +13,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="slackRequest"></param>
         /// <param name="userName"></param>
         /// <returns>leaveRequest</returns>
-        Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken);
+        Task<string> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken);
 
         /// <summary>
         /// Method to get leave Updated from slack button response
@@ -27,32 +27,36 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        Task SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken);
+        Task<string> SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken);
 
         /// <summary>
         /// Method to cancel leave by its Id from slack
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        Task SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken);
+        Task<string> SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken);
 
         /// <summary>
         /// Method to get last leave status and details on slack
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        Task SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken);
+        Task<string> SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken);
 
         /// <summary>
         /// Method to check leave Balance from slack
         /// </summary>
         /// <param name="leave"></param>
-        Task SlackLeaveBalance(SlashCommand leave,string accessToken);
+        Task<string> SlackLeaveBalance(SlashCommand leave,string accessToken);
 
         /// <summary>
         /// Method for gettin help on slack regards Leave slash command
         /// </summary>
         /// <param name="leave"></param>
-        void SlackLeaveHelp(SlashCommand leave);
+        string SlackLeaveHelp(SlashCommand leave);
+
+        Task Leave(SlashCommand leave);
+
+        void Error(SlashCommand leave);
     }
 }
