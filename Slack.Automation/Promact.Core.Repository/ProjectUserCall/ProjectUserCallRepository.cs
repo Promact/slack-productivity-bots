@@ -176,5 +176,17 @@ namespace Promact.Core.Repository.ProjectUserCall
             }
             return projectUsers;
         }
+
+        public async Task<bool> UserIsAdmin(string userName, string accessToken)
+        {
+            bool result = false;
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, userName);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                result = JsonConvert.DeserializeObject<bool>(response);
+            }
+            return result;
+        }
     }
 }
