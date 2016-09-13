@@ -42,9 +42,8 @@ namespace Promact.Core.Repository.SlackRepository
         {
             try
             {
+                User user = new User();
                 var startDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-                var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-                var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                 LeaveRequest leaveRequest = new LeaveRequest();
                 try
                 {
@@ -53,13 +52,31 @@ namespace Promact.Core.Repository.SlackRepository
                     {
                         case LeaveType.cl:
                             {
-                                leaveRequest.EndDate = endDate;
-                                leaveRequest.RejoinDate = reJoinDate;
-                                leaveRequest.Status = Condition.Pending;
+                                try
+                                {
+                                    var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                                    var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                    leaveRequest.EndDate = endDate;
+                                    leaveRequest.RejoinDate = reJoinDate;
+                                    leaveRequest.Status = Condition.Pending;
+                                }
+                                catch (Exception)
+                                {
+                                    replyText = StringConstant.DateFormatErrorMessage;
+                                }
                             }
                             break;
                         case LeaveType.sl:
                             {
+                                if (slackRequest.Count > 4)
+                                {
+                                    user = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
+                                }
+                                else
+                                {
+                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                }
                                 leaveRequest.Status = Condition.Approved;
                             }
                             break;
@@ -73,7 +90,6 @@ namespace Promact.Core.Repository.SlackRepository
                     leaveRequest.Reason = slackRequest[2];
                     leaveRequest.FromDate = startDate;
                     leaveRequest.CreatedOn = DateTime.UtcNow;
-                    var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                     if (user != null)
                     {
                         try
