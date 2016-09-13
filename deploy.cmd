@@ -67,7 +67,7 @@ SET MSBUILD_PATH=%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe
 
 echo Handling .NET Web Application deployment.
 
-:: 1. Bower Install
+:: 1. Typings Install
 IF NOT DEFINED TYPINGS_CMD (
   :: Install kudu sync
   echo Installing Typings
@@ -77,17 +77,17 @@ IF NOT DEFINED TYPINGS_CMD (
   :: Locally just running "kuduSync" would also work
   SET TYPINGS_CMD=%appdata%\npm\typings.cmd
 )
-:: 2. Bower Install
-if EXIST "%DEPLOYMENT_TARGET%\package.json" (
-    pushd "%DEPLOYMENT_TARGET%"
+:: 2. NPM Install
+if EXIST "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.Erp.Web\package.json" (
+    pushd "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.Erp.Web"
     call :ExecuteCmd npm install
     IF !ERRORLEVEL! NEQ 0 goto error
     popd
 )
 
 :: 3. Restore NuGet packages
-IF /I "Convozo.sln" NEQ "" (
-  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln"
+IF /I "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln" NEQ "" (
+  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
