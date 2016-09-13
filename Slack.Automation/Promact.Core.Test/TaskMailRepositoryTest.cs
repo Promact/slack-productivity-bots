@@ -432,6 +432,26 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
+        /// Test case for conduct task mail after started for task mail started after sixth question
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void QuestionAndAnswerAfterSendingMail()
+        {
+            await mockAndUserCreate();
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            _botQuestionRepository.AddQuestion(SixthQuestion);
+            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = SeventhQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var response = await _taskMailRepository.QuestionAndAnswer(StringConstant.FirstNameForTest, StringConstant.SendEmailNoForTest);
+            Assert.Equal(response, StringConstant.RequestToStartTaskMail);
+        }
+
+        /// <summary>
         /// Mocking and User create used in all test cases
         /// </summary>
         /// <returns></returns>

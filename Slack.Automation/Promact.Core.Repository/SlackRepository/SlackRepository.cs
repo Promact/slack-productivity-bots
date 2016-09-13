@@ -335,13 +335,13 @@ namespace Promact.Core.Repository.SlackRepository
             return replyText;
         }
 
-        public async Task Leave(SlashCommand leave)
+        public async Task LeaveRequest(SlashCommand leave)
         {
-            leave.Text.ToLower();
             var slackText = _attachmentRepository.SlackText(leave.Text);
             var user = _userManager.FirstOrDefault(x => x.SlackUserName == leave.Username);
             if (user != null)
             {
+                leave.Text.ToLower();
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 try
                 {
