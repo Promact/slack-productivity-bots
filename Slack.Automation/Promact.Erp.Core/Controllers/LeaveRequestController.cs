@@ -101,7 +101,7 @@ namespace Promact.Erp.Core.Controllers
                 var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveBalanceErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
                 _client.SendMessage(leave, replyText);
                 _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest);
-                return BadRequest(ex.ToString());
+                return BadRequest();
             }
         }
 
