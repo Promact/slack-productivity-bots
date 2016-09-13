@@ -60,6 +60,28 @@ namespace Promact.Core.Repository.SlackRepository
                                     leaveRequest.EndDate = endDate;
                                     leaveRequest.RejoinDate = reJoinDate;
                                     leaveRequest.Status = Condition.Pending;
+                                    leaveRequest.Type = leaveType;
+                                    leaveRequest.Reason = slackRequest[2];
+                                    leaveRequest.FromDate = startDate;
+                                    leaveRequest.CreatedOn = DateTime.UtcNow;
+                                    if (user != null)
+                                    {
+                                        try
+                                        {
+                                            leaveRequest.EmployeeId = user.Id;
+                                            _leaveRepository.ApplyLeave(leaveRequest);
+                                            replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+                                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            replyText = StringConstant.ErrorWhileApplyingLeaveAndSendingEmail;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        replyText = StringConstant.SorryYouCannotApplyLeave;
+                                    }
                                 }
                                 catch (Exception)
                                 {
@@ -78,6 +100,28 @@ namespace Promact.Core.Repository.SlackRepository
                                     user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                                 }
                                 leaveRequest.Status = Condition.Approved;
+                                leaveRequest.Type = leaveType;
+                                leaveRequest.Reason = slackRequest[2];
+                                leaveRequest.FromDate = startDate;
+                                leaveRequest.CreatedOn = DateTime.UtcNow;
+                                if (user != null)
+                                {
+                                    try
+                                    {
+                                        leaveRequest.EmployeeId = user.Id;
+                                        _leaveRepository.ApplyLeave(leaveRequest);
+                                        replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+                                        await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        replyText = StringConstant.ErrorWhileApplyingLeaveAndSendingEmail;
+                                    }
+                                }
+                                else
+                                {
+                                    replyText = StringConstant.SorryYouCannotApplyLeave;
+                                }
                             }
                             break;
                         default:
@@ -85,28 +129,6 @@ namespace Promact.Core.Repository.SlackRepository
                                 replyText = StringConstant.NotTypeOfLeave;
                             }
                             break;
-                    }
-                    leaveRequest.Type = leaveType;
-                    leaveRequest.Reason = slackRequest[2];
-                    leaveRequest.FromDate = startDate;
-                    leaveRequest.CreatedOn = DateTime.UtcNow;
-                    if (user != null)
-                    {
-                        try
-                        {
-                            leaveRequest.EmployeeId = user.Id;
-                            _leaveRepository.ApplyLeave(leaveRequest);
-                            replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
-                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
-                        }
-                        catch (Exception)
-                        {
-                            replyText = StringConstant.ErrorWhileApplyingLeaveAndSendingEmail;
-                        }
-                    }
-                    else
-                    {
-                        replyText = StringConstant.SorryYouCannotApplyLeave;
                     }
                 }
                 catch (Exception)
@@ -209,7 +231,7 @@ namespace Promact.Core.Repository.SlackRepository
             }
             _leaveRepository.UpdateLeave(leave);
 
-            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
+            replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
                             leave.Status,
                             leaveResponse.User.Name,
                             leave.FromDate.ToShortDateString(),
@@ -248,7 +270,7 @@ namespace Promact.Core.Repository.SlackRepository
             try
             {
                 var leaveId = Convert.ToInt32(slackText[1]);
-                var replyText = await CancelLeave(leaveId, leave.Username, accessToken);
+                replyText = await CancelLeave(leaveId, leave.Username, accessToken);
             }
             catch (Exception)
             {
@@ -267,11 +289,11 @@ namespace Promact.Core.Repository.SlackRepository
             if (slackText.Count > 1)
             {
                 var userName = slackText[1];
-                var replyText = await LeaveStatus(userName, accessToken);
+                replyText = await LeaveStatus(userName, accessToken);
             }
             else
             {
-                var replyText = await LeaveStatus(leave.Username, accessToken);
+                replyText = await LeaveStatus(leave.Username, accessToken);
             }
             return replyText;
         }
@@ -290,7 +312,7 @@ namespace Promact.Core.Repository.SlackRepository
                 var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                 var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
                 var casualLeaveLeft = casualLeave - casualLeaveTaken;
-                var replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave, Environment.NewLine, casualLeaveLeft);
+                replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave, Environment.NewLine, casualLeaveLeft);
             }
             catch (Exception)
             {
