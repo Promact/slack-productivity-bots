@@ -76,5 +76,13 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <param name="accessToken"></param>
         /// <returns>list of users in a project</returns>
         Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken);
+
+        /// <summary>
+        /// Method to call an api from oAuth server and get whether user is admin or not
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>true or false</returns>
+        Task<bool> UserIsAdmin(string userName, string accessToken);
     }
 }

@@ -153,7 +153,7 @@ namespace Promact.Erp.Util
         public static string FalseStringNameForTest = "Tester";
         public static string LeaveBalanceErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveBalanceReplyTextForTest = "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
-        public static string OrElseString = "Or Else Sorry";
+        public static string OrElseString = "Or Else";
         public static string Admin = "Admin";
         public static string Employee = "Employee";
         public static string TeamLeader = "TeamLeader";
@@ -182,6 +182,9 @@ namespace Promact.Erp.Util
         public static string NotTypeOfLeave = "Please enter a valid Leave Type";
         public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
         public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
+        public static string UserIsAdmin = "userIsAdmin/";
+        public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
+        public static string AdminErrorMessage = "Only Admin can update sick leave";
 
         #region String Constants for Test Cases
 
