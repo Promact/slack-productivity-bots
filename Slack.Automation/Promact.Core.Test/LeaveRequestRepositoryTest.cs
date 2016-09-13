@@ -195,26 +195,55 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method NumberOfLeaveTaken testing with True Value
+        /// Method NumberOfLeaveTaken testing with True Value Casual Leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTaken()
+        public void NumberOfLeaveTakenCasual()
         {
             _leaveRequestRepository.ApplyLeave(leave);
+            leave.Status = Condition.Approved;
+            _leaveRequestRepository.UpdateLeave(leave);
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
-            Assert.NotEqual(10,casualLeave);
+            Assert.NotEqual(1,casualLeave.CasualLeave);
         }
 
 
         /// <summary>
-        /// Method NumberOfLeaveTaken testing with false Value
+        /// Method NumberOfLeaveTaken testing with false Value Casual Leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTakenFalse()
+        public void NumberOfLeaveTakenFalseCasual()
         {
             _leaveRequestRepository.ApplyLeave(leave);
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(StringConstant.SlackChannelIdForTest);
-            Assert.Equal(0.0, casualLeave);
+            Assert.Equal(0.0, casualLeave.CasualLeave);
+        }
+
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with True Value Casual Leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void NumberOfLeaveTakenSick()
+        {
+            leave.Type = LeaveType.sl;
+            _leaveRequestRepository.ApplyLeave(leave);
+            leave.Status = Condition.Approved;
+            _leaveRequestRepository.UpdateLeave(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
+            Assert.NotEqual(1, casualLeave.CasualLeave);
+        }
+
+
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with false Value Casual Leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void NumberOfLeaveTakenFalseSick()
+        {
+            leave.Type = LeaveType.sl;
+            _leaveRequestRepository.ApplyLeave(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(StringConstant.SlackChannelIdForTest);
+            Assert.Equal(0.0, casualLeave.CasualLeave);
         }
 
         private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = LeaveType.cl, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };

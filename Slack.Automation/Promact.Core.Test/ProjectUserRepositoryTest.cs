@@ -131,7 +131,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", StringConstant.CasualLeaveUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             var casualLeave = _projectUserRepository.CasualLeave(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
-            Assert.Equal(10, casualLeave);
+            Assert.Equal(10, casualLeave.CasualLeave);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", StringConstant.CasualLeaveUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             var casualLeave = _projectUserRepository.CasualLeave(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
-            Assert.NotEqual(14, casualLeave);
+            Assert.NotEqual(14, casualLeave.CasualLeave);
         }
 
         /// <summary>
@@ -233,6 +233,32 @@ namespace Promact.Core.Test
                 userName = user.UserName;
             }
             Assert.NotEqual(userName, StringConstant.FirstUserNameFalse);
+        }
+
+        /// <summary>
+        /// Method to test UserIsAdmin with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void UserIsAdmin()
+        {
+            var response = Task.FromResult(StringConstant.True);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, StringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            var result = _projectUserRepository.UserIsAdmin(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
+            Assert.Equal(true, result);
+        }
+
+        /// <summary>
+        /// Method to test UserIsAdmin with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void UserIsAdminWrong()
+        {
+            var response = Task.FromResult(StringConstant.True);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, StringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            var result = _projectUserRepository.UserIsAdmin(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
+            Assert.NotEqual(false, result);
         }
     }
 }
