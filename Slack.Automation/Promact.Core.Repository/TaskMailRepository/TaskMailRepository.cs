@@ -1,16 +1,15 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.Util;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.BotQuestionRepository;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {

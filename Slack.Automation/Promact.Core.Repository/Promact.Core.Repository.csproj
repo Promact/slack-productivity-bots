@@ -100,8 +100,6 @@
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
-    <Compile Include="DataRepository\IRepository.cs" />
-    <Compile Include="DataRepository\Repository.cs" />
     <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />
     <Compile Include="ExternalLoginRepository\IOAuthLoginRepository.cs" />
     <Compile Include="HttpClientRepository\HttpClientRepository.cs" />

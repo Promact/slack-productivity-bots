@@ -1,5 +1,4 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
 using System.Threading.Tasks;

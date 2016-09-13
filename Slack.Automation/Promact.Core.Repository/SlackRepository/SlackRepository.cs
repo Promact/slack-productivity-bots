@@ -11,7 +11,7 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Linq;
 using System.Globalization;
-using Promact.Core.Repository.DataRepository;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.SlackRepository
 {

@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Promact.Erp.DomainModel.Context;
 using System.Data.Entity;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ProjectUserCall;
@@ -23,6 +22,7 @@ using Promact.Core.Repository.BotQuestionRepository;
 using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Test
 {

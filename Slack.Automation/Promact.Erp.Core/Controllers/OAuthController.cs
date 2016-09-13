@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using NLog;
-using Promact.Core.Repository.DataRepository;
+﻿using NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
-using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 

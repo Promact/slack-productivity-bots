@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Promact.Core.Repository.DataRepository
+namespace Promact.Erp.DomainModel.DataRepository
 {
     public interface IRepository<T> : IDisposable
     {
