@@ -1,9 +1,9 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
-   public class SlackChannelRepository: ISlackChannelRepository
+    public class SlackChannelRepository: ISlackChannelRepository
     {
         private readonly IRepository<SlackChannelDetails> _slackChannelDetailsContext;
         public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsContext)

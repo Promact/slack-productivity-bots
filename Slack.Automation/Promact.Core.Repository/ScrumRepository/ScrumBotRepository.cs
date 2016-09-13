@@ -1,9 +1,8 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.Client;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;

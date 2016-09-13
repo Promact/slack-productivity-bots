@@ -1,13 +1,10 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.DataRepository;
-using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.LeaveReportRepository

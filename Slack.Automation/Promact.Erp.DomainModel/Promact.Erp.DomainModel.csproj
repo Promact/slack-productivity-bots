@@ -149,6 +149,8 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashResponse.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="Context\PromactErpContext.cs" />
+    <Compile Include="DataRepository\IRepository.cs" />
+    <Compile Include="DataRepository\Repository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationUserStore.cs" />

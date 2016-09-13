@@ -1,5 +1,5 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Erp.DomainModel.ApplicationClass;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
