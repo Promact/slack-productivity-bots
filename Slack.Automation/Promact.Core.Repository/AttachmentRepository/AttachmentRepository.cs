@@ -71,9 +71,9 @@ namespace Promact.Core.Repository.AttachmentRepository
             var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
                 username,
                 leave.FromDate.ToShortDateString(),
-                leave.EndDate.ToShortDateString(),
+                leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
-                leave.RejoinDate.ToShortDateString());
+                leave.RejoinDate.Value.ToShortDateString());
             return replyText;
         }
 

@@ -8,7 +8,7 @@ namespace Promact.Erp.DomainModel.Models
         /// <summary>
         /// Leave Type
         /// </summary>
-        public string Type { get; set; }
+        public LeaveType Type { get; set; }
 
         /// <summary>
         /// Reason for Leave
@@ -23,12 +23,12 @@ namespace Promact.Erp.DomainModel.Models
         /// <summary>
         /// Leave End Date
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Rejoin date to back office after Leave
         /// </summary>
-        public DateTime RejoinDate { get; set; }
+        public DateTime? RejoinDate { get; set; }
 
         /// <summary>
         /// Status of Leave : Approved, Pending, Rejected and Cancel

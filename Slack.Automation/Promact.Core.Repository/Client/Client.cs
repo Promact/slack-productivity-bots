@@ -108,11 +108,11 @@ namespace Promact.Core.Repository.Client
             leaveTemplate.Session = new Dictionary<string, object>
             {
                 {StringConstant.FromDate,leaveRequest.FromDate.ToString(StringConstant.DateFormat) },
-                {StringConstant.EndDate,leaveRequest.EndDate.ToString(StringConstant.DateFormat) },
+                {StringConstant.EndDate,leaveRequest.EndDate.Value.ToString(StringConstant.DateFormat) },
                 {StringConstant.Reason,leaveRequest.Reason },
                 {StringConstant.Type,leaveRequest.Type },
                 {StringConstant.Status,leaveRequest.Status.ToString() },
-                {StringConstant.ReJoinDate,leaveRequest.RejoinDate.ToString(StringConstant.DateFormat) },
+                {StringConstant.ReJoinDate,leaveRequest.RejoinDate.Value.ToString(StringConstant.DateFormat) },
                 {StringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(StringConstant.DateFormat) },
             };
             leaveTemplate.Initialize();

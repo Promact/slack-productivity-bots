@@ -217,6 +217,6 @@ namespace Promact.Core.Test
             Assert.Equal(0.0, casualLeave);
         }
 
-        private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = StringConstant.LeaveTypeForTest, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
+        private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = LeaveType.cl, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
     }
 }

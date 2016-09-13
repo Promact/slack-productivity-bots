@@ -174,11 +174,14 @@ namespace Promact.Erp.Util
         public static string FifthQuestionForTest = "Do you want to send your task mail?";
         public static string SixthQuestionForTest = "Are you sure to send mail? After sending email you won't be able to add any tak for today.";
         public static string SeventhQuestionForTest = "Task Mail Complete";
-        public static string YouAreNotInExistInOAuthServer = "You Don't Exist In Promact OAuth Server";
+        public static string YouAreNotInExistInOAuthServer = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string HourSpentForTest = "4";
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";
         public static string SendEmailNoForTest = "no";
+        public static string NotTypeOfLeave = "Please enter a valid Leave Type";
+        public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
+        public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
 
         #region String Constants for Test Cases
 

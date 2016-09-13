@@ -52,15 +52,15 @@ namespace Promact.Core.Test
                 Reason = StringConstant.LeaveReasonForTest,
                 RejoinDate = DateTime.UtcNow,
                 Status = Condition.Pending,
-                Type = StringConstant.LeaveTypeForTest,
+                Type = LeaveType.cl,
                 Id = 1
             };
             var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
                 StringConstant.FirstNameForTest,
                 leave.FromDate.ToShortDateString(),
-                leave.EndDate.ToShortDateString(),
+                leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
-                leave.RejoinDate.ToShortDateString());
+                leave.RejoinDate.Value.ToShortDateString());
             var response = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest,leave);
             Assert.Equal(response, replyText);
         }
@@ -125,15 +125,15 @@ namespace Promact.Core.Test
                 Reason = StringConstant.LeaveReasonForTest,
                 RejoinDate = DateTime.UtcNow,
                 Status = Condition.Pending,
-                Type = StringConstant.LeaveTypeForTest,
+                Type = LeaveType.cl,
                 Id = 1
             };
             var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
                 StringConstant.FirstNameForTest,
                 leave.FromDate.ToShortDateString(),
-                leave.EndDate.ToShortDateString(),
+                leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
-                leave.RejoinDate.ToShortDateString());
+                leave.RejoinDate.Value.ToShortDateString());
             leave.Reason = StringConstant.Reason;
             var response = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest, leave);
             Assert.NotEqual(response, replyText);
