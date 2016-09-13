@@ -78,16 +78,16 @@ IF NOT DEFINED TYPINGS_CMD (
   SET TYPINGS_CMD=%appdata%\npm\typings.cmd
 )
 :: 2. NPM Install
-if EXIST "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.Erp.Web\package.json" (
-    pushd "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.Erp.Web"
+if EXIST "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\package.json" (
+    pushd "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web"
     call :ExecuteCmd npm install
     IF !ERRORLEVEL! NEQ 0 goto error
     popd
 )
 
 :: 3. Restore NuGet packages
-IF /I "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln" NEQ "" (
-  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln"
+IF /I "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln" NEQ "" (
+  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
