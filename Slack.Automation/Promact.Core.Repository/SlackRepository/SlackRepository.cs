@@ -308,11 +308,15 @@ namespace Promact.Core.Repository.SlackRepository
         {
             try
             {
-                var casualLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
+                var allowedLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
                 var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
-                var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
-                var casualLeaveLeft = casualLeave - casualLeaveTaken;
-                replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave, Environment.NewLine, casualLeaveLeft);
+                var leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
+                var casualLeaveTaken = leaveTaken.CasualLeave;
+                var sickLeaveTaken = leaveTaken.SickLeave;
+                var casualLeaveLeft = allowedLeave.CasualLeave - casualLeaveTaken;
+                var sickLeaveLeft = allowedLeave.SickLeave - sickLeaveTaken;
+                replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, allowedLeave.CasualLeave, Environment.NewLine, casualLeaveLeft);
+                replyText += string.Format("{2}You have taken {0} sick leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, allowedLeave.SickLeave, Environment.NewLine, sickLeaveLeft);
             }
             catch (Exception)
             {
