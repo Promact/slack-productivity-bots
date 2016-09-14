@@ -168,7 +168,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         }
 
         /// <summary>
-        /// Method to call an api from oauth server and get all the users including in a project using teamleader id
+        /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
         /// </summary>
         /// <param name="teamLeaderId"></param>
         /// <param name="accessToken"></param>
