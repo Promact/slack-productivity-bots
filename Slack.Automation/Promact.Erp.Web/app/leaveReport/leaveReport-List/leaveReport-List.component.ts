@@ -34,10 +34,10 @@ export class LeaveReportListComponent implements OnInit {
         return this.leaveReports;
     }
 
-    leaveDetails(employeeId: string) {
-        let link = [this.stringConstant.detail, employeeId];
-        this.router.navigate(link);
-    }
+    //leaveDetails(employeeId: string) {
+    //    let link = ['/detail', employeeId];
+    //    this.router.navigate(link);
+    //}
 
     exportDataToPdf() {
         var columns = this.stringConstant.listColumns;

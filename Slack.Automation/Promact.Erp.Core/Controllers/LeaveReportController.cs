@@ -53,7 +53,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiVersion 1.0 
         * @apiName LeaveReport
         * @apiGroup LeaveReport
-        * @apiParam {string} Name  EmployeeId    
+        * @apiParam {string} Id  EmployeeId    
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {

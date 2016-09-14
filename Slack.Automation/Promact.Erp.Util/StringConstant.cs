@@ -204,6 +204,10 @@ namespace Promact.Erp.Util
         public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
         public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
         public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
+        public static string AllProjectUrl = "allProjects/";
+        public static string GetProjectDetails = "projectDetails/";
+        public static string PersonNotAvailable = "Person Not Available";
+        public static string FormatForDate = "MMM dd,yyyy";
 
         #region String Constants for Test Cases
 
