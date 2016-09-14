@@ -79,6 +79,7 @@ IF NOT DEFINED TYPINGS_CMD (
 )
 :: 2. NPM Install
 if EXIST "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\package.json" (
+    echo "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web"
     pushd "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web"
     call :ExecuteCmd npm install
     IF !ERRORLEVEL! NEQ 0 goto error
@@ -87,13 +88,15 @@ if EXIST "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\package.json" (
 
 :: 3. Restore NuGet packages
 IF /I "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln" NEQ "" (
+  echo "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web"
+  echo "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln"
   call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
 :: 4. Build to the temporary path
 IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
-  call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\Promact.Erp.Web.csproj" /nologo /m /verbosity:d /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="%DEPLOYMENT_TEMP%";AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release;UseSharedCompilation=false /p:SolutionDir="%DEPLOYMENT_SOURCE%\.\\" %SCM_BUILD_ARGS%
+  call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.Erp.Web\Promact.Erp.Web.csproj" /nologo /m /verbosity:d /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="%DEPLOYMENT_TEMP%";AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release;UseSharedCompilation=false /p:SolutionDir="%DEPLOYMENT_SOURCE%\.\\" %SCM_BUILD_ARGS%
 ) ELSE (
   call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\Promact.Erp.Web.csproj" /nologo /m /verbosity:d /t:Build /p:AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release;UseSharedCompilation=false /p:SolutionDir="%DEPLOYMENT_SOURCE%\.\\" %SCM_BUILD_ARGS%
 )
