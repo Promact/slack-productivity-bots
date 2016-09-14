@@ -224,8 +224,8 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectAc>> GetAllProjects(string accessToken)
         {
             List<ProjectAc> projects = new List<ProjectAc>();
-            var requestUrl = StringConstant.AllProjectUrl;
-            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = _stringConstant.AllProjectUrl;
+            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
@@ -242,8 +242,8 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<ProjectAc> GetProjectDetails(int projectId, string accessToken)
         {
             ProjectAc project = new ProjectAc();
-            var requestUrl = string.Format("{0}{1}", StringConstant.GetProjectDetails,projectId);
-            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.GetProjectDetails,projectId);
+            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if(response != null)
             {
                 project = JsonConvert.DeserializeObject<ProjectAc>(response);
