@@ -83,7 +83,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<User> GetUserByUserName(string userName, string accessToken);
 
         /// <summary>
-        /// Method to call an api from oauth server and get all the users including in a project using teamleader id
+        /// Method to call an api from oauth server and get all the users included in a project using teamleader id
         /// </summary>
         /// <param name="teamLeaderId"></param>
         /// <param name="accessToken"></param>
@@ -91,9 +91,16 @@ namespace Promact.Core.Repository.ProjectUserCall
         Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken);
 
         /// <summary>
-        /// Method to call an api from oAuth server and get whether user is admin or not
+        /// Method to call an api from oauth server and get the list of all the projects
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>list of all the projects</returns>
+        Task<List<ProjectAc>> GetAllProjects(string accessToken);
+
+        /// <summary>
+        /// Method to call an api from oauth server and get the details of a project using projecId
+        /// </summary>
+        /// <param name="projectId"></param>
         /// <param name="accessToken"></param>
 
         /// <returns>true or false</returns>
