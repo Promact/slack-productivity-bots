@@ -87,7 +87,7 @@ if EXIST "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\package.json" (
 
 :: 3. Restore NuGet packages
 IF /I "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln" NEQ "" (
-  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.ERP.sln"
+  call :ExecuteCmd nuget restore "%DEPLOYMENT_SOURCE%\site\repository\Slack.Automation\Promact.ERP.sln"
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 

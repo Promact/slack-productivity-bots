@@ -258,3 +258,4 @@ paket-files/
 typings/
 opencoverCoverage.xml
 /Slack.Automation/Promact.Erp.Web/Scripts
+**/*.js
