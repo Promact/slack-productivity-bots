@@ -26,7 +26,7 @@ import { StringConstant } from './shared/stringConstant';
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, ScrumReportComponent, ScrumProjectListComponent, ScrumProjectDetailComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, ScrumReportService, StringConstant]
+    providers: [LeaveReportService, StringConstant, ScrumReportService]
 })
 
 export class AppModule { }
