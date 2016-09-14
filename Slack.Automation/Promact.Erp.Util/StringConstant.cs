@@ -179,6 +179,10 @@ namespace Promact.Erp.Util
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";
         public static string SendEmailNoForTest = "no";
+        public static string AllProjectUrl = "allProjects/";
+        public static string GetProjectDetails = "projectDetails/";
+        public static string PersonNotAvailable = "Person Not Available";
+        public static string FormatForDate = "MMM dd,yyyy";
 
         #region String Constants for Test Cases
 
