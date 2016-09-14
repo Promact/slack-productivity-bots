@@ -132,5 +132,20 @@ namespace Promact.Core.Repository.AttachmentRepository
             }
             return accessToken;
         }
+
+        /// <summary>
+        /// Method will create text corresponding to sick leave details and user, which will to be send on slack as reply
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="leave"></param>
+        /// <returns>string replyText</returns>
+        public string ReplyTextSick(string username, LeaveRequest leave)
+        {
+            var replyText = string.Format("Sick leave has been applied for {0} from {1} for reason {2}",
+                username,
+                leave.FromDate.ToShortDateString(),
+                leave.Reason);
+            return replyText;
+        }
     }
 }

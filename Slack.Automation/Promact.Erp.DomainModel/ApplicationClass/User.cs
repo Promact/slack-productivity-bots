@@ -7,11 +7,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class User
     {
-        public User()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-
         [JsonProperty("Id")]
         public string Id { get; set; }
 

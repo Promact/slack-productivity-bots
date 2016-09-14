@@ -151,7 +151,7 @@ namespace Promact.Erp.Util
         public static string LeaveCancelCommandForTest = "cancel 2";
         public static string Cancel = "Cancel";
         public static string FalseStringNameForTest = "Tester";
-        public static string LeaveBalanceErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+        public static string LeaveNoUserErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveBalanceReplyTextForTest = "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
         public static string OrElseString = "Or Else";
         public static string Admin = "Admin";
@@ -184,12 +184,26 @@ namespace Promact.Erp.Util
         public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
         public static string UserIsAdmin = "userIsAdmin/";
         public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
-        public static string AdminErrorMessage = "Only Admin can update sick leave";
+        public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
         public static string True = "true";
         public static string LeaveStatusCommandForTest = "status siddhartha";
         public static string LeaveBalanceTestForOwn = "balance";
         public static string LeaveHelpTestForOwn = "help";
-
+        public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
+        public static string SlashCommandTextSick = string.Format("apply sl Testing {0}", DateTime.UtcNow.ToShortDateString());
+        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing {0} {1}", DateTime.UtcNow.ToShortDateString(),FirstNameForTest);
+        public static string NameForTest = "roshni";
+        public static string RequestToEnterProperAction = "Please enter a proper action for leave";
+        public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing {0} {1}", DateTime.UtcNow.ToShortDateString(), FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatSick = string.Format("apply sl Testing 05/04/2016 {0}", FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatCasual = string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+        public static string SlashCommandTextCasual = string.Format("apply cl Testing {0} {0} {0}", DateTime.UtcNow.ToShortDateString());
+        public static string SlashCommandUpdate = string.Format("update {0} {1} {1}", 1, DateTime.UtcNow.ToShortDateString());
+        public static string SlashCommandUpdateDateError = string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.ToShortDateString());
+        public static string SlashCommandUpdateWrongId = string.Format("update {0} {1} {1}", 10, DateTime.UtcNow.ToShortDateString());
+        public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
+        public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
+        public static string SlashCommandUpdateInValidId = string.Format("update abc {0} {0}", DateTime.UtcNow.ToShortDateString());
 
         #region String Constants for Test Cases
 
