@@ -54,7 +54,7 @@ export class ScrumProjectDetailComponent implements OnInit {
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
             },
             error => this.errorMessage = <any>error
-        );
+            );
     }
 
     goBack() {
