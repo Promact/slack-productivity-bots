@@ -22,7 +22,7 @@ namespace Promact.Erp.Util
         public static string Color = "#3AA3E3";
         public static string AttachmentType = "default";
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
-        public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
+        public static string SlackHelpMessage = string.Format("For casual leave apply: /leaves apply [Leave Type : cl] [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]{0}To apply sick leave for own: /leaves apply [Leave Type : sl] [Reason] [FromDate: dd-MM-yyyy]{0}To apply sick leave for other: /leaves apply [Leave Type : sl] [Reason] [FromDate: dd-MM-yyyy] [username]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [username]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [username]{0}For leaves balance: /leaves balance{0} For sick leave update: /leaves update [leaveId] [EndDate:dd-MM-yy] [Re-JoinDate:dd-MM-yy]", Environment.NewLine);
         public static string SlackErrorMessage = "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
 
         public static string ProjectDetailsUrl = "fetchProject/";
