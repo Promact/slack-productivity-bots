@@ -9,7 +9,7 @@ namespace Promact.Erp.DomainModel.Context
     public class PromactErpContext : IdentityDbContext<ApplicationUser>
     {
         public PromactErpContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("MS_TableConnectionString", throwIfV1Schema: false)
         {
 
         }
