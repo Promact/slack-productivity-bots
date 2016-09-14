@@ -1,7 +1,5 @@
-﻿
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { ScrumDetails } from './scrumProject-Details.model';
 import { ScrumReportService } from '../scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
@@ -16,7 +14,6 @@ export class ScrumProjectDetailComponent implements OnInit {
     scrumDate: any;
     projectCreationDate: any;
     employeeScrumAnswers: EmployeeScrumAnswers[];
-    //scrumDetails: ScrumDetails;
     errorMessage: string;
     sub: any;
     Id: any;
@@ -56,9 +53,8 @@ export class ScrumProjectDetailComponent implements OnInit {
                 this.employeeScrumAnswers = scrumDetails.EmployeeScrumAnswers;
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
             },
-            //scrumDetails => this.scrumDetails = scrumDetails,
             error => this.errorMessage = <any>error
-        );
+            );
     }
 
     goBack() {
