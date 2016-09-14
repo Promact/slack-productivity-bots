@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -37,12 +37,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
             //Creating a user with email only. Password not required
             var result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
-                result = await _userManager.AddLoginAsync(user.Id, info);
-            }
+            //Adding external Oauth details
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
+            result = await _userManager.AddLoginAsync(user.Id, info);
             return user;
         }
 

@@ -45,5 +45,13 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <param name="username"></param>
         /// <returns>access token from AspNetUserLogin table</returns>
         Task<string> AccessToken(string username);
+
+        /// <summary>
+        /// Method will create text corresponding to sick leave details and user, which will to be send on slack as reply
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="leave"></param>
+        /// <returns></returns>
+        string ReplyTextSick(string username, LeaveRequest leave);
     }
 }

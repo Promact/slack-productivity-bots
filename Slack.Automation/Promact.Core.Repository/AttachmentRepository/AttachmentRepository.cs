@@ -71,9 +71,9 @@ namespace Promact.Core.Repository.AttachmentRepository
             var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
                 username,
                 leave.FromDate.ToShortDateString(),
-                leave.EndDate.ToShortDateString(),
+                leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
-                leave.RejoinDate.ToShortDateString());
+                leave.RejoinDate.Value.ToShortDateString());
             return replyText;
         }
 
@@ -131,6 +131,21 @@ namespace Promact.Core.Repository.AttachmentRepository
                 }
             }
             return accessToken;
+        }
+
+        /// <summary>
+        /// Method will create text corresponding to sick leave details and user, which will to be send on slack as reply
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="leave"></param>
+        /// <returns>string replyText</returns>
+        public string ReplyTextSick(string username, LeaveRequest leave)
+        {
+            var replyText = string.Format("Sick leave has been applied for {0} from {1} for reason {2}",
+                username,
+                leave.FromDate.ToShortDateString(),
+                leave.Reason);
+            return replyText;
         }
     }
 }

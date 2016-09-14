@@ -2,12 +2,12 @@
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
-using Promact.Core.Repository.DataRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
@@ -429,6 +429,26 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Save();
             var response = await _taskMailRepository.QuestionAndAnswer(StringConstant.FirstNameForTest, StringConstant.SendEmailNoForTest);
             Assert.Equal(response, StringConstant.ThankYou);
+        }
+
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started after sixth question
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void QuestionAndAnswerAfterSendingMail()
+        {
+            await mockAndUserCreate();
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            _botQuestionRepository.AddQuestion(SixthQuestion);
+            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = SeventhQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var response = await _taskMailRepository.QuestionAndAnswer(StringConstant.FirstNameForTest, StringConstant.SendEmailNoForTest);
+            Assert.Equal(response, StringConstant.RequestToStartTaskMail);
         }
 
         /// <summary>

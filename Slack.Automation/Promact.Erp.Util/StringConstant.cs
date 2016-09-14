@@ -79,7 +79,7 @@ namespace Promact.Erp.Util
         public static string StringIdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148";
         public static string LastNameForTest = "shaw";
         public static string UserDetailsFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
-        public static string SlashCommandText = "Apply Hello 30-09-2016 30-09-2016 Casual 30-09-2016";
+        public static string SlashCommandText = "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
         public static string PromactStringName = "Promact";
         public static string FirstQuestionForTest = "On which task you worked on Today?";
         public static string TeamLeaderDetailsFromOauthServer = "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
@@ -143,7 +143,7 @@ namespace Promact.Erp.Util
         public static string LoggerErrorMessageTaskMailBot = "Error in Task Mail Bot";
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
-        public static string CasualLeaveResponse = "10.0";
+        public static string CasualLeaveResponse = "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
         public static string SlackChannelIdForTest = "DA4ADFD44";
         public static string MessageTsForTest = "5212201241.15452124";
         public static string SorryYouCannotApplyLeave = "Sorry you can't apply leave. Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
@@ -151,9 +151,9 @@ namespace Promact.Erp.Util
         public static string LeaveCancelCommandForTest = "cancel 2";
         public static string Cancel = "Cancel";
         public static string FalseStringNameForTest = "Tester";
-        public static string LeaveBalanceErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+        public static string LeaveNoUserErrorMessage = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveBalanceReplyTextForTest = "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
-        public static string OrElseString = "Or Else Sorry";
+        public static string OrElseString = "Or Else";
         public static string Admin = "Admin";
         public static string Employee = "Employee";
         public static string TeamLeader = "TeamLeader";
@@ -174,11 +174,36 @@ namespace Promact.Erp.Util
         public static string FifthQuestionForTest = "Do you want to send your task mail?";
         public static string SixthQuestionForTest = "Are you sure to send mail? After sending email you won't be able to add any tak for today.";
         public static string SeventhQuestionForTest = "Task Mail Complete";
-        public static string YouAreNotInExistInOAuthServer = "You Don't Exist In Promact OAuth Server";
+        public static string YouAreNotInExistInOAuthServer = "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string HourSpentForTest = "4";
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";
         public static string SendEmailNoForTest = "no";
+        public static string NotTypeOfLeave = "Please enter a valid Leave Type";
+        public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
+        public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
+        public static string UserIsAdmin = "userIsAdmin/";
+        public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
+        public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
+        public static string True = "true";
+        public static string LeaveStatusCommandForTest = "status siddhartha";
+        public static string LeaveBalanceTestForOwn = "balance";
+        public static string LeaveHelpTestForOwn = "help";
+        public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
+        public static string SlashCommandTextSick = "apply sl Testing 14-09-2016";
+        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}",FirstNameForTest);
+        public static string NameForTest = "roshni";
+        public static string RequestToEnterProperAction = "Please enter a proper action for leave";
+        public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing 14-09-2016 {0}", FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatSick = string.Format("apply sl Testing 05/04/2016 {0}", FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatCasual = string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+        public static string SlashCommandTextCasual = "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+        public static string SlashCommandUpdate = string.Format("update {0} 14-09-2016 14-09-2016", 1);
+        public static string SlashCommandUpdateDateError = string.Format("update {0} 30/09/2016 14-09-2016", 1);
+        public static string SlashCommandUpdateWrongId = string.Format("update {0} 14-09-2016 14-09-2016", 10);
+        public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
+        public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
+        public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
 
         #region String Constants for Test Cases
 

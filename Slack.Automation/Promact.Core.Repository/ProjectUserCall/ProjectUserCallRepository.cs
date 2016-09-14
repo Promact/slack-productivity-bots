@@ -126,15 +126,14 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        public async Task<double> CasualLeave(string slackUserName, string accessToken)
+        public async Task<LeaveAllowed> CasualLeave(string slackUserName, string accessToken)
         {
-            double casualLeave = 0.0;
+            LeaveAllowed casualLeave = new LeaveAllowed();
             var requestUrl = string.Format("{0}{1}", StringConstant.CasualLeaveUrl, slackUserName);
             var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl, accessToken);
-            var responseContent = JsonConvert.DeserializeObject<string>(response);
             if (response != null)
             {
-                casualLeave = Convert.ToDouble(responseContent);
+                casualLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
             }
             return casualLeave;
         }
@@ -175,6 +174,24 @@ namespace Promact.Core.Repository.ProjectUserCall
                 projectUsers = JsonConvert.DeserializeObject<List<User>>(response);
             }
             return projectUsers;
+        }
+
+        /// <summary>
+        /// Method to call an api from oAuth server and get whether user is admin or not
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>true or false</returns>
+        public async Task<bool> UserIsAdmin(string userName, string accessToken)
+        {
+            bool result = false;
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, userName);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUserUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                result = JsonConvert.DeserializeObject<bool>(response);
+            }
+            return result;
         }
     }
 }

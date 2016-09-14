@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Promact.Core.Repository.DataRepository
+namespace Promact.Erp.DomainModel.DataRepository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

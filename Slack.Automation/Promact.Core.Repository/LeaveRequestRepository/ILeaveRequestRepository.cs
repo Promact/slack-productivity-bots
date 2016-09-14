@@ -1,4 +1,5 @@
-﻿using Promact.Erp.DomainModel.Models;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
 using System.Collections.Generic;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
@@ -56,6 +57,6 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>number of leave taken</returns>
-        double NumberOfLeaveTaken(string employeeId);
+        LeaveAllowed NumberOfLeaveTaken(string employeeId);
     }
 }

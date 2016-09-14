@@ -11,6 +11,7 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Linq;
 using System.Globalization;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -20,13 +21,15 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly ILeaveRequestRepository _leaveRepository;
         private readonly IClient _client;
         private readonly IAttachmentRepository _attachmentRepository;
+        private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
-        public SlackRepository(ILeaveRequestRepository leaveRepository, IProjectUserCallRepository projectUser, IClient client, IAttachmentRepository attachmentRepository)
+        public SlackRepository(ILeaveRequestRepository leaveRepository, IProjectUserCallRepository projectUser, IClient client, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
         {
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
             _client = client;
             _attachmentRepository = attachmentRepository;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -35,29 +38,96 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="slackRequest"></param>
         /// <param name="userName"></param>
         /// <returns>leaveRequest</returns>
-        public async Task<LeaveRequest> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken)
+        private async Task<string> LeaveApply(List<string> slackRequest, SlashCommand leave, string accessToken)
         {
-            LeaveRequest leaveRequest = new LeaveRequest();
-            leaveRequest.Reason = slackRequest[1];
-            leaveRequest.FromDate = DateTime.ParseExact(slackRequest[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-            leaveRequest.EndDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-            leaveRequest.Type = slackRequest[4];
-            leaveRequest.RejoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-            leaveRequest.Status = Condition.Pending;
-            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
-            leaveRequest.CreatedOn = DateTime.UtcNow;
-            if (user != null)
+            try
             {
-                leaveRequest.EmployeeId = user.Id;
-                _leaveRepository.ApplyLeave(leaveRequest);
-                replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+                User user = new User();
+                // try to convert date to indian culture
+                var startDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                LeaveRequest leaveRequest = new LeaveRequest();
+                try
+                {
+                    // try to convert leave type to enum
+                    var leaveType = (LeaveType)Enum.Parse(typeof(LeaveType), slackRequest[1]);
+                    switch (leaveType)
+                    {
+                        case LeaveType.cl:
+                            {
+                                try
+                                {
+                                    // try to convert date to indian culture
+                                    var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                                    var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                                    // get user details from oAuth server
+                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                    leaveRequest.EndDate = endDate;
+                                    leaveRequest.RejoinDate = reJoinDate;
+                                    leaveRequest.Status = Condition.Pending;
+                                    leaveRequest.Type = leaveType;
+                                    leaveRequest.Reason = slackRequest[2];
+                                    leaveRequest.FromDate = startDate;
+                                    leaveRequest.CreatedOn = DateTime.UtcNow;
+                                    try
+                                    {
+                                        leaveRequest.EmployeeId = user.Id;
+                                        _leaveRepository.ApplyLeave(leaveRequest);
+                                        replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
+                                        // method to send slack notification and email to team leaders and management
+                                        await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        replyText = StringConstant.ErrorWhileApplyingLeaveAndSendingEmail;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    replyText = StringConstant.DateFormatErrorMessage;
+                                }
+                            }
+                            break;
+                        case LeaveType.sl:
+                            {
+                                if (slackRequest.Count > 4)
+                                {
+                                    // get user details from oAuth server other user
+                                    user = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
+                                }
+                                else
+                                {
+                                    // get user details from oAuth server for own
+                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                }
+                                leaveRequest.Status = Condition.Approved;
+                                leaveRequest.Type = leaveType;
+                                leaveRequest.Reason = slackRequest[2];
+                                leaveRequest.FromDate = startDate;
+                                leaveRequest.CreatedOn = DateTime.UtcNow;
+                                if (user.Id != null)
+                                {
+                                    leaveRequest.EmployeeId = user.Id;
+                                    _leaveRepository.ApplyLeave(leaveRequest);
+                                    replyText = _attachmentRepository.ReplyTextSick(user.FirstName, leaveRequest);
+                                }
+                                else
+                                {
+                                    replyText = StringConstant.SorryYouCannotApplyLeave;
+                                }
+                            }
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    replyText = StringConstant.NotTypeOfLeave;
+                }
             }
-            else
+            catch (Exception)
             {
-                replyText = StringConstant.SorryYouCannotApplyLeave;
+                replyText = StringConstant.DateFormatErrorMessage;
             }
-            _client.SendMessage(leave, replyText);
-            return leaveRequest;
+            return replyText;
         }
 
         /// <summary>
@@ -74,7 +144,7 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 foreach (var leave in leaveList)
                 {
-                    replyText += string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Status, System.Environment.NewLine);
+                    replyText += string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
                 }
             }
             else
@@ -97,11 +167,11 @@ namespace Promact.Core.Repository.SlackRepository
             if (userId == _leaveRepository.LeaveById(leaveId).EmployeeId)
             {
                 var leave = _leaveRepository.CancelLeave(leaveId);
-                replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Status);
+                replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status);
             }
             else
             {
-                replyText = StringConstant.CancelLeaveError;
+                replyText = string.Format("{0}{1}{2}", StringConstant.LeaveDoesnotExist, StringConstant.OrElseString, StringConstant.CancelLeaveError);
             }
             return replyText;
         }
@@ -118,7 +188,7 @@ namespace Promact.Core.Repository.SlackRepository
             try
             {
                 var leave = _leaveRepository.LeaveListStatusByUserId(userId);
-                replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.ToShortDateString(), leave.Reason, leave.Status);
+                replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
             }
             catch (Exception)
             {
@@ -132,6 +202,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <param name="status"></param>
+        /// <returns>replyText</returns>
         public void UpdateLeave(SlashChatUpdateResponse leaveResponse)
         {
             var leave = _leaveRepository.LeaveById(leaveResponse.CallbackId);
@@ -148,13 +219,13 @@ namespace Promact.Core.Repository.SlackRepository
             }
             _leaveRepository.UpdateLeave(leave);
 
-            var replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
+            replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
                             leave.Status,
                             leaveResponse.User.Name,
                             leave.FromDate.ToShortDateString(),
-                            leave.EndDate.ToShortDateString(),
+                            leave.EndDate.Value.ToShortDateString(),
                             leave.Reason,
-                            leave.RejoinDate.ToShortDateString());
+                            leave.RejoinDate.Value.ToShortDateString());
             _client.UpdateMessage(leaveResponse, replyText);
         }
 
@@ -163,7 +234,8 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async Task SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken)
+        /// <returns>replyText</returns>
+        private async Task<string> SlackLeaveList(List<string> slackText, SlashCommand leave, string accessToken)
         {
             if (slackText.Count > 1)
             {
@@ -174,7 +246,7 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 replyText = await LeaveList(leave.Username, accessToken);
             }
-            _client.SendMessage(leave, replyText);
+            return replyText;
         }
 
         /// <summary>
@@ -182,18 +254,19 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async Task SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken)
+        /// <returns>replyText</returns>
+        private async Task<string> SlackLeaveCancel(List<string> slackText, SlashCommand leave, string accessToken)
         {
             try
             {
                 var leaveId = Convert.ToInt32(slackText[1]);
-                var replyText = await CancelLeave(leaveId, leave.Username, accessToken);
+                replyText = await CancelLeave(leaveId, leave.Username, accessToken);
             }
             catch (Exception)
             {
                 replyText = StringConstant.SlashCommandLeaveCancelErrorMessage;
             }
-            _client.SendMessage(leave, replyText);
+            return replyText;
         }
 
         /// <summary>
@@ -201,18 +274,19 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="slackText"></param>
         /// <param name="leave"></param>
-        public async Task SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken)
+        /// <returns>replyText</returns>
+        private async Task<string> SlackLeaveStatus(List<string> slackText, SlashCommand leave, string accessToken)
         {
             if (slackText.Count > 1)
             {
                 var userName = slackText[1];
-                var replyText = await LeaveStatus(userName, accessToken);
+                replyText = await LeaveStatus(userName, accessToken);
             }
             else
             {
-                var replyText = await LeaveStatus(leave.Username, accessToken);
+                replyText = await LeaveStatus(leave.Username, accessToken);
             }
-            _client.SendMessage(leave, replyText);
+            return replyText;
         }
 
 
@@ -221,33 +295,136 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leave"></param>
         /// <param name="accessToken"></param>
-        public async Task SlackLeaveBalance(SlashCommand leave, string accessToken)
+        /// <returns>replyText</returns>
+        private async Task<string> SlackLeaveBalance(SlashCommand leave, string accessToken)
         {
-            try
-            {
-                var casualLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
-                var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
-                var casualLeaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
-                var casualLeaveLeft = casualLeave - casualLeaveTaken;
-                var replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, casualLeave, Environment.NewLine, casualLeaveLeft);
-                _client.SendMessage(leave, replyText);
-            }
-            catch (Exception ex)
-            {
-                replyText = StringConstant.LeaveBalanceErrorMessage;
-                _client.SendMessage(leave, replyText);
-                throw ex;
-            }
+            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+            var allowedLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
+            var leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
+            var casualLeaveTaken = leaveTaken.CasualLeave;
+            var sickLeaveTaken = leaveTaken.SickLeave;
+            var casualLeaveLeft = allowedLeave.CasualLeave - casualLeaveTaken;
+            var sickLeaveLeft = allowedLeave.SickLeave - sickLeaveTaken;
+            replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, allowedLeave.CasualLeave, Environment.NewLine, casualLeaveLeft);
+            replyText += string.Format("{2}You have taken {0} sick leave out of {1}{2}You have sick leave left {3}", casualLeaveTaken, allowedLeave.SickLeave, Environment.NewLine, sickLeaveLeft);
+            return replyText;
         }
 
         /// <summary>
         /// Method for gettin help on slack regards Leave slash command
         /// </summary>
         /// <param name="leave"></param>
-        public void SlackLeaveHelp(SlashCommand leave)
+        private string SlackLeaveHelp(SlashCommand leave)
         {
             var replyText = StringConstant.SlackHelpMessage;
+            return replyText;
+        }
+
+        public async Task LeaveRequest(SlashCommand leave)
+        {
+            var slackText = _attachmentRepository.SlackText(leave.Text);
+            var user = _userManager.FirstOrDefault(x => x.SlackUserName == leave.Username);
+            if (user != null)
+            {
+                leave.Text.ToLower();
+                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                try
+                {
+                    var action = (SlackAction)Enum.Parse(typeof(SlackAction), slackText[0]);
+                    switch (action)
+                    {
+                        case SlackAction.apply:
+                            replyText = await LeaveApply(slackText, leave, accessToken);
+                            break;
+                        case SlackAction.list:
+                            replyText = await SlackLeaveList(slackText, leave, accessToken);
+                            break;
+                        case SlackAction.cancel:
+                            replyText = await SlackLeaveCancel(slackText, leave, accessToken);
+                            break;
+                        case SlackAction.status:
+                            replyText = await SlackLeaveStatus(slackText, leave, accessToken);
+                            break;
+                        case SlackAction.balance:
+                            replyText = await SlackLeaveBalance(leave, accessToken);
+                            break;
+                        case SlackAction.update:
+                            await UpdateSickLeave(slackText, user, accessToken);
+                            break;
+                        default:
+                            replyText = SlackLeaveHelp(leave);
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    replyText = StringConstant.RequestToEnterProperAction;
+                }
+            }
+            else
+            {
+                replyText = StringConstant.SorryYouCannotApplyLeave;
+            }
             _client.SendMessage(leave, replyText);
+        }
+
+        /// <summary>
+        /// Method to send error message to user od slack
+        /// </summary>
+        /// <param name="leave"></param>
+        public void Error(SlashCommand leave)
+        {
+            var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveNoUserErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
+            _client.SendMessage(leave, replyText);
+        }
+
+        /// <summary>
+        /// Method to update sick leave
+        /// </summary>
+        /// <param name="slackText"></param>
+        /// <param name="user"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>replyText</returns>
+        private async Task<string> UpdateSickLeave(List<string> slackText, ApplicationUser user, string accessToken)
+        {
+            var IsAdmin = await _projectUser.UserIsAdmin(user.UserName, accessToken);
+            if (IsAdmin)
+            {
+                try
+                {
+                    var leave = _leaveRepository.LeaveById(Convert.ToInt32(slackText[1]));
+                    if (leave != null && leave.Type == LeaveType.sl)
+                    {
+                        try
+                        {
+                            // try to convert date to indian culture
+                            leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                            leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                            _leaveRepository.UpdateLeave(leave);
+                            replyText = string.Format("Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}"
+                                , user.SlackUserName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+                                leave.Reason, leave.RejoinDate.Value.ToShortDateString());
+                        }
+                        catch (Exception)
+                        {
+                            replyText = StringConstant.DateFormatErrorMessage;
+                        }
+                    }
+                    else
+                    {
+                        replyText = StringConstant.SickLeaveDoesnotExist;
+                    }
+                }
+                catch (Exception)
+                {
+                    replyText = StringConstant.UpdateEnterAValidLeaveId;
+                }
+            }
+            else
+            {
+                replyText = StringConstant.AdminErrorMessage;
+            }
+            return replyText;
         }
     }
 }

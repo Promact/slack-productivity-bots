@@ -1,5 +1,5 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Erp.DomainModel.ApplicationClass;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
@@ -95,16 +95,27 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>number of leave taken</returns>
-        public double NumberOfLeaveTaken(string employeeId)
+        public LeaveAllowed NumberOfLeaveTaken(string employeeId)
         {
             double casualLeaveTaken = 0.0;
+            double sickLeaveTaken = 0.0;
             var leaveList = _leaveRequestRepository.Fetch(x => x.EmployeeId == employeeId && x.Status == Condition.Approved);
             foreach (var leave in leaveList)
             {
-                var leaveTaken = leave.EndDate.Day - leave.FromDate.Day;
-                casualLeaveTaken += Convert.ToDouble(leaveTaken);
+                var leaveTaken = leave.EndDate.Value.Day - leave.FromDate.Day;
+                if (leave.Type == LeaveType.cl)
+                {
+                    casualLeaveTaken += Convert.ToDouble(leaveTaken);
+                }
+                else
+                {
+                    sickLeaveTaken += Convert.ToDouble(leaveTaken);
+                }
             }
-            return casualLeaveTaken;
+            LeaveAllowed leaveAllowed = new LeaveAllowed();
+            leaveAllowed.CasualLeave = casualLeaveTaken;
+            leaveAllowed.SickLeave = sickLeaveTaken;
+            return leaveAllowed;
         }
     }
 }
