@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
     template: ` 
                 <h1>Welcome to Report analysis</h1>
                 <h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
+                <h3><a routerLink="/scrum" routerLinkActive="active">Scrum Reports</a></h3>
                 <router-outlet></router-outlet>
 `
 

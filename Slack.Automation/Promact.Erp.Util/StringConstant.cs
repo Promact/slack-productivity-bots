@@ -179,31 +179,6 @@ namespace Promact.Erp.Util
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";
         public static string SendEmailNoForTest = "no";
-        public static string NotTypeOfLeave = "Please enter a valid Leave Type";
-        public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
-        public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
-        public static string UserIsAdmin = "userIsAdmin/";
-        public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
-        public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
-        public static string True = "true";
-        public static string LeaveStatusCommandForTest = "status siddhartha";
-        public static string LeaveBalanceTestForOwn = "balance";
-        public static string LeaveHelpTestForOwn = "help";
-        public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
-        public static string SlashCommandTextSick = "apply sl Testing 14-09-2016";
-        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}",FirstNameForTest);
-        public static string NameForTest = "roshni";
-        public static string RequestToEnterProperAction = "Please enter a proper action for leave";
-        public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing 14-09-2016 {0}", FirstNameForTest);
-        public static string SlashCommandTextErrorDateFormatSick = string.Format("apply sl Testing 05/04/2016 {0}", FirstNameForTest);
-        public static string SlashCommandTextErrorDateFormatCasual = string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
-        public static string SlashCommandTextCasual = "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
-        public static string SlashCommandUpdate = string.Format("update {0} 14-09-2016 14-09-2016", 1);
-        public static string SlashCommandUpdateDateError = string.Format("update {0} 30/09/2016 14-09-2016", 1);
-        public static string SlashCommandUpdateWrongId = string.Format("update {0} 14-09-2016 14-09-2016", 10);
-        public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
-        public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
-        public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
 
         #region String Constants for Test Cases
 

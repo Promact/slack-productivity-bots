@@ -10,6 +10,10 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { StringConstant } from './shared/stringConstant';
+import { ScrumReportComponent } from './ScrumReport/scrumReport.component';
+import { ScrumReportService } from './ScrumReport/scrumReport.service';
+import { ScrumProjectListComponent } from './ScrumReport/scrumProject-List/scrumProject-List.component';
+import { ScrumProjectDetailComponent } from './ScrumReport/scrumProject-Details/scrumProject-Details.component';
 
 
 @NgModule({
@@ -20,9 +24,9 @@ import { StringConstant } from './shared/stringConstant';
         JsonpModule,
         routing
     ],
-    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
+    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, ScrumReportComponent, ScrumProjectListComponent, ScrumProjectDetailComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, StringConstant]
+    providers: [LeaveReportService, StringConstant, ScrumReportService]
 })
 
 export class AppModule { }
