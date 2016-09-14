@@ -82,6 +82,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
+
         /// <returns>true or false</returns>
         Task<bool> UserIsAdmin(string userName, string accessToken);
 
