@@ -14,6 +14,10 @@ import { SpinnerComponent} from './shared/spinner.component';
 import { SpinnerService} from './shared/spinner.service';
 import { StringConstant } from './shared/stringConstant';
 //import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ScrumReportComponent } from './ScrumReport/scrumReport.component';
+import { ScrumReportService } from './ScrumReport/scrumReport.service';
+import { ScrumProjectListComponent } from './ScrumReport/scrumProject-List/scrumProject-List.component';
+import { ScrumProjectDetailComponent } from './ScrumReport/scrumProject-Details/scrumProject-Details.component';
 
 
 
@@ -26,9 +30,9 @@ import { StringConstant } from './shared/stringConstant';
         routing,
       
     ],
-    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
+    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent, ScrumReportComponent, ScrumProjectListComponent, ScrumProjectDetailComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [LeaveReportService, TaskService, SpinnerService, ScrumReportService, StringConstant]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 
 export class AppModule { }

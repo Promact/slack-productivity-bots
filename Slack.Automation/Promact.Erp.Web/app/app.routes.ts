@@ -5,13 +5,17 @@ import { LeaveReportRoutes } from './leaveReport/leaveReport.routes';
 import { LeaveReportComponent } from './leaveReport/leaveReport.component';
 import { TaskMailRoutes } from './taskmail/taskmail.routes';
 import { TaskMailComponent } from './taskmail/taskmail.component';
+import { ScrumReportComponent } from './ScrumReport/scrumReport.component';
+import { ScrumReportRoutes } from './ScrumReport/scrumReport.routes';
 
 const appRoutes: Routes = [
     { path: 'Home/AfterLogIn', component: LeaveReportComponent },
     ...LeaveReportRoutes,
     { path: 'leave', component: LeaveReportComponent },
      ...TaskMailRoutes,
-    { path: 'task', component: TaskMailComponent },
+     { path: 'task', component: TaskMailComponent },
+     ...ScrumReportRoutes,
+     { path: 'scrum', component: ScrumReportComponent }
 
 ];
 

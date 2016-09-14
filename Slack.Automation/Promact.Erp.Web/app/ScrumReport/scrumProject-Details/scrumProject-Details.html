@@ -1,0 +1,34 @@
+﻿
+<div class ="scrum Details">
+    <center>
+        <h3>Scrum Details</h3>
+        <h4>Scrum Date: {{scrumDetails.ScrumDate}}</h4>
+        <!--{{scrumDetails.EmployeeScrumAnswers.length}}-->
+        <table>
+            <thead>
+                <tr>
+                    <td>Employee Name</td>
+                    <td>What did you do yesterday?</td>
+                    <td>What will you do today?</td>
+                    <td>Any Roadblock?</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employeeScrumDetail of scrumDetails.EmployeeScrumAnswers">
+                    <td>{{employeeScrumDetail.EmployeeName}}</td>
+                    <td>{{employeeScrumDetail.Answer1}}</td>
+                    <td>{{employeeScrumDetail.Answer2}}</td>
+                    <td>{{employeeScrumDetail.Answer3}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <button (click)="goBack()">Back</button>
+            <button (click)="getScrumDetailsYesterday(scrumDetails.ScrumDate)">Yesterday</button>
+            <button (click)="getScrumDetailsToday()">Today</button>
+            <input type="date" [(ngModel)]="date">
+            <button (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
+        </div>
+    </center>
+</div>
+

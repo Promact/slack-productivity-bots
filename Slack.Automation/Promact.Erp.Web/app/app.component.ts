@@ -5,15 +5,15 @@ import { SpinnerComponent} from './shared/spinner.component';
     selector: 'my-app',
     directives: [SpinnerComponent],
     template: ` 
-                <h1>Welcome to leave analysis</h1>
+                <h1>Welcome to report analysis</h1>
                 <spinner-component></spinner-component>
                 <h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
                 <h3><a routerLink="task" routerLinkActive="active">Task Reports</a></h3>
  
+                <h3><a routerLink="/scrum" routerLinkActive="active">Scrum Reports</a></h3>
                 <router-outlet></router-outlet>
 `
 
 })
-    //<h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
 export class AppComponent {
 }
