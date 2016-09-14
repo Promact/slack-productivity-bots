@@ -219,6 +219,8 @@
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
+    <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
+    <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -335,6 +337,14 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-EmployeeScrumDetails.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.router.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />

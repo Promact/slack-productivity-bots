@@ -1,0 +1,17 @@
+﻿<center>
+    <h4>Select the project you want to see the scrum for :-</h4>
+    <table>
+
+        <thead>
+            <tr>
+                <th>Project Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let scrumProject of scrumProjects ">
+                <td><a routerLink="detail/{{scrumProject.Id}}" routerLinkActive="active">{{scrumProject.Name}}</a></td>
+                <td></td>
+        </tbody>
+
+    </table>
+</center>
