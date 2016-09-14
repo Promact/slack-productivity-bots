@@ -37,3 +37,5 @@
 1. AppSetting Variables 
   * ```OAuthUrl``` = https://www.example.com :
     Promact OAuth server Url 
+  * ```PromactErpUrl``` = https://www.secondexample.com :
+    Promact Erp server Url 
