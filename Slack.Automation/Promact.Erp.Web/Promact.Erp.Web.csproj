@@ -212,6 +212,8 @@
   <ItemGroup>
     <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
+    <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
+    <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -241,7 +243,9 @@
     </None>
     <Content Include="styles.css" />
     <Content Include="systemjs.config.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -323,6 +327,14 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-EmployeeScrumDetails.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
   </ItemGroup>

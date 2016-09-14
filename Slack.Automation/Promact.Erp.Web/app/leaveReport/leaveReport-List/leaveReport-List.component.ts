@@ -32,10 +32,10 @@ export class LeaveReportListComponent implements OnInit {
         return this.leaveReports;
     }
 
-    leaveDetails(employeeId: string) {
-        let link = ['/detail', employeeId];
-        this.router.navigate(link);
-    }
+    //leaveDetails(employeeId: string) {
+    //    let link = ['/detail', employeeId];
+    //    this.router.navigate(link);
+    //}
 
     exportDataToPdf() {
         var columns = ["Employee Name", "Employee Username","Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];

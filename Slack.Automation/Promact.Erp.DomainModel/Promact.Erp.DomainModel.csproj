@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationClass\EmailApplication.cs" />
+    <Compile Include="ApplicationClass\EmployeeScrumDetails.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
     <Compile Include="ApplicationClass\LeaveReportDetails.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashCommand.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashIncomingWebhook.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashResponse.cs" />
+    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="Context\PromactErpContext.cs" />
     <Compile Include="Migrations\Configuration.cs" />

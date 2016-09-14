@@ -18,6 +18,10 @@ var leaveReport_component_1 = require('./leaveReport/leaveReport.component');
 var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leaveReport-List.component');
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
+var scrumReport_component_1 = require('./ScrumReport/scrumReport.component');
+var scrumReport_service_1 = require('./ScrumReport/scrumReport.service');
+var scrumProject_List_component_1 = require('./ScrumReport/scrumProject-List/scrumProject-List.component');
+var scrumProject_Details_component_1 = require('./ScrumReport/scrumProject-Details/scrumProject-Details.component');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -30,9 +34,9 @@ var AppModule = (function () {
                 http_1.JsonpModule,
                 app_routes_1.routing
             ],
-            declarations: [app_component_1.AppComponent, leaveReport_component_1.LeaveReportComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
+            declarations: [app_component_1.AppComponent, leaveReport_component_1.LeaveReportComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent, scrumReport_component_1.ScrumReportComponent, scrumProject_List_component_1.ScrumProjectListComponent, scrumProject_Details_component_1.ScrumProjectDetailComponent],
             bootstrap: [app_component_1.AppComponent],
-            providers: [leaveReport_service_1.LeaveReportService]
+            providers: [leaveReport_service_1.LeaveReportService, scrumReport_service_1.ScrumReportService]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);

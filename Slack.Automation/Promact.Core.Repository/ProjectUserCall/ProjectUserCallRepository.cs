@@ -176,5 +176,40 @@ namespace Promact.Core.Repository.ProjectUserCall
             }
             return projectUsers;
         }
+
+        /// <summary>
+        /// Method is used to call an api from oauth server and return list of all the projects
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <returns>list of all the projects</returns>
+        public async Task<List<ProjectAc>> GetAllProjects(string accessToken)
+        {
+            List<ProjectAc> projects = new List<ProjectAc>();
+            var requestUrl = StringConstant.AllProjectUrl;
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            if (response != null)
+            {
+                projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
+            }
+            return projects;
+        }
+
+        /// <summary>
+        /// Method to call an api from oauth server and get the details of a project using projecId
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>Details of a project</returns>
+        public async Task<ProjectAc> GetProjectDetails(int projectId, string accessToken)
+        {
+            ProjectAc project = new ProjectAc();
+            var requestUrl = string.Format("{0}{1}", StringConstant.GetProjectDetails,projectId);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                project = JsonConvert.DeserializeObject<ProjectAc>(response);
+            }
+            return project;
+        }
     }
 }
