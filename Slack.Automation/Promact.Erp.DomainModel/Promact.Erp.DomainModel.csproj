@@ -155,6 +155,7 @@
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailUserAc.cs" />
+    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="ApplicationClass\UserRoleAc.cs" />
     <Compile Include="Context\PromactErpContext.cs" />

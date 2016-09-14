@@ -10,22 +10,28 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [RoutePrefix("api/project")]
     public class ScrumReportController : WebApiBaseController
     {
+        #region Private Variables
         private readonly IScrumReportRepository _scrumReportRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private ApplicationUserManager _userManager;
+        #endregion
 
+        #region Constructor
         public ScrumReportController(IScrumReportRepository scrumRepository, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
         {
             _scrumReportRepository = scrumRepository;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
         }
+        #endregion
 
+        #region Public methods
 
         /**
-        * @api {get} scrumReport
+        * @api {get} api/project
         * @apiVersion 1.0.0
         * @apiName ScrumReport
         * @apiGroup ScrumReport    
@@ -36,21 +42,21 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("scrumReport")]
-        public async Task<IHttpActionResult> ScrumProjectList()
+        [Route("")]
+        public async Task<IHttpActionResult> ScrumProjectListAsync()
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.GetProjects(loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.UserName, accessToken));
         }
 
         /**
-        * @api {get} scrumDetails/{projectId}/{date}
+        * @api {get} api/project/{id}/detail?date={date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
-        * @apiParam {int} Id  projectId  
-        * @apiParam {DateTime} DateTime  date   
+        * @apiParam {int} id  
+        * @apiParam {DateTime} date   
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -58,12 +64,15 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("scrumDetails/{projectId}/{date}")]
-        public async Task<IHttpActionResult> ScrumDetails(int projectId,DateTime date)
+        [Route("{id}/detail")]
+        public async Task<IHttpActionResult> ScrumDetailsAsync(int id)
         {
+            string queryString = Request.RequestUri.Query.Substring(1, 24);
+            DateTime date = Convert.ToDateTime(queryString);
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetails(projectId, date,loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date, loginUser.UserName, accessToken));
         }
+        #endregion
     }
 }
