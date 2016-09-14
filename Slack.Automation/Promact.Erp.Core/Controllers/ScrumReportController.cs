@@ -49,8 +49,6 @@ namespace Promact.Erp.Core.Controllers
         *         "teamLeaderId": "74df3a1d-d755-4260-801a-bb964fb83293",
         *         "createdBy": "7b722d05-a448-4c08-b768-2b0ff98f92e2",
         *         "createdDate": "2016-11-11",
-        *         "updatedBy": null,
-        *         "updatedDate": null,
         *         "teamLeader": {
         *           "Id": "74df3a1d-d755-4260-801a-bb964fb83293",
         *           "FirstName": "raj",
@@ -62,10 +60,8 @@ namespace Promact.Erp.Core.Controllers
         *           "JoiningDate": "2016-07-20T18:30:00",
         *           "SlackUserName": "raj",   
         *           "Email": "raj@promactinfo.com", 
-        *           "Password": null,
         *           "UserName": "raj@promactinfo.com", 
         *           "UniqueName": "raj-raj@promactinfo.com",
-        *           "RoleName": null
         *         },
         *         "applicationUsers": [
         *           {
@@ -79,10 +75,8 @@ namespace Promact.Erp.Core.Controllers
         *             "JoiningDate": "2016-01-13T18:30:00",
         *             "SlackUserName": "ram",
         *             "Email": "ram@promactinfo.com",
-        *             "Password": null,
         *             "UserName": "ram@promactinfo.com",
         *             "UniqueName": "ram-ram@promactinfo.com",
-        *             "RoleName": null
         *           }
         *         ] 
         *       },

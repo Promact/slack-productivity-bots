@@ -95,13 +95,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
 
         
 
-        /// <summary>
-        /// Method to call an api from oAuth server and get whether user is admin or not
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>true or false</returns>
-        Task<bool> UserIsAdmin(string userName, string accessToken);
+
 
         /// <summary>
         /// Method to call an api from oauth server and get the list of all the projects
