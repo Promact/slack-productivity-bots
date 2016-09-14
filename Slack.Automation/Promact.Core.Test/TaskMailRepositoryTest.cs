@@ -397,7 +397,7 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSixthAnswerForYes()
         {
             await mockAndUserCreate();
-            _mockEmailService.Setup(x => x.Send(email));
+            _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>()));
             _slackUserRepository.AddSlackUser(slackUserDetails);
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
