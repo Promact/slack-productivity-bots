@@ -104,6 +104,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
+
         /// <returns>true or false</returns>
         Task<bool> UserIsAdmin(string userName, string accessToken);
 
