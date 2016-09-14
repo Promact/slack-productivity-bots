@@ -82,7 +82,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method UpdateLeave from Slack respository with True value
+        /// Test cases for checking method UpdateLeave casual from Slack respository with True value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void UpdateLeave()
@@ -103,7 +103,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method UpdateLeave from Slack respository with False value
+        /// Test cases for checking method UpdateLeave casual from Slack respository with False value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public void UpdateLeaveFalse()
@@ -471,7 +471,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void LeaveApplyForErrorLeaveType()
@@ -493,7 +493,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void LeaveApplyForErrorDateFormat()
@@ -515,7 +515,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void LeaveApplyForErrorDateFormatForCasual()
