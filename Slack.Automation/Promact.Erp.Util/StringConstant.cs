@@ -190,7 +190,7 @@ namespace Promact.Erp.Util
         public static string LeaveHelpTestForOwn = "help";
         public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
         public static string SlashCommandTextSick = "apply sl Testing 14-09-2016";
-        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}",FirstNameForTest);
+        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}", FirstNameForTest);
         public static string NameForTest = "roshni";
         public static string RequestToEnterProperAction = "Please enter a proper action for leave";
         public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing 14-09-2016 {0}", FirstNameForTest);
@@ -203,6 +203,11 @@ namespace Promact.Erp.Util
         public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
         public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
         public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
+        public static string AllProjectUrl = "allProjects/";
+        public static string GetProjectDetails = "projectDetails/";
+        public static string PersonNotAvailable = "Person Not Available";
+        public static string FormatForDate = "MMM dd,yyyy";
+
         public static string AllProjectUrl = "allProjects/";
         public static string GetProjectDetails = "projectDetails/";
         public static string PersonNotAvailable = "Person Not Available";
