@@ -181,7 +181,7 @@ namespace Promact.Erp.Util
         public static string SendEmailNoForTest = "no";
         public static string NotTypeOfLeave = "Please enter a valid Leave Type";
         public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
-        public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
+        public static string ErrorWhileSendingEmail = "An error occur while sending email but your leave has been applied";
         public static string UserIsAdmin = "userIsAdmin/";
         public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
         public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
