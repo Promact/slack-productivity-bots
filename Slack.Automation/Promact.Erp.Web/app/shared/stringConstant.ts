@@ -20,6 +20,8 @@ export class StringConstant {
     detail = '/detail';
     detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
+    scrum = "api/project";
+    slash = "/";
     defaultDate = '1-01-01';
     notAvailableComment = 'Not Available';
     RoleAdmin = "Admin";
@@ -27,6 +29,6 @@ export class StringConstant {
     taskList = "/task"
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
-    taskDetails ="task/taskdetail"
-
+    taskDetails = "task/taskdetail";
+    noProjectToDisplay = "No projects to display";
 }
