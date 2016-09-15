@@ -14,10 +14,7 @@ import { ScrumReportService } from './ScrumReport/scrumReport.service';
 import { ScrumProjectListComponent } from './ScrumReport/scrumProject-List/scrumProject-List.component';
 import { ScrumProjectDetailComponent } from './ScrumReport/scrumProject-Details/scrumProject-Details.component';
 import { StringConstant } from './shared/stringConstant';
-import { ScrumReportComponent } from './ScrumReport/scrumReport.component';
-import { ScrumReportService } from './ScrumReport/scrumReport.service';
-import { ScrumProjectListComponent } from './ScrumReport/scrumProject-List/scrumProject-List.component';
-import { ScrumProjectDetailComponent } from './ScrumReport/scrumProject-Details/scrumProject-Details.component';
+
 
 
 @NgModule({
