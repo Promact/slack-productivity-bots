@@ -20,4 +20,7 @@ export class StringConstant{
     detail = '/detail';
     detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
+    scrumReport = "scrumReport";
+    scrumDetails = "scrumDetails/";
+    slash = "/";
 }

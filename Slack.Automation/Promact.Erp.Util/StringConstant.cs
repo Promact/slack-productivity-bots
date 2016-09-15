@@ -24,7 +24,6 @@ namespace Promact.Erp.Util
         public static string CancelLeaveError = "You are trying with wrong leaveId which not belong to you";
         public static string SlackHelpMessage = string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
         public static string SlackErrorMessage = "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
-
         public static string ProjectDetailsUrl = "fetchProject/";
         public static string UsersDetailByGroupUrl = "fetchProjectUsers/";
         public static string UserDetailsByIdUrl = "fetchUserById/";
@@ -36,7 +35,7 @@ namespace Promact.Erp.Util
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
         public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
-        public static string ProjectUsersByTeamLeaderId = "projectUsersById/"; 
+        public static string ProjectUsersByTeamLeaderId = "projectUsersById/";
         public static string ProjectUserDetailsUrl = "project/userDetails/";
         public static string ProjectTeamLeaderDetailsUrl = "project/teamLeadersDetails/";
         public static string ProjectManagementDetailsUrl = "project/Admin";
@@ -112,10 +111,10 @@ namespace Promact.Erp.Util
         public static string MailSetting = "system.net/mailSettings";
         public static string SlackChatUpdateUrl = "https://slack.com/api/chat.update";
         public static string ProjectUserUrl = string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
-        public static string ProjectUrl = string.Format("{0}/api/Project/",AppSettingUtil.OAuthUrl);
-        public static string UserUrl = string.Format("{0}/api/User/",AppSettingUtil.OAuthUrl);
-        public static string OAuthUrl = string.Format("{0}/OAuth/ExternalLogin",AppSettingUtil.OAuthUrl);
-        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack",AppSettingUtil.PromactErpUrl);
+        public static string ProjectUrl = string.Format("{0}/api/Project/", AppSettingUtil.OAuthUrl);
+        public static string UserUrl = string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+        public static string OAuthUrl = string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
+        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
         public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
         public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
         public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list", Environment.NewLine);
@@ -179,6 +178,32 @@ namespace Promact.Erp.Util
         public static string StatusOfWorkForTest = "completed";
         public static string SendEmailYesForTest = "yes";
         public static string SendEmailNoForTest = "no";
+        public static string NotTypeOfLeave = "Please enter a valid Leave Type";
+        public static string DateFormatErrorMessage = "Date format should be dd-MM-yyyy";
+        public static string ErrorWhileApplyingLeaveAndSendingEmail = "An error occur while applying leave and sending email";
+        public static string UserIsAdmin = "userIsAdmin/";
+        public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
+        public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
+        public static string True = "true";
+        public static string LeaveStatusCommandForTest = "status siddhartha";
+        public static string LeaveBalanceTestForOwn = "balance";
+        public static string LeaveHelpTestForOwn = "help";
+        public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
+        public static string SlashCommandTextSick = "apply sl Testing 14-09-2016";
+        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}", FirstNameForTest);
+        public static string NameForTest = "roshni";
+        public static string RequestToEnterProperAction = "Please enter a proper action for leave";
+        public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing 14-09-2016 {0}", FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatSick = string.Format("apply sl Testing 05/04/2016 {0}", FirstNameForTest);
+        public static string SlashCommandTextErrorDateFormatCasual = string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+        public static string SlashCommandTextCasual = "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+        public static string SlashCommandUpdate = string.Format("update {0} 14-09-2016 14-09-2016", 1);
+        public static string SlashCommandUpdateDateError = string.Format("update {0} 30/09/2016 14-09-2016", 1);
+        public static string SlashCommandUpdateWrongId = string.Format("update {0} 14-09-2016 14-09-2016", 10);
+        public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
+        public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
+        public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
+
         public static string AllProjectUrl = "allProjects/";
         public static string GetProjectDetails = "projectDetails/";
         public static string PersonNotAvailable = "Person Not Available";
@@ -212,8 +237,45 @@ namespace Promact.Erp.Util
         public static string ProjectUsers = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}]";
         public static string TeamLeaderDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}";
         public static string EmployeeDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Employee\",\"claims\":[],\"logins\":[]}";
-        public static string IdForTest  = "13b0f2ca-92f5-4713-a67e-37e50172e148";
+        public static string IdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148";
         #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
     }
 }
