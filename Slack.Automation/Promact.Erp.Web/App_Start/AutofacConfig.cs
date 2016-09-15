@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Extras.NLog;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
@@ -69,6 +70,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
+            builder.RegisterModule<NLogModule>();
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac
