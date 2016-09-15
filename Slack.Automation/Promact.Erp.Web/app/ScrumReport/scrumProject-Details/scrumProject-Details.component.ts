@@ -3,10 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ScrumDetails } from './scrumProject-Details.model';
 import { ScrumReportService } from '../scrumReport.service';
+import { StringConstant } from '../../shared/stringConstant';
 
 @Component({
     templateUrl: './app/ScrumReport/scrumProject-Details/scrumProject-Details.html',
 })
+
+
 
 export class ScrumProjectDetailComponent implements OnInit {
     scrumDetails: ScrumDetails[] = [];
@@ -14,8 +17,9 @@ export class ScrumProjectDetailComponent implements OnInit {
     sub: any;
     Id: any;
     Date: any;
+    maxDate = new Date().toISOString().slice(0, 10);
 
-    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute) { }
+    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant) { }
 
     ngOnInit() {
         this.getScrumDetailsToday();
@@ -38,7 +42,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetails(date: any) {
-        this.sub = this.route.params.subscribe(params => this.Id = params['id']);
+        this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
         this.scrumReportService.getScrumDetails(this.Id, date)
             .subscribe(
             scrumDetails =>  this.scrumDetails = scrumDetails,               
@@ -49,5 +53,5 @@ export class ScrumProjectDetailComponent implements OnInit {
 
     goBack() {
         window.history.back();
-    }
+    }  
 }

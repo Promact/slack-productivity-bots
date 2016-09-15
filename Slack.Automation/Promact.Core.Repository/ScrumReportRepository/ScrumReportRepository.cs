@@ -1,6 +1,6 @@
-﻿using Promact.Core.Repository.DataRepository;
-using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
@@ -70,59 +70,94 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// Method to return the details of scrum for a particular project
         /// </summary>
         /// <param name="projectId"></param>
+        /// <param name="scrumDate"></param>
+        /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns>Details of the scrum</returns>
-        public async Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string accessToken)
+        public async Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate,string userName, string accessToken)
         {
+            User loginUser = await _projectUserCallRepository.GetUserByUserName(userName, accessToken);
             ProjectAc project = await _projectUserCallRepository.GetProjectDetails(projectId, accessToken);
             Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(StringConstant.FormatForDate);
-            scrumProjectDetail.EmployeeScrumAnswers = getEmployeeScrumDetails(project,scrum, scrumDate);
+            scrumProjectDetail.EmployeeScrumAnswers = getEmployeeScrumDetails(project,scrum,loginUser, scrumDate);
             return scrumProjectDetail;
         }
 
         /// <summary>
-        /// Method to assign answers for scrum questions for a particular employee
+        /// Method to return list of employees in the project with their scrum answers based on employee role
         /// </summary>
         /// <param name="project"></param>
         /// <param name="scrum"></param>
+        /// <param name="loginUser"></param>
         /// <param name="scrumDate"></param>
-        /// <returns>Object with answers to scrum questions</returns>
-        private IList<EmployeeScrumDetails> getEmployeeScrumDetails(ProjectAc project, Scrum  scrum, DateTime scrumDate)
+        /// <returns>Object with list of employees in project with answers to scrum questions</returns>
+        private IList<EmployeeScrumDetails> getEmployeeScrumDetails(ProjectAc project, Scrum  scrum, User loginUser, DateTime scrumDate)
         {
             List<EmployeeScrumDetails> employeeScrumDetails = new List<EmployeeScrumDetails>();
-            foreach (var user in project.ApplicationUsers)
+            if (loginUser.Role.Equals(StringConstant.Employee))
             {
-                EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
-                List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.Fetch(x => x.EmployeeId == user.Id).ToList();
-                List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate == scrumDate && x.ScrumId == scrum.Id).ToList();
-                employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
-                if (todayScrumAnswers.Count() == 0)
+                foreach (var user in project.ApplicationUsers)
                 {
-                    employeeScrumDetail.Answer1 = StringConstant.PersonNotAvailable;
-                    employeeScrumDetail.Answer2 = StringConstant.PersonNotAvailable;
-                    employeeScrumDetail.Answer3 = StringConstant.PersonNotAvailable;
-                }
-                foreach (var todayScrumAnswer in todayScrumAnswers)
-                {
-                    if (todayScrumAnswer.QuestionId == 8)
+                    if (user.Id.Equals(loginUser.Id))
                     {
-                        employeeScrumDetail.Answer1 = todayScrumAnswer.Answer;
-                    }
-                    if (todayScrumAnswer.QuestionId == 9)
-                    {
-                        employeeScrumDetail.Answer2 = todayScrumAnswer.Answer;
-                    }
-                    if (todayScrumAnswer.QuestionId == 10)
-                    {
-                        employeeScrumDetail.Answer3 = todayScrumAnswer.Answer;
+                        EmployeeScrumDetails employeeScrumDetail = AssignAnswers(scrum, scrumDate, user);
+                        employeeScrumDetails.Add(employeeScrumDetail);
                     }
                 }
-                employeeScrumDetails.Add(employeeScrumDetail);
+
+            }
+            else
+            {
+                foreach (var user in project.ApplicationUsers)
+                {
+                    EmployeeScrumDetails employeeScrumDetail = AssignAnswers(scrum, scrumDate, user);
+                    employeeScrumDetails.Add(employeeScrumDetail);
+                }
+
             }
             return employeeScrumDetails;
         }
 
+
+        /// <summary>
+        /// Method to assign scrum answers to a particular employee
+        /// </summary>
+        /// <param name="scrum"></param>
+        /// <param name="scrumDate"></param>
+        /// <param name="user"></param>
+        /// <returns>object with scrum answers for an employee</returns>
+        private EmployeeScrumDetails AssignAnswers(Scrum scrum, DateTime scrumDate, User user)
+        {
+            EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
+            List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.Fetch(x => x.EmployeeId == user.Id).ToList();
+            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate == scrumDate && x.ScrumId == scrum.Id).ToList();
+            employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
+            if (todayScrumAnswers.Count() == 0)
+            {
+                employeeScrumDetail.Answer1 = StringConstant.PersonNotAvailable;
+                employeeScrumDetail.Answer2 = StringConstant.PersonNotAvailable;
+                employeeScrumDetail.Answer3 = StringConstant.PersonNotAvailable;
+            }
+            foreach (var todayScrumAnswer in todayScrumAnswers)
+            {
+                if (todayScrumAnswer.QuestionId == 8)
+                {
+                    employeeScrumDetail.Answer1 = todayScrumAnswer.Answer;
+                }
+                if (todayScrumAnswer.QuestionId == 9)
+                {
+                    employeeScrumDetail.Answer2 = todayScrumAnswer.Answer;
+                }
+                if (todayScrumAnswer.QuestionId == 10)
+                {
+                    employeeScrumDetail.Answer3 = todayScrumAnswer.Answer;
+                }
+            }
+            return employeeScrumDetail;
+        }
     }
 }
+
+
