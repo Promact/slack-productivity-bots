@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using NLog;
+using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -54,9 +54,9 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageTaskMailBot);
+                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot + ex.ToString());
                 //client.CloseSocket();
-                //throw;
+                throw ex;
             }
         }
 
