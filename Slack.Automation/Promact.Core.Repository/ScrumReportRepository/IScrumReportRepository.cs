@@ -22,8 +22,9 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="scrumDate"></param>
-        ///<param name = "accessToken" ></ param >
+        /// <param name="userName"></param>
+        /// <param name = "accessToken" ></ param >
         /// <returns>Details of the scrum</returns>
-        Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string accessToken); 
+        Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string userName, string accessToken); 
     }
 }

@@ -29,4 +29,7 @@ export class StringConstant {
     dateFormat = "dd-MM-yyyy";
     taskDetails ="task/taskdetail"
 
+    scrumReport = "scrumReport";
+    scrumDetails = "scrumDetails/";
+    slash = "/";
 }
