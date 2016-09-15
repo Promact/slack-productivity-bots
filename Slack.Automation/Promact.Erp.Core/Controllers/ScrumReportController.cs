@@ -50,7 +50,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiName ScrumReport
         * @apiGroup ScrumReport
         * @apiParam {int} Id  projectId  
-        * @apiParam {DateTime} DateTime  date  
+        * @apiParam {DateTime} DateTime  date   
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -62,7 +62,8 @@ namespace Promact.Erp.Core.Controllers
         public async Task<IHttpActionResult> ScrumDetails(int projectId,DateTime date)
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetails(projectId, date, accessToken));
+            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            return Ok(await _scrumReportRepository.ScrumReportDetails(projectId, date,loginUser.UserName, accessToken));
         }
     }
 }

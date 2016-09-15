@@ -2,8 +2,7 @@
 <div class ="scrum Details">
     <center>
         <h3>Scrum Details</h3>
-        <h4>Scrum Date: {{scrumDetails.ScrumDate}}</h4>
-        <!--{{scrumDetails.EmployeeScrumAnswers.length}}-->
+        <h4>Scrum Date: {{scrumDetails.ScrumDate}}</h4>        
         <table>
             <thead>
                 <tr>
@@ -26,8 +25,8 @@
             <button (click)="goBack()">Back</button>
             <button (click)="getScrumDetailsYesterday(scrumDetails.ScrumDate)">Yesterday</button>
             <button (click)="getScrumDetailsToday()">Today</button>
-            <input type="date" [(ngModel)]="date">
-            <button (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
+            <input type="date" [(ngModel)]="date" name="date" max="{{maxDate}}">
+            <button [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
         </div>
     </center>
 </div>
