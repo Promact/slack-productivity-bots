@@ -6,6 +6,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
     public class SlackChannelRepository: ISlackChannelRepository
     {
         private readonly IRepository<SlackChannelDetails> _slackChannelDetailsContext;
+
         public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsContext)
         {
             _slackChannelDetailsContext = slackChannelDetailsContext;

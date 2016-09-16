@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,7 @@ namespace Promact.Erp.DomainModel.Models
         public string EmployeeId { get; set; }
         [Required]
         public DateTime AnswerDate { get; set; }
+        public ScrumAnswerStatus ScrumAnswerStatus { get; set; }
 
         [ForeignKey("QuestionId")]
         public virtual Question Question { get; set; }

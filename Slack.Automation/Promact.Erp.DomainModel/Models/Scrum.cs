@@ -13,6 +13,7 @@ namespace Promact.Erp.DomainModel.Models
         public int ProjectId { get; set; }
         [Required]
         public DateTime ScrumDate { get; set; }
+        public bool IsHalted { get; set; }
     }
 }
 
