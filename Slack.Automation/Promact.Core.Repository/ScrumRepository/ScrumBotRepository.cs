@@ -611,7 +611,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             returnMsg = "<@" + LaterUserName + "> " + FetchQuestion(null, true);
                         else
                         {
-                            // only some answers are marked as later
+                            // only some answers are marked as later. So the last question which was answered is fetched and the next question is asked.
                             var questionId = employeeScrumAnswers.Where(x => !employeeScrumAnswerWithLater.Select(y => y.Id).ToList().Contains(x.Id)).OrderByDescending(x => x.Id).Select(x => x.QuestionId).FirstOrDefault();
                             returnMsg = "<@" + LaterUserName + "> " + FetchQuestion(questionId, false);
                         }
