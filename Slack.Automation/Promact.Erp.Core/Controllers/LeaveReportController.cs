@@ -1,6 +1,8 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+﻿using Autofac.Extras.NLog;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
+using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -10,13 +12,15 @@ namespace Promact.Erp.Core.Controllers
     {
         private readonly ILeaveReportRepository _leaveReport;
         private readonly IAttachmentRepository _attachmentRepository;
+        private readonly ILogger _logger;
         private ApplicationUserManager _userManager;
 
-        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager, ILogger logger)
         {
             _leaveReport = leaveReport;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
+            _logger = logger;
         }
 
         /**
@@ -42,9 +46,17 @@ namespace Promact.Erp.Core.Controllers
         [Route("leaveReport")]
         public async Task<IHttpActionResult> LeaveReport()
         {
-            var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
-            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
+            try
+            {
+                var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
+                var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());
+                throw ex;
+            }
         }
 
 
@@ -74,7 +86,7 @@ namespace Promact.Erp.Core.Controllers
             if (employeeId != null)
             {
                 var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReportDetails(employeeId,accessToken));
+                return Ok(await _leaveReport.LeaveReportDetails(employeeId, accessToken));
             }
             else
             {

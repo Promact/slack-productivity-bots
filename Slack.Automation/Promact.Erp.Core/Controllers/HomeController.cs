@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Autofac.Extras.NLog;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
@@ -84,7 +84,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerExtrenalLogin);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
+                _logger.Error(errorMessage,ex);
                 throw ex;
             }
         }
@@ -128,7 +129,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }
@@ -153,7 +155,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageHomeControllerLogoff);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerLogoff, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }

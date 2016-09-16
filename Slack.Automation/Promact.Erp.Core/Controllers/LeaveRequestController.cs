@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -59,7 +59,8 @@ namespace Promact.Erp.Core.Controllers
             catch (Exception ex)
             {
                 _slackRepository.Error(leave);
-                _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 return BadRequest();
             }
         }
@@ -87,7 +88,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw;
             }
         }
