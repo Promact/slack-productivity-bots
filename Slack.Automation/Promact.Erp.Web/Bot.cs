@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using NLog;
+using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -21,13 +21,13 @@ namespace Promact.Erp.Web
 
         public static void Main(IComponentContext container)
         {
+            _taskMailRepository = container.Resolve<ITaskMailRepository>();
+            _slackUserDetails = container.Resolve<ISlackUserRepository>();
+            _logger = container.Resolve<ILogger>();
             // assigning bot token on Slack Socket Client
             SlackSocketClient client = new SlackSocketClient(Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.User));
             try
             {
-                _taskMailRepository = container.Resolve<ITaskMailRepository>();
-                _slackUserDetails = container.Resolve<ISlackUserRepository>();
-                _logger = container.Resolve<ILogger>();
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
@@ -54,9 +54,8 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageTaskMailBot);
-                //client.CloseSocket();
-                //throw;
+                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot, ex);
+                client.CloseSocket();
             }
         }
 
@@ -68,6 +67,7 @@ namespace Promact.Erp.Web
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
                 _slackChannelDetails = container.Resolve<ISlackChannelRepository>();
+                _logger = container.Resolve<ILogger>();
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
@@ -117,8 +117,8 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
+                _logger.Error(ex.ToString());
                 client.CloseSocket();
-                throw ex;
             }
         }
                 

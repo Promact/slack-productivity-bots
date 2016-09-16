@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -54,7 +54,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageOAuthControllerRefreshToken);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerRefreshToken, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }
@@ -82,7 +83,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }
@@ -121,7 +123,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, StringConstant.LoggerErrorMessageOAuthControllerSlackEvent);
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackEvent, ex.ToString());
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }

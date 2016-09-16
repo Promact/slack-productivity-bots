@@ -1,9 +1,9 @@
 ﻿using Autofac;
+using Autofac.Extras.NLog;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
@@ -41,7 +41,6 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
-            builder.Register(c => LogManager.GetCurrentClassLogger()).As<ILogger>();
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
 
@@ -69,6 +68,8 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
+            builder.RegisterModule<NLogModule>();
+            builder.RegisterModule<SimpleNLogModule>();
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac

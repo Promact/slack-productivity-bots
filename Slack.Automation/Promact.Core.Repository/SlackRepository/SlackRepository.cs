@@ -12,6 +12,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using System.Linq;
 using System.Globalization;
 using Promact.Erp.DomainModel.DataRepository;
+using Autofac.Extras.NLog;
 using System.Net.Mail;
 
 namespace Promact.Core.Repository.SlackRepository
@@ -24,7 +25,11 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
-        public SlackRepository(ILeaveRequestRepository leaveRepository, IProjectUserCallRepository projectUser, IClient client, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
+        public SlackRepository(ILeaveRequestRepository leaveRepository, 
+            IProjectUserCallRepository projectUser, 
+            IClient client, 
+            IAttachmentRepository attachmentRepository, 
+            IRepository<ApplicationUser> userManager)
         {
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
