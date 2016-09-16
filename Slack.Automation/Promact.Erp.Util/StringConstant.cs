@@ -36,7 +36,7 @@ namespace Promact.Erp.Util
         public static string ManagementDetailsUrl = "managementDetails";
         public static string OAuthAcessUrl = "https://slack.com/api/oauth.access";
         public static string ProjectDetailsByUserNameUrl = "projectByUserName/";
-        public static string ProjectUsersByTeamLeaderId = "projectUsersById/"; 
+        public static string ProjectUsersByTeamLeaderId = "projectUsersById/";
         public static string ProjectUserDetailsUrl = "project/userDetails/";
         public static string ProjectTeamLeaderDetailsUrl = "project/teamLeadersDetails/";
         public static string ProjectManagementDetailsUrl = "project/Admin";
@@ -54,22 +54,39 @@ namespace Promact.Erp.Util
         public static string TaskMailComment = "Comment";
         public static string TaskMailStatus = "Status";
         public static string ScrumTime = "scrum time";
+        public static string ScrumHalt = "scrum halt";
+        public static string ScrumHalted = "Scrum has been halted";
+        public static string ScrumAlreadyHalted = "Scrum is already halted. Enter *scrum resume* to resume scrum";
+        public static string ScrumResume = "scrum resume";
+        public static string Scrum = "scrum";
+        public static string ScrumResumed = "Scrum has been resumed\n";
+        public static string AnswerToday = "*Please answer the following questions today*";
+        public static string ScrumNotHalted = "Scrum was not halted\n";
         public static string ScrumHelp = "scrum help";
         public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
         public static string Leave = "leave";
+        public static string Later = "later";
+        public static string ResumeScrum = "Please resume the scrum by writing *scrum resume*";
+        public static string PreviousDayStatus = "*Your previous day's status is :*\n";
         public static string ScrumBotToken = "ScrumBotToken";
         public static string ScrumBotName = "ScrumBotName";
-        public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
         public static string AlreadyAnswered = "But,<@{0}> your answers have been recorded today :worried:\n";
         public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
+        public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
         public static string WrongPerson = "<@{0}> please answer.";
+
         public static string NoProjectFound = "No project found for this group.";
         public static string ScrumComplete = "Scrum concluded.\nGood luck team :thumbsup:";
         public static string ScrumNotStarted = "Scrum has not been initiated yet";
         public static string ScrumAlreadyConducted = "Scrum for today has been concluded";
         public static string GoodDay = "Good Day ";
+        public static string Time = "time";
+        public static string PleaseAnswer = "<@{0}> please answer.";
+        public static string ScrumConcludedButLater = "Scrum wound up for now.\nGood luck team :thumbsup:. \nTo conduct scrum of employees marked as _later_ type *_scrum @username_*";
+        public static string AllAnswerRecorded = "No questions are marked to be asked later";
+        public static string NotLaterYet = "<@{0}> has not been marked to answer later yet.\n";
         public static string SendTaskMailConfirmationErrorMessage = "Please enter yes or no";
         public static string RequestToStartTaskMail = "Please start task mail";
         public static string AlreadyMailSend = "You have already sended mail for today. No more task mail for today";
@@ -224,6 +241,9 @@ namespace Promact.Erp.Util
         public static string TestUser = "pranali";
         public static string scrumAnswerForTest = "Worked on testing";
         public static string ProjectIdForTest = "2";
+        public static string Halt = "halt";
+        public static string Resume = "resume";
+        public static string AlreadyMarkedAsAnswered = "Already marked as later or answered earlier\n";
         public static string TeamLeaderIdForTest = "5c84049f-f861-406d-b420-e1bf03c9e06e";
         public static string EmployeeIdForTest = "2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf";
         public static string TestAccessToken = "05310c2a-3fd3-4fa7-a059-e88bfbfe5f99";
@@ -238,8 +258,9 @@ namespace Promact.Erp.Util
      
         public static string TestUserId = "aac59fbc-7835-4bd7-9080-6b6766302080";
         public static string NextQuestion = "<@apoorvapatel> What did you do yesterday?";
-        public static string QuestionToNextEmployee = "Good Day <@pranali>!\nWhat did you do yesterday?";
-
+        public static string QuestionToNextEmployee = "Good Day <@{0}>!\nWhat did you do yesterday?";
+        public static string PreviousDayStatusForTest = "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
+        public static string UpdateAnswer= "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
         #endregion
 
     }
