@@ -17,7 +17,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
-        /// This method is called whenever a message other than "scrumn time" or "leave username" is written in the group during scrum meeting. - JJ
+        /// This method is called whenever a message other than keyword is written in the group. 
         /// </summary>
         /// <param name="UserName"></param>
         /// <param name="Message"></param>
@@ -26,13 +26,13 @@ namespace Promact.Core.Repository.ScrumRepository
         Task<string> AddScrumAnswer(string UserName, string Message, string GroupName);
 
         /// <summary>
-        /// This method will be called when the keyword "leave @username" or "later @username" or "scrum later @username" is received as reply from a group member. - JJ
+        /// This method will be called when the keyword "leave @username" or "later @username" or "scrum @username" is received as reply from a group member. - JJ
         /// </summary>
         /// <param name="GroupName"></param>
         /// <param name="UserName"></param>
         /// <param name="LeaveApplicant"></param>
         /// <param name="Parameter"></param>
-        /// <returns>Question to the next person</returns>
+        /// <returns>Question to the next person or other scrum status</returns>
         Task<string> Leave(string GroupName, string UserName, string LeaveApplicant, string Parameter);
 
     }
