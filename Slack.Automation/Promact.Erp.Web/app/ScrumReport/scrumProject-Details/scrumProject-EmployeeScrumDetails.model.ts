@@ -3,4 +3,5 @@
     Answer1: string;
     Answer2: string;
     Answer3: string;
+    Status: string;
 }

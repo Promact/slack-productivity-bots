@@ -136,23 +136,21 @@ namespace Promact.Core.Repository.ScrumReportRepository
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             if (todayScrumAnswers.Count() == 0)
             {
-                employeeScrumDetail.Answer1 = StringConstant.PersonNotAvailable;
-                employeeScrumDetail.Answer2 = StringConstant.PersonNotAvailable;
-                employeeScrumDetail.Answer3 = StringConstant.PersonNotAvailable;
+                employeeScrumDetail.Status = StringConstant.PersonNotAvailable;
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
                 if (todayScrumAnswer.QuestionId == 8)
                 {
-                    employeeScrumDetail.Answer1 = todayScrumAnswer.Answer;
+                    employeeScrumDetail.Answer1 = todayScrumAnswer.Answer.Split('\n');
                 }
                 if (todayScrumAnswer.QuestionId == 9)
                 {
-                    employeeScrumDetail.Answer2 = todayScrumAnswer.Answer;
+                    employeeScrumDetail.Answer2 = todayScrumAnswer.Answer.Split('\n');
                 }
                 if (todayScrumAnswer.QuestionId == 10)
                 {
-                    employeeScrumDetail.Answer3 = todayScrumAnswer.Answer;
+                    employeeScrumDetail.Answer3 = todayScrumAnswer.Answer.Split('\n');
                 }
             }
             return employeeScrumDetail;

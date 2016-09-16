@@ -16,17 +16,19 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Answer to question what did you do yesterday
         /// </summary>
-        public string Answer1 { get; set; }
+        public string[] Answer1 { get; set; }
 
         /// <summary>
         /// Answer to question what will you do today
         /// </summary>
-        public string Answer2 { get; set; }
+        public string[] Answer2 { get; set; }
 
         /// <summary>
         /// Answer to question any roadblock
         /// </summary>
-        public string Answer3 { get; set; }
+        public string[] Answer3 { get; set; }
+
+        public string Status { get; set; }
 
     }
 }
