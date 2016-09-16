@@ -2,5 +2,6 @@
 
 export class ScrumDetails {
     ScrumDate: Date;
+    ProjectCreationDate: Date;
     EmployeeScrumDetails: Array<EmployeeScrumDetails>;
 }
