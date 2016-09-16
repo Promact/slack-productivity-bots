@@ -81,6 +81,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(StringConstant.FormatForDate);
+            scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
             scrumProjectDetail.EmployeeScrumAnswers = getEmployeeScrumDetails(project,scrum,loginUser, scrumDate);
             return scrumProjectDetail;
         }
