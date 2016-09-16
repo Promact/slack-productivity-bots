@@ -11,6 +11,7 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -764,10 +765,10 @@ namespace Promact.Core.Test
         /// </summary>
         private LeaveRequest leave = new LeaveRequest()
         {
-            FromDate = DateTime.UtcNow,
-            EndDate = DateTime.UtcNow,
+            FromDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
+            EndDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
             Reason = StringConstant.LeaveReasonForTest,
-            RejoinDate = DateTime.UtcNow,
+            RejoinDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
             Status = Condition.Pending,
             Type = LeaveType.cl,
             CreatedOn = DateTime.UtcNow,
