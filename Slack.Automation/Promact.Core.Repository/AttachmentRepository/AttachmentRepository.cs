@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Promact.Core.Repository.AttachmentRepository
 {
     public class AttachmentRepository:IAttachmentRepository
-    {
+    { 
         private readonly ApplicationUserManager _userManager;
         public AttachmentRepository(ApplicationUserManager userManager)
         {
