@@ -222,6 +222,7 @@ namespace Promact.Erp.Util
         public static string SickLeaveDoesnotExist = "Sick leave doesn't exist for this Id";
         public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
         public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
+        public static string ErrorOfEmailServiceFailureTaskMail = "An error occur while sending email";
 
         #region String Constants for Test Cases
 

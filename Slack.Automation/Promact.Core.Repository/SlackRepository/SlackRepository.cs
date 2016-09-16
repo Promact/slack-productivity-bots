@@ -138,10 +138,10 @@ namespace Promact.Core.Repository.SlackRepository
                     // if date is not proper than date format error message will be send to user
                     replyText = StringConstant.DateFormatErrorMessage;
             }
-            catch (SmtpException)
+            catch (SmtpException ex)
             {
                 // error message will be send to email. But leave will be applied
-                replyText = StringConstant.ErrorWhileSendingEmail;
+                replyText = string.Format("{0}. {1}", StringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             }
             catch (Exception ex)
             {

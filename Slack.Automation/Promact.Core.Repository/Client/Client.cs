@@ -103,21 +103,28 @@ namespace Promact.Core.Repository.Client
         /// <returns>template emailBody as string</returns>
         private string EmailServiceTemplate(LeaveRequest leaveRequest)
         {
-            LeaveApplication leaveTemplate = new LeaveApplication();
-            // Assigning Value in template page
-            leaveTemplate.Session = new Dictionary<string, object>
+            try
+            {
+                LeaveApplication leaveTemplate = new LeaveApplication();
+                // Assigning Value in template page
+                leaveTemplate.Session = new Dictionary<string, object>
             {
                 {StringConstant.FromDate,leaveRequest.FromDate.ToString(StringConstant.DateFormat) },
                 {StringConstant.EndDate,leaveRequest.EndDate.Value.ToString(StringConstant.DateFormat) },
                 {StringConstant.Reason,leaveRequest.Reason },
-                {StringConstant.Type,leaveRequest.Type },
+                {StringConstant.Type,leaveRequest.Type.ToString() },
                 {StringConstant.Status,leaveRequest.Status.ToString() },
                 {StringConstant.ReJoinDate,leaveRequest.RejoinDate.Value.ToString(StringConstant.DateFormat) },
                 {StringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(StringConstant.DateFormat) },
             };
-            leaveTemplate.Initialize();
-            var emailBody = leaveTemplate.TransformText();
-            return emailBody;
+                leaveTemplate.Initialize();
+                var emailBody = leaveTemplate.TransformText();
+                return emailBody;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
