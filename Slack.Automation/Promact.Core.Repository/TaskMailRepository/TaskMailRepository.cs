@@ -10,6 +10,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Net.Mail;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -314,6 +315,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                         _taskMailDetail.Update(taskDetails);
                         _taskMail.Save();
                     }
+                }
+                catch (SmtpException ex)
+                {
+                    // error message will be send to email. But leave will be applied
+                    questionText = string.Format("{0}. {1}", StringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
                 }
                 catch (Exception)
                 {

@@ -12,6 +12,7 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using System;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -469,7 +470,29 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
+        }
 
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started after sixth question
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void QuestionAndAnswerForEmailServiceError()
+        {
+            SmtpException ex = new SmtpException();
+            await mockAndUserCreate();
+            _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws<SmtpException>();
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            _botQuestionRepository.AddQuestion(SixthQuestion);
+            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = SixthQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var response = await _taskMailRepository.QuestionAndAnswer(StringConstant.FirstNameForTest, StringConstant.SendEmailYesForTest);
+            var expectReply = string.Format("{0}. {1}", StringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
+            Assert.Equal(response, expectReply);
         }
 
         /// <summary>

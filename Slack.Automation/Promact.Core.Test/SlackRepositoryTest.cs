@@ -540,11 +540,9 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLForEmailSendingError()
+        public async void LeaveApplyForCLForNoUser()
         {
             await AddUser();
-            Exception ex = new Exception();
-            var error = Task.FromException(ex);
             slackLeave.Text = StringConstant.SlashCommandTextCasual;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -552,7 +550,6 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = StringConstant.SorryYouCannotApplyLeave;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<SmtpException>();
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -747,6 +744,29 @@ namespace Promact.Core.Test
             slackLeave.Text = StringConstant.LeaveBalanceTestForOwn;
             var replyText = StringConstant.LeaveNoUserErrorMessage;
            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForCLForEmailError()
+        {
+            SmtpException ex = new SmtpException();
+            await AddUser();
+            var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            slackLeave.Text = StringConstant.SlashCommandTextCasual;
+            var slackText = slackLeave.Text.Split('"')
+                            .Select((element, index) => index % 2 == 0 ? element
+                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+                            .SelectMany(element => element).ToList();
+            var replyText = string.Format("{0}. {1}", StringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<SmtpException>();
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
