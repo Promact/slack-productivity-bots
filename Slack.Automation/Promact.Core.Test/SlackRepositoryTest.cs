@@ -11,9 +11,11 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 using Xunit;
@@ -548,9 +550,9 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
-            var replyText = StringConstant.ErrorWhileApplyingLeaveAndSendingEmail;
+            var replyText = StringConstant.SorryYouCannotApplyLeave;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<IOException>();
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<SmtpException>();
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -735,6 +737,21 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
+        /// Test cases for checking method SlackLeaveBalance from Slack respository with false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackLeaveBalanceWrong()
+        {
+            await AddUser();
+            _leaveRequestRepository.ApplyLeave(leave);
+            slackLeave.Text = StringConstant.LeaveBalanceTestForOwn;
+            var replyText = StringConstant.LeaveNoUserErrorMessage;
+           _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
         /// Private User variable to be used in test cases
         /// </summary>
         private User user = new User()
@@ -764,10 +781,10 @@ namespace Promact.Core.Test
         /// </summary>
         private LeaveRequest leave = new LeaveRequest()
         {
-            FromDate = DateTime.UtcNow,
-            EndDate = DateTime.UtcNow,
+            FromDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
+            EndDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
             Reason = StringConstant.LeaveReasonForTest,
-            RejoinDate = DateTime.UtcNow,
+            RejoinDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN")),
             Status = Condition.Pending,
             Type = LeaveType.cl,
             CreatedOn = DateTime.UtcNow,
