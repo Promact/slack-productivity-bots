@@ -16,20 +16,20 @@ namespace Promact.Erp.Util.Email
         /// <param name="email">email.from, email.to, email.body, email.subject</param>
         public void Send(EmailApplication email)
         {
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress(email.From);
-            message.To.Add(new MailAddress(email.To));
-            message.Subject = email.Subject;
-            message.Body = email.Body;
-            message.BodyEncoding = Encoding.UTF8;
-            message.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient();
-            client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.User);
-            client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.User));
-            client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.User));
-            client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.User));
             try
             {
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(email.From);
+                message.To.Add(new MailAddress(email.To));
+                message.Subject = email.Subject;
+                message.Body = email.Body;
+                message.BodyEncoding = Encoding.UTF8;
+                message.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient();
+                client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.User);
+                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.User));
+                client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.User));
+                client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.User));
                 client.Send(message);
             }
             catch (Exception ex)
