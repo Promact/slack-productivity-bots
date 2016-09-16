@@ -1,33 +1,42 @@
 ﻿
-<div class ="scrum Details">
-    <center>
-        <h3>Scrum Details</h3>
-        <h4>Scrum Date: {{scrumDetails.ScrumDate}}</h4>        
-        <table>
-            <thead>
-                <tr>
-                    <td>Employee Name</td>
-                    <td>What did you do yesterday?</td>
-                    <td>What will you do today?</td>
-                    <td>Any Roadblock?</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let employeeScrumDetail of scrumDetails.EmployeeScrumAnswers">
-                    <td>{{employeeScrumDetail.EmployeeName}}</td>
-                    <td>{{employeeScrumDetail.Answer1}}</td>
-                    <td>{{employeeScrumDetail.Answer2}}</td>
-                    <td>{{employeeScrumDetail.Answer3}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div>
-            <button (click)="goBack()">Back</button>
-            <button (click)="getScrumDetailsYesterday(scrumDetails.ScrumDate)">Yesterday</button>
-            <button (click)="getScrumDetailsToday()">Today</button>
-            <input type="date" [(ngModel)]="date" name="date" max="{{maxDate}}">
-            <button [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
-        </div>
-    </center>
-</div>
+<center>
+    <div>
 
+        <h2><u>Scrum Details</u></h2>
+        <h3>Scrum Date: {{scrumDetails.ScrumDate}}</h3>
+
+    </div>
+
+    <div *ngFor="let employeeScrumDetail of scrumDetails.EmployeeScrumAnswers">
+        <h4><u>Employee Name :{{employeeScrumDetail.EmployeeName}}</u></h4>
+      <div *ngIf ="!employeeScrumDetail.Status">
+          <h5>What did you do yesterday?</h5>
+
+          <ul *ngFor="let Answer of employeeScrumDetail.Answer1">
+              <li>{{employeeScrumDetail.Answer1}}</li>
+          </ul>
+
+          <h5>What will you do today?</h5>
+          <ul *ngFor="let Answer of employeeScrumDetail.Answer2">
+              <li>{{employeeScrumDetail.Answer2}}</li>
+          </ul>
+
+
+          <h5>Any Roadblock?</h5>
+          <ul *ngFor="let Answer of employeeScrumDetail.Answer3">
+              <li>{{employeeScrumDetail.Answer3}}</li>
+          </ul>
+      </div>
+        <div *ngIf ="employeeScrumDetail.Status">{{employeeScrumDetail.Status}}</div>
+        
+       
+    </div>
+    <br />
+    <div>
+        <button (click)="goBack()">Back</button>
+        <button (click)="getScrumDetailsYesterday(scrumDetails.ScrumDate)">Yesterday</button>
+        <button (click)="getScrumDetailsToday()">Today</button>
+        <input type="date" [(ngModel)]="date" name="date" max="{{maxDate}}">
+        <button [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
+    </div>
+</center>
