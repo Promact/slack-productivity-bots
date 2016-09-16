@@ -24,21 +24,18 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IClient _client;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManager;
-        private readonly ILogger _logger;
         string replyText = null;
         public SlackRepository(ILeaveRequestRepository leaveRepository, 
             IProjectUserCallRepository projectUser, 
             IClient client, 
             IAttachmentRepository attachmentRepository, 
-            IRepository<ApplicationUser> userManager,
-            ILogger logger)
+            IRepository<ApplicationUser> userManager)
         {
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
             _client = client;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
-            _logger = logger;
         }
 
         /// <summary>
