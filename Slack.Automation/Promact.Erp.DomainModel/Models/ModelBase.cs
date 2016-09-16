@@ -16,5 +16,7 @@ namespace Promact.Erp.DomainModel.Models
         /// Created Date
         /// </summary>
         public DateTime CreatedOn { get; set; }
+
+      
     }
 }

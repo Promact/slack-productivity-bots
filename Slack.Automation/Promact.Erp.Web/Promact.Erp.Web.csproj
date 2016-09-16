@@ -361,6 +361,7 @@
     <TypeScriptCompile Include="app\taskmail\taskmail.model.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.routes.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.service.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmailuser.model.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

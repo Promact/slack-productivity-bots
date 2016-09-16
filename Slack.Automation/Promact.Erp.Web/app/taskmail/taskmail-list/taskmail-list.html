@@ -4,51 +4,35 @@
             <h3>Task Mail</h3>
         </div>
         <div class="items text-right">
-            
+
         </div>
     </div>
-
+    <button (click)="Hello()">heloo</button>
     <div class="table-sm">
-        <table class="table-bordered">
+        <table>
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>UserName</th>
-                    <th>CreatedOn</th>
+                    <th>Name</th>
                     <th>Action</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="text" [(ngModel)]="UserName" placeholder="UserName"></td>
-                    <td><input type="date" [(ngModel)]="CreatedOn" placeholder="CreatedOn"></td>
-                    <td></td>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let taskMail of taskMails | filter: UserName : CreatedOn " >
-                    <td>{{taskMail.Id}}</td>
-                    <td>{{taskMail.UserName}}</td>
-                    <td>{{taskMail.CreatedOns}}</td>
-                    
-                    
-                    <td>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="taskMailDetails(taskMail.Id)">Details</button>
-                        
-                    </td>
-
+                <tr *ngFor="let user of listOfUsers">
+                    <td>{{user.UserName}}</td>
+                    <td><button (click)="taskmailDetails(user.UserId,user.UserName,user.UserEmail)">Task Mail</button></td>
                 </tr>
             </tbody>
         </table>
-        <select  [ngModel]="viewby" (ngModelChange)="onChange($event)" name="sel2">
-            <option>2</option>
-            <option>3</option>
-            <option>5</option>
-            <option>10</option>
-            <option>20</option>
-            <option>30</option>
-            <option>40</option>
-            <option>50</option>
-        </select> records at a time.
-        <pagination [totalItems]="totalItems" [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)" class="pagination"  [itemsPerPage]="itemsPerPage"></pagination>
     </div>
 </div>
+<!--<ul *ngFor="let users of listOfUsers">
+    <li (click)="taskmailDetails(users.UserId)">{{users.UserName}}</li>
+</ul>-->
+<!--<table>
+    <tbody>
+        <tr *ngFor="let user of listOfUsers">
+            <td {{user.userName}}></td>
+
+        </tr>
+    </tbody>
+</table>-->
