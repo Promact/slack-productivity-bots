@@ -1,0 +1,33 @@
+﻿<center>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Employee UserName</th>
+                <th>Leave From</th>
+                <th>Start Day</th>
+                <th>Leave Upto</th>
+                <th>End Day</th>
+                <th>Reason</th>
+                
+            </tr>
+        </thead>
+       
+        <tbody>
+            <tr *ngFor="let leaveReport of leaveReportDetail">
+                <td>{{leaveReport.EmployeeName}}</td>
+                <td>{{leaveReport.EmployeeUserName}}</td>
+                <td>{{leaveReport.LeaveFrom}}</td>
+                <td>{{leaveReport.StartDay}}</td>
+                <td>{{leaveReport.LeaveUpto}}</td>
+                <td>{{leaveReport.EndDay}}</td>
+                <td>{{leaveReport.Reason}}</td>
+                                
+            </tr>
+        </tbody>
+        
+    </table>
+
+    <button (click)="goBack()">Back</button>
+    <button (click)="exportDataToPdf()">Export Data To Pdf</button>
+</center>
