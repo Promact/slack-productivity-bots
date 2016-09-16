@@ -7,17 +7,18 @@ import { TaskService } from '../taskmail.service';
 import { TestConnection } from "../../mock/test.connection";
 import { MockTaskMailService } from '../../mock/mock.taskmailReport.service';
 import { Observable } from 'rxjs/Observable';
-
+import { DatePipe } from '@angular/common';
 describe('TaskMail Details Tests', () => {
     let taskMailDetailsComponent: TaskMailDetailsComponent;
     let router: ActivatedRoute;
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
-            this.params = Observable.of({ id: "1" });
+            this.params = Observable.of({ UserId: "1", UserRole: "Admin", UserName:"test" });
         }
     }
     class MockRouter { }
+    class MockDatePipe { }
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -25,18 +26,36 @@ describe('TaskMail Details Tests', () => {
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
                 provide(Router, { useClass: MockRouter }),
+                provide(DatePipe, { useClass: MockDatePipe })
             ]
         });
     });
 
     beforeEach(inject([ActivatedRoute, Router, TaskService], (mockRouter: ActivatedRoute, router: Router, taskService: TaskService) => {
-        //router = mockRouter;
-        taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService);
+       taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService);
     }));
 
+    it("should be defined", () => {
+        expect(taskMailDetailsComponent).toBeDefined();
+    });
 
-    //it('Shows details of task mail report for an employee on initialization', () => {
-    //    taskMailDetailsComponent.ngOnInit();
-    //    expect(taskMailDetailsComponent.taskMails.length).toBe(1);
-    //});
+    it('Shows details of task mail report for an employee on initialization', () => {
+        taskMailDetailsComponent.ngOnInit();
+        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Privious Date', () => {
+        taskMailDetailsComponent.getTaskMailPrevious("test","1", "Admin", "10-09-2016");
+        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Next Date', () => {
+        taskMailDetailsComponent.getTaskMailNext("test", "1", "Admin", "10-09-2016");
+        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Selected Date', () => {
+        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016","10-09-2016");
+        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+    });
 })

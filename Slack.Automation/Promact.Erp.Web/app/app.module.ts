@@ -10,8 +10,7 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
-import { PaginationModule } from 'ng2-bootstrap/ng2-bootstrap';
-import { Ng2BootstrapModule } from 'ng2-bootstrap/ng2-bootstrap';
+
 
 
 
@@ -23,8 +22,7 @@ import { Ng2BootstrapModule } from 'ng2-bootstrap/ng2-bootstrap';
         HttpModule,
         JsonpModule,
         routing,
-        Ng2BootstrapModule,
-        PaginationModule,
+      
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
     bootstrap: [AppComponent],

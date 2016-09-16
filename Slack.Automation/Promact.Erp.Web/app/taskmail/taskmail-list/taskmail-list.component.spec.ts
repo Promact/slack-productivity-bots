@@ -26,22 +26,21 @@ describe('TaskMailReport Tests', () => {
                 provide(Router, { useClass: MockRouter }),
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
-                provide(ActivatedRoute, { useClass: MockActivatedRoute }),
+                //provide(ActivatedRoute, { useClass: MockActivatedRoute }),
             ]
         });
     });
 
-    beforeEach(inject([ActivatedRoute,TaskService, Router], (mockRouter: ActivatedRoute, taskService: TaskService, router: Router) => {
-        //router = mockRouter;
-        taskMailListComponent = new TaskMailListComponent(mockRouter, router, taskService);
+    beforeEach(inject([TaskService, Router], ( taskService: TaskService, router: Router) => {
+        
+        taskMailListComponent = new TaskMailListComponent(router, taskService);
     }));
 
 
-    //it('Shows list of taskmailReport on initialization', () => {
-    //    //taskMailListComponent.ngOnInit();
-    //    taskMailListComponent.gettaskMailReport(1, 1);
-    //    expect(taskMailListComponent.taskMails.length).toBe(1);
-    //});
+    it('Shows list of taskmailReport on initialization', () => {
+        taskMailListComponent.getListOfEmployee();
+        expect(taskMailListComponent.listOfUsers.length).toBe(1);
+    });
 
 })
 

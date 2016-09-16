@@ -7,7 +7,7 @@ export const TaskMailRoutes: RouterConfig = [{
     component: TaskMailComponent,
     children: [
         { path: '', component: TaskMailListComponent },
-        { path: 'taskdetail/:id/:currentPage/:itemsPerPage', component: TaskMailDetailsComponent },
-        { path: ':currentPage/:itemsPerPage', component: TaskMailListComponent }
+        { path: 'taskdetail/:UserId/:UserRole/:UserName', component: TaskMailDetailsComponent },
+        //{ path: 'taskdetail/:UserId/:UserRole/:UserName/:UserEmail', component: TaskMailDetailsComponent },
     ]
 }];

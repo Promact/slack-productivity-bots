@@ -11,19 +11,19 @@ export class FilterPipe implements PipeTransform {
             return null;
         }
 
-        if ((CreatedOn == undefined) && (UserName == undefined || UserName == "" || UserName == null)) {
-            return taskmailModels;
-        }
+        //if ((CreatedOn == undefined) && (UserName == undefined || UserName == "" || UserName == null)) {
+        //    return taskmailModels;
+        //}
 
         
-        if ((CreatedOn != undefined) && (UserName == undefined || UserName == "" || UserName == null) ) {
-            return taskmailModels.filter(y => y.CreatedOns == CreatedOn.toString());
-        }
-        if ((UserName != "" || UserName != undefined || UserName != null) && (CreatedOn == undefined))
-        {
-            return taskmailModels.filter(x => x.UserName.toLowerCase().startsWith(UserName.toLowerCase()));
-        }
-        return taskmailModels.filter(x => x.UserName.toLowerCase().startsWith(UserName.toLowerCase()) && x.CreatedOns == CreatedOn.toString());
+        //if ((CreatedOn != undefined) && (UserName == undefined || UserName == "" || UserName == null) ) {
+        //    return taskmailModels.filter(y => y.CreatedOns == CreatedOn.toString());
+        //}
+        //if ((UserName != "" || UserName != undefined || UserName != null) && (CreatedOn == undefined))
+        //{
+        //    return taskmailModels.filter(x => x.UserName.toLowerCase().startsWith(UserName.toLowerCase()));
+        //}
+        //return taskmailModels.filter(x => x.UserName.toLowerCase().startsWith(UserName.toLowerCase()) && x.CreatedOns == CreatedOn.toString());
 
     }
 }
