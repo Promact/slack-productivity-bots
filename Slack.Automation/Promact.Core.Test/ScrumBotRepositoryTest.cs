@@ -10,6 +10,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Test
 {
