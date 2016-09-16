@@ -28,6 +28,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// </summary>
         public string[] Answer3 { get; set; }
 
+        /// <summary>
+        /// Status of the employee whether he is present or not
+        /// </summary>
         public string Status { get; set; }
 
     }
