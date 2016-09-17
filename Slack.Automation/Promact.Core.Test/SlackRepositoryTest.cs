@@ -459,6 +459,9 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            var adminResponse = Task.FromResult(StringConstant.True);
+            var adminrequestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, StringConstant.ManagementEmailForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, adminrequestUrl, StringConstant.AccessTokenForTest)).Returns(adminResponse);
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
@@ -718,7 +721,7 @@ namespace Promact.Core.Test
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = StringConstant.AdminErrorMessage;
+            var replyText = StringConstant.AdminErrorMessageUpdateSickLeave;
             slackLeave.Text = StringConstant.SlashCommandUpdate;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -767,6 +770,24 @@ namespace Promact.Core.Test
             var replyText = string.Format("{0}. {1}", StringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<SmtpException>();
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForSLOtherUserNotAdmin()
+        {
+            await AddUser();
+            slackLeave.Text = StringConstant.SlashCommandTextSickForUser;
+            var slackText = slackLeave.Text.Split('"')
+                            .Select((element, index) => index % 2 == 0 ? element
+                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+                            .SelectMany(element => element).ToList();
+            var replyText = StringConstant.AdminErrorMessageApplySickLeave + StringConstant.SorryYouCannotApplyLeave;
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
