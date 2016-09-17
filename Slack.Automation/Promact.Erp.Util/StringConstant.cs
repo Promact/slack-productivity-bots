@@ -164,7 +164,7 @@ namespace Promact.Erp.Util
         public static string CasualLeaveResponse = "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
         public static string SlackChannelIdForTest = "DA4ADFD44";
         public static string MessageTsForTest = "5212201241.15452124";
-        public static string SorryYouCannotApplyLeave = "Sorry you can't apply leave. Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+        public static string SorryYouCannotApplyLeave = "Sorry user can't apply leave. Either user are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveListCommandForTest = "list siddhartha";
         public static string LeaveCancelCommandForTest = "cancel 2";
         public static string Cancel = "Cancel";
@@ -202,7 +202,7 @@ namespace Promact.Erp.Util
         public static string ErrorWhileSendingEmail = "An error occur while sending email but your leave has been applied";
         public static string UserIsAdmin = "userIsAdmin/";
         public static string LeaveDoesnotExist = "Leave doesn't exist for this Id";
-        public static string AdminErrorMessage = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
+        public static string AdminErrorMessageUpdateSickLeave = "You are not authorize to update leave. Only Admin can update sick leave. You are not admin";
         public static string True = "true";
         public static string LeaveStatusCommandForTest = "status siddhartha";
         public static string LeaveBalanceTestForOwn = "balance";
@@ -223,6 +223,7 @@ namespace Promact.Erp.Util
         public static string UpdateEnterAValidLeaveId = "Please enter a valid leave id to update";
         public static string SlashCommandUpdateInValidId = "update abc 14-09-2016";
         public static string ErrorOfEmailServiceFailureTaskMail = "An error occur while sending email";
+        public static string AdminErrorMessageApplySickLeave = "You are not authorize to apply leave. Only Admin can apply sick leave for other. You are not admin. Else ";
 
         #region String Constants for Test Cases
 

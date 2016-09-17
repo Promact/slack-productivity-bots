@@ -105,27 +105,37 @@ namespace Promact.Core.Repository.SlackRepository
                                 break;
                             case LeaveType.sl:
                                 {
+                                    User newUser = new User();
+                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                                     if (slackRequest.Count > 4)
-                                        // get user details from oAuth server for other user
-                                        user = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
+                                    {
+                                        var IsAdmin = await _projectUser.UserIsAdmin(user.UserName, accessToken);
+                                        if (IsAdmin)
+                                        {
+                                            // get user details from oAuth server for other user
+                                            newUser = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
+                                        }
+                                        else
+                                            replyText = StringConstant.AdminErrorMessageApplySickLeave;
+                                    }
                                     else
                                         // get user details from oAuth server for own
-                                        user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                        newUser = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                                     leaveRequest.Status = Condition.Approved;
                                     leaveRequest.Type = leaveType;
                                     leaveRequest.Reason = slackRequest[2];
                                     leaveRequest.FromDate = startDate;
                                     leaveRequest.CreatedOn = DateTime.UtcNow;
                                     // if user doesn't exist in OAuth server then user can't apply leave
-                                    if (user.Id != null)
+                                    if (newUser.Id != null)
                                     {
-                                        leaveRequest.EmployeeId = user.Id;
+                                        leaveRequest.EmployeeId = newUser.Id;
                                         _leaveRepository.ApplyLeave(leaveRequest);
-                                        replyText = _attachmentRepository.ReplyTextSick(user.FirstName, leaveRequest);
+                                        replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
                                     }
                                     else
                                         // if user doesn't exist in OAuth server then user can't apply leave, will get this message
-                                        replyText = StringConstant.SorryYouCannotApplyLeave;
+                                        replyText += StringConstant.SorryYouCannotApplyLeave;
                                 }
                                 break;
                         }
@@ -487,7 +497,7 @@ namespace Promact.Core.Repository.SlackRepository
             }
             else
                 // if user is not admin then this message will be show to user
-                replyText = StringConstant.AdminErrorMessage;
+                replyText = StringConstant.AdminErrorMessageUpdateSickLeave;
             return replyText;
         }
     }
