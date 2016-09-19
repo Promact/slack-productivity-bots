@@ -9,7 +9,7 @@ import { StringConstant } from '../shared/stringConstant';
 @Injectable()
 
 export class ScrumReportService {
-
+   
     constructor(private http: Http, private stringConstant: StringConstant) { }
 
     getScrumProjects(): Observable<ScrumProject[]> {
@@ -18,7 +18,7 @@ export class ScrumReportService {
             .catch(this.handleError);
     }
 
-    getScrumDetails(Id: number, Date: any): Observable<ScrumDetails[]> {
+    getScrumDetails(Id: number, Date: any): Observable<ScrumDetails> {
         return this.http.get(this.stringConstant.scrumDetails + Id + this.stringConstant.slash + Date)
             .map(res => res.json())
             .catch(this.handleError);       

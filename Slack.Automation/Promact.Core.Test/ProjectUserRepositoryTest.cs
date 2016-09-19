@@ -260,5 +260,33 @@ namespace Promact.Core.Test
             var result = _projectUserRepository.UserIsAdmin(StringConstant.FirstNameForTest, StringConstant.AccessTokenForTest).Result;
             Assert.NotEqual(false, result);
         }
+
+        /// <summary>
+        /// Method to test GetALlProjects with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetAllProjectsTrue()
+        {
+            var responseProjects = Task.FromResult(StringConstant.ProjectDetailsForAdminFromOauth);
+            var requestUrlProjects = StringConstant.AllProjectUrl;
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestUrlProjects, StringConstant.TestAccessToken)).Returns(responseProjects);
+            var projects = _projectUserRepository.GetAllProjects( StringConstant.TestAccessToken).Result;
+            Assert.Equal(1, projects.Count);
+        }
+
+        /// <summary>
+        /// Method to test GetProjectDetails with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetProjectDetailsTrue()
+        {
+            int testProjectId = 1012;
+            var responseProject = Task.FromResult(StringConstant.ProjectDetail);
+            var requestProjectUrl = string.Format("{0}{1}", StringConstant.GetProjectDetails, testProjectId);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestProjectUrl, StringConstant.TestAccessToken)).Returns(responseProject);
+            var project = _projectUserRepository.GetProjectDetails(testProjectId,StringConstant.TestAccessToken).Result;
+            Assert.Equal(2, project.ApplicationUsers.Count);
+        }
+
     }
 }

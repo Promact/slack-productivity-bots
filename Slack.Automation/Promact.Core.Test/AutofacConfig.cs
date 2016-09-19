@@ -23,6 +23,7 @@ using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
+using Promact.Core.Repository.ScrumReportRepository;
 
 namespace Promact.Core.Test
 {
@@ -45,6 +46,7 @@ namespace Promact.Core.Test
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
+            builder.RegisterType<ScrumReportRepository>().As<IScrumReportRepository>();
             var clientMock = new Mock<IClient>();
             var clientMockObject = clientMock.Object;
             builder.RegisterInstance(clientMock).As<Mock<IClient>>();

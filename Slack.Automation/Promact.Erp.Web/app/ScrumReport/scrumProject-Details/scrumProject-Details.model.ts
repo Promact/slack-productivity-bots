@@ -1,7 +1,7 @@
-﻿import { EmployeeScrumDetails } from './scrumProject-EmployeeScrumDetails.model';
+﻿import { EmployeeScrumAnswers } from './scrumProject-EmployeeScrumDetails.model';
 
 export class ScrumDetails {
-    ScrumDate: Date;
-    ProjectCreationDate: Date;
-    EmployeeScrumDetails: Array<EmployeeScrumDetails>;
+    ScrumDate: string;
+    ProjectCreationDate: string;
+    EmployeeScrumAnswers: Array<EmployeeScrumAnswers>;
 }
