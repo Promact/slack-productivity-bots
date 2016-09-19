@@ -15,8 +15,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-
-
     'node_modules/jspdf/dist/jspdf.min.js',
     'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js',
     'node_modules/core-js/client/shim.min.js',
@@ -29,7 +27,7 @@ module.exports = function(config) {
     // Zone.js dependencies
     'node_modules/zone.js/dist/zone.js',
     'node_modules/zone.js/dist/zone.js',
-    'node_modules/zone.js/dist/jasmine-patch.js',
+    //'node_modules/zone.js/dist/jasmine-patch.js',
     'node_modules/zone.js/dist/async-test.js',
     'node_modules/zone.js/dist/fake-async-test.js',
 
@@ -43,7 +41,6 @@ module.exports = function(config) {
      // paths loaded via module imports
 
      // Angular itself
-    
     { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
     { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: true },
 
@@ -76,7 +73,7 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
-
+      
     // web server port
     port: 9876,
 
@@ -106,6 +103,26 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    customLaunchers: {
+        Chrome_travis_ci: {
+            base: 'Chrome',
+            flags: ['--no-sandbox']
+        }
+    },
+
+      // Karma plugins loaded
+      plugins: [
+          'karma-jasmine',
+          'karma-chrome-launcher'
+      ],
+ 
   })
+
+  if (process.env.TRAVIS || process.env.CIRCLECI) {
+      config.browsers = ['Chrome_travis_ci'];
+      config.singleRun = true;
+      config.browserNoActivityTimeout = 90000;
+  }
 }
