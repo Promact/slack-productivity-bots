@@ -279,5 +279,33 @@ namespace Promact.Core.Test
         }
 
       
+
+        /// <summary>
+        /// Method to test GetALlProjects with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetAllProjectsTrue()
+        {
+            var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
+            var requestUrlProjects = _stringConstant.AllProjectUrl;
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
+            var projects = _projectUserRepository.GetAllProjects( _stringConstant.TestAccessToken).Result;
+            Assert.Equal(1, projects.Count);
+        }
+
+        /// <summary>
+        /// Method to test GetProjectDetails with correct values
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetProjectDetailsTrue()
+        {
+            int testProjectId = 1012;
+            var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
+            var requestProjectUrl = string.Format("{0}{1}", _stringConstant.GetProjectDetails, testProjectId);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
+            var project = _projectUserRepository.GetProjectDetails(testProjectId,_stringConstant.TestAccessToken).Result;
+            Assert.Equal(2, project.ApplicationUsers.Count);
+        }
+
     }
 }
