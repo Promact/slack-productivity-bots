@@ -286,10 +286,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void GetAllProjectsTrue()
         {
-            var responseProjects = Task.FromResult(StringConstant.ProjectDetailsForAdminFromOauth);
-            var requestUrlProjects = StringConstant.AllProjectUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestUrlProjects, StringConstant.TestAccessToken)).Returns(responseProjects);
-            var projects = _projectUserRepository.GetAllProjects( StringConstant.TestAccessToken).Result;
+            var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
+            var requestUrlProjects = _stringConstant.AllProjectUrl;
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
+            var projects = _projectUserRepository.GetAllProjects( _stringConstant.TestAccessToken).Result;
             Assert.Equal(1, projects.Count);
         }
 
@@ -300,10 +300,10 @@ namespace Promact.Core.Test
         public void GetProjectDetailsTrue()
         {
             int testProjectId = 1012;
-            var responseProject = Task.FromResult(StringConstant.ProjectDetail);
-            var requestProjectUrl = string.Format("{0}{1}", StringConstant.GetProjectDetails, testProjectId);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestProjectUrl, StringConstant.TestAccessToken)).Returns(responseProject);
-            var project = _projectUserRepository.GetProjectDetails(testProjectId,StringConstant.TestAccessToken).Result;
+            var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
+            var requestProjectUrl = string.Format("{0}{1}", _stringConstant.GetProjectDetails, testProjectId);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
+            var project = _projectUserRepository.GetProjectDetails(testProjectId,_stringConstant.TestAccessToken).Result;
             Assert.Equal(2, project.ApplicationUsers.Count);
         }
 
