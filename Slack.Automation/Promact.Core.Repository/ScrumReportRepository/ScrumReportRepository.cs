@@ -61,7 +61,6 @@ namespace Promact.Core.Repository.ScrumReportRepository
                 List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
                 return leaderProjects;
             }
-
             return null;
         }
 
@@ -82,7 +81,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(StringConstant.FormatForDate);
             scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
-            scrumProjectDetail.EmployeeScrumAnswers = getEmployeeScrumDetails(project,scrum,loginUser, scrumDate);
+            scrumProjectDetail.EmployeeScrumAnswers = GetEmployeeScrumDetails(project,scrum,loginUser, scrumDate);
             return scrumProjectDetail;
         }
 
@@ -94,7 +93,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="loginUser"></param>
         /// <param name="scrumDate"></param>
         /// <returns>Object with list of employees in project with answers to scrum questions</returns>
-        private IList<EmployeeScrumDetails> getEmployeeScrumDetails(ProjectAc project, Scrum  scrum, User loginUser, DateTime scrumDate)
+        private IList<EmployeeScrumDetails> GetEmployeeScrumDetails(ProjectAc project, Scrum  scrum, User loginUser, DateTime scrumDate)
         {
             List<EmployeeScrumDetails> employeeScrumDetails = new List<EmployeeScrumDetails>();
             if (loginUser.Role.Equals(StringConstant.Employee))
@@ -141,15 +140,15 @@ namespace Promact.Core.Repository.ScrumReportRepository
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
-                if (todayScrumAnswer.QuestionId == 8)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(StringConstant.QuestionOne))
                 {
                     employeeScrumDetail.Answer1 = todayScrumAnswer.Answer.Split('\n');
                 }
-                if (todayScrumAnswer.QuestionId == 9)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(StringConstant.QuestionTwo))
                 {
                     employeeScrumDetail.Answer2 = todayScrumAnswer.Answer.Split('\n');
                 }
-                if (todayScrumAnswer.QuestionId == 10)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(StringConstant.QuestionThree))
                 {
                     employeeScrumDetail.Answer3 = todayScrumAnswer.Answer.Split('\n');
                 }
