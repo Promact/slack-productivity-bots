@@ -102,7 +102,7 @@ namespace Promact.Erp.Web
                             //start scrum,halt or re-start scrum
                             if (text.ToLower().Equals(StringConstant.ScrumTime) || text.ToLower().Equals(StringConstant.ScrumHalt) || text.ToLower().Equals(StringConstant.ScrumResume))
                             {
-                                replyText = _scrumBotRepository.Scrum(channel.Name, user.Name, simpleText[1].ToLower());
+                                replyText = _scrumBotRepository.Scrum(channel.Name, user.Name, simpleText[1].ToLower()).Result;
                             }
                             //a particular employee is on leave, geeting marked as later or asked question again
                             else if (((simpleText[0].ToLower().Equals(StringConstant.Leave) || simpleText[0].ToLower().Equals(StringConstant.Later) || simpleText[0].ToLower().Equals(StringConstant.Scrum)) && simpleText.Length == 2))
