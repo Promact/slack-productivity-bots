@@ -27,5 +27,3 @@ test_script:
    }
 - cd ./Slack.Automation/Promact.Erp.Web
 - npm test
-after_test:
-    - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
