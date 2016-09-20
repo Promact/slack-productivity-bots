@@ -43,8 +43,8 @@
     "systemjs": "0.19.27",
     "tslint": "^3.15.1",
     "typescript": "^1.8.10",
-    "zone.js": "^0.6.12"
-    
+    "zone.js": "^0.6.12",
+    "coveralls": "2.11.14"
   },
   "devDependencies": {
     "canonical-path": "0.0.2",
@@ -61,13 +61,12 @@
     "lite-server": "^2.2.0",
     "lodash": "^4.11.1",
     "protractor": "^3.3.0",
-    "remap-istanbul": "^0.6.4",
+    "istanbul": "0.4.5",
     "rimraf": "^2.5.2",
     "systemjs": "^0.19.27",
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
-    "typings": "^1.0.4",
-    "coveralls": "2.x"
+    "typings": "^1.0.4"
   },
-  "repository": {}
+  "repository":{}
 }
