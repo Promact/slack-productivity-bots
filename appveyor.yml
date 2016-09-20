@@ -29,4 +29,3 @@ test_script:
 - npm test
 after_test:
 - type coverage/lcov.info | coveralls/bin/coveralls.js
-
