@@ -13,7 +13,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="UserName"></param>
         /// <param name="Parameter"></param>
         /// <returns></returns>
-       string Scrum(string GroupName, string UserName, string Parameter);
+       Task<string> Scrum(string GroupName, string UserName, string Parameter);
 
 
         /// <summary>

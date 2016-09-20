@@ -66,6 +66,7 @@ namespace Promact.Erp.Util
         public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is unavailable at the moment and asked question,then any team member can write *later _@team member's name_*. That person's scrum can be conducted later by wriring *scrum _@team member's name_*\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
         public static string Leave = "leave";
         public static string Later = "later";
+        public static string LeaveError = "How come you mark yourself on leave ? ";
         public static string ResumeScrum = "Please resume the scrum by writing *scrum resume*";
         public static string PreviousDayStatus = "*Your previous day's status is :*\n";
         public static string ScrumBotToken = "ScrumBotToken";
@@ -132,10 +133,10 @@ namespace Promact.Erp.Util
         public static string MailSetting = "system.net/mailSettings";
         public static string SlackChatUpdateUrl = "https://slack.com/api/chat.update";
         public static string ProjectUserUrl = string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
-        public static string ProjectUrl = string.Format("{0}/api/Project/",AppSettingUtil.OAuthUrl);
-        public static string UserUrl = string.Format("{0}/api/User/",AppSettingUtil.OAuthUrl);
-        public static string OAuthUrl = string.Format("{0}/OAuth/ExternalLogin",AppSettingUtil.OAuthUrl);
-        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack",AppSettingUtil.PromactErpUrl);
+        public static string ProjectUrl = string.Format("{0}/api/Project/", AppSettingUtil.OAuthUrl);
+        public static string UserUrl = string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+        public static string OAuthUrl = string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
+        public static string ClientReturnUrl = string.Format("{0}/Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
         public static string LeaveManagementAuthorizationUrl = "https://slack.com/oauth/authorize";
         public static string ChatPostUrl = "https://slack.com/api/chat.postMessage";
         public static string SlashCommandLeaveListErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list", Environment.NewLine);
@@ -211,7 +212,7 @@ namespace Promact.Erp.Util
         public static string LeaveHelpTestForOwn = "help";
         public static string LeaveBalanceSickReplyTextForTest = "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
         public static string SlashCommandTextSick = "apply sl Testing 14-09-2016";
-        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}",FirstNameForTest);
+        public static string SlashCommandTextSickForUser = string.Format("apply sl Testing 14-09-2016 {0}", FirstNameForTest);
         public static string NameForTest = "roshni";
         public static string RequestToEnterProperAction = "Please enter a proper action for leave";
         public static string SlashCommandTextErrorLeaveType = string.Format("apply kl Testing 14-09-2016 {0}", FirstNameForTest);
@@ -258,13 +259,13 @@ namespace Promact.Erp.Util
         public static string ProjectUsers = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}]";
         public static string TeamLeaderDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}";
         public static string EmployeeDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Employee\",\"claims\":[],\"logins\":[]}";
-        public static string IdForTest  = "13b0f2ca-92f5-4713-a67e-37e50172e148";
-     
+        public static string IdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148";
+
         public static string TestUserId = "aac59fbc-7835-4bd7-9080-6b6766302080";
         public static string NextQuestion = "<@apoorvapatel> What did you do yesterday?";
         public static string QuestionToNextEmployee = "Good Day <@{0}>!\nWhat did you do yesterday?";
         public static string PreviousDayStatusForTest = "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
-        public static string UpdateAnswer= "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
+        public static string UpdateAnswer = "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
         #endregion
 
     }
