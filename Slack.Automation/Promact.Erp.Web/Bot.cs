@@ -51,8 +51,8 @@ namespace Promact.Erp.Web
                         {
                             replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text).Result;
                         }
-                    // Method to send back response to task mail bot
-                    client.SendMessage(showMethod, message.channel, replyText);
+                        // Method to send back response to task mail bot
+                        client.SendMessage(showMethod, message.channel, replyText);
                     };
                 }
                 catch (Exception ex)
@@ -88,50 +88,54 @@ namespace Promact.Erp.Web
                     {
                         var user = _slackUserDetails.GetById(message.user);
                         var channel = _slackChannelDetails.GetById(message.channel);
-                        string replyText = "";
+                        string replyText = string.Empty;
                         string text = message.text;
 
-                        if (user != null && channel != null && user.Name != Environment.GetEnvironmentVariable(StringConstant.ScrumBotName, EnvironmentVariableTarget.User))
+                        if (user != null && text.ToLower().Equals(StringConstant.ScrumHelp))
+                        {
+                            replyText = StringConstant.ScrumHelpMessage;
+                        }
+                        else if (user != null && channel != null && user.Name != Environment.GetEnvironmentVariable(StringConstant.ScrumBotName, EnvironmentVariableTarget.User))
                         {
                             var simpleText = text.Split(null);
 
-                        //start scrum,halt or re-start scrum
-                        if (text.ToLower().Equals(StringConstant.ScrumTime) || text.ToLower().Equals(StringConstant.ScrumHalt) || text.ToLower().Equals(StringConstant.ScrumResume))
+                            //start scrum,halt or re-start scrum
+                            if (text.ToLower().Equals(StringConstant.ScrumTime) || text.ToLower().Equals(StringConstant.ScrumHalt) || text.ToLower().Equals(StringConstant.ScrumResume))
                             {
-                                replyText = _scrumBotRepository.Scrum(channel.Name, user.Name, simpleText[1].ToLower()).Result;
+                                replyText = _scrumBotRepository.Scrum(channel.Name, user.Name, simpleText[1].ToLower());
                             }
-                        //a particular employee is on leave, geeting marked as later or asked question again
-                        else if (((simpleText[0].ToLower().Equals(StringConstant.Leave) || simpleText[0].ToLower().Equals(StringConstant.Later) || simpleText[0].ToLower().Equals(StringConstant.Scrum)) && simpleText.Length == 2))
+                            //a particular employee is on leave, geeting marked as later or asked question again
+                            else if (((simpleText[0].ToLower().Equals(StringConstant.Leave) || simpleText[0].ToLower().Equals(StringConstant.Later) || simpleText[0].ToLower().Equals(StringConstant.Scrum)) && simpleText.Length == 2))
                             {
-                                int pFrom = text.IndexOf("<@") + "<@".Length;
-                                int pTo = text.LastIndexOf(">");
-                                try
+                                int from = text.IndexOf("<@") + "<@".Length;
+                                int to = text.LastIndexOf(">");
+                                if (to > 0)
                                 {
-                                    string applicantId = text.Substring(pFrom, pTo - pFrom);
-                                    string applicant = _slackUserDetails.GetById(applicantId).Name;
-                                    replyText = _scrumBotRepository.Leave(channel.Name, user.Name, applicant, simpleText[0].ToLower()).Result;
+                                    try
+                                    {
+                                        string applicantId = text.Substring(from, to - from);
+                                        string applicant = _slackUserDetails.GetById(applicantId).Name;
+                                        replyText = _scrumBotRepository.Leave(channel.Name, user.Name, applicant, simpleText[0].ToLower()).Result;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        replyText = StringConstant.ScrumHelpMessage;
+                                    }
                                 }
-                                catch (Exception)
-                                {
-                                    replyText = StringConstant.ScrumHelpMessage;
-                                }
+                                else
+                                    replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                             }
-                        //all other texts
-                        else
+                            //all other texts
+                            else
                             {
                                 replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                             }
                         }
-                        else if (user != null && text.ToLower().Equals(StringConstant.ScrumHelp))
-                        {
-                            replyText = StringConstant.ScrumHelpMessage;
-                            replyText = "<@> PLEASE ANS.";
-                        }
-
+                        
                         if (!String.IsNullOrEmpty(replyText))
                         {
-                        // Method to send back response through bot
-                        client.SendMessage(showMethod, message.channel, replyText);
+                            // Method to send back response through bot
+                            client.SendMessage(showMethod, message.channel, replyText);
                         }
                     };
                 }
