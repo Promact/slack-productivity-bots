@@ -66,7 +66,8 @@
     "systemjs": "^0.19.27",
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
-    "typings": "^1.0.4"
+    "typings": "^1.0.4",
+    "coveralls": "2.x"
   },
   "repository": {}
 }
