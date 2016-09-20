@@ -19,7 +19,7 @@ namespace Promact.Core.Test
         private SlackChannelDetails slackChannelDetails = new SlackChannelDetails
         {
             Deleted = false,
-            Id = StringConstant.ChannelIdForTest,
+            ChannelId = StringConstant.ChannelIdForTest,
             Name = StringConstant.ChannelNameForTest
         };
 
@@ -34,7 +34,7 @@ namespace Promact.Core.Test
         public void SlackChannelAdd()
         {
             _slackChannelRepository.AddSlackChannel(slackChannelDetails);
-            Assert.Equal(slackChannelDetails.Id, StringConstant.ChannelIdForTest);
+            Assert.Equal(slackChannelDetails.ChannelId, StringConstant.ChannelIdForTest);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Promact.Core.Test
         {
             _slackChannelRepository.AddSlackChannel(slackChannelDetails);
             var slackChannel = _slackChannelRepository.GetById(StringConstant.ChannelIdForTest);
-            Assert.Equal(slackChannel.Id, StringConstant.ChannelIdForTest);
+            Assert.Equal(slackChannel.ChannelId, StringConstant.ChannelIdForTest);
         }
 
 
@@ -57,7 +57,7 @@ namespace Promact.Core.Test
         {
             _slackChannelRepository.AddSlackChannel(slackChannelDetails);
             var slackUser = _slackChannelRepository.GetById(StringConstant.ChannelIdForTest);
-            Assert.NotEqual(slackUser.Id, StringConstant.TeamLeaderIdForTest);
+            Assert.NotEqual(slackUser.ChannelId, StringConstant.TeamLeaderIdForTest);
         }
 
 

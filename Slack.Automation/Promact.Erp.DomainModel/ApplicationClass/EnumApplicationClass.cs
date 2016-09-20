@@ -82,4 +82,14 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Later,
         AnswerNow
     }
+
+    /// <summary>
+    /// Scrum Actions
+    /// </summary>
+    public enum ScrumActions
+    {
+        halt,
+        resume,
+        time
+    }
 }

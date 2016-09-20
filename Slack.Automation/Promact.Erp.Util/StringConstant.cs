@@ -63,19 +63,21 @@ namespace Promact.Erp.Util
         public static string AnswerToday = "*Please answer the following questions today*";
         public static string ScrumNotHalted = "Scrum was not halted\n";
         public static string ScrumHelp = "scrum help";
-        public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+        public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is unavailable at the moment and asked question,then any team member can write *later _@team member's name_*. That person's scrum can be conducted later by wriring *scrum _@team member's name_*\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
         public static string Leave = "leave";
         public static string Later = "later";
         public static string ResumeScrum = "Please resume the scrum by writing *scrum resume*";
         public static string PreviousDayStatus = "*Your previous day's status is :*\n";
         public static string ScrumBotToken = "ScrumBotToken";
         public static string ScrumBotName = "ScrumBotName";
+        public static string ScrumLaterDone = "Good luck <@{0}> ! You have answered all scrum questions.";
         public static string AlreadyAnswered = "But,<@{0}> your answers have been recorded today :worried:\n";
         public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
         public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
         public static string WrongPerson = "<@{0}> please answer.";
+        public static string Unrecognized = "Sorry :worried: I don't know who you are. Please contact your administrator";
 
         public static string NoProjectFound = "No project found for this group.";
         public static string ScrumComplete = "Scrum concluded.\nGood luck team :thumbsup:";

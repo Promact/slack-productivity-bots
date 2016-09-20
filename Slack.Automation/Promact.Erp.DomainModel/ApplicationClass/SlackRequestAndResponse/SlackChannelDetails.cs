@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json;
+using Promact.Erp.DomainModel.Models;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
-    public class SlackChannelDetails
+    public class SlackChannelDetails : ModelBase
     {
-
         /// <summary>
         /// Id of channel in Slack
         /// </summary>
         [JsonProperty("id")]
-        public string Id { get; set; }
-
+        public string ChannelId { get; set; }
 
         /// <summary>
         /// Name of the slack channel
