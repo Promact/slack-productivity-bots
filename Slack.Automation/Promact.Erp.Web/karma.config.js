@@ -120,7 +120,9 @@ module.exports = function(config) {
       // Karma plugins loaded
       plugins: [
           'karma-jasmine',
-          'karma-chrome-launcher'
+          'karma-chrome-launcher',
+          'karma-coverage',
+          'karma-coveralls'
       ],
  
   })
