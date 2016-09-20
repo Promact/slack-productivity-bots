@@ -207,6 +207,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AssemblyInfoBuild.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -292,6 +293,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Project_Readme.html" />
+    <Content Include="Views\Home\Demo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Core.Repository\Promact.Core.Repository.csproj">
