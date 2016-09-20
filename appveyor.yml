@@ -17,6 +17,7 @@ install:
   - ps: Install-Product node $env:nodejs_version
   - node --version
   - npm --version
+  - cd ./Slack.Automation/Promact.Erp.Web
   - npm install 
 test_script:
 - ps: >-
