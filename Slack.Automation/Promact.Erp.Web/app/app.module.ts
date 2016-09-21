@@ -9,8 +9,8 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
-
-
+import { SpinnerComponent} from './spinner.component';
+import { SpinnerService} from './spinner.service';
 
 
 
@@ -23,9 +23,9 @@ import { TaskService }   from './taskmail/taskmail.service';
         routing,
       
     ],
-    declarations: [AppComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
+    declarations: [AppComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService]
+    providers: [LeaveReportService, TaskService, SpinnerService]
 })
 
 export class AppModule { }

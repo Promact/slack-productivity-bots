@@ -148,6 +148,15 @@ namespace Promact.Core.Test
         //    taskMailDetails.QuestionId = question.Id;
         //    _taskMailDetailsDataRepository.Insert(taskMailDetails);
         //    _taskMailDetailsDataRepository.Save();
+
+        //    taskMailPrvious.EmployeeId = user.Id;
+        //    _taskMailDataRepository.Insert(taskMailPrvious);
+        //    _taskMailDataRepository.Save();
+        //    taskMailDetails.TaskId = taskMailPrvious.Id;
+        //    taskMailDetails.QuestionId = question.Id;
+        //    _taskMailDetailsDataRepository.Insert(taskMailDetails);
+        //    _taskMailDetailsDataRepository.Save();
+
         //    var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportPreviousDate(user.Id, StringConstant.FirstNameForTest, StringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id);
         //    Assert.Equal(1, taskMailDetail.Count);
         //}
@@ -179,6 +188,10 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = question.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
+
+
+          
+
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDate(user.Id, StringConstant.FirstNameForTest, StringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
@@ -187,7 +200,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportNextDate()
+        public async void TaskMailDetailsReportNextPreviousDate()
         {
             var userResponse = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -210,7 +223,16 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = question.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextDate(user.Id, StringConstant.FirstNameForTest, StringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id);
+
+            taskMailPrvious.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMailPrvious);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMailPrvious.Id;
+            taskMailDetails.QuestionId = question.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, StringConstant.FirstNameForTest, StringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id,StringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -237,6 +259,10 @@ namespace Promact.Core.Test
         private TaskMail taskMail = new TaskMail()
         {
             CreatedOn = DateTime.UtcNow,
+        };
+        private TaskMail taskMailPrvious = new TaskMail()
+        {
+            CreatedOn = DateTime.UtcNow.AddDays(-1),
         };
         private TaskMailDetails taskMailDetails = new TaskMailDetails()
         {

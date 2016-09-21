@@ -8,6 +8,7 @@ export const TaskMailRoutes: RouterConfig = [{
     children: [
         { path: '', component: TaskMailListComponent },
         { path: 'taskdetail/:UserId/:UserRole/:UserName', component: TaskMailDetailsComponent },
-        //{ path: 'taskdetail/:UserId/:UserRole/:UserName/:UserEmail', component: TaskMailDetailsComponent },
+        //{ path: 'taskdetail', component: TaskMailDetailsComponent },
+       // { path: 'taskdetail/:UserId/:UserRole/:UserName/:UserEmail', component: TaskMailDetailsComponent },
     ]
 }];

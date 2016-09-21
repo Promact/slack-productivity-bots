@@ -18,6 +18,8 @@ var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leave
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
 var taskmail_service_1 = require('./taskmail/taskmail.service');
+var spinner_component_1 = require('./spinner.component');
+var spinner_service_1 = require('./spinner.service');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -30,9 +32,9 @@ var AppModule = (function () {
                 http_1.JsonpModule,
                 app_routes_1.routing,
             ],
-            declarations: [app_component_1.AppComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent],
+            declarations: [app_component_1.AppComponent, leaveReport_List_component_1.LeaveReportListComponent, leaveReport_Details_component_1.LeaveReportDetailsComponent, spinner_component_1.SpinnerComponent],
             bootstrap: [app_component_1.AppComponent],
-            providers: [leaveReport_service_1.LeaveReportService, taskmail_service_1.TaskService]
+            providers: [leaveReport_service_1.LeaveReportService, taskmail_service_1.TaskService, spinner_service_1.SpinnerService]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);

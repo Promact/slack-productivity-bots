@@ -26,9 +26,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         Task<string> QuestionAndAnswer(string userName, string answer);
         Task<List<TaskMailReportAc>> TaskMailReport(string userName,int currentPage,int itemsPerPage);
         Task<List<TaskMailUserAc>> TaskMailDetailsReport(string UserId,string UserRole,string UserName,string LoginId);
-        Task<List<TaskMailUserAc>> getAllEmployee(string UserId);
-        Task<List<TaskMailUserAc>> TaskMailDetailsReportPreviousDate(string UserId,string UserName,string UserRole,string CreatedOn,string LoginId);
-        Task<List<TaskMailUserAc>> TaskMailDetailsReportNextDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId);
+        Task<List<TaskMailUserAc>> GetAllEmployee(string UserId);
+        //Task<List<TaskMailUserAc>> TaskMailDetailsReportPreviousDate(string UserId,string UserName,string UserRole,string CreatedOn,string LoginId);
+        //Task<List<TaskMailUserAc>> TaskMailDetailsReportNextDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId);
         Task<List<TaskMailUserAc>> TaskMailDetailsReportSelectedDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string SelectedDate);
+
+        Task<List<TaskMailUserAc>> TaskMailDetailsReportNextPreviousDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId,string Type);
+
     }
 }
