@@ -79,8 +79,24 @@ namespace Promact.Erp.Core.Controllers
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
                 
-                _logger.Error("Env var is:" + Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User), new Exception());
-                
+                var userEnvs = "";
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User))
+                {
+                    userEnvs += de.Key + ":" + de.Value + Environment.NewLine;
+                }
+                var processEnvs = "";
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
+                {
+                    processEnvs += de.Key + ":" + de.Value + Environment.NewLine;
+                }
+                var machineEnvs = "";
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine))
+                {
+                    machineEnvs += de.Key + ":" + de.Value + Environment.NewLine;
+                }
+                _logger.Error("User vars:" + userEnvs);
+                _logger.Error("Process vars:" + processEnvs);
+                _logger.Error("Machine vars:" +  machineEnvs);
                 var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
                 //make call to the OAuth Server
                 return Redirect(url);
