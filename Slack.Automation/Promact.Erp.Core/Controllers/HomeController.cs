@@ -78,6 +78,9 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
+                
+                _logger.Error("Env var is:" + Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User), new Exception());
+                
                 var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
                 //make call to the OAuth Server
                 return Redirect(url);
