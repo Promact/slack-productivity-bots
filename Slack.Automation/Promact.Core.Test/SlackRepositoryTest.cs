@@ -58,7 +58,7 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest,replyText,StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -76,7 +76,8 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), StringConstant.SorryYouCannotApplyLeave));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            var replyText = StringConstant.EmptyString;
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), StringConstant.SorryYouCannotApplyLeave), Times.Once);
         }
@@ -422,9 +423,9 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
-            var replyText = _attachmentRepository.ReplyTextSick(StringConstant.NameForTest, leave);
+           var replyText = _attachmentRepository.ReplyTextSick(StringConstant.NameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -443,7 +444,7 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = StringConstant.SorryYouCannotApplyLeave;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -468,7 +469,8 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = _attachmentRepository.ReplyTextSick(StringConstant.NameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.ManagementEmailForTest, replyText, user));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -490,7 +492,7 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = StringConstant.NotTypeOfLeave;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -512,7 +514,7 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = StringConstant.DateFormatErrorMessage;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -534,7 +536,7 @@ namespace Promact.Core.Test
                             .SelectMany(element => element).ToList();
             var replyText = StringConstant.DateFormatErrorMessage;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -593,8 +595,12 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
+            var employeeResponse = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
+            var employeeRequestUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, employeeRequestUrl, StringConstant.AccessTokenForTest)).Returns(employeeResponse);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.ManagementEmailForTest, replyText, user));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -622,7 +628,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -650,7 +656,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -678,7 +684,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -706,7 +712,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -731,7 +737,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -768,8 +774,9 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             var replyText = string.Format("{0}. {1}", StringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
+            var replyTextSecond = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<SlashCommand>(), It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest)).Throws<SmtpException>();
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyTextSecond, StringConstant.FirstNameForTest)).Throws<SmtpException>();
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }

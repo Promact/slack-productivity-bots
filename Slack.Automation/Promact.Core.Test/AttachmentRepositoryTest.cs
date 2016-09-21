@@ -166,5 +166,16 @@ namespace Promact.Core.Test
             var accessToken = _attachmentRepository.AccessToken(secondUser.Email).Result;
             Assert.NotEqual(accessToken, StringConstant.AccessTokenForTest);
         }
+
+        /// <summary>
+        /// Test case to check creating attchment of slack used generically for true value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void SlackResponseAttachmentWithoutButton()
+        {
+            var response = _attachmentRepository.SlackResponseAttachmentWithoutButton("1", StringConstant.Hello).Last();
+            Assert.Equal(response.Title, StringConstant.Hello);
+            Assert.Equal(response.Color, StringConstant.Color);
+        }
     }
 }

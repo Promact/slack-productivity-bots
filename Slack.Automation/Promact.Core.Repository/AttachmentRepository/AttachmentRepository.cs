@@ -147,5 +147,29 @@ namespace Promact.Core.Repository.AttachmentRepository
                 leave.Reason);
             return replyText;
         }
+
+        /// <summary>
+        /// Attachment created to be send in slack without any interactive button
+        /// </summary>
+        /// <param name="leaveRequestId"></param>
+        /// <param name="replyText"></param>
+        /// <returns></returns>
+        public List<SlashAttachment> SlackResponseAttachmentWithoutButton(string leaveRequestId, string replyText)
+        {
+            List<SlashAttachment> attachment = new List<SlashAttachment>();
+            SlashAttachment attachmentList = new SlashAttachment();
+            // Fallback as a string on attachment
+            attachmentList.Fallback = StringConstant.Fallback;
+            // attaching reply text as title of attachment
+            attachmentList.Title = replyText;
+            // assigning callbackId of attachment with leaveRequestId
+            attachmentList.CallbackId = leaveRequestId;
+            // assigning color of attachment as string format
+            attachmentList.Color = StringConstant.Color;
+            // Assigning attachment type as default
+            attachmentList.AttachmentType = StringConstant.AttachmentType;
+            attachment.Add(attachmentList);
+            return attachment;
+        }
     }
 }

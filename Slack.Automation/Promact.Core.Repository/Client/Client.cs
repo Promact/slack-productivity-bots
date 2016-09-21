@@ -67,33 +67,26 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public async Task SendMessageWithAttachmentIncomingWebhook(SlashCommand leave, LeaveRequest leaveRequest,string accessToken)
+        public async Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken,string replyText, string username)
         {
-            // getting reply text to be send on slack corresponding to leave applied
-            var replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(leave.Username,accessToken);
-            var management = await _projectUser.GetManagementUserName(accessToken);
-            var userDetail = await _projectUser.GetUserByUsername(leave.Username,accessToken);
-            foreach (var user in management)
-            {
-                teamLeaders.Add(user);
-            }
-            foreach (var teamLeader in teamLeaders)
-            {
-                //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
-                var textJson = JsonConvert.SerializeObject(text);
-                WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
-                EmailApplication email = new EmailApplication();
-                // creating email templates corresponding to leave applied
-                email.Body = EmailServiceTemplate(leaveRequest);
-                email.From = userDetail.Email;
-                email.Subject = StringConstant.EmailSubject;
-                email.To = teamLeader.Email;
-                _email.Send(email);
-            }
+            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
+        }
+
+        /// <summary>
+        /// Method used to send slack message and email to team leader and management without interactive button
+        /// </summary>
+        /// <param name="leave"></param>
+        /// <param name="leaveRequest"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="replyText"></param>
+        /// <returns></returns>
+        public async Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken,string replyText,string username)
+        {
+            // getting attachment as a string to be send on slack
+            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
+            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
@@ -153,6 +146,61 @@ namespace Promact.Core.Repository.Client
             {
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Private method to get reply text and send to team leader and management
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="leaveRequest"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="attachment"></param>
+        /// <returns></returns>
+        private async Task GetAttachmentAndSendToTLAndManagement(string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
+        {
+            var teamLeaders = await _projectUser.GetTeamLeaderUserName(username, accessToken);
+            var management = await _projectUser.GetManagementUserName(accessToken);
+            var userDetail = await _projectUser.GetUserByUsername(username, accessToken);
+            foreach (var user in management)
+            {
+                teamLeaders.Add(user);
+            }
+            foreach (var teamLeader in teamLeaders)
+            {
+                //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
+                var textJson = JsonConvert.SerializeObject(text);
+                WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
+                EmailApplication email = new EmailApplication();
+                // creating email templates corresponding to leave applied
+                email.Body = EmailServiceTemplate(leaveRequest);
+                email.From = userDetail.Email;
+                email.Subject = StringConstant.EmailSubject;
+                email.To = teamLeader.Email;
+                _email.Send(email);
+            }
+        }
+
+        /// <summary>
+        /// Method to send slack message to user whom leave has been applied by admin
+        /// </summary>
+        /// <param name="leaveRequest"></param>
+        /// <param name="managementEmail"></param>
+        /// <param name="replyText"></param>
+        /// <param name="user"></param>
+        public void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
+        {
+            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
+            var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
+            var textJson = JsonConvert.SerializeObject(text);
+            WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
+            EmailApplication email = new EmailApplication();
+            // creating email templates corresponding to leave applied
+            email.Body = EmailServiceTemplate(leaveRequest);
+            email.From = managementEmail;
+            email.Subject = StringConstant.EmailSubject;
+            email.To = user.Email;
+            _email.Send(email);
         }
     }
 }

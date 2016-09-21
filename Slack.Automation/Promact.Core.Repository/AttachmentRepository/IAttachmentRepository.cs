@@ -53,5 +53,13 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <param name="leave"></param>
         /// <returns></returns>
         string ReplyTextSick(string username, LeaveRequest leave);
+
+        /// <summary>
+        /// Attachment created to be send in slack without any interactive button
+        /// </summary>
+        /// <param name="leaveRequestId"></param>
+        /// <param name="replyText"></param>
+        /// <returns></returns>
+        List<SlashAttachment> SlackResponseAttachmentWithoutButton(string leaveRequestId, string replyText);
     }
 }
