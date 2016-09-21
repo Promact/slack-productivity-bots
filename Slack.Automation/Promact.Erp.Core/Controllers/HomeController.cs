@@ -1,4 +1,4 @@
-﻿using Autofac.Extras.NLog;
+using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
@@ -8,7 +8,6 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Collections;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -79,25 +78,6 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
-                
-                var userEnvs = "";
-                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User))
-                {
-                    userEnvs += de.Key + ":" + de.Value + Environment.NewLine;
-                }
-                var processEnvs = "";
-                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
-                {
-                    processEnvs += de.Key + ":" + de.Value + Environment.NewLine;
-                }
-                var machineEnvs = "";
-                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Machine))
-                {
-                    machineEnvs += de.Key + ":" + de.Value + Environment.NewLine;
-                }
-                _logger.Error("User vars:" + userEnvs);
-                _logger.Error("Process vars:" + processEnvs);
-                _logger.Error("Machine vars:" +  machineEnvs);
                 var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User));
                 //make call to the OAuth Server
                 return Redirect(url);
