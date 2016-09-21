@@ -8,7 +8,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Collection;
+using System.Collections;
 
 namespace Promact.Erp.Core.Controllers
 {
