@@ -92,7 +92,7 @@ namespace Promact.Core.Repository.SlackRepository
                                             _leaveRepository.ApplyLeave(leaveRequest);
                                             replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
                                             // method to send slack notification and email to team leaders and management
-                                            await _client.SendMessageWithAttachmentIncomingWebhook(leave, leaveRequest, accessToken);
+                                            await _client.SendMessageWithAttachmentIncomingWebhook(leaveRequest, accessToken,replyText,leave.Username);
                                         }
                                         else
                                             // if user doesn't exist in OAuth server then user can't apply leave, will get this message
@@ -105,11 +105,12 @@ namespace Promact.Core.Repository.SlackRepository
                                 break;
                             case LeaveType.sl:
                                 {
+                                    bool IsAdmin = false;
                                     User newUser = new User();
                                     user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
                                     if (slackRequest.Count > 4)
                                     {
-                                        var IsAdmin = await _projectUser.UserIsAdmin(user.UserName, accessToken);
+                                        IsAdmin = await _projectUser.UserIsAdmin(user.Email, accessToken);
                                         if (IsAdmin)
                                         {
                                             // get user details from oAuth server for other user
@@ -119,8 +120,12 @@ namespace Promact.Core.Repository.SlackRepository
                                             replyText = StringConstant.AdminErrorMessageApplySickLeave;
                                     }
                                     else
+                                    {
                                         // get user details from oAuth server for own
                                         newUser = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                        leaveRequest.EndDate = startDate;
+                                        leaveRequest.RejoinDate = startDate.AddDays(1);
+                                    }
                                     leaveRequest.Status = Condition.Approved;
                                     leaveRequest.Type = leaveType;
                                     leaveRequest.Reason = slackRequest[2];
@@ -132,6 +137,11 @@ namespace Promact.Core.Repository.SlackRepository
                                         leaveRequest.EmployeeId = newUser.Id;
                                         _leaveRepository.ApplyLeave(leaveRequest);
                                         replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
+                                        await _client.SendMessageWithoutButtonAttachmentIncomingWebhook(leaveRequest, accessToken, replyText, newUser.FirstName);
+                                        if (IsAdmin)
+                                        {
+                                            _client.SendSickLeaveMessageToUserIncomingWebhook(leaveRequest, user.Email, replyText, newUser);
+                                        }
                                     }
                                     else
                                         // if user doesn't exist in OAuth server then user can't apply leave, will get this message
@@ -474,14 +484,16 @@ namespace Promact.Core.Repository.SlackRepository
                         var secondDateConvertorResult = DateTime.TryParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                         if (firstDateConvertorResult && secondDateConvertorResult)
                         {
-
+                            var newUser = await _projectUser.GetUserByEmployeeId(leave.EmployeeId, accessToken);
                             // convert string to date of indian culture
                             leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             _leaveRepository.UpdateLeave(leave);
                             replyText = string.Format("Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}"
-                                , user.SlackUserName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+                                , newUser.SlackUserName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                 leave.Reason, leave.RejoinDate.Value.ToShortDateString());
+                            await _client.SendMessageWithoutButtonAttachmentIncomingWebhook(leave, accessToken, replyText, newUser.FirstName);
+                            _client.SendSickLeaveMessageToUserIncomingWebhook(leave, user.Email, replyText, newUser);
                         }
                         else
                             // if date is not proper than date format error message will be send to user
