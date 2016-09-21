@@ -39,6 +39,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         inprogress,
         completed,
         roadblock
+
     }
 
     /// <summary>

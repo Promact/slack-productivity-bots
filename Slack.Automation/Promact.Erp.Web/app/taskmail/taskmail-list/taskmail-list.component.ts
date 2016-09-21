@@ -4,7 +4,7 @@ import { TaskService }   from '../taskmail.service';
 //import {taskmailModel} from '../taskmail.model';
 import {taskmailuserModel} from '../taskmailuser.model';
 import {TaskMailStatus} from '../../enums/TaskMailStatus';
-
+import { SpinnerService} from '../../spinner.service';
 @Component({
     templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
     directives: [ROUTER_DIRECTIVES],
@@ -12,12 +12,14 @@ import {TaskMailStatus} from '../../enums/TaskMailStatus';
 })
 export class TaskMailListComponent {
     listOfUsers: any;
-    constructor(private router: Router, private taskService: TaskService) {
+    constructor(private router: Router, private taskService: TaskService, private spinner: SpinnerService) {
 
     }
 
     ngOnInit() {
+        this.spinner.start();
         this.getListOfEmployee();
+        this.spinner.stop();
     }
     getListOfEmployee()
     {
@@ -33,14 +35,14 @@ export class TaskMailListComponent {
                     var UserRole = result[0].UserRole;
                     var UserName = result[0].UserName;
                     var UserEmail = result[0].UserEmail;
-                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//, UserEmail]);
+                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//]);//, UserEmail]);
                 }
                 else {
                     var UserId = result[0].UserId;
                     var UserRole = result[0].UserRole;
                     var UserName = result[0].UserName;
                     var UserEmail = result[0].UserEmail;
-                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//,UserEmail]);
+                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//]);//,UserEmail]);
                 }
         }, err => {
 

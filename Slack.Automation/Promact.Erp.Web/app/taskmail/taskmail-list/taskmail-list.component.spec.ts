@@ -7,6 +7,8 @@ import { TaskService } from '../taskmail.service';
 import { TestConnection } from "../../mock/test.connection";
 import { MockTaskMailService } from '../../mock/mock.taskmailReport.service';
 import { Observable } from 'rxjs/Observable';
+import { SpinnerService} from '../../spinner.service';
+
 describe('TaskMailReport Tests', () => {
     let taskMailListComponent: TaskMailListComponent;
     let router: Router;
@@ -18,7 +20,7 @@ describe('TaskMailReport Tests', () => {
         }
     }
     class MockRouter { }
-    
+    class MockSpinnerService { }
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -26,14 +28,14 @@ describe('TaskMailReport Tests', () => {
                 provide(Router, { useClass: MockRouter }),
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
-                //provide(ActivatedRoute, { useClass: MockActivatedRoute }),
+                provide(SpinnerService, { useClass: MockSpinnerService }),
             ]
         });
     });
 
-    beforeEach(inject([TaskService, Router], ( taskService: TaskService, router: Router) => {
-        
-        taskMailListComponent = new TaskMailListComponent(router, taskService);
+    beforeEach(inject([TaskService, Router], (taskService: TaskService, router: Router, spinner:SpinnerService) => {
+
+        taskMailListComponent = new TaskMailListComponent(router, taskService, spinner);
     }));
 
 

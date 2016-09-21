@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using System;
+using Promact.Erp.Util;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -106,7 +107,8 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailUserAc>> TaskMailDetailsReportPreviousDate(string UserRole, string CreatedOn,string UserId,string UserName)
         {
             string LoginId = User.Identity.GetUserId();
-            return await _taskMailReport.TaskMailDetailsReportPreviousDate(UserId, UserName, UserRole,CreatedOn, LoginId);
+            string PreviousPage = StringConstant.PriviousPage;
+            return await _taskMailReport.TaskMailDetailsReportNextPreviousDate(UserId, UserName, UserRole,CreatedOn, LoginId, PreviousPage);
             //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }
 
@@ -143,7 +145,8 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextDate(string UserRole, string CreatedOn, string UserId, string UserName)
         {
             string LoginId = User.Identity.GetUserId();
-            return await _taskMailReport.TaskMailDetailsReportNextDate(UserId, UserName, UserRole, CreatedOn, LoginId);
+            string NextPage = StringConstant.NextPage;
+            return await _taskMailReport.TaskMailDetailsReportNextPreviousDate(UserId, UserName, UserRole, CreatedOn, LoginId, NextPage);
             //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }
 
@@ -209,7 +212,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailUserAc>> getAllEmployee()
         {
             string UserId = User.Identity.GetUserId();
-            return await _taskMailReport.getAllEmployee(UserId);
+            return await _taskMailReport.GetAllEmployee(UserId);
         }
 
     }

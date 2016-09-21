@@ -278,5 +278,11 @@ namespace Promact.Erp.Util
         public static string RoleTeamLeader = "TeamLeader";
         public static string RoleEmployee = "Employee";
 
+        public static string NotAvailable = "Not Available";
+        public static string NextPage = "Next";
+        public static string PriviousPage = "Privious";
+
+
+
     }
 }

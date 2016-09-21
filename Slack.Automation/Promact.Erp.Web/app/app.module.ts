@@ -10,8 +10,8 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
-
-
+import { SpinnerComponent} from './spinner.component';
+import { SpinnerService} from './spinner.service';
 
 
 
@@ -25,9 +25,9 @@ import { TaskService }   from './taskmail/taskmail.service';
       
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
+    //declarations: [AppComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService, , StringConstant]
-    //providers: [LeaveReportService, StringConstant]
+    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]
 })
 
 export class AppModule { }

@@ -6,7 +6,7 @@ export class taskmailuserModel {
     UserEmail: string;
     CreatedOn: Date;
     CreatedOns: string;
-    isMax: Date;
-    isMin: Date;
+    IsMax: Date;
+    IsMin: Date;
     TaskMails: Array<taskmailModel>;
 }

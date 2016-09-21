@@ -34,8 +34,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.isMin = new Date("10-09-2016");
-        mockTaskmailModel.isMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date("10-09-2016");
+        mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         let connection = this.getMockResponse("taskMailDetailsReport/" + UserId + "/" + UserRole + "/" + UserName, mockTaskmailModels);
         return connection;
@@ -55,8 +55,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.isMin = new Date("10-09-2016");
-        mockTaskmailModel.isMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date("10-09-2016");
+        mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         let connection = this.getMockResponse("taskMailDetailsReportPreviousDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
         return connection;
@@ -75,8 +75,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.isMin = new Date("10-09-2016");
-        mockTaskmailModel.isMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date("10-09-2016");
+        mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         let connection = this.getMockResponse("taskMailDetailsReportNextDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
         return connection;
@@ -94,8 +94,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.isMin = new Date("10-09-2016");
-        mockTaskmailModel.isMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date("10-09-2016");
+        mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         let connection = this.getMockResponse("taskMailDetailsReportSelectedDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn + "/" + SelectedDate, mockTaskmailModels);
         return connection;

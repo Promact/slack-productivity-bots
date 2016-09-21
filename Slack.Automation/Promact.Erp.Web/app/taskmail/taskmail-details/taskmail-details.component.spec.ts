@@ -8,6 +8,8 @@ import { TestConnection } from "../../mock/test.connection";
 import { MockTaskMailService } from '../../mock/mock.taskmailReport.service';
 import { Observable } from 'rxjs/Observable';
 import { DatePipe } from '@angular/common';
+import { SpinnerService} from '../../spinner.service';
+
 describe('TaskMail Details Tests', () => {
     let taskMailDetailsComponent: TaskMailDetailsComponent;
     let router: ActivatedRoute;
@@ -19,6 +21,8 @@ describe('TaskMail Details Tests', () => {
     }
     class MockRouter { }
     class MockDatePipe { }
+    class MockSpinnerService { }
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -26,13 +30,14 @@ describe('TaskMail Details Tests', () => {
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
                 provide(Router, { useClass: MockRouter }),
-                provide(DatePipe, { useClass: MockDatePipe })
+                provide(DatePipe, { useClass: MockDatePipe }),
+                provide(SpinnerService, { useClass: MockSpinnerService }),
             ]
         });
     });
 
-    beforeEach(inject([ActivatedRoute, Router, TaskService], (mockRouter: ActivatedRoute, router: Router, taskService: TaskService) => {
-       taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService);
+    beforeEach(inject([ActivatedRoute, Router, TaskService], (mockRouter: ActivatedRoute, router: Router, taskService: TaskService, spinner: SpinnerService) => {
+        taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService, spinner);
     }));
 
     it("should be defined", () => {
@@ -40,7 +45,7 @@ describe('TaskMail Details Tests', () => {
     });
 
     it('Shows details of task mail report for an employee on initialization', () => {
-        taskMailDetailsComponent.ngOnInit();
+        taskMailDetailsComponent.getTaskMailDetails();
         expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
     });
 

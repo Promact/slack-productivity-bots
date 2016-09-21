@@ -14,8 +14,8 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         public string UserRole { get; set; }
         public string UserEmail { get; set; }
         public DateTime CreatedOn { get; set; }
-        public DateTime isMax { get; set; }
-        public DateTime isMin { get; set; }
+        public DateTime IsMax { get; set; }
+        public DateTime IsMin { get; set; }
         [JsonProperty("TaskMails")]
         public List<TaskMailReportAc> TaskMails { get; set; }
     }
