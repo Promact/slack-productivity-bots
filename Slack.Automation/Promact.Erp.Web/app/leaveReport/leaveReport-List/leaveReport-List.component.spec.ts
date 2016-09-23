@@ -4,8 +4,8 @@ import { provide, Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 import { LeaveReportListComponent } from './leaveReport-List.component';
 import { LeaveReportService } from '../leaveReport.service';
-import { TestConnection } from "../../mock/test.connection";
-import { MockLeaveReportService } from '../../mock/mock.leaveReport.service';
+import { TestConnection } from "../../shared/mock/test.connection";
+import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 
 describe('LeaveReport Tests', () => {
     let leaveReportListComponent: LeaveReportListComponent;

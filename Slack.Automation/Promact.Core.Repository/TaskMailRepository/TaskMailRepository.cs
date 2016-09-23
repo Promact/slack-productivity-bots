@@ -476,7 +476,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                 {
                     List<TaskMail> taskMails = new List<TaskMail>();
                     var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
-                    if (employeeId != null)
+
+                    if (employeeId != null && employeeId.Id != userId)
                     {
                         TaskMailUserAc taskmailUserAc = new TaskMailUserAc
                         {
@@ -596,7 +597,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserName = UserName,
                         UserRole = UserRole,
                         CreatedOn = DateTime.Now,
-                        TaskMails = taskMailReportObject
+                        TaskMails = taskMailReportObject,
+                        IsMax = task.CreatedOn,
+                        IsMin = taskMailMinDate.CreatedOn
                     };
                     taskMailAc.Add(taskMailUserAc);
                 }
@@ -1027,46 +1030,74 @@ namespace Promact.Core.Repository.TaskMailRepository
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
             DateTime? minDate = null;
             DateTime? maxDate = null;
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
-            //var taskMailDetail = taskMails.Where(x => DbFunctions.TruncateTime(x.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
-            var task = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault();
-            var taskMinDate = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault();
-            minDate = taskMinDate.CreatedOn;
-            var taskMaxDate = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-            maxDate = taskMaxDate.CreatedOn;
-            if (task != null)
+            var listOfTask= await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
+            if (listOfTask != null)
             {
-                IEnumerable<TaskMailDetails> taskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == task.Id);
-                List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
-                taskmailDetails = taskMailDetails.ToList();
-                taskmailDetails.ForEach(taskMail =>
+                var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
+                //var taskMailDetail = taskMails.Where(x => DbFunctions.TruncateTime(x.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
+                var task = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault();
+                var taskMailDates = await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
+                var taskMinDate = taskMailDates.OrderBy(y => y.CreatedOn).FirstOrDefault();
+                minDate = taskMinDate.CreatedOn;
+                var taskMaxDate = taskMailDates.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
+                maxDate = taskMaxDate.CreatedOn;
+                if (task != null)
                 {
-                    TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                    IEnumerable<TaskMailDetails> taskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == task.Id);
+                    List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
+                    taskmailDetails = taskMailDetails.ToList();
+                    taskmailDetails.ForEach(taskMail =>
                     {
-                        Id = taskMail.Id,
-                        Description = taskMail.Description,
-                        Comment = taskMail.Comment,
-                        Status = taskMail.Status,
-                        Hours = taskMail.Hours
+                        TaskMailReportAc taskmailReportAc = new TaskMailReportAc
+                        {
+                            Id = taskMail.Id,
+                            Description = taskMail.Description,
+                            Comment = taskMail.Comment,
+                            Status = taskMail.Status,
+                            Hours = taskMail.Hours
+                        };
+                        taskMailReportAc.Add(taskmailReportAc);
+                    });
+
+                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
+                    {
+                        UserId = UserId,
+                        UserName = UserName,
+                        UserRole = UserRole,
+                        CreatedOn = task.CreatedOn,
+                        TaskMails = taskMailReportAc,
+                        IsMin = Convert.ToDateTime(minDate),
+                        IsMax = Convert.ToDateTime(maxDate)
                     };
-                    taskMailReportAc.Add(taskmailReportAc);
-                });
+                    taskMailAc.Add(taskMailUserAc);
 
-                TaskMailUserAc taskMailUserAc = new TaskMailUserAc
+                }
+                else
                 {
-                    UserId = UserId,
-                    UserName = UserName,
-                    UserRole = UserRole,
-                    CreatedOn = task.CreatedOn,
-                    TaskMails = taskMailReportAc,
-                    IsMin = Convert.ToDateTime(minDate),
-                    IsMax=Convert.ToDateTime(maxDate)
-                };
-                taskMailAc.Add(taskMailUserAc);
+                    List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
+                    TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
+                    {
+                        Id = 0,
+                        Description = StringConstant.NotAvailable,
+                        Comment = StringConstant.NotAvailable,
+                        Hours = 0
+                    };
+                    taskMailReport.Add(taskmailReportAcTL);
+                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
+                    {
+                        UserId = UserId,
+                        UserName = UserName,
+                        UserRole = UserRole,
+                        CreatedOn = Convert.ToDateTime(CreatedOn),
+                        TaskMails = taskMailReport,
+                        IsMin = Convert.ToDateTime(minDate),
+                        IsMax = Convert.ToDateTime(maxDate)
 
+                    };
+                    taskMailAc.Add(taskMailUserAc);
+                }
             }
-            else
-            {
+            else {
                 List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
                 TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
                 {
@@ -1084,7 +1115,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     CreatedOn = Convert.ToDateTime(CreatedOn),
                     TaskMails = taskMailReport,
                     IsMin = Convert.ToDateTime(CreatedOn),
-                    IsMax= Convert.ToDateTime(CreatedOn)
+                    IsMax = Convert.ToDateTime(CreatedOn)
 
                 };
                 taskMailAc.Add(taskMailUserAc);

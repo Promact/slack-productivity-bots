@@ -18,8 +18,8 @@ var leaveReport_List_component_1 = require('./leaveReport/leaveReport-List/leave
 var leaveReport_Details_component_1 = require('./leaveReport/leaveReport-Details/leaveReport-Details.component');
 var leaveReport_service_1 = require('./leaveReport/leaveReport.service');
 var taskmail_service_1 = require('./taskmail/taskmail.service');
-var spinner_component_1 = require('./spinner.component');
-var spinner_service_1 = require('./spinner.service');
+var spinner_component_1 = require('./shared/spinner.component');
+var spinner_service_1 = require('./shared/spinner.service');
 var AppModule = (function () {
     function AppModule() {
     }

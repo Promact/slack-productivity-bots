@@ -4,8 +4,8 @@ import { provide, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
 import { LeaveReportService } from '../leaveReport.service';
-import { TestConnection } from "../../mock/test.connection";
-import { MockLeaveReportService } from '../../mock/mock.leaveReport.service';
+import { TestConnection } from "../../shared/mock/test.connection";
+import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { Observable } from 'rxjs/Observable';
 
 describe('LeaveReport Tests', () => {

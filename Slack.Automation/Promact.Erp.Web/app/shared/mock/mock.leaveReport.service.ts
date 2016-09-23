@@ -2,8 +2,8 @@
 import { TestConnection } from "./test.connection";
 import { Injectable } from '@angular/core';
 import { ResponseOptions, Response } from "@angular/http";
-import { LeaveReport } from '../leaveReport/leaveReport-List/leaveReport-List.model';
-import { LeaveReportDetail } from '../leaveReport/leaveReport-Details/leaveReport-Details.model';
+import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
+import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
 
 @Injectable()
 

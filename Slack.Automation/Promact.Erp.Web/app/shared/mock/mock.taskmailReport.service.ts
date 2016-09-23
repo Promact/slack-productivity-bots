@@ -2,8 +2,8 @@
 import { TestConnection } from "./test.connection";
 import { Injectable } from '@angular/core';
 import { ResponseOptions, Response } from "@angular/http";
-import { taskmailModel } from '../taskmail/taskmail.model';
-import {taskmailuserModel} from '../taskmail/taskmailuser.model';
+import { taskmailModel } from '../../taskmail/taskmail.model';
+import {taskmailuserModel} from '../../taskmail/taskmailuser.model';
 
 @Injectable()
 

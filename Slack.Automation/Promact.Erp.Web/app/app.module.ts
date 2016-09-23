@@ -9,8 +9,8 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
-import { SpinnerComponent} from './spinner.component';
-import { SpinnerService} from './spinner.service';
+import { SpinnerComponent} from './shared/spinner.component';
+import { SpinnerService} from './shared/spinner.service';
 
 
 
