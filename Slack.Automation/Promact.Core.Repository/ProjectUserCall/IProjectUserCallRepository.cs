@@ -39,11 +39,11 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>object of ProjectAc</returns>
         Task<ProjectAc> GetProjectDetails(string groupName, string accessToken);
 
-        
+        Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
         
         //Task<User> GetUserById(string EmployeeId);
         //Task<User> GetUserByEmployeeId(string employeeId);
-        
+        Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
 
         Task<List<UserRoleAc>> GetListOfEmployee(string userName, string accessToken);
 
@@ -56,6 +56,10 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>list of object of User</returns>
         Task<List<User>> GetUsersByGroupName(string groupName, string accessToken);
 
+        
+        
+        //Task<User> GetUserById(string EmployeeId);
+        //Task<User> GetUserByEmployeeId(string employeeId);
         
         
         //Task<User> GetUserById(string EmployeeId);

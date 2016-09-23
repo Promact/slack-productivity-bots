@@ -25,7 +25,7 @@ import { StringConstant } from './shared/stringConstant';
         routing,
       
     ],
-    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
+    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
     providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]
 })

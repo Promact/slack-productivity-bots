@@ -210,5 +210,23 @@ namespace Promact.Core.Repository.ProjectUserCall
             var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return Json;
         }
+
+        public async Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.ProjectInformationUrl, userName);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            //var responseContent = response.Content.ReadAsStringAsync().Result;
+            var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return Json;
+        }
+
+        public async Task<List<UserRoleAc>> GetListOfEmployee(string userName, string accessToken)
+        {
+            var requestUrl = string.Format("{0}{1}", StringConstant.ProjectUasrInformationUrl, userName);
+            var response = await _httpClientRepository.GetAsync(StringConstant.ProjectUrl, requestUrl, accessToken);
+            //var responseContent = response.Content.ReadAsStringAsync().Result;
+            var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return Json;
+        }
     }
 }
