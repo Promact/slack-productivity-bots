@@ -560,10 +560,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = task.CreatedOn,
+                        CreatedOn = task.CreatedOn.Date,
                         TaskMails = taskMailReportAc,
-                        IsMax = task.CreatedOn,
-                        IsMin = taskMailMinDate.CreatedOn
+                        IsMax = task.CreatedOn.Date,
+                        IsMin = taskMailMinDate.CreatedOn.Date
                     };
                     taskMailAc.Add(taskMailUserAc);
                 }
@@ -583,10 +583,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = DateTime.Now,
+                        CreatedOn = DateTime.Now.Date,
                         TaskMails = taskMailReportObject,
-                        IsMax = task.CreatedOn,
-                        IsMin = taskMailMinDate.CreatedOn
+                        IsMax = task.CreatedOn.Date,
+                        IsMin = taskMailMinDate.CreatedOn.Date
                     };
                     taskMailAc.Add(taskMailUserAc);
                 }
@@ -705,10 +705,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserId = employee.Id,
                                 UserName = j.Name,
                                 UserRole= UserRole,
-                                CreatedOn = taskTL.CreatedOn,
+                                CreatedOn = taskTL.CreatedOn.Date,
                                 TaskMails = taskMailReport,
-                                IsMax=Convert.ToDateTime(maxDate),
-                                IsMin=Convert.ToDateTime(minDate)
+                                IsMax=Convert.ToDateTime(maxDate).Date,
+                                IsMin=Convert.ToDateTime(minDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
@@ -727,10 +727,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserId = employee.Id,
                                 UserName = j.Name,
                                 UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(maxDate),
+                                CreatedOn = Convert.ToDateTime(maxDate).Date,
                                 TaskMails = taskMailReportObject,
-                                IsMax = Convert.ToDateTime(maxDate),
-                                IsMin = Convert.ToDateTime(minDate)
+                                IsMax = Convert.ToDateTime(maxDate).Date,
+                                IsMin = Convert.ToDateTime(minDate).Date
 
                             };
                             taskMailAc.Add(taskMailUserAc);
@@ -794,10 +794,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = task.CreatedOn,
+                        CreatedOn = task.CreatedOn.Date,
                         TaskMails = taskMailReportAc,
-                        IsMax = Convert.ToDateTime(maxDateSelectedUser),
-                        IsMin = Convert.ToDateTime(minDateSelectedUser)
+                        IsMax = Convert.ToDateTime(maxDateSelectedUser).Date,
+                        IsMin = Convert.ToDateTime(minDateSelectedUser).Date
                     };
                     taskMailAc.Add(taskMailUserAc);
                 }
@@ -818,10 +818,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = Convert.ToDateTime(SelectedDate),
+                        CreatedOn = Convert.ToDateTime(SelectedDate).Date,
                         TaskMails = taskMailReportList,
-                        IsMax = Convert.ToDateTime(maxDateSelectedUser),
-                        IsMin = Convert.ToDateTime(minDateSelectedUser)
+                        IsMax = Convert.ToDateTime(maxDateSelectedUser).Date,
+                        IsMin = Convert.ToDateTime(minDateSelectedUser).Date
                     };
                     taskMailAc.Add(taskMailUserAc);
                 }
@@ -840,10 +840,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                     UserId = UserId,
                     UserName = UserName,
                     UserRole = UserRole,
-                    CreatedOn = Convert.ToDateTime(SelectedDate),
+                    CreatedOn = Convert.ToDateTime(SelectedDate).Date,
                     TaskMails = taskMailReportAc,
-                    IsMax = Convert.ToDateTime(SelectedDate),
-                    IsMin = Convert.ToDateTime(SelectedDate),
+                    IsMax = Convert.ToDateTime(SelectedDate).Date,
+                    IsMin = Convert.ToDateTime(SelectedDate).Date,
                 };
                 taskMailAc.Add(taskMailUserAc);
             }
@@ -950,8 +950,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserRole = UserRole,
                                 CreatedOn = taskTL.CreatedOn,
                                 TaskMails = listTaskMailReport,
-                                IsMax = Convert.ToDateTime(maxDate),
-                                IsMin=Convert.ToDateTime(minDate)
+                                IsMax = Convert.ToDateTime(maxDate).Date,
+                                IsMin=Convert.ToDateTime(minDate).Date
 
                             };
                             taskMailAc.Add(taskMailUserAc);
@@ -973,10 +973,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserId = employee.Id,
                                 UserName = j.Name,
                                 UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(SelectedDate),
+                                CreatedOn = Convert.ToDateTime(SelectedDate).Date,
                                 TaskMails = taskMailReport,
-                                IsMax = Convert.ToDateTime(maxDate),
-                                IsMin=Convert.ToDateTime(minDate)
+                                IsMax = Convert.ToDateTime(maxDate).Date,
+                                IsMin=Convert.ToDateTime(minDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
@@ -997,10 +997,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                             UserId = employee.Id,
                             UserName = j.Name,
                             UserRole = UserRole,
-                            CreatedOn = Convert.ToDateTime(SelectedDate),
+                            CreatedOn = Convert.ToDateTime(SelectedDate).Date,
                             TaskMails = taskMailReport,
-                            IsMax = Convert.ToDateTime(SelectedDate),
-                            IsMin = Convert.ToDateTime(SelectedDate)
+                            IsMax = Convert.ToDateTime(SelectedDate).Date,
+                            IsMin = Convert.ToDateTime(SelectedDate).Date
                         };
                         taskMailAc.Add(taskMailUserAc);
                     }
@@ -1051,10 +1051,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = task.CreatedOn,
+                        CreatedOn = task.CreatedOn.Date,
                         TaskMails = taskMailReportAc,
-                        IsMin = Convert.ToDateTime(minDate),
-                        IsMax = Convert.ToDateTime(maxDate)
+                        IsMin = Convert.ToDateTime(minDate).Date,
+                        IsMax = Convert.ToDateTime(maxDate).Date
                     };
                     taskMailAc.Add(taskMailUserAc);
 
@@ -1075,10 +1075,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                         UserId = UserId,
                         UserName = UserName,
                         UserRole = UserRole,
-                        CreatedOn = Convert.ToDateTime(CreatedOn),
+                        CreatedOn = Convert.ToDateTime(CreatedOn).Date,
                         TaskMails = taskMailReport,
-                        IsMin = Convert.ToDateTime(minDate),
-                        IsMax = Convert.ToDateTime(maxDate)
+                        IsMin = Convert.ToDateTime(minDate).Date,
+                        IsMax = Convert.ToDateTime(maxDate).Date
 
                     };
                     taskMailAc.Add(taskMailUserAc);
@@ -1099,10 +1099,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                     UserId = UserId,
                     UserName = UserName,
                     UserRole = UserRole,
-                    CreatedOn = Convert.ToDateTime(CreatedOn),
+                    CreatedOn = Convert.ToDateTime(CreatedOn).Date,
                     TaskMails = taskMailReport,
-                    IsMin = Convert.ToDateTime(CreatedOn),
-                    IsMax = Convert.ToDateTime(CreatedOn)
+                    IsMin = Convert.ToDateTime(CreatedOn).Date,
+                    IsMax = Convert.ToDateTime(CreatedOn).Date
 
                 };
                 taskMailAc.Add(taskMailUserAc);
@@ -1209,10 +1209,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserId = employee.Id,
                                 UserName = j.Name,
                                 UserRole = UserRole,
-                                CreatedOn = taskMails.CreatedOn,
+                                CreatedOn = taskMails.CreatedOn.Date,
                                 TaskMails = taskMailDetailsReport,
-                                IsMin = Convert.ToDateTime(minDate),
-                                IsMax= Convert.ToDateTime(maxDate)
+                                IsMin = Convert.ToDateTime(minDate).Date,
+                                IsMax= Convert.ToDateTime(maxDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
@@ -1232,10 +1232,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 UserId = employee.Id,
                                 UserName = j.Name,
                                 UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(CreatedDate),
+                                CreatedOn = Convert.ToDateTime(CreatedDate).Date,
                                 TaskMails = taskMailReport,
-                                IsMin = Convert.ToDateTime(minDate),
-                                IsMax = Convert.ToDateTime(maxDate)
+                                IsMin = Convert.ToDateTime(minDate).Date,
+                                IsMax = Convert.ToDateTime(maxDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
