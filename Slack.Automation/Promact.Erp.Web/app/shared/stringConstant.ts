@@ -2,13 +2,13 @@
 
 
 @Injectable()
-export class StringConstant{
+export class StringConstant {
     constructor() { }
 
     leaveReport = "leaveReport";
     leaveReportDetails = "leaveReportDetails/";
     serverError = 'Server error';
-    listColumns = ["Employee Name", "Employee Username", "Role","Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+    listColumns = ["Employee Name", "Employee Username", "Role", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
     theme = 'plain';
     overflow = 'linebreak';
     pageBreak = 'auto';
@@ -20,4 +20,13 @@ export class StringConstant{
     detail = '/detail';
     detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
+    defaultDate = '1-01-01';
+    notAvailableComment = 'Not Available';
+    RoleAdmin = "Admin";
+    RoleTeamLeader = "TeamLeader";
+    taskList = "/task"
+    dateDefaultFormat = "yyyy-MM-dd";
+    dateFormat = "dd-MM-yyyy";
+    taskDetails ="task/taskdetail"
+
 }

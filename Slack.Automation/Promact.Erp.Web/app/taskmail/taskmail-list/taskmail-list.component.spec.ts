@@ -4,10 +4,12 @@ import { provide, Component, OnInit } from "@angular/core";
 import { ActivatedRoute,Router } from '@angular/router';
 import { TaskMailListComponent } from './taskmail-list.component';
 import { TaskService } from '../taskmail.service';
-import { TestConnection } from "../../mock/test.connection";
-import { MockTaskMailService } from '../../mock/mock.taskmailReport.service';
+import { TestConnection } from "../../shared/mock/test.connection";
+import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
 import { Observable } from 'rxjs/Observable';
-import { SpinnerService} from '../../spinner.service';
+import { SpinnerService} from '../../shared/spinner.service';
+import {StringConstant} from '../../shared/stringConstant';
+
 
 describe('TaskMailReport Tests', () => {
     let taskMailListComponent: TaskMailListComponent;
@@ -29,13 +31,14 @@ describe('TaskMailReport Tests', () => {
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
                 provide(SpinnerService, { useClass: MockSpinnerService }),
+                provide(StringConstant, { useClass: StringConstant }),
             ]
         });
     });
 
-    beforeEach(inject([TaskService, Router], (taskService: TaskService, router: Router, spinner:SpinnerService) => {
+    beforeEach(inject([TaskService, Router, SpinnerService, StringConstant], (taskService: TaskService, router: Router, spinner: SpinnerService, stringConstant: StringConstant) => {
 
-        taskMailListComponent = new TaskMailListComponent(router, taskService, spinner);
+        taskMailListComponent = new TaskMailListComponent(router, taskService, spinner, stringConstant);
     }));
 
 

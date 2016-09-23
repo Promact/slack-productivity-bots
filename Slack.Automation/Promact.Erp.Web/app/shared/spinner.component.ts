@@ -2,7 +2,7 @@
 import { SpinnerService} from './spinner.service';
 @Component({
     selector: 'spinner-component',
-    'template': '<div *ngIf="active" class="spinner loading"></div>'
+    'template': '<div *ngIf="active" class="loading"></div>'
 })
 export class SpinnerComponent {
     public active: boolean;

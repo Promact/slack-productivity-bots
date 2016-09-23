@@ -4,15 +4,17 @@ import { TaskService }   from '../taskmail.service';
 //import {taskmailModel} from '../taskmail.model';
 import {taskmailuserModel} from '../taskmailuser.model';
 import {TaskMailStatus} from '../../enums/TaskMailStatus';
-import { SpinnerService} from '../../spinner.service';
+import { SpinnerService} from '../../shared/spinner.service';
+import {StringConstant} from '../../shared/stringConstant';
+
 @Component({
     templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
     directives: [ROUTER_DIRECTIVES],
-    
+    providers: [StringConstant]
 })
 export class TaskMailListComponent {
     listOfUsers: any;
-    constructor(private router: Router, private taskService: TaskService, private spinner: SpinnerService) {
+    constructor(private router: Router, private taskService: TaskService, private spinner: SpinnerService, private stringConstant: StringConstant) {
 
     }
 
@@ -27,22 +29,22 @@ export class TaskMailListComponent {
         this.taskService.getListOfEmployee().subscribe((result) => {
 
             if (result.length > 0)
-                if (result[0].UserRole == "Admin") {
+                if (result[0].UserRole == this.stringConstant.RoleAdmin) {
                     this.listOfUsers = result;
                 }
-                else if (result[0].UserRole == "TeamLeader") {
+                else if (result[0].UserRole == this.stringConstant.RoleTeamLeader) {
                     var UserId = result[0].UserId;
                     var UserRole = result[0].UserRole;
                     var UserName = result[0].UserName;
                     var UserEmail = result[0].UserEmail;
-                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//]);//, UserEmail]);
+                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//, UserEmail]);
                 }
                 else {
                     var UserId = result[0].UserId;
                     var UserRole = result[0].UserRole;
                     var UserName = result[0].UserName;
                     var UserEmail = result[0].UserEmail;
-                    this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//]);//,UserEmail]);
+                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//,UserEmail]);
                 }
         }, err => {
 
@@ -50,8 +52,8 @@ export class TaskMailListComponent {
     }
     taskmailDetails(UserId, UserName, UserEmail)
     {
-        var UserRole = "Admin";
-        this.router.navigate(['task/taskdetail', UserId, UserRole, UserName]);//, UserEmail]);
+        var UserRole = this.stringConstant.RoleAdmin;
+        this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//, UserEmail]);
     }
     
 }

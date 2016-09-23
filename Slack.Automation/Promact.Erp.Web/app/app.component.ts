@@ -1,6 +1,6 @@
 ﻿
 import { Component } from '@angular/core';
-import { SpinnerComponent} from './spinner.component';
+import { SpinnerComponent} from './shared/spinner.component';
 @Component({
     selector: 'my-app',
     directives: [SpinnerComponent],
