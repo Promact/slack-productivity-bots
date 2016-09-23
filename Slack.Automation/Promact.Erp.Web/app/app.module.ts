@@ -12,6 +12,7 @@ import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
 import { SpinnerComponent} from './shared/spinner.component';
 import { SpinnerService} from './shared/spinner.service';
+import { StringConstant } from './shared/stringConstant';
 
 
 
@@ -25,7 +26,6 @@ import { SpinnerService} from './shared/spinner.service';
       
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
-    //declarations: [AppComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
     providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]
 })
