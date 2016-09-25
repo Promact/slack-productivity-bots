@@ -64,9 +64,9 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-    },
-
+    //preprocessors: {
+    //    "**/app/*spec.js": "coverage"
+    //},
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -110,13 +110,6 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    customLaunchers: {
-        Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
-        }
-    },
-
       // Karma plugins loaded
       plugins: [
           'karma-jasmine',
@@ -126,10 +119,4 @@ module.exports = function(config) {
       ],
  
   })
-
-  if (process.env.TRAVIS || process.env.CIRCLECI) {
-      config.browsers = ['Chrome_travis_ci'];
-      config.singleRun = true;
-      config.browserNoActivityTimeout = 90000;
-  }
 }
