@@ -27,7 +27,6 @@ test_script:
    }
 - cd ./Slack.Automation/Promact.Erp.Web
 - npm test --cover
-- ./node_modules/.bin/istanbul cover --report lcov node_modules/.bin/jasmine test/
 after_test:
 - cat ./build/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; fi
 
