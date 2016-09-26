@@ -98,7 +98,7 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method StartScrum Testing with existing scrum but no scrum answer yet
+        /// Method StartScrum Testing with existing scrum but no scrum answer given yet
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasScrumNoAnswer()
