@@ -9,7 +9,12 @@ import { LeaveReportComponent } from './leaveReport/leaveReport.component';
 import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveReport-List.component';
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
+import { TaskService }   from './taskmail/taskmail.service';
+import { SpinnerComponent} from './shared/spinner.component';
+import { SpinnerService} from './shared/spinner.service';
 import { StringConstant } from './shared/stringConstant';
+//import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
 
 
 @NgModule({
@@ -18,11 +23,12 @@ import { StringConstant } from './shared/stringConstant';
         FormsModule,
         HttpModule,
         JsonpModule,
-        routing
+        routing,
+      
     ],
-    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
+    declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, StringConstant]
+    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 
 export class AppModule { }

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.DataRepository
 {
@@ -107,6 +109,75 @@ namespace Promact.Erp.DomainModel.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method fetches the IQueryable based on expression.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> FetchAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+
+                return await dbSet.Where(predicate).ToListAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Method to search database using Linq Expression and return true or false for any existance of data in database
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public bool Any(Func<T, bool> predicate)
+        {
+            try
+            {
+                return dbSet.Any(predicate);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Method to search database using Linq Expression and return true or false for corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public bool All(Func<T, bool> predicate)
+        {
+            try
+            {
+                return dbSet.All(predicate);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Method to search database using Linq Expression and get LastOrDefault Value corresponding to expression
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public T LastOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return dbSet.LastOrDefault(predicate);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         private bool disposed = false;
 
         /// <summary>
@@ -130,5 +201,20 @@ namespace Promact.Erp.DomainModel.DataRepository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return await dbSet.FirstOrDefaultAsync(predicate);
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        
     }
 }

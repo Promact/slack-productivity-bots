@@ -103,6 +103,7 @@ namespace Promact.Erp.Util
         public static string TeamLeaderDetailsFromOauthServer = "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
         public static string CommentAndDescriptionForTest = "Doing Test Task";
         public static string ManagementDetailsFromOauthServer = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+        public static string TaskMailReport = "[{\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userName\":\"test@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
         public static string TeamLeaderEmailForTest = "gourav@promactinfo.com";
         public static string ManagementFirstForTest = "roshni";
         public static string ManagementEmailForTest = "roshni@promactinfo.com";
@@ -264,6 +265,24 @@ namespace Promact.Erp.Util
         public static string PreviousDayStatusForTest = "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
         public static string UpdateAnswer= "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
         #endregion
+
+        public static string RoleAdmin = "Admin";
+        public static string RoleTeamLeader = "TeamLeader";
+        public static string RoleEmployee = "Employee";
+
+        
+
+        public static string ProjectUasrInformationUrl = "featchListOfUser/";
+        public static string ProjectInformationUrl = "featchUserRole/";
+
+   
+
+
+        public static string NotAvailable = "Not Available";
+        public static string NextPage = "Next";
+        public static string PriviousPage = "Privious";
+
+
 
     }
 }

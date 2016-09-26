@@ -26,6 +26,11 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>management details</returns>
         Task<List<User>> GetManagementUserName(string accessToken);
 
+        //Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
+        //Task<User> GetUserById(string EmployeeId);
+        //Task<User> GetUserByEmployeeId(string employeeId);
+
+        Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
@@ -33,6 +38,15 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <param name="groupName"></param>
         /// <returns>object of ProjectAc</returns>
         Task<ProjectAc> GetProjectDetails(string groupName, string accessToken);
+
+        //Task<ProjectAc> GetProjectDetailsByUserName(string userName, string accessToken);
+        
+        //Task<User> GetUserById(string EmployeeId);
+        //Task<User> GetUserByEmployeeId(string employeeId);
+        //Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
+
+        Task<List<UserRoleAc>> GetListOfEmployee(string userName, string accessToken);
+
 
         /// <summary>
         /// This method is used to fetch list of users/employees of the given group name. - JJ
@@ -42,6 +56,14 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>list of object of User</returns>
         Task<List<User>> GetUsersByGroupName(string groupName, string accessToken);
 
+        
+        
+        //Task<User> GetUserById(string EmployeeId);
+        //Task<User> GetUserByEmployeeId(string employeeId);
+        
+        
+        //Task<User> GetUserById(string EmployeeId);
+       
         
 
         /// <summary>
