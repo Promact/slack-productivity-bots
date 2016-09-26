@@ -19,7 +19,6 @@ module.exports = function(config) {
     'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js',
     'node_modules/core-js/client/shim.min.js',
     'node_modules/reflect-metadata/Reflect.js',
-
     // System.js for module loading
     'node_modules/systemjs/dist/system-polyfills.js',
     'node_modules/systemjs/dist/system.src.js',
