@@ -3,7 +3,7 @@ using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
-    public class SlackChannelRepository: ISlackChannelRepository
+    public class SlackChannelRepository : ISlackChannelRepository
     {
         private readonly IRepository<SlackChannelDetails> _slackChannelDetailsContext;
 
@@ -19,7 +19,6 @@ namespace Promact.Core.Repository.SlackChannelRepository
         public void AddSlackChannel(SlackChannelDetails slackChannelDetails)
         {
             _slackChannelDetailsContext.Insert(slackChannelDetails);
-            _slackChannelDetailsContext.Save();
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <returns>object of SlackChannelDetails</returns>
         public SlackChannelDetails GetById(string slackId)
         {
-            var channel = _slackChannelDetailsContext.FirstOrDefault(x => x.Id == slackId);
+            var channel = _slackChannelDetailsContext.FirstOrDefault(x => x.ChannelId == slackId);
             return channel;
         }
     }

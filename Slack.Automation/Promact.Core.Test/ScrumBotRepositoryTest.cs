@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.HttpClientRepository;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
+using Microsoft.AspNet.Identity;
 
 namespace Promact.Core.Test
 {
@@ -69,6 +69,12 @@ namespace Promact.Core.Test
             ScrumId = 1
         };
 
+        private ApplicationUser testUser = new ApplicationUser()
+        {
+            Email = StringConstant.EmailForTest,
+            UserName = StringConstant.EmailForTest,
+            SlackUserName = StringConstant.TestUser,
+        };
 
         public ScrumBotRepositoryTest()
         {
@@ -85,18 +91,22 @@ namespace Promact.Core.Test
         #region Test Cases
 
 
-        #region Scrum Test Cases - 20
+        #region Scrum Test Cases 
 
 
         #region Start Scrum
 
 
         /// <summary>
-        /// Method StartScrum Testing with existing scrum but no scrum answer yet
+        /// Method StartScrum Testing with existing scrum but no scrum answer given yet
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasScrumNoAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
@@ -108,12 +118,19 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             _botQuestionRepository.AddQuestion(question);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(msg, StringConstant.GoodDay + "<@" + StringConstant.LeaveApplicant + ">!\n" + StringConstant.ScrumQuestionForTest);
+        }
+
+
+        /// <summary>
+        /// Method StartScrum Testing without registered user
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void ScrumNoUser()
+        {
+            var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
+            Assert.Equal(msg, StringConstant.YouAreNotInExistInOAuthServer);
         }
 
 
@@ -123,6 +140,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateAnswerNow()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
@@ -136,10 +157,6 @@ namespace Promact.Core.Test
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(msg, StringConstant.NextQuestion);
         }
@@ -151,6 +168,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateNoQuestion()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
             var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
@@ -158,10 +179,6 @@ namespace Promact.Core.Test
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(msg, StringConstant.NoQuestion);
@@ -174,13 +191,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateNoProject()
         {
-            var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
-
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
+
+            var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
+            var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(StringConstant.NoProjectFound, msg);
@@ -193,13 +210,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateNoEmployee()
         {
-            var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
-
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
+
+            var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
+            var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(StringConstant.NoEmployeeFound, msg);
@@ -212,6 +229,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiate()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
             var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
@@ -221,9 +242,6 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
 
             _botQuestionRepository.AddQuestion(question);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(StringConstant.GoodDay + "<@" + StringConstant.LeaveApplicant + ">!\n" + StringConstant.ScrumQuestionForTest, msg);
@@ -236,6 +254,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
@@ -255,10 +277,6 @@ namespace Promact.Core.Test
             scrumAnswer.EmployeeId = StringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             string previousDayStatus = Environment.NewLine + StringConstant.PreviousDayStatus + Environment.NewLine;
             previousDayStatus += "*_Q_*: " + StringConstant.ScrumQuestionForTest + Environment.NewLine + "*_A_*: _" + StringConstant.NoQuestion + "_" + Environment.NewLine;
@@ -274,6 +292,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasHaltedScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
 
@@ -284,10 +306,6 @@ namespace Promact.Core.Test
             var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
             var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(StringConstant.ResumeScrum, msg);
@@ -300,6 +318,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasScrumQuestionRemaining()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
@@ -320,10 +342,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal("<@" + StringConstant.LeaveApplicant + "> " + StringConstant.ScrumQuestionForTest, msg);
         }
@@ -335,6 +353,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumInitiateHasScrumNoQuestion()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var userResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var userRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, userRequestUrl, StringConstant.AccessTokenForTest)).Returns(userResponse);
@@ -345,23 +367,8 @@ namespace Promact.Core.Test
 
             _scrumDataRepository.Insert(scrum);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Time);
             Assert.Equal(StringConstant.NoQuestion, msg);
-        }
-
-
-        /// <summary>
-        /// Method StartScrum Testing with exception
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void StartScrumException()
-        {
-            var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.Leave, StringConstant.Time);
-            Assert.Equal(StringConstant.ServerClosed, msg);
         }
 
 
@@ -377,6 +384,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumHalt()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             _scrumDataRepository.Insert(scrum);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Halt);
@@ -390,6 +401,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAlreadyHalted()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Halt);
@@ -404,6 +419,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumHaltNoScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Halt);
             Assert.Equal(StringConstant.ScrumNotStarted, msg);
         }
@@ -421,6 +440,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumResume()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -429,10 +452,6 @@ namespace Promact.Core.Test
 
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Resume);
             var expectedString = string.Format(StringConstant.QuestionToNextEmployee, StringConstant.LeaveApplicant);
@@ -446,6 +465,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumResumeNoScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Resume);
             Assert.Equal(StringConstant.ScrumNotStarted, msg);
         }
@@ -457,14 +480,14 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumResumeNotHalted()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             _botQuestionRepository.AddQuestion(question);
 
             scrum.IsHalted = false;
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Resume);
             Assert.Equal(StringConstant.ScrumNotHalted + StringConstant.NoEmployeeFound, msg);
@@ -472,26 +495,17 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method Scrum Testing for resume exception case
+        /// Method Scrum Testing for scrum exception case
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void ScrumResumeException()
+        public async void ScrumException()
         {
-            _scrumDataRepository.Insert(scrum);
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
 
-            var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Resume);
-            Assert.Equal(StringConstant.ServerClosed, msg);
-        }
-
-
-        /// <summary>
-        /// Method Scrum Testing for resume default case in switch case
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void ScrumResumeDefault()
-        {
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserName);
-            Assert.Equal(string.Empty, msg);
+            Assert.Equal(StringConstant.ServerClosed, msg);
         }
 
 
@@ -501,6 +515,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumResumeWithPreviuosDayStatus()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -514,9 +532,6 @@ namespace Promact.Core.Test
 
             scrumAnswer.ScrumId = 2;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.Resume);
             Assert.Equal(StringConstant.PreviousDayStatusForTest, msg);
@@ -529,22 +544,20 @@ namespace Promact.Core.Test
         #endregion
 
 
-        #region Leave and other functionalities - 16
+        #region Leave and other functionalities 
 
 
-        #region Leave Test Cases - 5
+        #region Leave Test Cases 
 
 
         /// <summary>
-        /// Method Leave Testing with exception
+        /// Method Leave Testing without registered user
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveException()
+        public async void LeaveNoUser()
         {
-            _scrumDataRepository.Insert(scrum);
-
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.LeaveApplicant, StringConstant.Leave);
-            Assert.Equal(StringConstant.ServerClosed, msg);
+            Assert.Equal(StringConstant.YouAreNotInExistInOAuthServer, msg);
         }
 
 
@@ -554,6 +567,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveScrumHalted()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
 
@@ -568,6 +585,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void Leave()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -575,12 +596,30 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
 
+            var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.TestUser, StringConstant.LeaveApplicant, StringConstant.Leave);
+            Assert.Equal(Environment.NewLine + StringConstant.GoodDay + "<@" + StringConstant.TestUser + ">!\n" + StringConstant.ScrumQuestionForTest, msg);
+        }
+
+
+        /// <summary>
+        /// Method Leave Testing where applicant and applying employee are same
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveWithSameApplicant()
+        {
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
+            var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+            var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+            _botQuestionRepository.AddQuestion(question);
+            _scrumDataRepository.Insert(scrum);
+
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.LeaveApplicant, StringConstant.Leave);
-            Assert.Equal(Environment.NewLine + StringConstant.GoodDay + "<@" + StringConstant.TestUser + ">!\n" + StringConstant.ScrumQuestionForTest, msg);
+            Assert.Equal(StringConstant.LeaveError, msg);
         }
 
 
@@ -605,6 +644,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveScrumAlreadyComplete()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -614,10 +657,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.LeaveApplicant, StringConstant.Leave);
             Assert.Equal(StringConstant.ScrumAlreadyConducted, msg);
@@ -630,6 +669,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveScrumWithAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -638,10 +681,6 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question1);
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Leave);
             string compareString = string.Format(StringConstant.AlreadyAnswered, StringConstant.UserNameForTest) + Environment.NewLine;
@@ -652,7 +691,7 @@ namespace Promact.Core.Test
         #endregion
 
 
-        #region Later Test Cases - 4
+        #region Later Test Cases 
 
 
         /// <summary>
@@ -661,18 +700,16 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumLeaveLaterWithWrongEmployee()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.TestUser, StringConstant.TestUser, StringConstant.Later);
             string compareString = string.Format(StringConstant.PleaseAnswer, StringConstant.UserNameForTest);
@@ -686,18 +723,16 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumLeaveLaterWithoutScrumAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.TestUser, StringConstant.UserNameForTest, StringConstant.Later);
             //  string compareString = string.Format(StringConstant.PleaseAnswer, StringConstant.UserNameForTest) + Environment.NewLine;
@@ -712,6 +747,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumLeaveLater()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -720,12 +759,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
-
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.TestUser, StringConstant.UserNameForTest, StringConstant.Later);
             string compareString = Environment.NewLine + string.Format(StringConstant.QuestionToNextEmployee, StringConstant.TestUser);
             Assert.Equal(msg, compareString);
@@ -738,6 +771,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterWithSomeLaterAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -749,11 +786,6 @@ namespace Promact.Core.Test
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             scrumAnswer.EmployeeId = StringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.TestUser, StringConstant.UserNameForTest, StringConstant.Later);
             Assert.Equal(StringConstant.ScrumConcludedButLater, msg);
@@ -763,7 +795,7 @@ namespace Promact.Core.Test
         #endregion
 
 
-        #region Scrum Later Test Cases - 7
+        #region Scrum Later Test Cases 
 
 
         /// <summary>
@@ -772,6 +804,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -783,13 +819,34 @@ namespace Promact.Core.Test
             scrumAnswer.EmployeeId = StringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
+            var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.TestUser, StringConstant.Scrum);
+            var expectedString = string.Format("<@{0}> ", StringConstant.TestUser);
+            Assert.Equal(msg, expectedString + StringConstant.ScrumQuestionForTest);
+        }
+
+
+        /// <summary>
+        /// Method LaterScrum Testing with Unrecognized employee
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LaterScrumUnrecognizedEmployee()
+        {
             UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.TestUser, StringConstant.Scrum);
-            var expectedString = string.Format("<@{0}> ", StringConstant.TestUser);
-            Assert.Equal(msg, expectedString + StringConstant.ScrumQuestionForTest);
+            var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
+            var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
+
+            _botQuestionRepository.AddQuestion(question);
+            _scrumDataRepository.Insert(scrum);
+            scrumAnswer.Answer = StringConstant.Later;
+            scrumAnswer.EmployeeId = StringConstant.TestUserId;
+            _scrumAnswerDataRepository.Insert(scrumAnswer);
+
+            var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.TestUserName, StringConstant.Scrum);
+            Assert.Equal(msg, StringConstant.Unrecognized);
         }
 
 
@@ -799,6 +856,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrumWrongEmployee()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -809,10 +870,6 @@ namespace Promact.Core.Test
             scrumAnswer.Answer = StringConstant.Later;
             scrumAnswer.EmployeeId = StringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Scrum);
             string expectedString = string.Format(StringConstant.PleaseAnswer, StringConstant.TestUser) + Environment.NewLine;
@@ -826,6 +883,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrumWithFewAnswered()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -836,10 +897,6 @@ namespace Promact.Core.Test
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             scrumAnswer.Answer = StringConstant.Later;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Scrum);
             Assert.Equal(msg, StringConstant.NextQuestion);
@@ -852,6 +909,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrumWithAllAnswers()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -859,10 +920,6 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Scrum);
             string compareString = Environment.NewLine + string.Format(StringConstant.QuestionToNextEmployee, StringConstant.TestUser);
@@ -876,16 +933,16 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrumNotLater()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserNameForTest, StringConstant.Scrum);
             string expectedString = string.Format(StringConstant.NotLaterYet, StringConstant.UserNameForTest);
@@ -900,16 +957,16 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LaterScrumNotLaterWrongApplicant()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.TestUser, StringConstant.Scrum);
             string expectedString = string.Format(StringConstant.PleaseAnswer, StringConstant.UserNameForTest) + Environment.NewLine;
@@ -923,6 +980,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void AnswerNowScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -932,10 +993,6 @@ namespace Promact.Core.Test
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
             scrumAnswer.EmployeeId = StringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.Leave(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.TestUser, StringConstant.Scrum);
             var expectedString = string.Format(StringConstant.PleaseAnswer, StringConstant.TestUser) + Environment.NewLine;
@@ -949,7 +1006,18 @@ namespace Promact.Core.Test
         #endregion
 
 
-        #region AddScrumAnswer Test Cases - 10
+        #region AddScrumAnswer Test Cases 
+
+
+        /// <summary>
+        /// Method AddScrumAnswer Testing without registered user
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void ScrumAnswerNoUser()
+        {
+            var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.YouAreNotInExistInOAuthServer);
+        }
 
 
         /// <summary>
@@ -958,6 +1026,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAnswerFirstEmployeeFirstAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -967,10 +1039,6 @@ namespace Promact.Core.Test
 
             _scrumDataRepository.Insert(scrum);
             _scrumDataRepository.Save();
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, StringConstant.NextQuestion);
@@ -983,6 +1051,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAnswerNextAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -992,10 +1064,6 @@ namespace Promact.Core.Test
 
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
             string compareString = string.Format(StringConstant.QuestionToNextEmployee, StringConstant.TestUser);
@@ -1009,6 +1077,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAnswerNextQuestion()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1026,10 +1098,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, StringConstant.NextQuestion);
         }
@@ -1041,6 +1109,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void UpdateScrumAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1049,10 +1121,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, StringConstant.UpdateAnswer);
@@ -1065,6 +1133,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void UpdateScrumAnswers()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1075,12 +1147,8 @@ namespace Promact.Core.Test
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
-            //msg = "<@apoorvapatel> Sorry I have nothing to ask you.";
             string compareString = "<@" + StringConstant.UserNameForTest + "> " + StringConstant.NoQuestion;
             Assert.Equal(msg, compareString);
         }
@@ -1092,6 +1160,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAnswerScrumComplete()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1099,12 +1171,6 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.TestUser, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, StringConstant.ScrumComplete);
@@ -1117,6 +1183,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumUnexpectedEmployeeAnswer()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1124,12 +1194,6 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _scrumDataRepository.Insert(scrum);
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.UserNameForTest;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.UserNameForTest, StringConstant.AnswerStatement, StringConstant.GroupName);
             string expectedString = string.Format(StringConstant.PleaseAnswer, StringConstant.TestUser);
@@ -1143,6 +1207,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void ScrumAnswerScrumCompleteButLater()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var usersListResponse = Task.FromResult(StringConstant.EmployeesListFromOauth);
             var usersListRequestUrl = string.Format("{0}{1}", StringConstant.UsersDetailByGroupUrl, StringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, usersListRequestUrl, StringConstant.AccessTokenForTest)).Returns(usersListResponse);
@@ -1151,12 +1219,6 @@ namespace Promact.Core.Test
             _scrumDataRepository.Insert(scrum);
             scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.Later;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            ApplicationUser user1 = user;
-            user1.SlackUserName = StringConstant.TestUser;
-            await _userManager.CreateAsync(user1);
-            await _userManager.AddLoginAsync(user1.Id, info);
 
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.TestUser, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, StringConstant.ScrumConcludedButLater);
@@ -1169,6 +1231,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void NormalConversation()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.TestUser, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, string.Empty);
         }
@@ -1180,13 +1246,17 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void AddScrumAnswerHaltedScrum()
         {
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
             var msg = await _scrumBotRepository.AddScrumAnswer(StringConstant.TestUser, StringConstant.AnswerStatement, StringConstant.GroupName);
             Assert.Equal(msg, string.Empty);
         }
 
-        
+
         #endregion
 
 

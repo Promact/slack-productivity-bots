@@ -1,5 +1,4 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
-
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -61,91 +60,98 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             try
             {
-                List<Scrum> scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date).ToList();
-                string message = "";
-                if (scrum.Any())
+                string message = string.Empty;
+                // getting user name from user's slack name
+                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                // getting access token for that user
+                if (applicationUser != null)
                 {
-                    if (!scrum.FirstOrDefault().IsHalted)
+                    // get access token of user for promact oauth server
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+                    List<Scrum> scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date).ToList();
+
+                    if (scrum.Any())
                     {
-                        // getting user name from user's slack name
-                        var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                        // getting access token for that user
-                        var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
-                        int firstScrumId = scrum.FirstOrDefault().Id;
-                        List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
-                        int questionCount = questions.Count();
-                        //employees of the given group name fetched from the oauth server
-                        List<User> employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
-                        //scrum answer of that day's scrum
-                        List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == firstScrumId).ToList();
-                        var status = ExpectedUser(scrum.FirstOrDefault().Id, GroupName, accessToken, questions, employees, UserName);
-                        if (status == string.Empty)
+                        if (!scrum.FirstOrDefault().IsHalted)
                         {
-                            var nowReadyScrumsAnswers = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).OrderBy(x => x.Id).ToList();
-                            //scrum answers which were marked as later, are now to be answered
-                            if (nowReadyScrumsAnswers.Any())
+                            int firstScrumId = scrum.FirstOrDefault().Id;
+                            List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
+                            int questionCount = questions.Count();
+                            //employees of the given group name fetched from the oauth server
+                            List<User> employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                            //scrum answer of that day's scrum
+                            List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == firstScrumId).ToList();
+                            var status = ExpectedUser(scrum.FirstOrDefault().Id, questions, employees, UserName);
+                            if (status == string.Empty)
                             {
-                                message = UpdateAnswer(nowReadyScrumsAnswers, Message, UserName);
-                                if (nowReadyScrumsAnswers.Count == 1)
-                                    //scrum answers which were marked to be answered later are all answered
-                                    return message + Environment.NewLine + GetQuestion(firstScrumId, GroupName, accessToken, questions, employees, scrum.FirstOrDefault().ProjectId).Result;
-                                else
-                                    //return the message which may contain the next question
-                                    return message;
-                            }
-                            else
-                            {
-                                #region Normal Scrum
-
-                                if ((employees.Count() * questionCount) > scrumAnswer.Count)
+                                var nowReadyScrumsAnswers = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).OrderBy(x => x.Id).ToList();
+                                //scrum answers which were marked as later, are now to be answered
+                                if (nowReadyScrumsAnswers.Any())
                                 {
-                                    Question firstQuestion = questions.OrderBy(x => x.OrderNumber).FirstOrDefault();
-                                    ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
-                                    //scrum answers of the given employee
-                                    int answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+                                    message = UpdateAnswer(nowReadyScrumsAnswers, Message, UserName);
+                                    if (nowReadyScrumsAnswers.Count == 1)
+                                        //scrum answers which were marked to be answered later are all answered
+                                        return message + Environment.NewLine + GetQuestion(firstScrumId, GroupName, questions, employees, scrum.FirstOrDefault().ProjectId, accessToken).Result;
+                                    else
+                                        //return the message which may contain the next question
+                                        return message;
+                                }
+                                else
+                                {
+                                    #region Normal Scrum
 
-                                    if (scrumAnswer.Any())
+                                    if ((employees.Count() * questionCount) > scrumAnswer.Count)
                                     {
-                                        if (answerListCount < questionCount)
+                                        Question firstQuestion = questions.OrderBy(x => x.OrderNumber).FirstOrDefault();
+                                        ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
+                                        //scrum answers of the given employee
+                                        int answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+
+                                        if (scrumAnswer.Any())
                                         {
-                                            //not all questions have been answered
-                                            Question prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
-                                            Question question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
-                                            AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message, ScrumAnswerStatus.Answered);
+                                            if (answerListCount < questionCount)
+                                            {
+                                                //not all questions have been answered
+                                                Question prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
+                                                Question question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
+                                                AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, Message, ScrumAnswerStatus.Answered);
+                                            }
+                                            else
+                                            {
+                                                //A particular employee's first answer
+                                                var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                                                if (idList != null && idList.Count > 0)
+                                                {
+                                                    //now fetch the first question to the next employee
+                                                    User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                                                    AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message, ScrumAnswerStatus.Answered);
+                                                }
+                                            }
+                                            //get the next question 
+                                            //donot shift message                                         
+                                            message = await GetQuestion(firstScrumId, GroupName, questions, employees, scrum.FirstOrDefault().ProjectId, accessToken);
                                         }
                                         else
                                         {
-                                            //A particular employee's first answer
-                                            var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
-                                            if (idList != null && idList.Count > 0)
-                                            {
-                                                //now fetch the first question to the next employee
-                                                User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
-                                                AddAnswer(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, Message, ScrumAnswerStatus.Answered);
-                                            }
+                                            //First Employee's first answer
+                                            User user = employees.FirstOrDefault();
+                                            AddAnswer(firstScrumId, firstQuestion.Id, user.Id, Message, ScrumAnswerStatus.Answered);
+                                            //get the next question . donot shift message 
+                                            message = await GetQuestion(firstScrumId, GroupName, questions, employees, scrum.FirstOrDefault().ProjectId, accessToken);
                                         }
-                                        //get the next question
-                                        //donot shift message 
-                                        message = await GetQuestion(firstScrumId, GroupName, accessToken, questions, employees, scrum.FirstOrDefault().ProjectId);
                                     }
-                                    else
-                                    {
-                                        //First Employee's first answer
-                                        User user = employees.FirstOrDefault();
-                                        AddAnswer(firstScrumId, firstQuestion.Id, user.Id, Message, ScrumAnswerStatus.Answered);
-                                        //get the next question
-                                        //donot shift message 
-                                        message = await GetQuestion(firstScrumId, GroupName, accessToken, questions, employees, scrum.FirstOrDefault().ProjectId);
-                                    }
-                                }
 
-                                #endregion
+                                    #endregion
+                                }
                             }
+                            else if ((status != StringConstant.ScrumConcludedButLater) && (status != StringConstant.ScrumComplete))
+                                return status;
                         }
-                        else if (status != StringConstant.ScrumConcludedButLater)
-                            return status;
                     }
                 }
+                else
+                    // if user doesn't exist then this message will be shown to user
+                    message = StringConstant.YouAreNotInExistInOAuthServer;
                 return message;
             }
             catch (Exception)
@@ -166,59 +172,69 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             try
             {
-                //this doesn't work in test cases     var scrum1 = _scrumRepository.FirstOrDefault(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date);
-                var scrumList = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName)).ToList();
-                var scrum = scrumList.FirstOrDefault(x => x.ScrumDate.Date == DateTime.UtcNow.Date);
-                switch (Parameter)
+                // getting user name from user's slack name
+                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                // getting access token for that user
+                if (applicationUser != null)
                 {
-                    case "halt":
-                        //keyword encountered is "scrum halt"
-                        if (scrum != null)
-                        {
-                            if (scrum.IsHalted)
-                                return StringConstant.ScrumAlreadyHalted;
-                            else
-                            {
-                                //scrum halted
-                                scrum.IsHalted = true;
-                                return StringConstant.ScrumHalted;
-                            }
-                        }
-                        else
-                            //scrum not started yet
-                            return StringConstant.ScrumNotStarted;
+                    // get access token of user for promact oauth server
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
 
-                    case "resume":
-                        //keyword encountered is "scrum resume"
-                        if (scrum != null)
-                        {
-                            var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                            var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
-
-                            var returnMsg = string.Empty;
-                            if (scrum.IsHalted)
+                    //this doesn't work in test cases     var scrum1 = _scrumRepository.FirstOrDefault(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date);
+                    var scrumList = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName)).ToList();
+                    var scrum = scrumList.FirstOrDefault(x => x.ScrumDate.Date == DateTime.UtcNow.Date);
+                    var scrumStage = (ScrumActions)Enum.Parse(typeof(ScrumActions), Parameter);
+                    switch (scrumStage)
+                    {
+                        case ScrumActions.halt:
+                            //keyword encountered is "scrum halt"
+                            if (scrum != null)
                             {
-                                //scrum resumed
-                                scrum.IsHalted = false;
-                                returnMsg = StringConstant.ScrumResumed;
+                                if (scrum.IsHalted)
+                                    return StringConstant.ScrumAlreadyHalted;
+                                else
+                                {
+                                    //scrum halted
+                                    scrum.IsHalted = true;
+                                    return StringConstant.ScrumHalted;
+                                }
                             }
                             else
-                                returnMsg = StringConstant.ScrumNotHalted;
-                            //when the scrum is resumed then, the next question is to be asked
-                            returnMsg += GetQuestion(scrum.Id, GroupName, accessToken, null, null, scrum.ProjectId).Result;
-                            return returnMsg;
-                        }
-                        else
-                            //scrum not started yet
-                            return StringConstant.ScrumNotStarted;
+                                //scrum not started yet
+                                return StringConstant.ScrumNotStarted;
 
-                    case "time":
-                        //keyword encountered is "scrum time"
-                        return StartScrum(GroupName, UserName).Result;
+                        case ScrumActions.resume:
+                            //keyword encountered is "scrum resume"
+                            if (scrum != null)
+                            {
+                                var returnMsg = string.Empty;
+                                if (scrum.IsHalted)
+                                {
+                                    //scrum resumed
+                                    scrum.IsHalted = false;
+                                    returnMsg = StringConstant.ScrumResumed;
+                                }
+                                else
+                                    returnMsg = StringConstant.ScrumNotHalted;
+                                //when the scrum is resumed then, the next question is to be asked
+                                returnMsg += GetQuestion(scrum.Id, GroupName, null, null, scrum.ProjectId, accessToken).Result;
+                                return returnMsg;
+                            }
+                            else
+                                //scrum not started yet
+                                return StringConstant.ScrumNotStarted;
 
-                    default:
-                        return string.Empty;
+                        case ScrumActions.time:
+                            //keyword encountered is "scrum time"
+                            return StartScrum(GroupName, UserName, accessToken).Result;
+
+                        default:
+                            return string.Empty;
+                    }
                 }
+                else
+                    // if user doesn't exist then this message will be shown to user
+                    return StringConstant.YouAreNotInExistInOAuthServer;
             }
             catch (Exception)
             {
@@ -239,50 +255,60 @@ namespace Promact.Core.Repository.ScrumRepository
             try
             {
                 var returnMsg = string.Empty;
-                var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date).FirstOrDefault();
-                if (scrum != null)
+                // getting user name from user's slack name
+                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
+                // getting access token for that user
+                if (applicationUser != null)
                 {
-                    if (scrum.IsHalted)
-                        return StringConstant.ResumeScrum;
-                    else
+                    // get access token of user for promact oauth server
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+
+                    var scrum = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date).FirstOrDefault();
+                    if (scrum != null)
                     {
-                        // getting user name from user's slack name
-                        var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                        // getting access token for that user
-                        var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
-
-                        List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
-                        //count of answers which are not marked as "later"
-                        int scrumAnswerCount = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Count();
-                        List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
-                        List<User> employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
-
-                        if ((questions.Count * employees.Count) == scrumAnswerCount)
-                            //if scrum of all the employees for that day is already recorded
-                            returnMsg = StringConstant.ScrumAlreadyConducted;
+                        if (scrum.IsHalted)
+                            return StringConstant.ResumeScrum;
                         else
                         {
-                            if (Parameter == StringConstant.Scrum)
+                            List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
+                            //count of answers which are not marked as "later"
+                            int scrumAnswerCount = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Count();
+                            List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
+                            List<User> employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+
+                            if ((questions.Count * employees.Count) == scrumAnswerCount)
+                                //if scrum of all the employees for that day is already recorded
+                                returnMsg = StringConstant.ScrumAlreadyConducted;
+                            else
                             {
-                                //keyword "scrum @username" is encountered
-                                var status = CheckUser(scrumAnswer, employees, questions.Count, Applicant);
-                                if (status.Equals(string.Empty))//true condition
+                                if (Parameter == StringConstant.Scrum)
                                 {
-                                    var employee = employees.FirstOrDefault(x => x.SlackUserName == Applicant);
-                                    return LaterScrum(scrumAnswer, employee.Id, Applicant, GroupName, accessToken, scrum.ProjectId, employees, questions);
+                                    //keyword "scrum @username" is encountered
+                                    var status = CheckUser(scrumAnswer, employees, questions.Count, Applicant);
+                                    if (status.Equals(string.Empty))//true condition
+                                    {
+                                        var employee = employees.FirstOrDefault(x => x.SlackUserName == Applicant);
+                                        if (employee != null)
+                                            return LaterScrum(scrumAnswer, employee.Id, Applicant, GroupName, scrum.ProjectId, employees, questions, accessToken);
+                                        else
+                                            returnMsg = StringConstant.Unrecognized;
+                                    }
+                                    else
+                                        return status + Environment.NewLine;
                                 }
                                 else
-                                    return status + Environment.NewLine;
+                                    //keyword "leave @username" or "later @username" is encountered
+                                    returnMsg = LeaveLater(scrumAnswer, employees, Parameter, scrum.Id, Applicant, questions, GroupName, scrum.ProjectId, UserName, accessToken);
                             }
-                            else
-                                //keyword "leave @username" or "later @username" is encountered
-                                returnMsg = LeaveLater(scrumAnswer, employees, Parameter, scrum.Id, Applicant, questions, GroupName, accessToken, scrum.ProjectId);
                         }
                     }
+                    else
+                        //scrum not initiated yet
+                        returnMsg = StringConstant.ScrumNotStarted;
                 }
                 else
-                    //scrum not initiated yet
-                    returnMsg = StringConstant.ScrumNotStarted;
+                    // if user doesn't exist then this message will be shown to user
+                    returnMsg = StringConstant.YouAreNotInExistInOAuthServer;
                 return returnMsg;
             }
             catch (Exception)
@@ -305,19 +331,22 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="Message"></param>
         /// <param name="UserName"></param>
         /// <returns></returns>
-        private string UpdateAnswer(List<ScrumAnswer> scrumAnswers, string Message, string UserName)
+        private string UpdateAnswer(List<ScrumAnswer> ScrumAnswers, string Message, string UserName)
         {
             try
             {
-                ScrumAnswer answer = scrumAnswers.FirstOrDefault();
+                ScrumAnswer answer = ScrumAnswers.FirstOrDefault();
                 answer.CreatedOn = DateTime.UtcNow;
                 answer.AnswerDate = DateTime.UtcNow;
                 answer.Answer = Message;
                 answer.ScrumAnswerStatus = ScrumAnswerStatus.Answered;
                 _scrumAnswerRepository.Update(answer);
-                if (scrumAnswers.Count == 1)
+                if (ScrumAnswers.Count == 1)
+                {
                     //all the answers which were marked to be answered later and after some time marked as ready to be answered now are answered
-                    return "Good luck <@" + UserName + "> " + "! You have answered all scrum questions.";
+                    var returnMsg = string.Format(StringConstant.ScrumLaterDone, UserName);
+                    return returnMsg;
+                }
                 else
                     return "<@" + UserName + "> " + FetchQuestion(answer.QuestionId, false);
             }
@@ -393,9 +422,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="QuestionId"></param>
         /// <param name="EmployeeId"></param>
         /// <param name="Message"></param>
-        /// <param name="status"></param>
+        /// <param name="Status"></param>
         /// <returns>true if scrum answer is added successfully</returns>
-        private bool AddAnswer(int ScrumID, int QuestionId, string EmployeeId, string Message, ScrumAnswerStatus status)
+        private bool AddAnswer(int ScrumID, int QuestionId, string EmployeeId, string Message, ScrumAnswerStatus Status)
         {
             try
             {
@@ -406,7 +435,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 answer.EmployeeId = EmployeeId;
                 answer.QuestionId = QuestionId;
                 answer.ScrumId = ScrumID;
-                answer.ScrumAnswerStatus = status;
+                answer.ScrumAnswerStatus = Status;
                 _scrumAnswerRepository.Insert(answer);
                 return true;
             }
@@ -422,19 +451,18 @@ namespace Promact.Core.Repository.ScrumRepository
         /// </summary>
         /// <param name="GroupName"></param>
         /// <param name="UserName"></param>
+        /// <param name="AccessToken"></param>
         /// <returns>The next question or the scrum complete message</returns>
-        private async Task<string> StartScrum(string GroupName, string UserName)
+        private async Task<string> StartScrum(string GroupName, string UserName, string AccessToken)
         {
             try
             {
                 var scrumList = _scrumRepository.Fetch(x => x.GroupName.Equals(GroupName) && x.ScrumDate.Date == DateTime.UtcNow.Date).ToList();
-                string message = "";
-                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
-                var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+                string message = string.Empty;
                 ProjectAc project;
                 try
                 {
-                    project = await _projectUser.GetProjectDetails(GroupName, accessToken);
+                    project = await _projectUser.GetProjectDetails(GroupName, AccessToken);
 
                     if (project != null && project.Id > 0)
                     {
@@ -442,7 +470,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         try
                         {
                             //employees of this proj/group
-                            employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                            employees = await _projectUser.GetUsersByGroupName(GroupName, AccessToken);
                         }
                         catch (Exception)
                         {
@@ -476,7 +504,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             {
                                 if (!scrumList.FirstOrDefault().IsHalted)
                                     //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
-                                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, accessToken, null, null, project.Id);
+                                    message = await GetQuestion(scrumList.FirstOrDefault().Id, GroupName, null, null, project.Id, AccessToken);
                                 else
                                     //scrum is halted
                                     message = StringConstant.ResumeScrum;
@@ -504,38 +532,49 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <summary>
         /// This method is used when an employee is on leave or can asnwer only later
         /// </summary>
-        /// <param name="scrumAnswer"></param>
-        /// <param name="EmployeeId"></param>
+        /// <param name="ScrumAnswer"></param>
+        /// <param name="Employees"></param>
         /// <param name="Parameter"></param>
         /// <param name="ScrumId"></param>
         /// <param name="Applicant"></param>
-        /// <param name="questions"></param>
+        /// <param name="Questions"></param>
+        /// <param name="GroupName"></param>
+        /// <param name="ProjectId"></param>
+        /// <param name="UserName"></param>
+        /// <param name="AccessToken"></param>
         /// <returns></returns>
-        private string LeaveLater(List<ScrumAnswer> scrumAnswer, List<User> employees, string Parameter, int ScrumId, string Applicant, List<Question> questions, string GroupName, string accessToken, int ProjectId)
+        private string LeaveLater(List<ScrumAnswer> ScrumAnswer, List<User> Employees, string Parameter, int ScrumId, string Applicant, List<Question> Questions, string GroupName, int ProjectId, string UserName, string AccessToken)
         {
             try
             {
                 string returnMsg = string.Empty;
-                var status = ExpectedUser(ScrumId, GroupName, accessToken, questions, employees, Applicant);//checks whether the applicant is the expected user
+                var status = ExpectedUser(ScrumId, Questions, Employees, Applicant);//checks whether the applicant is the expected user
                 if (status == string.Empty)
                 {
-                    string EmployeeId = employees.FirstOrDefault(x => x.SlackUserName == Applicant).Id;
-                    if (scrumAnswer.Any())
+                    string EmployeeId = Employees.FirstOrDefault(x => x.SlackUserName == Applicant).Id;
+                    if (ScrumAnswer.Any())
                         //fetch the scrum answer of the employee given on that day
-                        scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
+                        ScrumAnswer = ScrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
 
-                    if (scrumAnswer.Count() == 0 && Parameter.Equals(StringConstant.Leave))
+                    if (ScrumAnswer.Count() == 0 && Parameter.Equals(StringConstant.Leave))
                     {
-                        //all the scrum questions are answered as "leave"
-                        foreach (var question in questions)
+                        if (UserName.Equals(Applicant))
                         {
-                            AddAnswer(ScrumId, question.Id, EmployeeId, StringConstant.Leave, ScrumAnswerStatus.Answered);
+                            return StringConstant.LeaveError;
+                        }
+                        else
+                        {
+                            //all the scrum questions are answered as "leave"
+                            foreach (var question in Questions)
+                            {
+                                AddAnswer(ScrumId, question.Id, EmployeeId, StringConstant.Leave, ScrumAnswerStatus.Answered);
+                            }
                         }
                     }
                     else if (Parameter.Equals(StringConstant.Later))
                     {
                         //all the questions which are not answered by the employee are fetched
-                        List<Question> questionsNotAnswered = questions.Where(x => !scrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).ToList();
+                        List<Question> questionsNotAnswered = Questions.Where(x => !ScrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).ToList();
                         if (questionsNotAnswered.Any())
                         {
                             //the scrum questions are answered as "later"
@@ -548,7 +587,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             //if execution reaches here, it is can be understood that scrumAnswer will have answer of the given EmployeeId only.
                             //checks if there are any scrum answers whose status is not Answered
-                            var answerlist = scrumAnswer.Where(x => x.ScrumAnswerStatus != ScrumAnswerStatus.Answered).ToList();
+                            var answerlist = ScrumAnswer.Where(x => x.ScrumAnswerStatus != ScrumAnswerStatus.Answered).ToList();
                             if (answerlist.Any())
                             {
                                 foreach (var answer in answerlist)
@@ -570,7 +609,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 else
                     return status;
                 //fetches the next question or status and returns
-                return returnMsg + Environment.NewLine + GetQuestion(ScrumId, GroupName, accessToken, questions, employees, ProjectId).Result;
+                return returnMsg + Environment.NewLine + GetQuestion(ScrumId, GroupName, Questions, Employees, ProjectId, AccessToken).Result;
             }
             catch (Exception)
             {
@@ -584,15 +623,20 @@ namespace Promact.Core.Repository.ScrumRepository
         /// </summary>
         /// <param name="EmployeeId"></param>
         /// <param name="LaterUserName"></param>
-        /// <param name="scrumAnswer"></param>
+        /// <param name="ScrumAnswer"></param>
+        /// <param name="GroupName"></param>
+        /// <param name="ProjectId"></param>
+        /// <param name="Employees"></param>
+        /// <param name="Questions"></param>
+        /// <param name="AccessToken"></param>
         /// <returns>Question statement</returns>
-        private string LaterScrum(List<ScrumAnswer> scrumAnswer, string EmployeeId, string LaterUserName, string GroupName, string accessToken, int ProjectId, List<User> Employees, List<Question> Questions)
+        private string LaterScrum(List<ScrumAnswer> ScrumAnswer, string EmployeeId, string LaterUserName, string GroupName, int ProjectId, List<User> Employees, List<Question> Questions, string AccessToken)
         {
             try
             {
                 string returnMsg = string.Empty;
                 //scrum answer for the day of the given employee id.
-                List<ScrumAnswer> employeeScrumAnswers = scrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
+                List<ScrumAnswer> employeeScrumAnswers = ScrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
                 if (employeeScrumAnswers.Any())
                 {
                     //scrum answers which are marked as later
@@ -618,7 +662,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                     else
                         //if no answer is marked as later
-                        returnMsg = StringConstant.AllAnswerRecorded + Environment.NewLine + GetQuestion(scrumAnswer.First().ScrumId, GroupName, accessToken, Questions, Employees, ProjectId).Result;
+                        returnMsg = StringConstant.AllAnswerRecorded + Environment.NewLine + GetQuestion(ScrumAnswer.First().ScrumId, GroupName, Questions, Employees, ProjectId, AccessToken).Result;
                 }
                 else
                     //if no answer of the employee is recorded yet
@@ -638,25 +682,25 @@ namespace Promact.Core.Repository.ScrumRepository
         /// </summary>
         /// <param name="ScrumId"></param>
         /// <param name="GroupName"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="employees"></param>
-        /// <param name="questions"></param>
+        /// <param name="Employees"></param>
+        /// <param name="Questions"></param>
         ///<param name="ProjectId"></param>
+        ///<param name="AccessToken"></param>
         /// <returns>The next question or the scrum complete message</returns>
-        private async Task<string> GetQuestion(int ScrumId, string GroupName, string accessToken, List<Question> questions, List<User> employees, int ProjectId)
+        private async Task<string> GetQuestion(int ScrumId, string GroupName, List<Question> Questions, List<User> Employees, int ProjectId, string AccessToken)
         {
             try
             {
                 string returnMsg = StringConstant.NoEmployeeFound;
                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == ScrumId).ToList();
-                if (questions == null)
-                    questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
-                if (employees == null)
-                    employees = await _projectUser.GetUsersByGroupName(GroupName, accessToken);
+                if (Questions == null)
+                    Questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
+                if (Employees == null)
+                    Employees = await _projectUser.GetUsersByGroupName(GroupName, AccessToken);
 
-                if (employees.Count > 0)
+                if (Employees.Count > 0)
                 {
-                    if (questions.Count > 0)
+                    if (Questions.Count > 0)
                     {
                         if (scrumAnswer.Any())
                         {
@@ -666,12 +710,12 @@ namespace Promact.Core.Repository.ScrumRepository
                             {
                                 ScrumAnswer ans = laterAnswers.FirstOrDefault();
                                 //the first question which is to be answered now is asked
-                                return "<@" + employees.FirstOrDefault(x => x.Id == ans.EmployeeId).SlackUserName + "> " + questions.FirstOrDefault(x => x.Id == ans.QuestionId).QuestionStatement;
+                                return "<@" + Employees.FirstOrDefault(x => x.Id == ans.EmployeeId).SlackUserName + "> " + Questions.FirstOrDefault(x => x.Id == ans.QuestionId).QuestionStatement;
                             }
                             else
                             {
                                 #region Normal Get Question
-                                int questionCount = questions.Count();
+                                int questionCount = Questions.Count();
                                 //last acrum answer of the given scrum id.
                                 ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
                                 //no. of answers given by the employee who gave the last scrum answer.
@@ -679,11 +723,11 @@ namespace Promact.Core.Repository.ScrumRepository
                                 if (answerListCount >= questionCount)
                                 {
                                     //all questions have been asked to the previous employee                        
-                                    var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                                    var idList = Employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                                     if (idList != null && idList.Count > 0)
                                     {
                                         //now fetch the first question to the next employee
-                                        User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                                        User user = Employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
                                         returnMsg = StringConstant.GoodDay + "<@" + user.SlackUserName + ">!\n" + FetchPreviousDayStatus(user.Id, ProjectId) + FetchQuestion(null, true);
                                     }
                                     else
@@ -700,7 +744,7 @@ namespace Promact.Core.Repository.ScrumRepository
                                 else
                                 {
                                     //as not all questions have been answered by the last employee,the next question to that employee will be asked
-                                    User user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                                    User user = Employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
                                     returnMsg = "<@" + user.SlackUserName + "> " + FetchQuestion(lastScrumAnswer.QuestionId, false);
                                 }
                                 #endregion
@@ -708,7 +752,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                         else
                             //no scrum answer has been recorded yet. So first question to the first employee
-                            returnMsg = StringConstant.GoodDay + "<@" + employees.FirstOrDefault().SlackUserName + ">!\n" + FetchPreviousDayStatus(employees.FirstOrDefault().Id, ProjectId) + questions.FirstOrDefault().QuestionStatement;
+                            returnMsg = StringConstant.GoodDay + "<@" + Employees.FirstOrDefault().SlackUserName + ">!\n" + FetchPreviousDayStatus(Employees.FirstOrDefault().Id, ProjectId) + Questions.FirstOrDefault().QuestionStatement;
                     }
                     else
                         returnMsg = StringConstant.NoQuestion;
@@ -726,13 +770,11 @@ namespace Promact.Core.Repository.ScrumRepository
         /// Used to fetch the next question based on the given parameters
         /// </summary>
         /// <param name="ScrumId"></param>
-        /// <param name="GroupName"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="employees"></param>
-        /// <param name="questions"></param>
+        /// <param name="Employees"></param>
+        /// <param name="Questions"></param>
         ///<param name="ProjectId"></param>
         /// <returns>The next question or the scrum complete message</returns>
-        private string ExpectedUser(int ScrumId, string GroupName, string accessToken, List<Question> questions, List<User> employees, string Applicant)
+        private string ExpectedUser(int ScrumId, List<Question> Questions, List<User> Employees, string Applicant)
         {
             try
             {
@@ -746,11 +788,11 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (readyToBeAnswered.Any())
                     {
                         ScrumAnswer answer = readyToBeAnswered.FirstOrDefault();
-                        user = employees.FirstOrDefault(x => x.Id == answer.EmployeeId);
+                        user = Employees.FirstOrDefault(x => x.Id == answer.EmployeeId);
                     }
                     else
                     {
-                        int questionCount = questions.Count();
+                        int questionCount = Questions.Count();
                         //last acrum answer of the given scrum id.
                         ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
                         //no. of answers given by the employee who gave the last scrum answer.
@@ -758,27 +800,29 @@ namespace Promact.Core.Repository.ScrumRepository
                         if (answerListCount >= questionCount)
                         {
                             //all questions have been asked to the previous employee                        
-                            var idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                            var idList = Employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                             if (idList != null && idList.Count > 0)
                                 //now the next employee
-                                user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                                user = Employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
                             else
                             {
                                 var list = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.Later).ToList();
                                 if (list != null && list.Count > 0)//some are still marked to be answered later
                                     return StringConstant.ScrumConcludedButLater;
+                                else
+                                    return StringConstant.ScrumComplete;
                             }
                         }
                         else
                             //as not all questions have been answered by the last employee,so to that employee itself
-                            user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                            user = Employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
                     }
                 }
                 else
                     //no scrum answer has been recorded yet. So first employee
-                    user = employees.FirstOrDefault();
+                    user = Employees.FirstOrDefault();
 
-                if (user.SlackUserName == Applicant)
+                if (user != null && user.SlackUserName == Applicant)
                     return string.Empty;
                 else
                     return string.Format(StringConstant.PleaseAnswer, user.SlackUserName);

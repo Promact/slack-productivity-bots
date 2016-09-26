@@ -86,16 +86,16 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
             foreach (var channel in channels.Channels)
             {
+                channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(channel);
-                _slackChannelDetails.Save();
             }
 
             var groupDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null);
             var groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
             foreach (var channel in groups.Groups)
             {
+                channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(channel);
-                _slackChannelDetails.Save();
             }
         }
 
