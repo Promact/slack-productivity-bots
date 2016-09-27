@@ -26,10 +26,10 @@ namespace Promact.Erp.Util.Email
                 message.BodyEncoding = Encoding.UTF8;
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
-                client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.User);
-                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.User));
-                client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.User));
-                client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.User));
+                client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.Process);
+                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.Process));
+                client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.Process));
+                client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.Process));
                 client.Send(message);
             }
             catch (Exception ex)

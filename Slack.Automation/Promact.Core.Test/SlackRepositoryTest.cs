@@ -846,7 +846,7 @@ namespace Promact.Core.Test
         {
             Text = StringConstant.SlashCommandText,
             Username = StringConstant.FirstNameForTest,
-            ResponseUrl = Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User)
+            ResponseUrl = Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.Process)
         };
 
         private void UserMock()

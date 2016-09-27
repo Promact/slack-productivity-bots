@@ -50,8 +50,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
-            var clientId = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.User);
-            var clientSecret = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientSecret, EnvironmentVariableTarget.User);
+            var clientId = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.Process);
+            var clientSecret = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientSecret, EnvironmentVariableTarget.Process);
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -67,7 +67,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
         {
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.User), code);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.Process), code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);

@@ -60,7 +60,7 @@ namespace Promact.Core.Test
         public void AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(StringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.User), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.User), StringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.Process), StringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(StringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", StringConstant.AccessTokenSlack);

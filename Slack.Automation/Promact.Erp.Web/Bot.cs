@@ -25,7 +25,7 @@ namespace Promact.Erp.Web
             _slackUserDetails = container.Resolve<ISlackUserRepository>();
             _logger = container.Resolve<ILogger>();
             // assigning bot token on Slack Socket Client
-            string botToken = Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.User);
+            string botToken = Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.Process);
             if (!(string.IsNullOrEmpty(botToken)))
             {
                 SlackSocketClient client = new SlackSocketClient(botToken);
@@ -67,7 +67,7 @@ namespace Promact.Erp.Web
 
         public static void ScrumMain(IComponentContext container)
         {
-            string botToken = Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.User);
+            string botToken = Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.Process);
             if (!(string.IsNullOrEmpty(botToken)))
             {
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
@@ -95,7 +95,7 @@ namespace Promact.Erp.Web
                         {
                             replyText = StringConstant.ScrumHelpMessage;
                         }
-                        else if (user != null && channel != null && user.Name != Environment.GetEnvironmentVariable(StringConstant.ScrumBotName, EnvironmentVariableTarget.User))
+                        else if (user != null && channel != null)
                         {
                             var simpleText = text.Split(null);
 

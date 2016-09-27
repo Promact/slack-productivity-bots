@@ -170,7 +170,7 @@ namespace Promact.Core.Repository.Client
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
-                WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
+                WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.Process));
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);
@@ -193,7 +193,7 @@ namespace Promact.Core.Repository.Client
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
             var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
-            WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.User));
+            WebRequestMethod(textJson, Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.Process));
             EmailApplication email = new EmailApplication();
             // creating email templates corresponding to leave applied
             email.Body = EmailServiceTemplate(leaveRequest);
