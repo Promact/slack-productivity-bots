@@ -215,8 +215,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\leaveReport\leaveReportDetails\leaveReportDetails.html" />
-    <Content Include="app\leaveReport\leaveReportList\leaveReportList.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
     <Content Include="Content\bootstrap-theme.css" />
