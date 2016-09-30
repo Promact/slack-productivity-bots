@@ -21,23 +21,23 @@ namespace Promact.Erp.Web
 
         public static void Main(IComponentContext container)
         {
+            _logger = container.Resolve<ILogger>();
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
-                _logger = container.Resolve<ILogger>();
+
                 // assigning bot token on Slack Socket Client
                 string botToken = Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.Process);
-
                 SlackSocketClient client = new SlackSocketClient(botToken);
+                // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
+                MessageReceived messageReceive = new MessageReceived();
+                messageReceive.ok = true;
+                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+                // Telling Slack Socket Client to the bot whose access token was given early
+                client.Connect((connected) => { });
                 try
                 {
-                    // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
-                    MessageReceived messageReceive = new MessageReceived();
-                    messageReceive.ok = true;
-                    Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                    // Telling Slack Socket Client to the bot whose access token was given early
-                    client.Connect((connected) => { });
                     // Method will hit when someone send some text in task mail bot
                     client.OnMessageReceived += (message) =>
                     {
@@ -56,15 +56,15 @@ namespace Promact.Erp.Web
                         client.SendMessage(showMethod, message.channel, replyText);
                     };
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot, ex);
                     client.CloseSocket();
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot, ex);
+                throw ex;
             }
         }
 
@@ -73,37 +73,33 @@ namespace Promact.Erp.Web
 
         public static void ScrumMain(IComponentContext container)
         {
+            _logger = container.Resolve<ILogger>();
             try
             {
                 string botToken = Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.Process);
-                if (!(string.IsNullOrEmpty(botToken)))
-                {
-                    SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-                    _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-                    _slackUserDetails = container.Resolve<ISlackUserRepository>();
-                    _slackChannelDetails = container.Resolve<ISlackChannelRepository>();
-                    _logger = container.Resolve<ILogger>();
-                    // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
-                    MessageReceived messageReceive = new MessageReceived();
-                    messageReceive.ok = true;
-                    Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                    //Connecting the bot of the given token 
-                    client.Connect((connected) => { });
 
-                    // Method will be called when someone sends message
-                    client.OnMessageReceived += (message) =>
-                    {
-                        ScrumMessages(message, client, showMethod);
-                    };
-                }
-                else
+                SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+                _scrumBotRepository = container.Resolve<IScrumBotRepository>();
+                _slackUserDetails = container.Resolve<ISlackUserRepository>();
+                _slackChannelDetails = container.Resolve<ISlackChannelRepository>();
+
+                // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+                MessageReceived messageReceive = new MessageReceived();
+                messageReceive.ok = true;
+                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+                //Connecting the bot of the given token 
+                client.Connect((connected) => { });
+
+                // Method will be called when someone sends message
+                client.OnMessageReceived += (message) =>
                 {
-                    _logger.Error(StringConstant.LoggerScrumBot, StringConstant.TokenEmpty);
-                }
+                    ScrumMessages(message, client, showMethod, container);
+                };
             }
             catch (Exception ex)
             {
                 _logger.Error(StringConstant.LoggerScrumBot, ex.ToString());
+                throw ex;
             }
         }
 
@@ -114,8 +110,9 @@ namespace Promact.Erp.Web
         /// <param name="message"></param>
         /// <param name="client"></param>
         /// <param name="showMethod"></param>
-        public static void ScrumMessages(NewMessage message, SlackSocketClient client, Action<MessageReceived> showMethod)
+        public static void ScrumMessages(NewMessage message, SlackSocketClient client, Action<MessageReceived> showMethod, IComponentContext container)
         {
+            _logger = container.Resolve<ILogger>();
             string replyText = string.Empty;
             try
             {
@@ -160,15 +157,7 @@ namespace Promact.Erp.Web
                     //all other texts
                     else
                     {
-                        try
-                        {
-                            replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(StringConstant.LoggerScrumBot, ex.ToString());
-                            client.CloseSocket();
-                        }
+                        replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                     }
                 }
 
@@ -183,6 +172,7 @@ namespace Promact.Erp.Web
                 _logger.Error(StringConstant.LoggerScrumBot, ex.ToString());
                 client.SendMessage(showMethod, message.channel, StringConstant.ErrorMsg);
                 client.CloseSocket();
+                throw ex;
             }
         }
 
