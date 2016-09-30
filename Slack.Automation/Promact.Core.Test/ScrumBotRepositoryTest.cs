@@ -495,21 +495,6 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method Scrum Testing for scrum exception case
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void ScrumException()
-        {
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var msg = await _scrumBotRepository.Scrum(StringConstant.GroupName, StringConstant.UserNameForTest, StringConstant.UserName);
-            Assert.Equal(StringConstant.ServerClosed, msg);
-        }
-
-
-        /// <summary>
         /// Method Scrum Testing for resume with previous day scrum status
         /// </summary>
         [Fact, Trait("Category", "Required")]

@@ -71,6 +71,7 @@ namespace Promact.Erp.Util
         public static string PreviousDayStatus = "*Your previous day's status is :*\n";
         public static string ScrumBotToken = "ScrumBotToken";
         public static string ScrumBotName = "ScrumBotName";
+        public static string LoggerScrumBot = "Error in Scrum Bot : ";
         public static string ScrumLaterDone = "Good luck <@{0}> ! You have answered all scrum questions.";
         public static string AlreadyAnswered = "But,<@{0}> your answers have been recorded today :worried:\n";
         public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
@@ -145,6 +146,8 @@ namespace Promact.Erp.Util
         public static string SlashCommandLeaveStatusErrorMessage = string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves status username{0}/leaves status", Environment.NewLine);
         public static string Host = "Host";
         public static string Port = "Port";
+        public static string TokenEmpty = "Could not obtain Bot Token";
+        public static string ErrorMsg = "Sorry. Something bad happened :face_with_head_bandage: . Please try after sometime.";
         public static string From = "From";
         public static string Password = "Password";
         public static string EnableSsl = "EnableSsl";
