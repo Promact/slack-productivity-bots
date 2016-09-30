@@ -1,4 +1,6 @@
-﻿using Promact.Erp.Web.App_Start;
+﻿using Promact.Erp.Util;
+using Promact.Erp.Web.App_Start;
+using System;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -17,6 +19,9 @@ namespace Promact.Erp.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+                      
+            Bot.SetEnvironmentVariables();
+
             Bot.Main(container);
             Bot.ScrumMain(container);
         }
