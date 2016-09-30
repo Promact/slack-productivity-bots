@@ -4,6 +4,7 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
@@ -16,6 +17,7 @@ namespace Promact.Erp.Web
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
+
         private static ISlackChannelRepository _slackChannelDetails;
         private static IScrumBotRepository _scrumBotRepository;
 
@@ -176,5 +178,23 @@ namespace Promact.Erp.Web
             }
         }
 
+
+
+
+        public static void SetEnvironmentVariables()
+        {
+            GlobalClass.SlackOAuthClientSecret = Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.Process);
+            GlobalClass.SlackOAuthClientId = Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process);
+            GlobalClass.ScrumBotToken = Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.Process);
+            GlobalClass.PromactOAuthClientId = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.Process);
+            GlobalClass.TaskmailAccessToken = Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.Process);
+            GlobalClass.PromactOAuthClientSecret = Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientSecret, EnvironmentVariableTarget.Process);
+            GlobalClass.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.Process);
+            GlobalClass.Port = Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.Process);
+            GlobalClass.From = Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.Process);
+            GlobalClass.Password = Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.Process);
+            GlobalClass.EnableSsl = Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.Process);
+            GlobalClass.IncomingWebHookUrl = Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.Process);
+        }
     }
 }
