@@ -1,6 +1,7 @@
 using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using Promact.Core.Repository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
@@ -78,7 +79,7 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, GlobalClass.PromactOAuthClientId);
+                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientId));
                 //make call to the OAuth Server
                 return Redirect(url);
             }
@@ -182,7 +183,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult SlackOAuthAuthorization()
         {
-            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + GlobalClass.SlackOAuthClientId);
+            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId));
         }
     }
 }

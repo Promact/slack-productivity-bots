@@ -1,5 +1,4 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -24,6 +23,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="GroupName"></param>
         /// <returns>The next Question Statement</returns>
         Task<string> AddScrumAnswer(string UserName, string Message, string GroupName);
+
 
         /// <summary>
         /// This method will be called when the keyword "leave @username" or "later @username" or "scrum @username" is received as reply from a group member. - JJ

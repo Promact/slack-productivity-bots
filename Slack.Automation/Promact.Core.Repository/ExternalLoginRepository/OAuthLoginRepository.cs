@@ -50,8 +50,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
-            var clientId =GlobalClass.PromactOAuthClientId;
-            var clientSecret = GlobalClass.PromactOAuthClientSecret;
+            var clientId = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientId);
+            var clientSecret = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientSecret);
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -66,9 +66,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="code"></param>
         /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
-        {           
-            //var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.Process), code);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", GlobalClass.SlackOAuthClientId,GlobalClass.SlackOAuthClientSecret, code);
+        {
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId), EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);

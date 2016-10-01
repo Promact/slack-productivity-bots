@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
 using Moq;
+using Promact.Core.Repository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.HttpClientRepository;
@@ -12,12 +13,9 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using System.Web;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -846,7 +844,7 @@ namespace Promact.Core.Test
         {
             Text = StringConstant.SlashCommandText,
             Username = StringConstant.FirstNameForTest,
-            ResponseUrl = Environment.GetEnvironmentVariable(StringConstant.IncomingWebHookUrl, EnvironmentVariableTarget.Process)
+            ResponseUrl = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.IncomingWebHookUrl)
         };
 
         private void UserMock()

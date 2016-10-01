@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Promact.Core.Repository
 {
     public static class EnvironmentVariableStore
     {
-        public static string SetEnvironmentVariables(string VarName)
+        /// <summary>
+        /// This method is used to fetch the value of the environment variable of the given name
+        /// </summary>
+        /// <param name="VarName"></param>
+        /// <returns></returns>
+        public static string GetEnvironmentVariableValues(string VarName)
         {
             return Environment.GetEnvironmentVariable(VarName, EnvironmentVariableTarget.Process);
         }

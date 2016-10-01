@@ -1,15 +1,12 @@
 ﻿using Autofac;
 using Moq;
+using Promact.Core.Repository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -60,7 +57,7 @@ namespace Promact.Core.Test
         public void AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(StringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientSecret, EnvironmentVariableTarget.Process), StringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId), EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), StringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(StringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", StringConstant.AccessTokenSlack);
