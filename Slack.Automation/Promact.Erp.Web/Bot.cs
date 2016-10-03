@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Autofac.Extras.NLog;
-using Promact.Core.Repository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -86,7 +85,6 @@ namespace Promact.Erp.Web
             try
             {
                 string botToken = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.ScrumBotToken);
-
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
@@ -169,11 +167,11 @@ namespace Promact.Erp.Web
                         replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                     }
                 }
-                else if(user == null)
+                else if (user == null)
                 {
                     replyText = StringConstant.NotAUser;
                 }
-                else if(channel == null)
+                else if (channel == null)
                 {
                     replyText = StringConstant.NotAProject;
                 }
@@ -193,6 +191,6 @@ namespace Promact.Erp.Web
             }
         }
 
-          
+
     }
 }

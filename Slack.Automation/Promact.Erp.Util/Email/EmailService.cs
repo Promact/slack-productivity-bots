@@ -1,5 +1,4 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
 using System;
 using System.Net.Mail;
 using System.Text;
@@ -24,10 +23,10 @@ namespace Promact.Erp.Util.Email
                 message.BodyEncoding = Encoding.UTF8;
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
-                client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.Process);
-                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.Process) );
-                client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.Process));
-                client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.Process));
+                client.Host = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.Host);
+                client.Port = Convert.ToInt32(EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.Port) );
+                client.Credentials = new System.Net.NetworkCredential(EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.From), EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.Password));
+                client.EnableSsl = Convert.ToBoolean(EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.EnableSsl));
                 client.Send(message);
             }
             catch (Exception ex)

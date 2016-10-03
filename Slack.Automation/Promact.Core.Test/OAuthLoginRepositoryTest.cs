@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Moq;
-using Promact.Core.Repository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;

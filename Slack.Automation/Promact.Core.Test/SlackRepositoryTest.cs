@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
 using Moq;
-using Promact.Core.Repository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.HttpClientRepository;

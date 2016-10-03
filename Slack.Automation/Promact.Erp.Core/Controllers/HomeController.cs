@@ -1,7 +1,6 @@
 using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using Promact.Core.Repository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
