@@ -5,7 +5,6 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
-using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
@@ -169,6 +168,14 @@ namespace Promact.Erp.Web
                     {
                         replyText = _scrumBotRepository.AddScrumAnswer(user.Name, text, channel.Name).Result;
                     }
+                }
+                else if(user == null)
+                {
+                    replyText = StringConstant.NotAUser;
+                }
+                else if(channel == null)
+                {
+                    replyText = StringConstant.NotAProject;
                 }
 
                 if (!String.IsNullOrEmpty(replyText))
