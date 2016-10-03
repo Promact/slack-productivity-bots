@@ -22,6 +22,11 @@ namespace Promact.Erp.Web
         private static ISlackChannelRepository _slackChannelDetails;
         private static IScrumBotRepository _scrumBotRepository;
 
+
+        /// <summary>
+        /// Used to connect task mail bot and to capture task mail
+        /// </summary>
+        /// <param name="container"></param>
         public static void Main(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
@@ -72,7 +77,10 @@ namespace Promact.Erp.Web
         }
 
 
-
+        /// <summary>
+        /// Used for Scrum meeting bot connection and to conduct scrum meeting 
+        /// </summary>
+        /// <param name="container"></param>
         public static void ScrumMain(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
