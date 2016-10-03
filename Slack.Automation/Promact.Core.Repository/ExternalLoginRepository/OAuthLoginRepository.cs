@@ -75,7 +75,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             foreach (var user in slackUsers.Members)
             {
-                if (user.Name != StringConstant.SlackBotStringName)
+                if (!user.Deleted && user.IsBot == false)
                 {
                     user.CreatedOn = DateTime.UtcNow;
                     _slackUserDetails.Insert(user);
@@ -86,16 +86,22 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
             foreach (var channel in channels.Channels)
             {
-                channel.CreatedOn = DateTime.UtcNow;
-                _slackChannelDetails.Insert(channel);
+                if (!channel.Deleted)
+                {
+                    channel.CreatedOn = DateTime.UtcNow;
+                    _slackChannelDetails.Insert(channel);
+                }
             }
 
             var groupDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null);
             var groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
             foreach (var channel in groups.Groups)
             {
-                channel.CreatedOn = DateTime.UtcNow;
-                _slackChannelDetails.Insert(channel);
+                if (!channel.Deleted)
+                {
+                    channel.CreatedOn = DateTime.UtcNow;
+                    _slackChannelDetails.Insert(channel);
+                }
             }
         }
 

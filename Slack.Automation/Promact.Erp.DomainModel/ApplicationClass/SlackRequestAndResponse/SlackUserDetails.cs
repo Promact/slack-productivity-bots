@@ -25,6 +25,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         public string Name { get; set; }
 
         /// <summary>
+        /// True if it is Bot
+        /// </summary>
+        [JsonProperty("is_bot")]
+        public bool IsBot { get; set; }
+
+        /// <summary>
         /// Bool true for they exist in team or not
         /// </summary>
         [JsonProperty("deleted")]
