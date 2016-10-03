@@ -30,7 +30,7 @@ namespace Promact.Erp.Web
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
 
                 // assigning bot token on Slack Socket Client
-                string botToken = Environment.GetEnvironmentVariable(StringConstant.TaskmailAccessToken, EnvironmentVariableTarget.Process);
+                string botToken = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.TaskmailAccessToken);
                 SlackSocketClient client = new SlackSocketClient(botToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
@@ -72,13 +72,12 @@ namespace Promact.Erp.Web
 
 
 
-
         public static void ScrumMain(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
             try
             {
-                string botToken = Environment.GetEnvironmentVariable(StringConstant.ScrumBotToken, EnvironmentVariableTarget.Process);
+                string botToken = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.ScrumBotToken);
 
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
