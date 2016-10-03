@@ -5,6 +5,7 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;

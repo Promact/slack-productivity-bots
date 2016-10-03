@@ -1,4 +1,5 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
 using System;
 using System.Net.Mail;
 using System.Text;
