@@ -3,16 +3,16 @@
 
 You may skip Step 1, if it's already done.
 
-1. Common Initial Setup
+#### 1. Common Initial Setup
   * The user must be registered(details such as Slack Name must be exactly same as slack username) in Promact-OAuth-Server and must be externally login from Promact-OAuth-Server in our slack application.
   * Admin of their team must add our slack app 	Promact https://promact.slack.com/apps/A1WCQ9A3S-promact to their slack team.
 
-2. Scrum Meeting Setup
+#### 2. Scrum Meeting Setup
   * Add the project details of the slack channel in which scrum meeting has to be conducted to Promact-Oauth-Server, where the slack channel name must be entered as it is given in slack.
   * Add the team members of the project(members of the slack channel) except the TL of the project.
   * Add the scrum bot to the slack channel in which scrum meeting has to be conducted.
 
-3. Conduct the Scrum 
+#### 3. Conduct the Scrum 
   * Start a scrum meeting by writing “scrum time”.
   * The bot will start asking questions to each member of the channel by calling out their names along with the question.The employee being asked must answer.
   * If an employee is on leave, when the bot asks a question to this employee then anyone can write “leave @username” to mark his absence.
