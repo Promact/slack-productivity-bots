@@ -21,6 +21,7 @@ using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using System.Data.Entity;
 using System.Net.Http;
@@ -35,6 +36,7 @@ namespace Promact.Erp.Web.App_Start
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
+            builder.RegisterType<EnvironmentVariableStore>().AsSelf();
             // register dependency
             builder.RegisterType<PromactErpContext>().As<DbContext>();
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();

@@ -18,6 +18,7 @@ namespace Promact.Core.Test
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly EnvironmentVariableStore _envVariableStore;
         public OAuthLoginRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -25,6 +26,7 @@ namespace Promact.Core.Test
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _envVariableStore = _componentContext.Resolve<EnvironmentVariableStore>();
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace Promact.Core.Test
         public void AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(StringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId), EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), StringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableStore.FetchEnvironmentVariableValues(StringConstant.SlackOAuthClientId), _envVariableStore.FetchEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), StringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(StringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", StringConstant.AccessTokenSlack);
@@ -66,7 +68,7 @@ namespace Promact.Core.Test
             var groupDetailsResponse = Task.FromResult(StringConstant.GroupDetailsResponseText);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null)).Returns(groupDetailsResponse);
             _oAuthLoginRepository.AddSlackUserInformation(StringConstant.MessageTsForTest);
-            _mockHttpClient.Verify(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null),Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(StringConstant.SlackUserListUrl, userDetailsRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(StringConstant.SlackChannelListUrl, userDetailsRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null), Times.Once);

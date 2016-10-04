@@ -28,6 +28,7 @@ namespace Promact.Core.Test
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ApplicationUserManager _userManager;
+        private readonly EnvironmentVariableStore _envVariableStore;
         public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -37,6 +38,7 @@ namespace Promact.Core.Test
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
+            _envVariableStore = _componentContext.Resolve<EnvironmentVariableStore>();
         }
 
         /// <summary>
@@ -49,13 +51,14 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             var replyText = _attachmentRepository.ReplyText(StringConstant.FirstNameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest,replyText,StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -68,10 +71,11 @@ namespace Promact.Core.Test
         {
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(Task.FromResult(""));
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
+                .Select((element, index) => index % 2 == 0 ? element
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+                .SelectMany(element => element).ToList();
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), StringConstant.SorryYouCannotApplyLeave));
             var replyText = StringConstant.EmptyString;
             _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
@@ -135,6 +139,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveListCommandForTest;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -154,6 +159,7 @@ namespace Promact.Core.Test
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.SlashCommandLeaveListErrorMessage;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveListCommandForTest;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -176,6 +182,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveListTestForOwn;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -195,6 +202,7 @@ namespace Promact.Core.Test
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.SlashCommandLeaveListErrorMessage;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveListTestForOwn;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -218,6 +226,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveCancelCommandForTest;
             var slackText = slackLeave.Text.Split('"')
                 .Select((element, index) => index % 2 == 0 ? element
@@ -243,6 +252,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveCancelCommandForTest;
             slackLeave.Username = StringConstant.FalseStringNameForTest;
             var slackText = slackLeave.Text.Split('"')
@@ -266,6 +276,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.SlashCommandLeaveCancelErrorMessage;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.WrongLeaveCancelCommandForTest;
             slackLeave.Username = StringConstant.FalseStringNameForTest;
             var slackText = slackLeave.Text.Split('"')
@@ -287,6 +298,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveStatusCommandForTest;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -310,6 +322,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.SlashCommandLeaveStatusErrorMessage;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveStatusCommandForTest;
             var slackText = slackLeave.Text.Split('"')
                 .Select((element, index) => index % 2 == 0 ? element
@@ -331,6 +344,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
             slackLeave.Text = StringConstant.LeaveStatusTestForOwn;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
@@ -349,6 +363,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.SlashCommandLeaveStatusErrorMessage;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveStatusTestForOwn;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             await _slackRepository.LeaveRequest(slackLeave);
@@ -363,6 +378,7 @@ namespace Promact.Core.Test
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveBalanceTestForOwn;
             var replyText = StringConstant.LeaveBalanceReplyTextForTest;
             replyText += string.Format("{0}{1}", Environment.NewLine, StringConstant.LeaveBalanceSickReplyTextForTest);
@@ -384,6 +400,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveHelp()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.LeaveHelpTestForOwn;
             var replyText = StringConstant.SlackHelpMessage;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
@@ -398,6 +415,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveHelpFalse()
         {
             slackLeave.Text = StringConstant.LeaveHelpTestForOwn;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             await AddUser();
             var replyText = StringConstant.InternalError;
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
@@ -412,6 +430,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForSL()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextSick;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -420,7 +439,7 @@ namespace Promact.Core.Test
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
-           var replyText = _attachmentRepository.ReplyTextSick(StringConstant.NameForTest, leave);
+            var replyText = _attachmentRepository.ReplyTextSick(StringConstant.NameForTest, leave);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), StringConstant.AccessTokenForTest, replyText, StringConstant.FirstNameForTest)).Returns(Task.FromResult(StringConstant.EmptyString));
             await _slackRepository.LeaveRequest(slackLeave);
@@ -434,6 +453,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForSLForNoUser()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextSick;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -453,6 +473,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForSLForUser()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextSickForUser;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -479,6 +500,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForErrorLeaveType()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextErrorLeaveType;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -501,6 +523,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForErrorDateFormat()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextErrorDateFormatSick;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -523,6 +546,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForErrorDateFormatForCasual()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextErrorDateFormatCasual;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -545,6 +569,7 @@ namespace Promact.Core.Test
         public async void LeaveApplyForCLForNoUser()
         {
             await AddUser();
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandTextCasual;
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
@@ -564,6 +589,7 @@ namespace Promact.Core.Test
         {
             var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveNoUserErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             _slackRepository.Error(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
         }
@@ -585,6 +611,7 @@ namespace Promact.Core.Test
                             , user.SlackUserName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                             leave.Reason, leave.RejoinDate.Value.ToShortDateString());
             slackLeave.Text = StringConstant.SlashCommandUpdate;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
@@ -617,6 +644,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, adminrequestUrl, StringConstant.AccessTokenForTest)).Returns(adminResponse);
             var replyText = StringConstant.DateFormatErrorMessage;
             slackLeave.Text = StringConstant.SlashCommandUpdateDateError;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
@@ -645,6 +673,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, adminrequestUrl, StringConstant.AccessTokenForTest)).Returns(adminResponse);
             var replyText = StringConstant.SickLeaveDoesnotExist;
             slackLeave.Text = StringConstant.SlashCommandUpdateWrongId;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
@@ -672,6 +701,7 @@ namespace Promact.Core.Test
             var adminrequestUrl = string.Format("{0}{1}", StringConstant.UserIsAdmin, StringConstant.EmailForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, adminrequestUrl, StringConstant.AccessTokenForTest)).Returns(adminResponse);
             var replyText = StringConstant.SickLeaveDoesnotExist;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandUpdate;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -701,6 +731,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, adminrequestUrl, StringConstant.AccessTokenForTest)).Returns(adminResponse);
             var replyText = StringConstant.UpdateEnterAValidLeaveId;
             slackLeave.Text = StringConstant.SlashCommandUpdateInValidId;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
@@ -725,6 +756,7 @@ namespace Promact.Core.Test
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = StringConstant.AdminErrorMessageUpdateSickLeave;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             slackLeave.Text = StringConstant.SlashCommandUpdate;
             var response = Task.FromResult(StringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
@@ -748,8 +780,9 @@ namespace Promact.Core.Test
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
             slackLeave.Text = StringConstant.LeaveBalanceTestForOwn;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var replyText = StringConstant.LeaveNoUserErrorMessage;
-           _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             await _slackRepository.LeaveRequest(slackLeave);
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
@@ -766,6 +799,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", StringConstant.UserDetailsUrl, StringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUserUrl, requestUrl, StringConstant.AccessTokenForTest)).Returns(response);
             slackLeave.Text = StringConstant.SlashCommandTextCasual;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
@@ -786,6 +820,7 @@ namespace Promact.Core.Test
         {
             await AddUser();
             slackLeave.Text = StringConstant.SlashCommandTextSickForUser;
+            slackLeave.ResponseUrl = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.IncomingWebHookUrl);
             var slackText = slackLeave.Text.Split('"')
                             .Select((element, index) => index % 2 == 0 ? element
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
@@ -842,8 +877,7 @@ namespace Promact.Core.Test
         private SlashCommand slackLeave = new SlashCommand()
         {
             Text = StringConstant.SlashCommandText,
-            Username = StringConstant.FirstNameForTest,
-            ResponseUrl = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.IncomingWebHookUrl)
+            Username = StringConstant.FirstNameForTest
         };
 
         private void UserMock()

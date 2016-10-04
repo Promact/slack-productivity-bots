@@ -5,6 +5,7 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util;
+using Promact.Erp.Util.Email;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -16,9 +17,10 @@ namespace Promact.Erp.Web
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
-
+        private static IEmailService _emailservice;
         private static ISlackChannelRepository _slackChannelDetails;
         private static IScrumBotRepository _scrumBotRepository;
+        private static EnvironmentVariableStore _envVariableStore;
 
 
         /// <summary>
@@ -32,9 +34,9 @@ namespace Promact.Erp.Web
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
-
+                _envVariableStore = container.Resolve<EnvironmentVariableStore>();
                 // assigning bot token on Slack Socket Client
-                string botToken = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.TaskmailAccessToken);
+                string botToken = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.TaskmailAccessToken);
                 SlackSocketClient client = new SlackSocketClient(botToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
@@ -69,7 +71,7 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot, ex);
+                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot+" "+ex.Message+ "\n"+ex.StackTrace);
                 throw ex;
             }
         }
@@ -84,7 +86,19 @@ namespace Promact.Erp.Web
             _logger = container.Resolve<ILogger>();
             try
             {
-                string botToken = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.ScrumBotToken);
+
+                //_env = container.Resolve<IEnvironmentVariableRepository>();
+                //var dfsdf = _env.GetEnvironmentVariableValues(StringConstant.ScrumBotToken);
+
+                //_emailservice = container.Resolve<IEmailService>();
+                //EmailApplication df = new EmailApplication();
+                //_emailservice.Send(df);
+
+                //var dsf = container.Resolve<EnvironmentTest>();
+                //var sdfsd = dsf.GetDetail(StringConstant.ScrumBotToken);
+
+                _envVariableStore = container.Resolve<EnvironmentVariableStore>();
+                string botToken = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.ScrumBotToken);
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
@@ -105,7 +119,7 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(StringConstant.LoggerScrumBot, ex.ToString());
+                _logger.Error(StringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
         }
@@ -120,6 +134,7 @@ namespace Promact.Erp.Web
         public static void ScrumMessages(NewMessage message, SlackSocketClient client, Action<MessageReceived> showMethod, IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
+         
             string replyText = string.Empty;
             try
             {
@@ -184,7 +199,7 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(StringConstant.LoggerScrumBot, ex.ToString());
+                _logger.Error(StringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
                 client.SendMessage(showMethod, message.channel, StringConstant.ErrorMsg);
                 client.CloseSocket();
                 throw ex;

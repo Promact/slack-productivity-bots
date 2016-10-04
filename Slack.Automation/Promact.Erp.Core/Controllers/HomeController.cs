@@ -17,13 +17,14 @@ namespace Promact.Erp.Core.Controllers
         private readonly ApplicationUserManager _userManager;
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
-
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository)
+        private readonly EnvironmentVariableStore _envVariableStore;
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, EnvironmentVariableStore envVariableStore)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
+            _envVariableStore = envVariableStore;
         }
 
         /**
@@ -78,7 +79,7 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientId));
+                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, _envVariableStore.FetchEnvironmentVariableValues(StringConstant.PromactOAuthClientId));
                 //make call to the OAuth Server
                 return Redirect(url);
             }
@@ -182,7 +183,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult SlackOAuthAuthorization()
         {
-            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId));
+            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + _envVariableStore.FetchEnvironmentVariableValues(StringConstant.SlackOAuthClientId));
         }
     }
 }

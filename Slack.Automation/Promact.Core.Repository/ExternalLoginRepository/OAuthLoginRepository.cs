@@ -17,12 +17,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
-        public OAuthLoginRepository(ApplicationUserManager userManager, IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, IRepository<SlackChannelDetails> slackChannelDetails)
+        private readonly EnvironmentVariableStore _envVariableStore;
+        public OAuthLoginRepository(ApplicationUserManager userManager, IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, IRepository<SlackChannelDetails> slackChannelDetails, EnvironmentVariableStore envVariableStore)
         {
             _userManager = userManager;
             _httpClientRepository = httpClientRepository;
             _slackUserDetails = slackUserDetails;
             _slackChannelDetails = slackChannelDetails;
+            _envVariableStore = envVariableStore;
         }
 
         /// <summary>
@@ -50,8 +52,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
-            var clientId = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientId);
-            var clientSecret = EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.PromactOAuthClientSecret);
+            var clientId = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.PromactOAuthClientId);
+            var clientSecret = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.PromactOAuthClientSecret);
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -67,7 +69,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
         {
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientId), EnvironmentVariableStore.GetEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), code);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableStore.FetchEnvironmentVariableValues(StringConstant.SlackOAuthClientId), _envVariableStore.FetchEnvironmentVariableValues(StringConstant.SlackOAuthClientSecret), code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
