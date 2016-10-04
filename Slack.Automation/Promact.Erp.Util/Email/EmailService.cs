@@ -34,7 +34,7 @@ namespace Promact.Erp.Util.Email
                 message.BodyEncoding = Encoding.UTF8;
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
-                client.Host = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.ScrumBotToken);
+                client.Host = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.Host);
                 client.Port = Convert.ToInt32(_envVariableStore.FetchEnvironmentVariableValues(StringConstant.Port));
                 client.Credentials = new System.Net.NetworkCredential(_envVariableStore.FetchEnvironmentVariableValues(StringConstant.From), _envVariableStore.FetchEnvironmentVariableValues(StringConstant.Password));
                 client.EnableSsl = Convert.ToBoolean(_envVariableStore.FetchEnvironmentVariableValues(StringConstant.EnableSsl));

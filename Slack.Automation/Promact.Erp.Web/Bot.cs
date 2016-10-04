@@ -71,7 +71,7 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot+" "+ex.Message+ "\n"+ex.StackTrace);
+                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot + " " + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
         }
@@ -86,17 +86,6 @@ namespace Promact.Erp.Web
             _logger = container.Resolve<ILogger>();
             try
             {
-
-                //_env = container.Resolve<IEnvironmentVariableRepository>();
-                //var dfsdf = _env.GetEnvironmentVariableValues(StringConstant.ScrumBotToken);
-
-                //_emailservice = container.Resolve<IEmailService>();
-                //EmailApplication df = new EmailApplication();
-                //_emailservice.Send(df);
-
-                //var dsf = container.Resolve<EnvironmentTest>();
-                //var sdfsd = dsf.GetDetail(StringConstant.ScrumBotToken);
-
                 _envVariableStore = container.Resolve<EnvironmentVariableStore>();
                 string botToken = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.ScrumBotToken);
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
@@ -134,7 +123,7 @@ namespace Promact.Erp.Web
         public static void ScrumMessages(NewMessage message, SlackSocketClient client, Action<MessageReceived> showMethod, IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
-         
+
             string replyText = string.Empty;
             try
             {
