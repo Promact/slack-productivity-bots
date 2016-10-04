@@ -5,7 +5,6 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util;
-using Promact.Erp.Util.Email;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -17,7 +16,6 @@ namespace Promact.Erp.Web
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
-        private static IEmailService _emailservice;
         private static ISlackChannelRepository _slackChannelDetails;
         private static IScrumBotRepository _scrumBotRepository;
         private static EnvironmentVariableStore _envVariableStore;
