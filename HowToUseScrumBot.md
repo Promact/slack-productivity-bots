@@ -13,15 +13,15 @@ You may skip Step 1, if it's already done.
   * Add the scrum bot to the slack channel in which scrum meeting has to be conducted.
 
 #### 3. Conduct the Scrum 
-  * Start a scrum meeting by writing “scrum time”.
+  * Start a scrum meeting by writing **“scrum time”**.
   * The bot will start asking questions to each member(except the TL) of the channel by calling out their names along with the question.The employee being asked must answer.
-  * If an employee is on leave, when the bot asks a question to this employee then anyone can write “leave @username” to mark his absence.
-  * If an employee is unavailable to answer scrum questions when he is asked questions by the bot but would be available later then, that employee can be marked to answer later by writing “later @username”. The employee's scrum can be conducted later by writing “scrum @username”.
+  * If an employee is on leave, when the bot asks a question to this employee then anyone can write **“leave _@username_”** to mark his absence.
+  * If an employee is unavailable to answer scrum questions when he is asked questions by the bot but would be available later then, that employee can be marked to answer later by writing **“later _@username_”**. The employee's scrum can be conducted later by writing **“scrum _@username_”**.
   * Scrum will continue until all employees have answered all the questions. 
-  * If scrum meeting was disrupted due to any reason it can be resumed by writing “scrum time”.
-  * Scrum meeting can be halted by writing “scrum halt” and can be resumed by writing “scrum resume”.
+  * If scrum meeting was disrupted due to any reason it can be resumed by writing **“scrum time”**.
+  * Scrum meeting can be halted by writing **“scrum halt”** and can be resumed by writing **“scrum resume”**.
   * The previous day scrum data (if any) of an employee will be displayed to the employee along with the first question.
-  * If any user contacts the Bot (as in direct conversation with the bot), Bot will not respond, unless if it is for taking help i.e. by writing “scrum help”.
+  * If any user contacts the Bot (as in direct conversation with the bot), Bot will not respond, unless if it is for taking help i.e. by writing **“scrum help”**.
 
 
 # Rules and Limitations
