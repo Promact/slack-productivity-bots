@@ -30,7 +30,7 @@ namespace Promact.Erp.Util
         public static string UserDetailsByIdUrl = "fetchUserById/";
         public static string UserDetailByUserNameUrl = "fetchbyusername/";
         public static string UrlRtmStart = "https://slack.com/api/rtm.start";
-        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read,groups:read&client_id=";
+        public static string OAuthAuthorizationScopeAndClientId = "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read&client_id=";
         public static string UserDetailsUrl = "userDetails/";
         public static string TeamLeaderDetailsUrl = "teamLeaderDetails/";
         public static string ManagementDetailsUrl = "managementDetails";
