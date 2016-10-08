@@ -56,6 +56,13 @@ namespace Promact.Erp.Util
         public static string ScrumTime = "scrum time";
         public static string ScrumHalt = "scrum halt";
         public static string ScrumHalted = "Scrum has been halted";
+        public static string ChannelAddSuccess = "Channel details has been added";
+        public static string Add = "add";
+        public static string Channel = "channel";
+        public static string ChannelAddInstruction = "The channel is not in our database. Please write the command *add channel _channelname_* , if it is added as a project in OAuth server.";
+        public static string ProjectNotInOAuth = "This group doesn't is not registered as Project in OAuth. Please add it to OAuth first";
+        public static string GroupNameStartsWith = "G";
+        public static string OnlyPrivateChannel = "Only private channels can be added manually.";
         public static string ScrumAlreadyHalted = "Scrum is already halted. Enter *scrum resume* to resume scrum";
         public static string ScrumResume = "scrum resume";
         public static string Scrum = "scrum";
@@ -280,12 +287,12 @@ namespace Promact.Erp.Util
         public static string RoleTeamLeader = "TeamLeader";
         public static string RoleEmployee = "Employee";
 
-        
+
 
         public static string ProjectUasrInformationUrl = "featchListOfUser/";
         public static string ProjectInformationUrl = "featchUserRole/";
 
-   
+
 
 
         public static string NotAvailable = "Not Available";

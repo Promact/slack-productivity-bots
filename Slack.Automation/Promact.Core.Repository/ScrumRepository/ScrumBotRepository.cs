@@ -4,6 +4,7 @@ using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
@@ -23,6 +24,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<ScrumAnswer> _scrumAnswerRepository;
         private readonly IRepository<Scrum> _scrumRepository;
         private readonly IRepository<ApplicationUser> _applicationUser;
+        private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IRepository<Question> _questionRepository;
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IAttachmentRepository _attachmentRepository;
@@ -46,6 +48,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _scrumRepository = scrumRepository;
             _questionRepository = questionRepository;
             _projectUser = projectUser;
+            _slackChannelRepository = slackChannelRepository;
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
@@ -383,6 +386,54 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
+        /// <summary>
+        /// Used to add channel manually by command "add channel channelname"
+        /// </summary>
+        /// <param name="ChannelName"></param>
+        /// <param name="ChannelId"></param>
+        /// <param name="Username"></param>
+        /// <returns></returns>
+        public async Task<string> AddChannelManually(string ChannelName, string Username, string ChannelId)
+        {
+            var returnMsg = string.Empty;
+            if (ChannelId.StartsWith(StringConstant.GroupNameStartsWith, StringComparison.Ordinal))
+            {
+                // getting user name from user's slack name
+                var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == Username);
+                // getting access token for that user
+                if (applicationUser != null)
+                {
+                    // get access token of user for promact oauth server
+                    var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
+                    //get the project details of the given channel name
+                    var project = await _projectUser.GetProjectDetails(ChannelName, accessToken);
+                    //add channel details only if the channel has been registered as project in OAuth server
+                    if (project != null && project.Id > 0)
+                    {
+                        SlackChannelDetails channel = new SlackChannelDetails();
+                        channel.ChannelId = ChannelId;
+                        channel.CreatedOn = DateTime.UtcNow;
+                        channel.Deleted = false;
+                        channel.Name = ChannelName;
+                        _slackChannelRepository.AddSlackChannel(channel);
+                        returnMsg = StringConstant.ChannelAddSuccess;
+                    }
+                    else
+                        returnMsg = StringConstant.ProjectNotInOAuth;
+                }
+                else
+                    // if user doesn't exist then this message will be shown to user
+                    returnMsg = StringConstant.YouAreNotInExistInOAuthServer;
+            }
+            else
+            {
+                return StringConstant.OnlyPrivateChannel;
+            }
+            return returnMsg;
+        }
+
+
+        #endregion
 
 
 

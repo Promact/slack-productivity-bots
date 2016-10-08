@@ -116,8 +116,30 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackEvent"></param>
         public void SlackEventUpdate(SlackEventApiAC slackEvent)
         {
-            slackEvent.Event.User.TeamId = slackEvent.TeamId;
-            _slackUserDetails.Insert(slackEvent.Event.User);
+            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
+            if (user == null)
+            {
+                slackEvent.Event.User.TeamId = slackEvent.TeamId;
+                _slackUserDetails.Insert(slackEvent.Event.User);
+                _slackUserDetails.Save();
+            }
         }
+
+
+        /// <summary>
+        /// Method to update slack channel table when a channel is added in team.
+        /// </summary>
+        /// <param name="slackEvent"></param>
+        public void SlackChannelAdd(SlackEventApiAC slackEvent)
+        {           
+            var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            if (channel == null)
+            {
+                slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
+                _slackChannelDetails.Insert(slackEvent.Event.Channel);
+            }
+        }
+
+
     }
 }
