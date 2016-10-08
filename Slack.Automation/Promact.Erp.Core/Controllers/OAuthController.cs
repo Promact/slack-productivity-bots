@@ -109,9 +109,14 @@ namespace Promact.Erp.Core.Controllers
                 {
                     return Ok(slackEvent.Challenge);
                 }
-                if (slackEvent.Type == StringConstant.TeamJoin)
+                if (slackEvent.Event.Type == StringConstant.TeamJoin)
                 {
                     _oAuthLoginRepository.SlackEventUpdate(slackEvent);
+                    return Ok();
+                }
+                else if(slackEvent.Event.Type == "channel_created" || slackEvent.Event.Type =="group_open")
+                {
+                   _oAuthLoginRepository.SlackChannelAdd(slackEvent);
                     return Ok();
                 }
                 else

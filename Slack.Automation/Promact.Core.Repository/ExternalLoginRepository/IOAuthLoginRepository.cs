@@ -15,5 +15,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         OAuthApplication ExternalLoginInformation(string refreshToken);
         Task AddSlackUserInformation(string code);
         void SlackEventUpdate(SlackEventApiAC slackEvent);
+        void SlackChannelAdd(SlackEventApiAC slackEvent);
     }
 }
