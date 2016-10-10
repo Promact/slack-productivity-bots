@@ -19,8 +19,7 @@ namespace Promact.Erp.Web
         private static ISlackChannelRepository _slackChannelDetails;
         private static IScrumBotRepository _scrumBotRepository;
         private static EnvironmentVariableStore _envVariableStore;
-
-
+    
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -34,7 +33,7 @@ namespace Promact.Erp.Web
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
                 _envVariableStore = container.Resolve<EnvironmentVariableStore>();
                 // assigning bot token on Slack Socket Client
-                string botToken = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.TaskmailAccessToken);
+                string botToken = _envVariableStore.TaskmailAccessToken;
                 SlackSocketClient client = new SlackSocketClient(botToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
@@ -80,12 +79,13 @@ namespace Promact.Erp.Web
         /// </summary>
         /// <param name="container"></param>
         public static void ScrumMain(IComponentContext container)
-        {
+        {           
             _logger = container.Resolve<ILogger>();
             try
             {
                 _envVariableStore = container.Resolve<EnvironmentVariableStore>();
-                string botToken = _envVariableStore.FetchEnvironmentVariableValues(StringConstant.ScrumBotToken);
+
+                string botToken = _envVariableStore.ScrumBotToken;
                 SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
                 _scrumBotRepository = container.Resolve<IScrumBotRepository>();
                 _slackUserDetails = container.Resolve<ISlackUserRepository>();
@@ -192,7 +192,6 @@ namespace Promact.Erp.Web
                 throw ex;
             }
         }
-
-
+        
     }
 }
