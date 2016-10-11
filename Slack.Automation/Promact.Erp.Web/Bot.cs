@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Autofac.Extras.NLog;
-using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -18,7 +17,6 @@ namespace Promact.Erp.Web
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
         private static IScrumBotRepository _scrumBotRepository;
-        private static IClient _email;
         private static IEnvironmentVariableRepository _environmentVariableRepository;
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
