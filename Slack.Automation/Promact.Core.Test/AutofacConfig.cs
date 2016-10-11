@@ -23,11 +23,13 @@ using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
+using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Core.Test.EnvironmentVariableRepository;
 
 namespace Promact.Core.Test
 {
     public class AutofacConfig
-    {     
+    {
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
@@ -40,6 +42,7 @@ namespace Promact.Core.Test
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
+            builder.RegisterType<EnvironmentVariableTestRepository>().As<IEnvironmentVariableRepository>();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();

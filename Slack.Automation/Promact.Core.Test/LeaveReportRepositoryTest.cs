@@ -7,10 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -57,9 +54,9 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.EmployeeDetailFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.LoginUserDetail, StringConstant.TestUserName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.IdForTest);
+            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestIdUrl, StringConstant.TestAccessToken)).Returns(response);
-            leave.EmployeeId = StringConstant.IdForTest;
+            leave.EmployeeId = StringConstant.StringIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = _leaveReportRepository.LeaveReport(StringConstant.TestAccessToken, StringConstant.TestUserName).Result;
             Assert.Equal(1, leaveReports.Count());
@@ -74,12 +71,12 @@ namespace Promact.Core.Test
             var response = Task.FromResult(StringConstant.TeamLeaderDetailFromOauthServer);
             var requestUrl = string.Format("{0}{1}", StringConstant.LoginUserDetail, StringConstant.TestUserName);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestUrl, StringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.IdForTest);
+            var requestIdUrl = string.Format("{0}{1}", StringConstant.UserDetailUrl, StringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.UserUrl, requestIdUrl, StringConstant.TestAccessToken)).Returns(response);
             var responseProject = Task.FromResult(StringConstant.ProjectUsers);
-            var requestProjectUrl = string.Format("{0}{1}", StringConstant.ProjectUsersByTeamLeaderId, StringConstant.IdForTest);
+            var requestProjectUrl = string.Format("{0}{1}", StringConstant.ProjectUsersByTeamLeaderId, StringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, requestProjectUrl, StringConstant.TestAccessToken)).Returns(responseProject);
-            leave.EmployeeId = StringConstant.IdForTest;
+            leave.EmployeeId = StringConstant.StringIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = _leaveReportRepository.LeaveReport(StringConstant.TestAccessToken, StringConstant.TestUserName).Result;
             Assert.Equal(1, leaveReports.Count());

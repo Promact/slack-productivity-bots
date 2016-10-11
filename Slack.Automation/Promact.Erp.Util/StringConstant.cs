@@ -64,6 +64,8 @@ namespace Promact.Erp.Util
         public static string ScrumNotHalted = "Scrum was not halted\n";
         public static string ScrumHelp = "scrum help";
         public static string ScrumHelpMessage = "To automate your stand up meet.\nAdd me to your group.\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is unavailable at the moment and asked question,then any team member can write *later _@team member's name_*. That person's scrum can be conducted later by wriring *scrum _@team member's name_*\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+        public static string NotAUser = "Please login with Promact first.";
+        public static string NotAProject = "Please add Project details of the group on Promact";
         public static string Leave = "leave";
         public static string Later = "later";
         public static string LeaveError = "How come you mark yourself on leave ? ";
@@ -74,7 +76,7 @@ namespace Promact.Erp.Util
         public static string LoggerScrumBot = "Error in Scrum Bot : ";
         public static string ScrumLaterDone = "Good luck <@{0}> ! You have answered all scrum questions.";
         public static string AlreadyAnswered = "But,<@{0}> your answers have been recorded today :worried:\n";
-        public static string NotAMember = "Sorry. <@{0}> is not a member of this project.\n";
+        public static string NotExpected = "Sorry. <@{0}> is not expected to answer now.\n";
         public static string ServerClosed = "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
         public static string NoQuestion = "Sorry I have nothing to ask you.";
         public static string NoEmployeeFound = "Sorry. No employees found for this project.";
@@ -263,8 +265,8 @@ namespace Promact.Erp.Util
         public static string ProjectUsers = "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}]";
         public static string TeamLeaderDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}";
         public static string EmployeeDetailFromOauthServer = "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Employee\",\"claims\":[],\"logins\":[]}";
-        public static string IdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148";
-
+        public static string IdForTest = "13b0f2ca-92f5-4713-a67e-37e50172e148f";
+      
         public static string TestUserId = "aac59fbc-7835-4bd7-9080-6b6766302080";
         public static string NextQuestion = "<@apoorvapatel> What did you do yesterday?";
         public static string QuestionToNextEmployee = "Good Day <@{0}>!\nWhat did you do yesterday?";

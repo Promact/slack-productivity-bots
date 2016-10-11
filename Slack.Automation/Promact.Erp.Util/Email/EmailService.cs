@@ -1,15 +1,24 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System;
-using System.Configuration;
-using System.Net.Configuration;
 using System.Net.Mail;
 using System.Text;
-using System.Web.Configuration;
 
 namespace Promact.Erp.Util.Email
 {
     public class EmailService : IEmailService
     {
+        private readonly IEnvironmentVariableRepository _envVariableRepository;
+
+        #region Constructor
+
+        public EmailService(IEnvironmentVariableRepository envVariableRepository)
+        {
+            _envVariableRepository = envVariableRepository;
+        }
+
+        #endregion
+
         /// <summary>
         /// Method used to send e-mails
         /// </summary>
@@ -26,10 +35,10 @@ namespace Promact.Erp.Util.Email
                 message.BodyEncoding = Encoding.UTF8;
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
-                client.Host = Environment.GetEnvironmentVariable(StringConstant.Host, EnvironmentVariableTarget.Process);
-                client.Port = Convert.ToInt32(Environment.GetEnvironmentVariable(StringConstant.Port, EnvironmentVariableTarget.Process));
-                client.Credentials = new System.Net.NetworkCredential(Environment.GetEnvironmentVariable(StringConstant.From, EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable(StringConstant.Password, EnvironmentVariableTarget.Process));
-                client.EnableSsl = Convert.ToBoolean(Environment.GetEnvironmentVariable(StringConstant.EnableSsl, EnvironmentVariableTarget.Process));
+                client.Host = _envVariableRepository.Host;
+                client.Port = Convert.ToInt32(_envVariableRepository.Port);
+                client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.From, _envVariableRepository.Password);
+                client.EnableSsl = Convert.ToBoolean(_envVariableRepository.EnableSsl);
                 client.Send(message);
             }
             catch (Exception ex)

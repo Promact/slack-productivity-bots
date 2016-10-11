@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using System;

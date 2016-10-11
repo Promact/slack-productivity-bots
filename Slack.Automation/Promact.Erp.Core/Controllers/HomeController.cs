@@ -4,6 +4,7 @@ using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System;
 using System.Threading.Tasks;
 using System.Web;
@@ -17,13 +18,15 @@ namespace Promact.Erp.Core.Controllers
         private readonly ApplicationUserManager _userManager;
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
+        private readonly IEnvironmentVariableRepository _envVariableRepository;
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository)
+        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
+            _envVariableRepository = envVariableRepository;
         }
 
         /**
@@ -78,14 +81,14 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(StringConstant.AfterLogIn, StringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, Environment.GetEnvironmentVariable(StringConstant.PromactOAuthClientId, EnvironmentVariableTarget.Process));
+                var url = string.Format("{0}?clientId={1}", StringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
                 //make call to the OAuth Server
                 return Redirect(url);
             }
             catch (Exception ex)
             {
                 var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
-                _logger.Error(errorMessage,ex);
+                _logger.Error(errorMessage, ex);
                 throw ex;
             }
         }
@@ -182,7 +185,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult SlackOAuthAuthorization()
         {
-            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + Environment.GetEnvironmentVariable(StringConstant.SlackOAuthClientId, EnvironmentVariableTarget.Process));
+            return Redirect(StringConstant.LeaveManagementAuthorizationUrl + StringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
         }
     }
 }

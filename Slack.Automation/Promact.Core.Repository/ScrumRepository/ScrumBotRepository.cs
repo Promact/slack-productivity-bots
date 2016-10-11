@@ -1,6 +1,8 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.SlackChannelRepository;
+using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -17,6 +19,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
         #region Private Variable
 
+
         private readonly IRepository<ScrumAnswer> _scrumAnswerRepository;
         private readonly IRepository<Scrum> _scrumRepository;
         private readonly IRepository<ApplicationUser> _applicationUser;
@@ -24,15 +27,20 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
+        private readonly ISlackChannelRepository _slackChannelDetails;
+        private readonly ISlackUserRepository _slackUserDetails;
+
 
         #endregion
 
 
         #region Constructor
 
+
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
             IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository,
-            IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser)
+            IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser,
+            ISlackChannelRepository slackChannelDetails, ISlackUserRepository slackUserDetails)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -41,12 +49,88 @@ namespace Promact.Core.Repository.ScrumRepository
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
+            _slackChannelDetails = slackChannelDetails;
+            _slackUserDetails = slackUserDetails;
         }
+
 
         #endregion
 
 
-        #region Public Methods   
+        #region Public Method 
+
+
+        public async Task<string> ProcessMessages(string UserId, string ChannelId, string message)
+        {
+            string replyText = string.Empty;
+            var user = _slackUserDetails.GetById(UserId);
+            var channel = _slackChannelDetails.GetById(ChannelId);
+            string text = message;
+
+            if (user != null && text.ToLower().Equals(StringConstant.ScrumHelp))
+            {
+                replyText = StringConstant.ScrumHelpMessage;
+            }
+            else if (user != null && channel != null)
+            {
+                var simpleText = text.Split(null);
+
+                //start scrum,halt or re-start scrum
+                if (text.ToLower().Equals(StringConstant.ScrumTime) || text.ToLower().Equals(StringConstant.ScrumHalt) || text.ToLower().Equals(StringConstant.ScrumResume))
+                {
+                    replyText = await Scrum(channel.Name, user.Name, simpleText[1].ToLower());
+                }
+                //a particular employee is on leave, geeting marked as later or asked question again
+                else if (((simpleText[0].ToLower().Equals(StringConstant.Leave) || simpleText[0].ToLower().Equals(StringConstant.Later) || simpleText[0].ToLower().Equals(StringConstant.Scrum)) && simpleText.Length == 2))
+                {
+                    int from = text.IndexOf("<@") + "<@".Length;
+                    int to = text.LastIndexOf(">");
+                    if (to > 0)
+                    {
+                        try
+                        {
+                            string applicantId = text.Substring(from, to - from);
+                            var applicant = _slackUserDetails.GetById(applicantId);
+                            if (applicant != null)
+                            {
+                                string applicantName = applicant.Name;
+                                replyText = await Leave(channel.Name, user.Name, applicantName, simpleText[0].ToLower());
+                            }
+                            else
+                                replyText = StringConstant.NotAUser;
+
+                        }
+                        catch (Exception)
+                        {
+                            replyText = StringConstant.ScrumHelpMessage;
+                        }
+                    }
+                    else
+                        replyText = await AddScrumAnswer(user.Name, text, channel.Name);
+                }
+                //all other texts
+                else
+                {
+                    replyText = await AddScrumAnswer(user.Name, text, channel.Name);
+                }
+            }
+            else if (user == null)
+            {
+                replyText = StringConstant.NotAUser;
+            }
+            else if (channel == null)
+            {
+                replyText = StringConstant.NotAProject;
+            }
+
+            return replyText;
+        }
+
+
+        #endregion
+
+
+        #region Private Methods
 
 
         /// <summary>
@@ -56,7 +140,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="Message"></param>
         /// <param name="GroupName"></param>
         /// <returns>The next Question Statement</returns>
-        public async Task<string> AddScrumAnswer(string UserName, string Message, string GroupName)
+        private async Task<string> AddScrumAnswer(string UserName, string Message, string GroupName)
         {
             string message = string.Empty;
             // getting user name from user's slack name
@@ -162,7 +246,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="UserName"></param>
         /// <param name="Parameter"></param>
         /// <returns>The question or the status of the scrum</returns>
-        public async Task<string> Scrum(string GroupName, string UserName, string Parameter)
+        private async Task<string> Scrum(string GroupName, string UserName, string Parameter)
         {
             // getting user name from user's slack name
             var applicationUser = _applicationUser.FirstOrDefault(x => x.SlackUserName == UserName);
@@ -238,7 +322,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="LeaveApplicant"></param>
         /// <param name="Parameter"></param>
         /// <returns>Question to the next person or other scrum status</returns>
-        public async Task<string> Leave(string GroupName, string UserName, string Applicant, string Parameter)
+        private async Task<string> Leave(string GroupName, string UserName, string Applicant, string Parameter)
         {
             var returnMsg = string.Empty;
             // getting user name from user's slack name
@@ -299,10 +383,7 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
-        #endregion
 
-
-        #region Private Methods
 
 
         /// <summary>
@@ -742,6 +823,8 @@ namespace Promact.Core.Repository.ScrumRepository
 
             if (user != null && user.SlackUserName == Applicant)
                 return string.Empty;
+            else if (user == null)
+                return string.Format(StringConstant.NotExpected, Applicant);
             else
                 return string.Format(StringConstant.PleaseAnswer, user.SlackUserName);
         }
