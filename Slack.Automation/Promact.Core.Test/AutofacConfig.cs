@@ -24,6 +24,7 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 
 namespace Promact.Core.Test
 {
@@ -41,7 +42,7 @@ namespace Promact.Core.Test
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
-            builder.RegisterType<EnvironmentVariableStore>().AsSelf();
+            builder.RegisterType<EnvironmentVariableTestRepository>().As<IEnvironmentVariableRepository>();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();

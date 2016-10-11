@@ -1,4 +1,5 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System;
 using System.Net.Mail;
 using System.Text;
@@ -7,13 +8,13 @@ namespace Promact.Erp.Util.Email
 {
     public class EmailService : IEmailService
     {
-        private readonly EnvironmentVariableStore _envVariableStore;
+        private readonly IEnvironmentVariableRepository _envVariableRepository;
 
         #region Constructor
 
-        public EmailService(EnvironmentVariableStore envVariableStore)
+        public EmailService(IEnvironmentVariableRepository envVariableRepository)
         {
-            _envVariableStore = envVariableStore;
+            _envVariableRepository = envVariableRepository;
         }
 
         #endregion
@@ -34,10 +35,10 @@ namespace Promact.Erp.Util.Email
                 message.BodyEncoding = Encoding.UTF8;
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
-                client.Host = _envVariableStore.Host;
-                client.Port = Convert.ToInt32(_envVariableStore.Port);
-                client.Credentials = new System.Net.NetworkCredential(_envVariableStore.From, _envVariableStore.Password);
-                client.EnableSsl = Convert.ToBoolean(_envVariableStore.EnableSsl);
+                client.Host = _envVariableRepository.Host;
+                client.Port = Convert.ToInt32(_envVariableRepository.Port);
+                client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.From, _envVariableRepository.Password);
+                client.EnableSsl = Convert.ToBoolean(_envVariableRepository.EnableSsl);
                 client.Send(message);
             }
             catch (Exception ex)

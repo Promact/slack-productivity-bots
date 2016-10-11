@@ -6,6 +6,7 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace Promact.Core.Test
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
-        private readonly EnvironmentVariableStore _envVariableStore;
+        private readonly IEnvironmentVariableRepository _envVariableRepository;
         public OAuthLoginRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -26,7 +27,7 @@ namespace Promact.Core.Test
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
-            _envVariableStore = _componentContext.Resolve<EnvironmentVariableStore>();
+            _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Promact.Core.Test
         public void AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(StringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableStore.SlackOAuthClientId, _envVariableStore.SlackOAuthClientSecret, StringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, StringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(StringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", StringConstant.AccessTokenSlack);

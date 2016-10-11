@@ -6,6 +6,7 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System;
 using System.Threading.Tasks;
 
@@ -17,14 +18,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
-        private readonly EnvironmentVariableStore _envVariableStore;
-        public OAuthLoginRepository(ApplicationUserManager userManager, IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, IRepository<SlackChannelDetails> slackChannelDetails, EnvironmentVariableStore envVariableStore)
+        private readonly IEnvironmentVariableRepository _envVariableRepository;
+        public OAuthLoginRepository(ApplicationUserManager userManager, IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, IRepository<SlackChannelDetails> slackChannelDetails, IEnvironmentVariableRepository envVariableRepository)
         {
             _userManager = userManager;
             _httpClientRepository = httpClientRepository;
             _slackUserDetails = slackUserDetails;
             _slackChannelDetails = slackChannelDetails;
-            _envVariableStore = envVariableStore;
+            _envVariableRepository = envVariableRepository;
         }
 
         /// <summary>
@@ -52,8 +53,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
-            var clientId = _envVariableStore.PromactOAuthClientId;
-            var clientSecret = _envVariableStore.PromactOAuthClientSecret;
+            var clientId = _envVariableRepository.PromactOAuthClientId;
+            var clientSecret = _envVariableRepository.PromactOAuthClientSecret;
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -69,7 +70,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
         {
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableStore.SlackOAuthClientId, _envVariableStore.SlackOAuthClientSecret, code);
+            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);

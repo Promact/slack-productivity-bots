@@ -23,6 +23,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using System.Data.Entity;
 using System.Net.Http;
 using System.Web;
@@ -36,7 +37,6 @@ namespace Promact.Erp.Web.App_Start
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<EnvironmentVariableStore>().AsSelf();
             // register dependency
             builder.RegisterType<PromactErpContext>().As<DbContext>();
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
@@ -70,6 +70,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
+            builder.RegisterType<EnvironmentVariableRepository>().As<IEnvironmentVariableRepository>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             var container = builder.Build();
