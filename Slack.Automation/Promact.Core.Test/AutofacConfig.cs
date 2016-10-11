@@ -23,13 +23,13 @@ using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
-using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Core.Test.EnvironmentVariableRepository;
 
 namespace Promact.Core.Test
 {
     public class AutofacConfig
-    {     
+    {
         public static IComponentContext RegisterDependancies()
         {
             var builder = new ContainerBuilder();

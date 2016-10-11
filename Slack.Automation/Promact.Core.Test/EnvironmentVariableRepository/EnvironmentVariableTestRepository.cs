@@ -1,7 +1,7 @@
 ﻿
-using System;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 
-namespace Promact.Erp.Util.EnvironmentVariableRepository
+namespace Promact.Core.Test.EnvironmentVariableRepository
 {
     public class EnvironmentVariableTestRepository : IEnvironmentVariableRepository
     {
