@@ -1293,46 +1293,49 @@ namespace Promact.Core.Test
         }
 
 
-        ///// <summary>
-        ///// Method AddChannelManually Testing with Not Privaet Group
-        ///// </summary>
-        //[Fact, Trait("Category", "Required")]
-        //public async void AddChannelNotPrivateGroup()
-        //{
-        //    channel.Name = StringConstant.GroupName;
-        //    var msg = await _scrumBotRepository.AddChannelManually(channel.Name, user.SlackUserName, StringConstant.GroupName);
-        //    Assert.Equal(msg, StringConstant.OnlyPrivateChannel);
-        //}
+        /// <summary>
+        /// Method AddChannelManually Testing with Not Privaet Group
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNotPrivateGroup()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, StringConstant.GroupName, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.OnlyPrivateChannel);
+        }
 
 
-        ///// <summary>
-        ///// Method AddChannelManually Testing with No User
-        ///// </summary>
-        //[Fact, Trait("Category", "Required")]
-        //public async void AddChannelNoUser()
-        //{
-        //    var projectResponse = Task.FromResult(StringConstant.ProjectDetailsFromOauth);
-        //    var projectRequestUrl = string.Format("{0}{1}", StringConstant.ProjectDetailsUrl, StringConstant.GroupName);
-        //    _mockHttpClient.Setup(x => x.GetAsync(StringConstant.ProjectUrl, projectRequestUrl, StringConstant.AccessTokenForTest)).Returns(projectResponse);
+        /// <summary>
+        /// Method AddChannelManually Testing with No User
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNoUser()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
 
-        //    var msg = await _scrumBotRepository.AddChannelManually(channel.Name, user.SlackUserName, channel.ChannelId);
-        //    Assert.Equal(msg, StringConstant.YouAreNotInExistInOAuthServer);
-        //}
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, slackChannelDetails.ChannelId, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.YouAreNotInExistInOAuthServer);
+        }
 
 
-        ///// <summary>
-        ///// Method AddChannelManually Testing with no project added
-        ///// </summary>
-        //[Fact, Trait("Category", "Required")]
-        //public async void AddChannelNoProject()
-        //{
-        //    UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
-        //    await _userManager.CreateAsync(user);
-        //    await _userManager.AddLoginAsync(user.Id, info);
+        /// <summary>
+        /// Method AddChannelManually Testing with no project added
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNoProject()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
 
-        //    var msg = await _scrumBotRepository.AddChannelManually(channel.Name, user.SlackUserName, channel.ChannelId);
-        //    Assert.Equal(msg, StringConstant.ProjectNotInOAuth);
-        //}
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, slackChannelDetails.ChannelId, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.ProjectNotInOAuth);
+        }
 
 
         #endregion
