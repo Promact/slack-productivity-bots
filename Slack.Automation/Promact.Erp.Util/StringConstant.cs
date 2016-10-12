@@ -178,7 +178,7 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
-        public static string SlackChannelIdForTest = "DA4ADFD44";
+        public static string SlackChannelIdForTest = "GA4ADFD44";
         public static string MessageTsForTest = "5212201241.15452124";
         public static string SorryYouCannotApplyLeave = "Sorry user can't apply leave. Either user are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveListCommandForTest = "list siddhartha";
