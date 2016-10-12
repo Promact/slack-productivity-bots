@@ -7,7 +7,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <summary>
         /// Method to add slack channel 
         /// </summary>
-        /// <param name="slackUserDetails"></param>
+        /// <param name="slackChannelDetails"></param>
         void AddSlackChannel(SlackChannelDetails slackChannelDetails);
 
         /// <summary>

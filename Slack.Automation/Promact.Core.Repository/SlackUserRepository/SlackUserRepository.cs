@@ -1,5 +1,6 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using System;
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -17,8 +18,14 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <param name="slackUserDetails"></param>
         public void AddSlackUser(SlackUserDetails slackUserDetails)
         {
+            slackUserDetails.Title = slackUserDetails.Profile.Title;
+            slackUserDetails.Email = slackUserDetails.Profile.Email;
+            slackUserDetails.Skype = slackUserDetails.Profile.Skype;
+            slackUserDetails.LastName = slackUserDetails.Profile.LastName;
+            slackUserDetails.FirstName = slackUserDetails.Profile.FirstName;
+            slackUserDetails.Phone = slackUserDetails.Profile.Phone;
+            slackUserDetails.CreatedOn = DateTime.UtcNow;
             _slackUserDetails.Insert(slackUserDetails);
-            _slackUserDetails.Save();
         }
 
         /// <summary>

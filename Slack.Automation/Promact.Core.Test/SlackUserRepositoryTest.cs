@@ -61,11 +61,22 @@ namespace Promact.Core.Test
             Assert.NotEqual(slackUser.Name, StringConstant.FirstNameForTest);
         }
 
+        private static SlackProfile profile = new SlackProfile()
+        {
+            Skype = StringConstant.TestUserId,
+            Email = StringConstant.EmailForTest,
+            FirstName = StringConstant.UserNameForTest,
+            LastName = StringConstant.TestUser,
+            Phone = StringConstant.PhoneForTest,
+            Title = StringConstant.TitleForTest
+        };
+
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
             UserId = StringConstant.StringIdForTest,
             Name = StringConstant.FirstNameForTest,
-            TeamId = StringConstant.PromactStringName
+            TeamId = StringConstant.PromactStringName,
+            Profile = profile
         };
     }
 }

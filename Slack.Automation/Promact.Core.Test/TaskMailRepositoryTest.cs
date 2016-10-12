@@ -644,7 +644,7 @@ namespace Promact.Core.Test
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, StringConstant.FirstNameForTest, StringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id,StringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
         }
-       
+
 
         /// <summary>
         /// this test case for the task mail details report for the previous date
@@ -689,15 +689,25 @@ namespace Promact.Core.Test
         /// <summary>
         /// this test case for the task mail details for the selected date.
         /// </summary>
-       
 
-       
+
+        private static SlackProfile profile = new SlackProfile()
+        {
+            Skype = StringConstant.TestUserId,
+            Email = StringConstant.EmailForTest,
+            FirstName = StringConstant.UserNameForTest,
+            LastName = StringConstant.TestUser,
+            Phone = StringConstant.PhoneForTest,
+            Title = StringConstant.TitleForTest
+        };
+
         //private static string answer = null;
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
             UserId = StringConstant.StringIdForTest,
             Name = StringConstant.FirstNameForTest,
-            TeamId = StringConstant.PromactStringName
+            TeamId = StringConstant.PromactStringName,
+            Profile = profile
         };
 
         /// <summary>
