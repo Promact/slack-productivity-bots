@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Promact.Erp.DomainModel.Models;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
@@ -27,6 +27,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// <summary>
         /// True if it is Bot
         /// </summary>
+        [NotMapped]
         [JsonProperty("is_bot")]
         public bool IsBot { get; set; }
 
