@@ -29,7 +29,6 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IProjectUserCallRepository _projectUser;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
-        private readonly ISlackChannelRepository _slackChannelDetails;
         private readonly ISlackUserRepository _slackUserDetails;
 
 
@@ -42,7 +41,7 @@ namespace Promact.Core.Repository.ScrumRepository
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
             IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository,
             IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser,
-            ISlackChannelRepository slackChannelDetails, ISlackUserRepository slackUserDetails)
+            ISlackChannelRepository slackChannelRepository, ISlackUserRepository slackUserDetails)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -52,7 +51,6 @@ namespace Promact.Core.Repository.ScrumRepository
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
-            _slackChannelDetails = slackChannelDetails;
             _slackUserDetails = slackUserDetails;
         }
 
@@ -67,22 +65,16 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             string replyText = string.Empty;
             var user = _slackUserDetails.GetById(UserId);
-            var channel = _slackChannelDetails.GetById(ChannelId);
+            var channel = _slackChannelRepository.GetById(ChannelId);
             string text = message;
-
+            var simpleText = text.Split(null);
             if (user != null && text.ToLower().Equals(StringConstant.ScrumHelp))
-            {
                 replyText = StringConstant.ScrumHelpMessage;
-            }
             else if (user != null && channel != null)
             {
-                var simpleText = text.Split(null);
-
                 //start scrum,halt or re-start scrum
                 if (text.ToLower().Equals(StringConstant.ScrumTime) || text.ToLower().Equals(StringConstant.ScrumHalt) || text.ToLower().Equals(StringConstant.ScrumResume))
-                {
                     replyText = await Scrum(channel.Name, user.Name, simpleText[1].ToLower());
-                }
                 //a particular employee is on leave, geeting marked as later or asked question again
                 else if (((simpleText[0].ToLower().Equals(StringConstant.Leave) || simpleText[0].ToLower().Equals(StringConstant.Later) || simpleText[0].ToLower().Equals(StringConstant.Scrum)) && simpleText.Length == 2))
                 {
@@ -113,19 +105,18 @@ namespace Promact.Core.Repository.ScrumRepository
                 }
                 //all other texts
                 else
-                {
                     replyText = await AddScrumAnswer(user.Name, text, channel.Name);
-                }
+            }
+            else if (user != null)
+            {
+                if (channel == null && simpleText[0].Equals(StringConstant.Add) && simpleText[1].Equals(StringConstant.Channel))
+                    replyText = AddChannelManually(simpleText[2], user.Name, ChannelId).Result;
+                else
+                    replyText = StringConstant.ChannelAddInstruction;
             }
             else if (user == null)
-            {
                 replyText = StringConstant.NotAUser;
-            }
-            else if (channel == null)
-            {
-                replyText = StringConstant.NotAProject;
-            }
-
+          
             return replyText;
         }
 
@@ -393,7 +384,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="ChannelId"></param>
         /// <param name="Username"></param>
         /// <returns></returns>
-        public async Task<string> AddChannelManually(string ChannelName, string Username, string ChannelId)
+        private async Task<string> AddChannelManually(string ChannelName, string Username, string ChannelId)
         {
             var returnMsg = string.Empty;
             if (ChannelId.StartsWith(StringConstant.GroupNameStartsWith, StringComparison.Ordinal))
@@ -431,10 +422,6 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             return returnMsg;
         }
-
-
-        #endregion
-
 
 
         /// <summary>
