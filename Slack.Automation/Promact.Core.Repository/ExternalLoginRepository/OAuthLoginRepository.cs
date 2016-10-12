@@ -84,7 +84,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             foreach (var user in slackUsers.Members)
             {
-                if (!user.Deleted && user.IsBot == false)
+                if (!user.Deleted && !user.IsBot)
                     _slackUserRepository.AddSlackUser(user);
             }
             var channelDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackChannelListUrl, userDetailsRequest, null);
