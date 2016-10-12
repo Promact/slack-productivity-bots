@@ -241,6 +241,8 @@ namespace Promact.Erp.Util
         public static string AnswerStatement = "Completed bot";
         public static string LeaveApplicant = "apoorvapatel";
         public static string ChannelIdForTest = "231asd";
+        public static string PhoneForTest = "5845155745451";
+        public static string TitleForTest = "Software Developer";
         public static string ScrumQuestionForTest = "What did you do yesterday?";
         public static string ChannelNameForTest = "testbotgroup";
         public static string ProjectDetailsFromOauth = "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";

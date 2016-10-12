@@ -13,14 +13,12 @@ namespace Promact.Erp.Core.Controllers
     public class OAuthController : WebApiBaseController
     {
         private readonly IHttpClientRepository _httpClientRepository;
-        private readonly IRepository<SlackUserDetails> _slackUserDetails;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
-        public OAuthController(IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        public OAuthController(IHttpClientRepository httpClientRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientRepository = httpClientRepository;
-            _slackUserDetails = slackUserDetails;
             _logger = logger;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;

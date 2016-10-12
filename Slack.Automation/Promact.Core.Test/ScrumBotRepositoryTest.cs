@@ -81,18 +81,39 @@ namespace Promact.Core.Test
             SlackUserName = StringConstant.TestUser
         };
 
+        private static SlackProfile profile = new SlackProfile()
+        {
+            Skype = StringConstant.TestUserId,
+            Email = StringConstant.EmailForTest,
+            FirstName = StringConstant.UserNameForTest,
+            LastName = StringConstant.TestUser,
+            Phone = StringConstant.PhoneForTest,
+            Title = StringConstant.TitleForTest
+        };
+
         private SlackUserDetails slackUserDetails = new SlackUserDetails()
         {
             UserId = StringConstant.StringIdForTest,
             Name = StringConstant.UserNameForTest,
-            TeamId = StringConstant.PromactStringName
+            TeamId = StringConstant.PromactStringName,
+            CreatedOn = DateTime.UtcNow,
+            Deleted = false,
+            IsAdmin = false,
+            IsBot = false,
+            IsPrimaryOwner = false,
+            IsOwner = false,
+            IsRestrictedUser = false,
+            IsUltraRestrictedUser = false,
+            Profile = profile,
+            RealName = StringConstant.UserNameForTest + StringConstant.TestUser
         };
 
         private SlackUserDetails testSlackUserDetails = new SlackUserDetails()
         {
             UserId = StringConstant.IdForTest,
             Name = StringConstant.TestUser,
-            TeamId = StringConstant.PromactStringName
+            TeamId = StringConstant.PromactStringName,
+            Profile = profile
         };
 
         private SlackChannelDetails slackChannelDetails = new SlackChannelDetails()
