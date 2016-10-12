@@ -119,9 +119,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
             if (user == null)
             {
-                slackEvent.Event.User.TeamId = slackEvent.TeamId;
-                _slackUserDetails.Insert(slackEvent.Event.User);
-                _slackUserDetails.Save();
+                if (!slackEvent.Event.User.IsBot)
+                    _slackUserRepository.AddSlackUser(slackEvent.Event.User);
             }
         }
 
@@ -131,7 +130,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="slackEvent"></param>
         public void SlackChannelAdd(SlackEventApiAC slackEvent)
-        {           
+        {
             var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
@@ -139,7 +138,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 _slackChannelDetails.Insert(slackEvent.Event.Channel);
             }
         }
-
 
     }
 }

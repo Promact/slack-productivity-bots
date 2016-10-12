@@ -110,6 +110,17 @@ namespace Promact.Core.Test
             Name = StringConstant.Employee
         };
 
+
+        private static SlackProfile profile = new SlackProfile()
+        {
+            Skype = StringConstant.TestUserId,
+            Email = StringConstant.EmailForTest,
+            FirstName = StringConstant.UserNameForTest,
+            LastName = StringConstant.TestUser,
+            Phone = StringConstant.PhoneForTest,
+            Title = StringConstant.TitleForTest
+        };
+
         private SlackEventApiAC slackEvent = new SlackEventApiAC()
         {
             ApiAppId = StringConstant.StringIdForTest,
@@ -126,7 +137,8 @@ namespace Promact.Core.Test
                     Deleted = false,
                     Name = StringConstant.FirstNameForTest,
                     TeamId = StringConstant.ChannelIdForTest,
-                    UserId = StringConstant.StringIdForTest
+                    UserId = StringConstant.StringIdForTest,
+                    Profile = profile
                 }
             }
         };
