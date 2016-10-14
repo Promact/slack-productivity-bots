@@ -30,8 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,7 +46,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettingUtil.cs" />
+    <Compile Include="Email Templates\LeaveApplication.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LeaveApplication.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email Templates\LeaveApproveAndRejected.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LeaveApproveAndRejected.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email Templates\TaskMail.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TaskMail.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email\EmailService.cs" />
+    <Compile Include="Email\IEmailService.cs" />
+    <Compile Include="EnvironmentVariableRepository\EnvironmentVariableRepository.cs" />
+    <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringConstant.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Email Templates\LeaveApplication.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LeaveApplication.cs</LastGenOutput>
+    </Content>
+    <Content Include="Email Templates\LeaveApproveAndRejected.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LeaveApproveAndRejected.cs</LastGenOutput>
+    </Content>
+    <Content Include="Email Templates\TaskMail.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>TaskMail.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Promact.Erp.DomainModel\Promact.Erp.DomainModel.csproj">
+      <Project>{a3a93cdb-bf02-41a6-8cf7-843f53f930e8}</Project>
+      <Name>Promact.Erp.DomainModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

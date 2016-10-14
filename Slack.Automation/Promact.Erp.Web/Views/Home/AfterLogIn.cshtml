@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+}
+
+@*@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <div>
+        <form asp-controller="Home" asp-action="LogOff">
+            <h1>Leave Management</h1>
+            <h1>You Have Successfully Login with OAuth Server - </h1>
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!","")
+            @Html.ActionLink("LogOff", "LogOff")
+        </form>
+    </div>
+}*@
+
+<head>
+    <base href="/">
+    <title>Promact</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+     @*Polyfill(s) for older browsers*@
+    <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
+    <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="systemjs.config.js"></script>
+    <script>
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
+    </head>
+<body>
+    <my-app>Loading...</my-app>
+</body>
+

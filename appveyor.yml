@@ -1,0 +1,30 @@
+version: 1.0.{build}
+pull_requests:
+ do_not_increment_build_number: true
+configuration: Release
+platform: Any CPU
+environment:
+ nodejs_version: "0.12"
+ COVERALLS_REPO_TOKEN:
+   secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
+build_script:
+- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
+build:
+ project: .\Slack.Automation\Promact.ERP.sln
+ parallel: true
+ verbosity: minimal 
+test_script:
+- ps: >-
+   .\Slack.Automation\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" "-targetargs:"".\Slack.Automation\Promact.Core.Test\bin\Release\Promact.Core.Test.dll"" -appveyor -noshadow" -filter:"+[Promact.Core.Repository*]*" -output:opencoverCoverage.xml
+
+
+   if(![string]::IsNullOrEmpty($env:COVERALLS_REPO_TOKEN)){
+
+   $coveralls = (Resolve-Path "Slack.Automation/packages/coveralls.net.*/tools/csmacnz.coveralls.exe").ToString()
+
+
+   & $coveralls --opencover -i opencoverCoverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
+   }
+- cd ./Slack.Automation/Promact.Erp.Web
+- npm test
+
