@@ -1,3 +1,6 @@
+// Karma configuration
+// Generated on Sat Aug 27 2016 14:48:51 GMT+0530 (India Standard Time)
+
 module.exports = function (config) {
     config.set({
 
@@ -16,7 +19,6 @@ module.exports = function (config) {
         'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js',
         'node_modules/core-js/client/shim.min.js',
         'node_modules/reflect-metadata/Reflect.js',
-
         // System.js for module loading
         'node_modules/systemjs/dist/system-polyfills.js',
         'node_modules/systemjs/dist/system.src.js',
@@ -61,9 +63,9 @@ module.exports = function (config) {
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        //preprocessors: {
-        //    "**/app/*spec.js": "coverage"
-        //},
+        preprocessors: {
+            '**/app/**/!(*spec).js': ['coverage']
+        },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -71,8 +73,7 @@ module.exports = function (config) {
         reporters: ['progress', 'coverage', 'coveralls'],
 
         coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
-            dir: 'coverage/'
+            type: 'lcov', subdir: '.', file: 'lcov.info'
         },
 
 
