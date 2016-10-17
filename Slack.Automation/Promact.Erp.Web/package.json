@@ -16,9 +16,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
-    "webdriver:update": "webdriver-manager update",
-    "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/jasmine/bin/jasmine.js",
-    "coveralls": "npm run coverage && type ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "webdriver:update": "webdriver-manager update"
   },
   "keywords": [],
   "author": "",
@@ -69,10 +67,7 @@
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
     "typings": "^1.0.4",
-    "karma-coveralls": "1.1.2",
-    "remap-istanbul": "0.6.4",
-    "coveralls": "2.11.14"
-
+    "remap-istanbul": "0.6.4"
   },
   "repository":{}
 }
