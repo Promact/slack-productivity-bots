@@ -77,7 +77,17 @@ namespace Promact.Erp.Core.Controllers
             try
             {
                 await _oAuthLoginRepository.AddSlackUserInformation(code);
-                return Ok();
+                //  return Ok();
+                var newUrl = this.Url.Link("Default", new
+                {
+                    Controller = "Home",
+                    Action = "SlackAuthorize",
+                    message = "parameterContent"
+                });
+
+                //    return Request.CreateResponse(HttpStatusCode.OK, new { Success = true, RedirectUrl = newUrl });
+
+                return Redirect(newUrl);
             }
             catch (Exception ex)
             {
