@@ -357,95 +357,6 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
         /// <summary>
-        /// Method geting the user/users information 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailReport(string userId,int currentPage,int itemsPerPage)
-        {
-            var user = _user.FirstOrDefault(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var Json = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
-            var role = Json.FirstOrDefault(x => x.UserName == user.UserName);
-            var skip=0;
-            if (currentPage == 1)
-            { skip = 0; }
-            else { skip = (currentPage * itemsPerPage) - itemsPerPage; }
-            var take = itemsPerPage;
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (role.Role == StringConstant.RoleAdmin)
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                foreach (var j in Json)
-                {
-                    var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
-                    if (employeeId != null)
-                    {
-                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                        taskMails.ForEach(taskMail =>
-                        {
-                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                            {
-                                Id = taskMail.Id,
-                                UserName = j.Name,
-                                CreatedOn = taskMail.CreatedOn
-                            };
-                            taskMailReportAc.Add(taskmailReportAc);
-                        });
-                    }
-                }
-            }
-            else if (role.Role == StringConstant.RoleTeamLeader)
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                foreach (var t in Json)
-                {
-                    //var employeeId = _user.FirstOrDefault(x => x.UserName == t.UserName);
-                    var employeeIds = await _userManager.FindByNameAsync(t.UserName);
-                    if (employeeIds != null)
-                    {
-                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeIds.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                        taskMails.ForEach(taskMail =>
-                        {
-                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                            {
-                                Id = taskMail.Id,
-                                UserName = t.Name,
-                                CreatedOn = taskMail.CreatedOn
-                            };
-                            taskMailReportAc.Add(taskmailReportAc);
-                        });
-                    }
-                }
-               
-            }
-            else
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                var employee = await _userManager.FindByNameAsync(role.UserName);//_user.FirstOrDefault(x => x.UserName == role.UserName);
-                taskMails = _taskMail.Fetch(x => x.EmployeeId == employee.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                taskMails.ForEach(taskMail =>
-                {
-                    TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                    {
-                        Id = taskMail.Id,
-                        UserName = role.Name,
-                        CreatedOn = taskMail.CreatedOn
-                    };
-                    taskMailReportAc.Add(taskmailReportAc);
-                });
-
-              
-            }
-            foreach (var taskMail in taskMailReportAc)
-            {
-                taskMail.TotalItems = taskMailReportAc.Count;
-            }
-            return taskMailReportAc.OrderByDescending(o => o.CreatedOn).Skip(skip).Take(take).ToList();
-            //return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
-        }
-        
-        /// <summary>
         ///Method geting list of Employee 
         /// </summary>
         /// <param name="userId"></param>
@@ -981,29 +892,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             taskMailAc.Add(taskMailUserAc);
                         }
                     }
-                    else
-                    {
-                        List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                        TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
-                        {
-                            Id = 0,
-                            Description = StringConstant.NotAvailable,
-                            Comment = StringConstant.NotAvailable,
-                            Hours = 0
-                        };
-                        taskMailReport.Add(taskmailReportAcTL);
-                        TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                        {
-                            UserId = employee.Id,
-                            UserName = j.Name,
-                            UserRole = UserRole,
-                            CreatedOn = Convert.ToDateTime(SelectedDate).Date,
-                            TaskMails = taskMailReport,
-                            IsMax = Convert.ToDateTime(SelectedDate).Date,
-                            IsMin = Convert.ToDateTime(SelectedDate).Date
-                        };
-                        taskMailAc.Add(taskMailUserAc);
-                    }
+                   
 
                 }
             }
