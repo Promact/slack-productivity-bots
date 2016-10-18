@@ -8,7 +8,7 @@ import { TestConnection } from "../../shared/mock/test.connection";
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
 import { Observable } from 'rxjs/Observable';
 import { DatePipe } from '@angular/common';
-import { SpinnerService} from '../../shared/spinner.service';
+import { LoaderService } from '../../shared/loader.service';
 import {StringConstant} from '../../shared/stringConstant';
 
 describe('TaskMail Details Tests', () => {
@@ -23,7 +23,7 @@ describe('TaskMail Details Tests', () => {
     }
     class MockRouter { }
     class MockDatePipe { }
-    class MockSpinnerService { }
+    class MockLoaderService { }
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -34,13 +34,14 @@ describe('TaskMail Details Tests', () => {
                 provide(TaskService, { useClass: MockTaskMailService }),
                 provide(Router, { useClass: MockRouter }),
                 provide(DatePipe, { useClass: MockDatePipe }),
-                provide(SpinnerService, { useClass: MockSpinnerService }),
+                provide(LoaderService, { useClass: MockLoaderService }),
             ]
         });
     });
 
-    beforeEach(inject([ActivatedRoute, Router, TaskService, SpinnerService, StringConstant], (mockRouter: ActivatedRoute, router: Router, taskService: TaskService, spinner: SpinnerService,stringConstant: StringConstant) => {
-        taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService, spinner, stringConstant);
+    beforeEach(inject([ActivatedRoute, Router, TaskService, LoaderService, StringConstant],
+        (mockRouter: ActivatedRoute, router: Router, taskService: TaskService, loader: LoaderService, stringConstant: StringConstant) => {
+            taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService, stringConstant,loader );
     }));
 
     it("should be defined", () => {
