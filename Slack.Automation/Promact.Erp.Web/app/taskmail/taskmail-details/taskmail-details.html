@@ -6,7 +6,7 @@
         <button (click)="getTaskMailForSelectedDate(taskMailUser[0].UserName,taskMailUser[0].UserId,taskMailUser[0].UserRole,taskMailUser[0].CreatedOns,SelectedDate)">Search</button>
         
     </div>
-    <!--<div *ngIf="!spinner.active" id="container">Nothing is Loading Now</div>-->
+    
     <div *ngFor="let taskmailUser of taskMailUser">
         Name: {{taskmailUser.UserName}}
         Task Mail Date: {{taskmailUser.CreatedOns}}

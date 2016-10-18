@@ -1,0 +1,16 @@
+﻿<div>
+    <h1>Welcome to Promact ERP</h1>
+   
+    <h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
+    <h3><a routerLink="task" routerLinkActive="active">Task Reports</a></h3>
+
+    <router-outlet></router-outlet>
+    
+    <div *ngIf="loader.loader">
+        <div class="overlay">
+        </div>
+        <div class="loader">
+            <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
+        </div>
+    </div>
+</div>

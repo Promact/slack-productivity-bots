@@ -10,6 +10,8 @@ import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
 import { SpinnerService } from '../../shared/spinner.service';
 import { DatePipe } from '@angular/common';
+import { LoaderService } from '../../shared/loader.service';
+import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
@@ -18,6 +20,7 @@ describe('LeaveReport Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
     class MockSpinnerService { }
+    class MockLoaderService { }
     const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
@@ -38,6 +41,7 @@ describe('LeaveReport Detials Tests', () => {
                 { provide: Router, useClass: MockRouter },
                 { provide: DatePipe, useClass: MockDatePipe },
                 { provide: SpinnerService, useClass: MockSpinnerService }
+                provide(LoaderService, { useClass: MockLoaderService }),
             ]
         }).compileComponents();
     }));

@@ -140,3 +140,24 @@ nav a.router-link-active {
 * { 
   font-family: Arial, Helvetica, sans-serif; 
 }
+.loader {
+  display: inline-block;
+  font-size: 4.5rem; /* Change this to resize the loader */
+  animation: 2s rotate infinite linear;
+  width: 1em;
+  height: 1em;
+  position: absolute;
+top: 40%;
+left: 50%;
+margin: -50px 0px 0px -50px;
+}
+
+.loader circle {
+  fill: transparent;
+  stroke: #4bcf99;
+  stroke-width: 0.1em;
+  stroke-linecap: round;
+  stroke-dasharray: 2.3525em 0.4705em;
+  animation: 1.5s strokeDashArray infinite linear, 24s colorBounce infinite linear;
+}
+

@@ -8,6 +8,9 @@ import { TaskService } from '../taskmail.service';
 import { SpinnerService } from '../../shared/spinner.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
+import { Observable } from 'rxjs/Observable';
+import { LoaderService } from '../../shared/loader.service';
+import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailListComponent } from './taskmail-list.component';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 
@@ -25,6 +28,8 @@ describe('Task Mail Report List Tests', () => {
             this.params = Observable.of({ id: "1" });
         }
     }
+    class MockRouter { }
+    class MockLoaderService { }
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
@@ -32,11 +37,12 @@ describe('Task Mail Report List Tests', () => {
             imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
-                { provide: ActivatedRoute, useClass: MockActivatedRoute },
-                { provide: TaskService, useClass: MockTaskMailService },
-                { provide: StringConstant, useClass: StringConstant },
-                { provide: Router, useClass: MockRouter },
-                { provide: SpinnerService, useClass: MockSpinnerService }
+                provide(Router, { useClass: MockRouter }),
+                provide(TestConnection, { useClass: TestConnection }),
+                provide(TaskService, { useClass: MockTaskMailService }),
+                provide(SpinnerService, { useClass: MockSpinnerService }),
+                provide(LoaderService, { useClass: MockLoaderService }),
+                provide(StringConstant, { useClass: StringConstant }),
             ]
         }).compileComponents();
     }));

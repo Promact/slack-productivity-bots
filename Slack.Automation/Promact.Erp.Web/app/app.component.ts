@@ -1,6 +1,6 @@
 ﻿
 import { Component } from '@angular/core';
-//import { SpinnerComponent} from './shared/spinner.component';
+import { LoaderService } from './shared/loader.service'
 @Component({
     selector: 'my-app',
     //directives: [SpinnerComponent],
@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
 `
 
 })
-    //<h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
+    
 export class AppComponent {
+    constructor(private loader: LoaderService) { }
 }
