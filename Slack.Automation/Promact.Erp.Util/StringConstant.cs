@@ -47,6 +47,9 @@ namespace Promact.Erp.Util
         public static string SlackUserListUrl = "https://slack.com/api/users.list";
         public static string SlackChannelListUrl = "https://slack.com/api/channels.list";
         public static string SlackGroupListUrl = "https://slack.com/api/groups.list";
+        public static string SlackAuthError = "There is something wrong Internally.The response from Slack is : ";
+        public static string SlackAppError = "Promact Slack app was not added successfully. ";
+        public static string SlackAppAdded = "Promact Slack app has been added successfully";
         public static string TaskMailBotStatusErrorMessage = "Status should be completed/inprogress/roadblock";
         public static string TaskMailBotHourErrorMessage = "Please enter numeric value. And it should be in range of 0.5 to 8";
         public static string TaskMailDescription = "Descriptions";
@@ -169,10 +172,12 @@ namespace Promact.Erp.Util
         public static string LoggerErrorMessageLeaveRequestControllerSlackRequest = "Error in Leave Request Controller-Slack Request";
         public static string LoggerErrorMessageLeaveRequestControllerSlackButtonRequest = "Error in Leave Request Controller-Slack Button Request";
         public static string LoggerErrorMessageHomeControllerExtrenalLogin = "Error in Home Controller-Extrenal Login ";
+        public static string LoggerErrorMessageHomeControllerAuthorizeStatusPage = "Error in Home Controller-Status Page after Authorize ";
         public static string LoggerErrorMessageHomeControllerExtrenalLoginCallBack = "Error in Home Controller-Extrenal Login CallBack ";
         public static string LoggerErrorMessageHomeControllerLogoff = "Error in Home Controller-LogOff";
         public static string LoggerErrorMessageOAuthControllerRefreshToken = "Error in OAuth Controller-Refresh Token";
         public static string LoggerErrorMessageOAuthControllerSlackOAuth = "Error in OAuth Controller-Slack OAuth";
+        public static string LoggerErrorMessageOAuthControllerSlackDetailsAdd = "Error in OAuth Controller-Slack Details Add";
         public static string LoggerErrorMessageOAuthControllerSlackEvent = "Error in OAuth Controller-Slack Event";
         public static string LoggerErrorMessageTaskMailBot = "Error in Task Mail Bot";
         public static string SlackBotStringName = "slackbot";
