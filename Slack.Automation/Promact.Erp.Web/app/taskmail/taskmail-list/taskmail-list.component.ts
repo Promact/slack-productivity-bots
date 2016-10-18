@@ -49,7 +49,7 @@ export class TaskMailListComponent {
         }, err => {
 
             });
-       
+        this.loader.loader = false;
     }
     taskmailDetails(UserId, UserName, UserEmail)
     {

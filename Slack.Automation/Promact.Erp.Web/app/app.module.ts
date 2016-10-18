@@ -28,7 +28,7 @@ import { LoaderService } from "./shared/loader.service";
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService, StringConstant, LoaderService]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [StringConstant, LoaderService,{ provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 
 export class AppModule { }

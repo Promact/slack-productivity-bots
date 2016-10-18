@@ -20,6 +20,7 @@ describe('LeaveReport Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
     class MockSpinnerService { }
+    class MockLoaderService { }
     const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
@@ -34,12 +35,12 @@ describe('LeaveReport Detials Tests', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                provide(ActivatedRoute, { useClass: MockActivatedRoute }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(StringConstant, { useClass: StringConstant }),
-                provide(TaskService, { useClass: MockTaskMailService }),
-                provide(Router, { useClass: MockRouter }),
-                provide(DatePipe, { useClass: MockDatePipe }),
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: TaskService, useClass: MockTaskMailService },
+                { provide: StringConstant, useClass: StringConstant },
+                { provide: Router, useClass: MockRouter },
+                { provide: DatePipe, useClass: MockDatePipe },
+                { provide: SpinnerService, useClass: MockSpinnerService }
                 provide(LoaderService, { useClass: MockLoaderService }),
             ]
         });

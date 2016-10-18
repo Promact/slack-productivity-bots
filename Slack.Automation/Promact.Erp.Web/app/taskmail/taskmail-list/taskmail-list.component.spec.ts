@@ -40,6 +40,7 @@ describe('Task Mail Report List Tests', () => {
                 provide(Router, { useClass: MockRouter }),
                 provide(TestConnection, { useClass: TestConnection }),
                 provide(TaskService, { useClass: MockTaskMailService }),
+                provide(SpinnerService, { useClass: MockSpinnerService }),
                 provide(LoaderService, { useClass: MockLoaderService }),
                 provide(StringConstant, { useClass: StringConstant }),
             ]
