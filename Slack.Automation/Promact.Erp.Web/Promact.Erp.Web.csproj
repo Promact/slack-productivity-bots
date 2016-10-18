@@ -219,6 +219,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\index.html" />
     <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
@@ -339,6 +340,7 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\shared\loader.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.router.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
@@ -346,8 +348,6 @@
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
     <TypeScriptCompile Include="app\shared\shared.module.ts" />
     <TypeScriptCompile Include="app\shared\stringConstant.ts" />
-    <TypeScriptCompile Include="app\shared\spinner.component.ts" />
-    <TypeScriptCompile Include="app\shared\spinner.service.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.spec.ts" />

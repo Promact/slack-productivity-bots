@@ -10,6 +10,8 @@ import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
 import { SpinnerService } from '../../shared/spinner.service';
 import { DatePipe } from '@angular/common';
+import { LoaderService } from '../../shared/loader.service';
+import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
@@ -25,21 +27,27 @@ describe('LeaveReport Detials Tests', () => {
             this.params = Observable.of({ UserId: "1", UserRole: "Admin", UserName: "test" });
         }
     }
-    
-    beforeEach(async(() => {
-        this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
-            ],
+    class MockRouter { }
+    class MockDatePipe { }
+    class MockLoaderService { }
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({
             providers: [
-                { provide: ActivatedRoute, useClass: MockActivatedRoute },
-                { provide: TaskService, useClass: MockTaskMailService },
-                { provide: StringConstant, useClass: StringConstant },
-                { provide: Router, useClass: MockRouter },
-                { provide: DatePipe, useClass: MockDatePipe },
-                { provide: SpinnerService, useClass: MockSpinnerService }
+                provide(ActivatedRoute, { useClass: MockActivatedRoute }),
+                provide(TestConnection, { useClass: TestConnection }),
+                provide(StringConstant, { useClass: StringConstant }),
+                provide(TaskService, { useClass: MockTaskMailService }),
+                provide(Router, { useClass: MockRouter }),
+                provide(DatePipe, { useClass: MockDatePipe }),
+                provide(LoaderService, { useClass: MockLoaderService }),
             ]
-        }).compileComponents();
+        });
+    });
+
+    beforeEach(inject([ActivatedRoute, Router, TaskService, LoaderService, StringConstant],
+        (mockRouter: ActivatedRoute, router: Router, taskService: TaskService, loader: LoaderService, stringConstant: StringConstant) => {
+            taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService, stringConstant,loader );
     }));
 
     it("should be defined", () => {
