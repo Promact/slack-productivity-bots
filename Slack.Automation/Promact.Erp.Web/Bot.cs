@@ -16,6 +16,7 @@ namespace Promact.Erp.Web
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
+        //  private static StringConstant _stringConstant;
         private static IScrumBotRepository _scrumBotRepository;
         private static IEnvironmentVariableRepository _environmentVariableRepository;
         /// <summary>
@@ -25,6 +26,7 @@ namespace Promact.Erp.Web
         public static void Main(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
+            //   _stringConstant = container.Resolve<StringConstant>();
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
@@ -81,6 +83,7 @@ namespace Promact.Erp.Web
         public static void ScrumMain(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
+            //    _stringConstant = container.Resolve<StringConstant>();
             try
             {
                 _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
@@ -98,6 +101,7 @@ namespace Promact.Erp.Web
                 // Method will be called when someone sends message
                 client.OnMessageReceived += (message) =>
                 {
+
                     try
                     {
                         string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
