@@ -45,10 +45,11 @@ export class TaskMailListComponent {
                     var UserEmail = result[0].UserEmail;
                     this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
                 }
+            this.loader.loader = false;
         }, err => {
 
             });
-        this.loader.loader = false;
+       
     }
     taskmailDetails(UserId, UserName, UserEmail)
     {
