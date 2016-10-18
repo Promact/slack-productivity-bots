@@ -3,8 +3,8 @@ using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
-using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -16,7 +16,7 @@ namespace Promact.Erp.Web
         private static ITaskMailRepository _taskMailRepository;
         private static ISlackUserRepository _slackUserDetails;
         private static ILogger _logger;
-        //  private static StringConstant _stringConstant;
+        private static IStringConstantRepository _stringConstant;
         private static IScrumBotRepository _scrumBotRepository;
         private static IEnvironmentVariableRepository _environmentVariableRepository;
         /// <summary>
@@ -26,7 +26,7 @@ namespace Promact.Erp.Web
         public static void Main(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
-            //   _stringConstant = container.Resolve<StringConstant>();
+            _stringConstant = container.Resolve<IStringConstantRepository>();
             try
             {
                 _taskMailRepository = container.Resolve<ITaskMailRepository>();
@@ -50,7 +50,7 @@ namespace Promact.Erp.Web
                         var user = _slackUserDetails.GetById(message.user);
                         string replyText = "";
                         var text = message.text;
-                        if (text.ToLower() == StringConstant.TaskMailSubject.ToLower())
+                        if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                         {
                             replyText = _taskMailRepository.StartTaskMail(user.Name).Result;
                         }
@@ -69,7 +69,7 @@ namespace Promact.Erp.Web
             }
             catch (Exception ex)
             {
-                _logger.Error(StringConstant.LoggerErrorMessageTaskMailBot + " " + ex.Message + "\n" + ex.StackTrace);
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + " " + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
         }
@@ -83,7 +83,7 @@ namespace Promact.Erp.Web
         public static void ScrumMain(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
-            //    _stringConstant = container.Resolve<StringConstant>();
+            _stringConstant = container.Resolve<IStringConstantRepository>();
             try
             {
                 _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
@@ -110,14 +110,14 @@ namespace Promact.Erp.Web
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("\n" + StringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
                         throw ex;
                     }
                 };
             }
             catch (Exception ex)
             {
-                _logger.Error("\n" + StringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+                _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
         }
