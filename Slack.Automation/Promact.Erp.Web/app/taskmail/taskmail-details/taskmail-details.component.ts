@@ -64,9 +64,10 @@ export class TaskMailDetailsComponent {
                         }
                     });
                 });
+                this.loader.loader = false;
             });
         });
-       this.loader.loader = false;
+      
     }
     getTaskMailList() {
         this.router.navigate([this.stringConstant.taskList]);
