@@ -67,6 +67,7 @@
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableRepository.cs" />
     <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlackAuthorizeException.cs" />
     <Compile Include="StringConstant.cs" />
   </ItemGroup>
   <ItemGroup>

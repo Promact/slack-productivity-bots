@@ -74,27 +74,31 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/SlackRequest")]
         public async Task<IHttpActionResult> SlackOAuth(string code)
         {
+            string message = string.Empty;
+            var errorMessage = string.Empty;
             try
             {
                 await _oAuthLoginRepository.AddSlackUserInformation(code);
-                //  return Ok();
-                var newUrl = this.Url.Link("Default", new
-                {
-                    Controller = "Home",
-                    Action = "SlackAuthorize",
-                    message = "parameterContent"
-                });
-
-                //    return Request.CreateResponse(HttpStatusCode.OK, new { Success = true, RedirectUrl = newUrl });
-
-                return Redirect(newUrl);
+                message = StringConstant.SlackAppAdded;
+            }
+            catch (SlackAuthorizeException authEx)
+            {
+                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
+                message = StringConstant.SlackAppError + authEx.Message;
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
+                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
+                message = StringConstant.SlackAppError + ex.Message;
             }
+            _logger.Error(errorMessage);
+            var newUrl = this.Url.Link("Default", new
+            {
+                Controller = "Home",
+                Action = "SlackAuthorize",
+                message = message
+            });
+            return Redirect(newUrl);
         }
 
         /**

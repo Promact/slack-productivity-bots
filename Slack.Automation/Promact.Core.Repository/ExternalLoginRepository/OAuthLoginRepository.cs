@@ -79,35 +79,50 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
-            var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
-            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl, userDetailsRequest, null);
+            var detailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
+            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl, detailsRequest, null);
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
-            foreach (var user in slackUsers.Members)
+            if (slackUsers.Ok)
             {
-                if (!user.Deleted && !user.IsBot && user.Name != StringConstant.SlackBotStringName)
-                    _slackUserRepository.AddSlackUser(user);
+                foreach (var user in slackUsers.Members)
+                {
+                    if (!user.Deleted && !user.IsBot && user.Name != StringConstant.SlackBotStringName)
+                        _slackUserRepository.AddSlackUser(user);
+                }
             }
-            var channelDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackChannelListUrl, userDetailsRequest, null);
+            else
+                throw new SlackAuthorizeException(StringConstant.SlackAuthError + slackUsers.ErrorMessage);
+            var channelDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackChannelListUrl, detailsRequest, null);
             var channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
-            foreach (var channel in channels.Channels)
+            if (channels.Ok)
             {
-                if (!channel.Deleted)
+                foreach (var channel in channels.Channels)
                 {
-                    channel.CreatedOn = DateTime.UtcNow;
-                    _slackChannelDetails.Insert(channel);
+                    if (!channel.Deleted)
+                    {
+                        channel.CreatedOn = DateTime.UtcNow;
+                        _slackChannelDetails.Insert(channel);
+                    }
                 }
             }
+            else
+                throw new SlackAuthorizeException(StringConstant.SlackAuthError + channels.ErrorMessage);
 
-            var groupDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null);
+            var groupDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackGroupListUrl, detailsRequest, null);
             var groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
-            foreach (var channel in groups.Groups)
+            if (groups.Ok)
             {
-                if (!channel.Deleted)
+                foreach (var channel in groups.Groups)
                 {
-                    channel.CreatedOn = DateTime.UtcNow;
-                    _slackChannelDetails.Insert(channel);
+                    if (!channel.Deleted)
+                    {
+                        channel.CreatedOn = DateTime.UtcNow;
+                        _slackChannelDetails.Insert(channel);
+                    }
                 }
             }
+            else
+                throw new SlackAuthorizeException(StringConstant.SlackAuthError + groups.ErrorMessage);
         }
 
         /// <summary>
