@@ -56,6 +56,13 @@ namespace Promact.Erp.Util
         public static string ScrumTime = "scrum time";
         public static string ScrumHalt = "scrum halt";
         public static string ScrumHalted = "Scrum has been halted";
+        public static string ChannelAddSuccess = "Channel details has been added";
+        public static string Add = "add";
+        public static string Channel = "channel";
+        public static string ChannelAddInstruction = "The channel is not in our database. Please write the command *add channel _channelname_* , if it is added as a project in OAuth server.";
+        public static string ProjectNotInOAuth = "This group doesn't is not registered as Project in OAuth. Please add it to OAuth first";
+        public static string GroupNameStartsWith = "G";
+        public static string OnlyPrivateChannel = "Only private channels can be added manually.";
         public static string ScrumAlreadyHalted = "Scrum is already halted. Enter *scrum resume* to resume scrum";
         public static string ScrumResume = "scrum resume";
         public static string Scrum = "scrum";
@@ -171,7 +178,7 @@ namespace Promact.Erp.Util
         public static string SlackBotStringName = "slackbot";
         public static string CasualLeaveUrl = "casual/leave/";
         public static string CasualLeaveResponse = "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
-        public static string SlackChannelIdForTest = "DA4ADFD44";
+        public static string SlackChannelIdForTest = "GA4ADFD44";
         public static string MessageTsForTest = "5212201241.15452124";
         public static string SorryYouCannotApplyLeave = "Sorry user can't apply leave. Either user are not in Promact OAuth or yet u haven't login in promact-slack server";
         public static string LeaveListCommandForTest = "list siddhartha";
@@ -280,12 +287,12 @@ namespace Promact.Erp.Util
         public static string RoleTeamLeader = "TeamLeader";
         public static string RoleEmployee = "Employee";
 
-        
+
 
         public static string ProjectUasrInformationUrl = "featchListOfUser/";
         public static string ProjectInformationUrl = "featchUserRole/";
 
-   
+
 
 
         public static string NotAvailable = "Not Available";

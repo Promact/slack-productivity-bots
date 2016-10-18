@@ -3,10 +3,12 @@ using Moq;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,6 +20,7 @@ namespace Promact.Core.Test
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ISlackUserRepository _slackUserRepository;
+        private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         public OAuthLoginRepositoryTest()
@@ -26,6 +29,7 @@ namespace Promact.Core.Test
             _oAuthLoginRepository = _componentContext.Resolve<IOAuthLoginRepository>();
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
+            _slackChannelRepository = _componentContext.Resolve<ISlackChannelRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
             _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
         }
@@ -86,6 +90,37 @@ namespace Promact.Core.Test
             Assert.Equal(user.Name, slackEvent.Event.User.Name);
         }
 
+        /// <summary>
+        /// Test case to check SlackEventUpdate of OAuth Login Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void SlackAddChannel()
+        {
+            slackEvent.Event.Channel = channel;
+            _oAuthLoginRepository.SlackChannelAdd(slackEvent);
+            var channelAdded = _slackChannelRepository.GetById(slackEvent.Event.Channel.ChannelId);
+            Assert.Equal(channelAdded.Name, slackEvent.Event.Channel.Name);
+        }
+        
+        private SlackChannelDetails channel = new SlackChannelDetails()
+        {
+            ChannelId = "ChannelIdForTest",
+            CreatedOn = DateTime.UtcNow,
+            Deleted = false,
+            Name = StringConstant.Employee
+        };
+
+
+        private static SlackProfile profile = new SlackProfile()
+        {
+            Skype = StringConstant.TestUserId,
+            Email = StringConstant.EmailForTest,
+            FirstName = StringConstant.UserNameForTest,
+            LastName = StringConstant.TestUser,
+            Phone = StringConstant.PhoneForTest,
+            Title = StringConstant.TitleForTest
+        };
+
         private SlackEventApiAC slackEvent = new SlackEventApiAC()
         {
             ApiAppId = StringConstant.StringIdForTest,
@@ -102,7 +137,8 @@ namespace Promact.Core.Test
                     Deleted = false,
                     Name = StringConstant.FirstNameForTest,
                     TeamId = StringConstant.ChannelIdForTest,
-                    UserId = StringConstant.StringIdForTest
+                    UserId = StringConstant.StringIdForTest,
+                    Profile = profile
                 }
             }
         };

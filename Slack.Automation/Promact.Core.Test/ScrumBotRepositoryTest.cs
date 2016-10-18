@@ -1269,7 +1269,72 @@ namespace Promact.Core.Test
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
             var msg = await _scrumBotRepository.ProcessMessages(StringConstant.StringIdForTest, StringConstant.GroupName, StringConstant.GroupDetailsResponseText);
-            Assert.Equal(msg, StringConstant.NotAProject);
+            Assert.Equal(msg, StringConstant.ChannelAddInstruction);
+        }
+
+
+        #endregion
+
+
+        #region AddChannel Test Cases
+
+
+        /// <summary>
+        /// Method AddChannelManually Testing
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannel()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            UserProjectSetup();
+
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, slackChannelDetails.ChannelId, StringConstant.Add + " " + StringConstant.Channel + " " + slackChannelDetails.Name);
+            Assert.Equal(msg, StringConstant.ChannelAddSuccess);
+        }
+
+
+        /// <summary>
+        /// Method AddChannelManually Testing with Not Privaet Group
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNotPrivateGroup()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, StringConstant.GroupName, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.OnlyPrivateChannel);
+        }
+
+
+        /// <summary>
+        /// Method AddChannelManually Testing with No User
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNoUser()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, slackChannelDetails.ChannelId, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.YouAreNotInExistInOAuthServer);
+        }
+
+
+        /// <summary>
+        /// Method AddChannelManually Testing with no project added
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void AddChannelNoProject()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, StringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var msg = await _scrumBotRepository.ProcessMessages(slackUserDetails.UserId, slackChannelDetails.ChannelId, StringConstant.Add + " " + StringConstant.Channel + " " + StringConstant.GroupName);
+            Assert.Equal(msg, StringConstant.ProjectNotInOAuth);
         }
 
 
