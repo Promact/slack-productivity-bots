@@ -207,7 +207,7 @@ namespace Promact.Erp.Util.StringConstants
         string SixthQuestionForTest { get; }
         string SeventhQuestionForTest { get; }
         string YouAreNotInExistInOAuthServer { get; }
-        string HourSpentForTest { get; }
+        int HourSpentForTest { get; }
         string StatusOfWorkForTest { get; }
         string SendEmailYesForTest { get; }
         string SendEmailNoForTest { get; }
@@ -244,10 +244,10 @@ namespace Promact.Erp.Util.StringConstants
         string UserNameForTest { get; }
         string GroupName { get; }
         string AnswerStatement { get; }
-        string LeaveApplicant { get; }
+      //  string LeaveApplicant { get; }
         string ChannelIdForTest { get; }
         string PhoneForTest { get; }
-        string TitleForTest { get; }
+       // string TitleForTest { get; }
         string ScrumQuestionForTest { get; }
         string ChannelNameForTest { get; }
         string ProjectDetailsFromOauth { get; }
@@ -258,7 +258,7 @@ namespace Promact.Erp.Util.StringConstants
         string UserIdForTest { get; }
         string TestUser { get; }
         string scrumAnswerForTest { get; }
-        string ProjectIdForTest { get; }
+        int ProjectIdForTest { get; }
         string Halt { get; }
         string Resume { get; }
         string AlreadyMarkedAsAnswered { get; }

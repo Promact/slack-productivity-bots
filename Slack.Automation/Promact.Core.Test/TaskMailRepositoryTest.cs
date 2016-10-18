@@ -698,7 +698,7 @@ namespace Promact.Core.Test
             FirstName = StringConstant.UserNameForTest,
             LastName = StringConstant.TestUser,
             Phone = StringConstant.PhoneForTest,
-            Title = StringConstant.TitleForTest
+            Title = StringConstant.UserNameForTest
         };
 
         //private static string answer = null;

@@ -246,10 +246,10 @@ namespace Promact.Erp.Util
         public static string UserNameForTest = "apoorvapatel";
         public static string GroupName = "testbotgroup";
         public static string AnswerStatement = "Completed bot";
-        public static string LeaveApplicant = "apoorvapatel";
+    //    public static string LeaveApplicant = "apoorvapatel";
         public static string ChannelIdForTest = "231asd";
         public static string PhoneForTest = "5845155745451";
-        public static string TitleForTest = "Software Developer";
+       // public static string TitleForTest = "Software Developer";
         public static string ScrumQuestionForTest = "What did you do yesterday?";
         public static string ChannelNameForTest = "testbotgroup";
         public static string ProjectDetailsFromOauth = "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
@@ -281,6 +281,7 @@ namespace Promact.Erp.Util
         public static string QuestionToNextEmployee = "Good Day <@{0}>!\nWhat did you do yesterday?";
         public static string PreviousDayStatusForTest = "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
         public static string UpdateAnswer = "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
+    
         #endregion
 
         public static string RoleAdmin = "Admin";
@@ -291,7 +292,6 @@ namespace Promact.Erp.Util
 
         public static string ProjectUasrInformationUrl = "featchListOfUser/";
         public static string ProjectInformationUrl = "featchUserRole/";
-
 
 
 
