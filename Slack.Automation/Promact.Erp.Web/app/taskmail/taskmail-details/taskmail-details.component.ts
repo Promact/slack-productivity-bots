@@ -5,8 +5,8 @@ import {taskmailModel} from '../taskmail.model';
 import {taskmailuserModel} from '../taskmailuser.model';
 import {TaskMailStatus} from '../../enums/TaskMailStatus';
 import { DatePipe } from '@angular/common';
-import { SpinnerService} from '../../shared/spinner.service';
-import {StringConstant} from '../../shared/stringConstant';
+import { StringConstant } from '../../shared/stringConstant';
+import { LoaderService } from '../../shared/loader.service';
 
 @Component({
     templateUrl: "app/taskmail/taskmail-details/taskmail-details.html",
@@ -25,33 +25,24 @@ export class TaskMailDetailsComponent {
     public isMaxDate: string;
     public isMinDate: string;
     public isHide: boolean;
-    //public UserEmail: string;
-    constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private spinner: SpinnerService, private stringConstant: StringConstant) {
+    
+    constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService,
+        private stringConstant: StringConstant,private loader: LoaderService) {
         this.taskMails = new Array<taskmailModel>();
     }
     ngOnInit() {
-        this.spinner.start();
-        //this.taskService.getListOfEmployee().subscribe((result) => {
-        //    if (result.length > 0) {
-        //        this.UserId = result[0].UserId;
-        //        this.UserRole = result[0].UserRole;
-        //        this.UserName = result[0].UserName;
-        //        this.getTaskMailDetails();
-        //    }
-        //}, err => {
-
-        this.getTaskMailDetails();
-        //});
         
-        this.spinner.stop();
+        this.getTaskMailDetails();
+        
     }
     getTaskMailDetails()
     {
+        this.loader.loader = true;
         this.route.params.subscribe(params => {
             this.UserId = params['UserId']; 
             this.UserRole = params['UserRole'];
             this.UserName = params['UserName'];
-            if (this.UserRole == this.stringConstant.RoleAdmin)
+            if (this.UserRole === this.stringConstant.RoleAdmin)
             { this.isHide = false; } else { this.isHide = true; }
             this.isMax = true;
             this.taskService.getTaskMailDetailsReport(this.UserId, this.UserRole, this.UserName).subscribe(taskMailUser => {
@@ -75,6 +66,7 @@ export class TaskMailDetailsComponent {
                 });
             });
         });
+       this.loader.loader = false;
     }
     getTaskMailList() {
         this.router.navigate([this.stringConstant.taskList]);
@@ -83,7 +75,7 @@ export class TaskMailDetailsComponent {
         this.SelectedDate = "";
        this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMailUser => {
            this.taskMailUser = taskMailUser;
-                if (this.taskMailUser[0].IsMin == this.taskMailUser[0].CreatedOn) {
+                if (this.taskMailUser[0].IsMin === this.taskMailUser[0].CreatedOn) {
                     this.isMin = true;
                 }
                 this.taskMailUser.forEach(taskmailuser => {
@@ -104,7 +96,7 @@ export class TaskMailDetailsComponent {
         this.SelectedDate = "";
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMailUser => {
             this.taskMailUser = taskMailUser;
-            if (this.taskMailUser[0].IsMax == this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].IsMax === this.taskMailUser[0].CreatedOn) {
                 this.isMax = true;
             }
             this.isMin = false;
@@ -125,11 +117,11 @@ export class TaskMailDetailsComponent {
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMailUser => {
             this.taskMailUser = taskMailUser;
-            if (this.taskMailUser[0].IsMax == this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].IsMax === this.taskMailUser[0].CreatedOn) {
                 this.isMax = true;
                 this.isMin = false;
             }
-            if (this.taskMailUser[0].IsMin == this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].IsMin === this.taskMailUser[0].CreatedOn) {
                 this.isMax = false;
                 this.isMin = true;
             }
@@ -137,7 +129,7 @@ export class TaskMailDetailsComponent {
                 var datePipe = new DatePipe();
                 taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
                 taskmailuser.TaskMails.forEach(taskMail => {
-                    if (taskMail.Comment == this.stringConstant.notAvailableComment)
+                    if (taskMail.Comment === this.stringConstant.notAvailableComment)
                     { taskMail.StatusName = this.stringConstant.notAvailableComment }
                     else {
                         taskMail.StatusName = TaskMailStatus[taskMail.Status];
