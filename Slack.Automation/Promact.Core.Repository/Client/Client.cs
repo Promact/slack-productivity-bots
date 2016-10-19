@@ -5,10 +5,10 @@ using Promact.Core.Repository.ProjectUserCall;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.Email_Templates;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,13 +26,15 @@ namespace Promact.Core.Repository.Client
         private readonly IEmailService _email;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
+        private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        public Client(IProjectUserCallRepository projectUser, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository)
+        public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository)
         {
             _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri(StringConstant.SlackChatUpdateUrl);
+            _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _projectUser = projectUser;
             _email = email;
+            _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
             _envVariableRepository = envVariableRepository;
@@ -48,7 +50,7 @@ namespace Promact.Core.Repository.Client
         {
             // Call to an url using HttpClient.
             var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(StringConstant.SlackChatUpdateUrl, responseUrl,leaveResponse.Token);
+            var response = await _httpClientRepository.GetAsync(_stringConstant.SlackChatUpdateUrl, responseUrl,leaveResponse.Token);
         }
 
         /// <summary>
@@ -58,7 +60,7 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Text to be send to slack</param>
         public void SendMessage(SlashCommand leave, string replyText)
         {
-            var text = new SlashResponse() { ResponseType = StringConstant.ResponseTypeEphemeral, Text = replyText };
+            var text = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var textJson = JsonConvert.SerializeObject(text);
             WebRequestMethod(textJson, leave.ResponseUrl);
         }
@@ -105,13 +107,13 @@ namespace Promact.Core.Repository.Client
                 // Assigning Value in template page
                 leaveTemplate.Session = new Dictionary<string, object>
             {
-                {StringConstant.FromDate,leaveRequest.FromDate.ToString(StringConstant.DateFormat) },
-                {StringConstant.EndDate,leaveRequest.EndDate.Value.ToString(StringConstant.DateFormat) },
-                {StringConstant.Reason,leaveRequest.Reason },
-                {StringConstant.Type,leaveRequest.Type.ToString() },
-                {StringConstant.Status,leaveRequest.Status.ToString() },
-                {StringConstant.ReJoinDate,leaveRequest.RejoinDate.Value.ToString(StringConstant.DateFormat) },
-                {StringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(StringConstant.DateFormat) },
+                {_stringConstant.FromDate,leaveRequest.FromDate.ToString(_stringConstant.DateFormat) },
+                {_stringConstant.EndDate,leaveRequest.EndDate.Value.ToString(_stringConstant.DateFormat) },
+                {_stringConstant.Reason,leaveRequest.Reason },
+                {_stringConstant.Type,leaveRequest.Type.ToString() },
+                {_stringConstant.Status,leaveRequest.Status.ToString() },
+                {_stringConstant.ReJoinDate,leaveRequest.RejoinDate.Value.ToString(_stringConstant.DateFormat) },
+                {_stringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(_stringConstant.DateFormat) },
             };
                 leaveTemplate.Initialize();
                 var emailBody = leaveTemplate.TransformText();
@@ -135,7 +137,7 @@ namespace Promact.Core.Repository.Client
                 // Call to an url using HttpWebRequest
                 var request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = WebRequestMethods.Http.Post;
-                request.ContentType = StringConstant.WebRequestContentType;
+                request.ContentType = _stringConstant.WebRequestContentType;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
                     //adding rest portion of url
@@ -171,14 +173,14 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
                 EmailApplication email = new EmailApplication();
                 // creating email templates corresponding to leave applied
                 email.Body = EmailServiceTemplate(leaveRequest);
                 email.From = userDetail.Email;
-                email.Subject = StringConstant.EmailSubject;
+                email.Subject = _stringConstant.EmailSubject;
                 email.To = teamLeader.Email;
                 _email.Send(email);
             }
@@ -194,14 +196,14 @@ namespace Promact.Core.Repository.Client
         public void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = StringConstant.LeaveBot, Attachments = attachment };
+            var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
             WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
             EmailApplication email = new EmailApplication();
             // creating email templates corresponding to leave applied
             email.Body = EmailServiceTemplate(leaveRequest);
             email.From = managementEmail;
-            email.Subject = StringConstant.EmailSubject;
+            email.Subject = _stringConstant.EmailSubject;
             email.To = user.Email;
             _email.Send(email);
         }
