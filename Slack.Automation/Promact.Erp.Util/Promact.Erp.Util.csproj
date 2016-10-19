@@ -67,7 +67,6 @@
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableRepository.cs" />
     <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringConstant.cs" />
     <Compile Include="StringConstants\IStringConstantRepository.cs" />
     <Compile Include="StringConstants\StringConstantRepository.cs" />
   </ItemGroup>

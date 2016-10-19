@@ -360,6 +360,50 @@ namespace Promact.Erp.Util.StringConstants
                 return "scrum halt";
             }
         }
+        public string ChannelAddSuccess
+        {
+            get
+            {
+                return "Channel details has been added";
+            }
+        }
+        public string Add
+        {
+            get
+            {
+                return "add";
+            }
+        }
+
+        public string ChannelAddInstruction
+        {
+            get
+            {
+                return "The channel is not in our database. Please write the command *add channel _channelname_* , if it is added as a project in OAuth server.";
+            }
+        }
+        public string ProjectNotInOAuth
+        {
+            get
+            {
+                return "This group doesn't is not registered as Project in OAuth. Please add it to OAuth first";
+            }
+        }
+        public string GroupNameStartsWith
+        {
+            get
+            {
+                return "G";
+            }
+        }
+        public string OnlyPrivateChannel
+        {
+            get
+            {
+                return "Only private channels can be added manually.";
+            }
+        }
+
         public string ScrumHalted
         {
             get
@@ -576,6 +620,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Scrum for today has been concluded";
+            }
+        }
+        public string Channel
+        {
+            get
+            {
+                return "channel";
             }
         }
         public string GoodDay
@@ -1383,11 +1434,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
             }
         }
-        public int HourSpentForTest
+        public string HourSpentForTest
         {
             get
             {
-                return 4;
+                return "4";
             }
         }
         public string StatusOfWorkForTest

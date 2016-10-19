@@ -122,6 +122,13 @@ namespace Promact.Erp.Util.StringConstants
         string LeaveTypeForTest { get; }
         string ChannelId { get; }
         string ChannelName { get; }
+        string ChannelAddInstruction { get; }
+        string ProjectNotInOAuth { get; }
+        string GroupNameStartsWith { get; }
+        string OnlyPrivateChannel { get; }
+        string ChannelAddSuccess { get; }
+        string Add { get; }
+        string Channel { get; }
         string Command { get; }
         string ResponseUrl { get; }
         string TeamDomain { get; }
@@ -207,7 +214,7 @@ namespace Promact.Erp.Util.StringConstants
         string SixthQuestionForTest { get; }
         string SeventhQuestionForTest { get; }
         string YouAreNotInExistInOAuthServer { get; }
-        int HourSpentForTest { get; }
+        string HourSpentForTest { get; }
         string StatusOfWorkForTest { get; }
         string SendEmailYesForTest { get; }
         string SendEmailNoForTest { get; }
@@ -244,10 +251,10 @@ namespace Promact.Erp.Util.StringConstants
         string UserNameForTest { get; }
         string GroupName { get; }
         string AnswerStatement { get; }
-      //  string LeaveApplicant { get; }
+        //  string LeaveApplicant { get; }
         string ChannelIdForTest { get; }
         string PhoneForTest { get; }
-       // string TitleForTest { get; }
+        // string TitleForTest { get; }
         string ScrumQuestionForTest { get; }
         string ChannelNameForTest { get; }
         string ProjectDetailsFromOauth { get; }
