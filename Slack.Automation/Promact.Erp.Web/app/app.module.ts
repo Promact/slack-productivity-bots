@@ -13,7 +13,7 @@ import { TaskService }   from './taskmail/taskmail.service';
 import { SpinnerComponent} from './shared/spinner.component';
 import { SpinnerService} from './shared/spinner.service';
 import { StringConstant } from './shared/stringConstant';
-//import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 
 
@@ -28,7 +28,7 @@ import { StringConstant } from './shared/stringConstant';
     ],
     declarations: [AppComponent, LeaveReportComponent, LeaveReportListComponent, LeaveReportDetailsComponent, SpinnerComponent],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant, { provide: LocationStrategy, useClass: HashLocationStrategy }],
 })
 
 export class AppModule { }

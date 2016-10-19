@@ -7,6 +7,7 @@ import { TaskMailRoutes } from './taskmail/taskmail.routes';
 import { TaskMailComponent } from './taskmail/taskmail.component';
 
 const appRoutes: Routes = [
+    { path: '', component: LeaveReportComponent },
     { path: 'Home/AfterLogIn', component: LeaveReportComponent },
     ...LeaveReportRoutes,
     { path: 'leave', component: LeaveReportComponent },
