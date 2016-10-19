@@ -10,6 +10,9 @@ import { LeaveModule } from './leaveReport/leaveReport.module';
 //import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { SpinnerComponent } from './shared/spinner.component';
 import { StringConstant } from './shared/stringConstant';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
+
 
 @NgModule({
     declarations: [AppComponent, SpinnerComponent],
@@ -21,7 +24,7 @@ import { StringConstant } from './shared/stringConstant';
         LeaveModule
     ],
     bootstrap: [AppComponent],
-    providers: [SpinnerService, StringConstant]//, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant, { provide: LocationStrategy, useClass: HashLocationStrategy }],
 })
 
 export class AppModule { }
