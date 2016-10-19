@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.ScrumRepository
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
             IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository,
             IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser,
-            ISlackChannelRepository slackChannelDetails, ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant)
+            ISlackChannelRepository slackChannelRepository, ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
@@ -70,16 +70,16 @@ namespace Promact.Core.Repository.ScrumRepository
             //the command is split to individual words
             //commnads ex: "scrum time", "later @userId"
             var messageArray = message.Split(null);
-            if (user != null && String.Compare(message, StringConstant.ScrumHelp, true).Equals(0))
-                replyText = StringConstant.ScrumHelpMessage;
+            if (user != null && String.Compare(message, _stringConstant.ScrumHelp, true).Equals(0))
+                replyText = _stringConstant.ScrumHelpMessage;
             else if (user != null && channel != null)
             {
                 //commands could be"scrum time" or "scrum halt" or "scrum resume"
-                if (String.Compare(message, StringConstant.ScrumTime, true).Equals(0) || String.Compare(message, StringConstant.ScrumHalt, true).Equals(0) || String.Compare(message, StringConstant.ScrumResume, true).Equals(0))
+                if (String.Compare(message, _stringConstant.ScrumTime, true).Equals(0) || String.Compare(message, _stringConstant.ScrumHalt, true).Equals(0) || String.Compare(message, _stringConstant.ScrumResume, true).Equals(0))
                     replyText = await Scrum(channel.Name, user.Name, messageArray[1].ToLower());
                 //a particular employee is on leave, getting marked as later or asked question again
                 //commands would be "leave @userId" or "later @userId" or "scrum @userId"
-                else if ((String.Compare(messageArray[0], StringConstant.Leave, true).Equals(0) || String.Compare(messageArray[0], StringConstant.Later, true).Equals(0) || String.Compare(messageArray[0], StringConstant.Scrum, true).Equals(0)) && messageArray.Length == 2)
+                else if ((String.Compare(messageArray[0], _stringConstant.Leave, true).Equals(0) || String.Compare(messageArray[0], _stringConstant.Later, true).Equals(0) || String.Compare(messageArray[0], _stringConstant.Scrum, true).Equals(0)) && messageArray.Length == 2)
                 {
                     int fromIndex = message.IndexOf("<@") + "<@".Length;
                     int toIndex = message.LastIndexOf(">");
@@ -116,13 +116,13 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (user != null)
             {
                 //If channel is not registered in the database and the command encountered is "add channel channelname"
-                if (channel == null && String.Compare(messageArray[0], StringConstant.Add, true).Equals(0) && String.Compare(messageArray[1], StringConstant.Channel, true).Equals(0))
+                if (channel == null && String.Compare(messageArray[0], _stringConstant.Add, true).Equals(0) && String.Compare(messageArray[1], _stringConstant.Channel, true).Equals(0))
                     replyText = AddChannelManually(messageArray[2], user.Name, ChannelId).Result;
                 else
-                    replyText = StringConstant.ChannelAddInstruction;
+                    replyText = _stringConstant.ChannelAddInstruction;
             }
             else if (user == null)
-                replyText = StringConstant.NotAUser;
+                replyText = _stringConstant.NotAUser;
 
             return replyText;
         }
@@ -233,7 +233,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             }
                         }
                         //the user interacting is not the expected user
-                        else if ((status != StringConstant.ScrumConcludedButLater) && (status != StringConstant.ScrumComplete))
+                        else if ((status != _stringConstant.ScrumConcludedButLater) && (status != _stringConstant.ScrumComplete))
                             return status;
                     }
                 }
@@ -420,17 +420,17 @@ namespace Promact.Core.Repository.ScrumRepository
                         channel.Deleted = false;
                         channel.Name = ChannelName;
                         _slackChannelRepository.AddSlackChannel(channel);
-                        returnMsg = StringConstant.ChannelAddSuccess;
+                        returnMsg = _stringConstant.ChannelAddSuccess;
                     }
                     else
-                        returnMsg = StringConstant.ProjectNotInOAuth;
+                        returnMsg = _stringConstant.ProjectNotInOAuth;
                 }
                 else
                     // if user doesn't exist then this message will be shown to user
-                    returnMsg = StringConstant.YouAreNotInExistInOAuthServer;
+                    returnMsg = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
-                return StringConstant.OnlyPrivateChannel;
+                return _stringConstant.OnlyPrivateChannel;
 
             return returnMsg;
         }
@@ -442,7 +442,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns></returns>
         private bool IsPrivateChannel(string ChannelId)
         {
-            if (ChannelId.StartsWith(StringConstant.GroupNameStartsWith, StringComparison.Ordinal))
+            if (ChannelId.StartsWith(_stringConstant.GroupNameStartsWith, StringComparison.Ordinal))
                 return true;
             else
                 return false;
@@ -634,7 +634,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     //fetch the scrum answer of the employee given on that day
                     ScrumAnswer = ScrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
                 //If no anmswer from the employee has been obtained yet.
-                if (ScrumAnswer.Count() == 0 && String.Compare(Parameter, StringConstant.Leave, true).Equals(0))
+                if (ScrumAnswer.Count() == 0 && String.Compare(Parameter, _stringConstant.Leave, true).Equals(0))
                 {
                     if (String.Compare(UserName, Applicant, true).Equals(0))
                     {
@@ -649,7 +649,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                     }
                 }
-                else if (String.Compare(Parameter, StringConstant.Later, true).Equals(0))
+                else if (String.Compare(Parameter, _stringConstant.Later, true).Equals(0))
                 {
                     //all the questions which are not answered by the employee are fetched
                     List<Question> questionsNotAnswered = Questions.Where(x => !ScrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).ToList();
