@@ -296,6 +296,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Project_Readme.html" />
+    <Content Include="Views\Home\SlackAuthorize.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Core.Repository\Promact.Core.Repository.csproj">

@@ -61,6 +61,35 @@ namespace Promact.Erp.Core.Controllers
             return View();
         }
 
+
+        /**
+       * @api {get} Home/SlackAuthorize
+       * @apiVersion 1.0.0
+       * @apiName SlackAuthorize
+       * @apiGroup SlackAuthorize   
+       * @apiParam {string} Name  message 
+       * @apiSuccessExample {json} Success-Response:
+       * HTTP/1.1 200 OK 
+       * {
+       *     "Description":"After Slack OAuth Authorization, user is redirected here with the status of Authorization message."
+       * }
+       */
+        public ActionResult SlackAuthorize(string message)
+        {
+            try
+            {
+                ViewBag.Message = message;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
+                _logger.Error(errorMessage, ex);
+                throw ex;
+            }
+        }
+
+
         /**
         * @api {get} Home/ExtrenalLogin
         * @apiVersion 1.0.0
