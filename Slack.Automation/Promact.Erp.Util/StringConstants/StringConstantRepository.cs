@@ -1147,6 +1147,41 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Leave Request Controller-Slack Button Request";
             }
         }
+        public string SlackAppAdded
+        {
+            get
+            {
+                return "Promact Slack app has been added successfully";
+            }
+        }
+        public string LoggerErrorMessageHomeControllerAuthorizeStatusPage
+        {
+            get
+            {
+                return "Error in Home Controller-Status Page after Authorize ";
+            }
+        }
+        public string LoggerErrorMessageOAuthControllerSlackDetailsAdd
+        {
+            get
+            {
+                return "Error in OAuth Controller-Slack Details Add";
+            }
+        }
+        public string SlackAuthError
+        {
+            get
+            {
+                return "There is something wrong Internally.The response from Slack is : ";
+            }
+        }
+        public string SlackAppError
+        {
+            get
+            {
+                return "Promact Slack app was not added successfully. ";
+            }
+        }
         public string LoggerErrorMessageHomeControllerExtrenalLogin
         {
             get

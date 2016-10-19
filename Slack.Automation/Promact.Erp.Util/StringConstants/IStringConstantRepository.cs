@@ -75,6 +75,11 @@ namespace Promact.Erp.Util.StringConstants
         string Later { get; }
         string LeaveError { get; }
         string ResumeScrum { get; }
+        string SlackAppAdded { get; }
+        string SlackAuthError { get; }
+        string SlackAppError { get; }
+        string LoggerErrorMessageHomeControllerAuthorizeStatusPage { get; }
+        string LoggerErrorMessageOAuthControllerSlackDetailsAdd { get; }
         string PreviousDayStatus { get; }
         string ScrumBotToken { get; }
         string ScrumBotName { get; }

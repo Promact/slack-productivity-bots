@@ -85,7 +85,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }

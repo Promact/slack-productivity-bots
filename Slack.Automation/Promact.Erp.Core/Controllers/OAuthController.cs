@@ -3,6 +3,7 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
@@ -81,17 +82,17 @@ namespace Promact.Erp.Core.Controllers
             try
             {
                 await _oAuthLoginRepository.AddSlackUserInformation(code);
-                message = StringConstant.SlackAppAdded;
+                message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)
             {
-                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
-                message = StringConstant.SlackAppError + authEx.Message;
+                errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
+                message = _stringConstant.SlackAppError + authEx.Message;
             }
             catch (Exception ex)
             {
-                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
-                message = StringConstant.SlackAppError + ex.Message;
+                errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
+                message = _stringConstant.SlackAppError + ex.Message;
             }
             _logger.Error(errorMessage);
             var newUrl = this.Url.Link("Default", new
