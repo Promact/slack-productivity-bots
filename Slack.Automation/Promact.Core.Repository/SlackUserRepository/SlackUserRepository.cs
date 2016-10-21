@@ -29,6 +29,40 @@ namespace Promact.Core.Repository.SlackUserRepository
         }
 
         /// <summary>
+        /// Method to update slack user 
+        /// </summary>
+        /// <param name="slackUserDetails"></param>
+        public void UpdateSlackUser(SlackUserDetails slackUserDetails)
+        {
+            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
+            if (user != null)
+            {
+                user.Deleted = slackUserDetails.Deleted;
+                user.IsAdmin = slackUserDetails.IsAdmin;
+                user.IsBot = slackUserDetails.IsBot;
+                user.IsOwner = slackUserDetails.IsOwner;
+                user.IsPrimaryOwner = slackUserDetails.IsPrimaryOwner;
+                user.IsRestrictedUser = slackUserDetails.IsRestrictedUser;
+                user.IsUltraRestrictedUser = slackUserDetails.IsUltraRestrictedUser;
+                user.Name = slackUserDetails.Name;
+                user.RealName = slackUserDetails.RealName;
+                user.Status = slackUserDetails.Status;
+                user.TeamId = slackUserDetails.TeamId;
+                user.TimeZoneLabel = slackUserDetails.TimeZoneLabel;
+                user.TimeZoneOffset = slackUserDetails.TimeZoneOffset;
+
+                user.Title = slackUserDetails.Profile.Title;
+                user.Email = slackUserDetails.Profile.Email;
+                user.Skype = slackUserDetails.Profile.Skype;
+                user.LastName = slackUserDetails.Profile.LastName;
+                user.FirstName = slackUserDetails.Profile.FirstName;
+                user.Phone = slackUserDetails.Profile.Phone;
+
+                _slackUserDetails.Update(user);
+            }
+        }
+
+        /// <summary>
         /// Method to get slack user information by their slack user id
         /// </summary>
         /// <param name="slackId"></param>

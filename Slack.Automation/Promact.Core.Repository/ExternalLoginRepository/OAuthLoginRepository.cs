@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
-    {
+    {      
         private readonly ApplicationUserManager _userManager;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
@@ -136,10 +136,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         {
             var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
             if (user == null)
-            {
-                if (!slackEvent.Event.User.IsBot)
-                    _slackUserRepository.AddSlackUser(slackEvent.Event.User);
-            }
+                _slackUserRepository.AddSlackUser(slackEvent.Event.User);
         }
 
 
@@ -149,13 +146,18 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackEvent"></param>
         public void SlackChannelAdd(SlackEventApiAC slackEvent)
         {
+
             var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(slackEvent.Event.Channel);
             }
+            else
+            {
+                channel.Name = slackEvent.Event.Channel.Name;
+                _slackChannelDetails.Update(channel);
+            }
         }
-
     }
 }
