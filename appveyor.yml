@@ -4,6 +4,7 @@ pull_requests:
 configuration: Release
 platform: Any CPU
 environment:
+ COVERALLS_SERVICE_NAME: appveyor
  nodejs_version: "0.10"
  COVERALLS_REPO_TOKEN:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
