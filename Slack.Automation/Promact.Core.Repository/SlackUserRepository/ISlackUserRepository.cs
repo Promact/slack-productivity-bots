@@ -11,6 +11,12 @@ namespace Promact.Core.Repository.SlackUserRepository
         void AddSlackUser(SlackUserDetails slackUserDetails);
 
         /// <summary>
+        /// Method to update slack user 
+        /// </summary>
+        /// <param name="slackUserDetails"></param>
+        void UpdateSlackUser(SlackUserDetails slackUserDetails);
+
+        /// <summary>
         /// Method to get slack user information by their slack user id
         /// </summary>
         /// <param name="slackId"></param>

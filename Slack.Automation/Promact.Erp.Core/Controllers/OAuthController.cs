@@ -1,10 +1,12 @@
 ﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -12,16 +14,23 @@ namespace Promact.Erp.Core.Controllers
 {
     public class OAuthController : WebApiBaseController
     {
+        private static Queue<SlackEventApiAC> eventQueue;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
-        public OAuthController(IHttpClientRepository httpClientRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        private readonly ISlackUserRepository _slackUserRepository;
+        static OAuthController()
+        {
+            eventQueue = new Queue<SlackEventApiAC>();
+        }
+        public OAuthController(IHttpClientRepository httpClientRepository, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientRepository = httpClientRepository;
             _logger = logger;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
+            _slackUserRepository = slackUserRepository;
         }
 
         /**
@@ -110,7 +119,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
         * }
         */
         [HttpPost]
@@ -123,20 +132,80 @@ namespace Promact.Erp.Core.Controllers
                 {
                     return Ok(slackEvent.Challenge);
                 }
-                if (slackEvent.Event.Type == StringConstant.TeamJoin)
+
+                eventQueue.Enqueue(slackEvent);
+                foreach (var events in eventQueue)
                 {
-                    _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-                    return Ok();
+                    string eventType = slackEvent.Event.Type;
+                    if (eventType == StringConstant.TeamJoin)
+                    {
+                        if (!slackEvent.Event.User.IsBot)
+                            _oAuthLoginRepository.SlackEventUpdate(events);
+                        eventQueue.Dequeue();
+                        return Ok();
+                        //}
+                        //else
+                        //{
+                        //    eventQueue.Dequeue();
+                        //    return Ok();
+                        //}
+                    }
+                    else if (eventType == "user_change")
+                    {
+                        if (!slackEvent.Event.User.IsBot)
+                            _slackUserRepository.UpdateSlackUser(events.Event.User);
+                        eventQueue.Dequeue();
+                        return Ok();
+                    }
+                    else if (eventType == "channel_created" || eventType == "channel_rename" || eventType == "group_rename")
+                    {
+                        _oAuthLoginRepository.SlackChannelAdd(events);
+                        eventQueue.Dequeue();
+                        return Ok();
+                    }
+                    else
+                    {
+                        eventQueue.Dequeue();
+                        return BadRequest();
+                    }
+
                 }
-                else if(slackEvent.Event.Type == "channel_created" || slackEvent.Event.Type =="group_open")
-                {
-                   _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return null;
+                //switch (eventType)
+                //{
+                //    case "team_join":
+                //        if (!slackEvent.Event.User.IsBot)
+                //        {
+                //            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
+                //            return Ok();
+                //        }
+                //        else
+                //            return Ok();
+
+                //    case "user_change":
+                //        if (!slackEvent.Event.User.IsBot)
+                //        {
+                //            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
+                //            return Ok();
+                //        }
+                //        else
+                //            return Ok();
+
+                //    case "channel_created":
+                //        _oAuthLoginRepository.SlackChannelAdd(slackEvent);
+                //        return Ok();
+
+                //    //case "group_open":
+                //    //    _oAuthLoginRepository.SlackChannelAdd(slackEvent);
+                //    //    return Ok();
+
+                //    case "channel_rename":
+                //        var a = "a";
+                //        var b = a;
+                //        return Ok();
+                //    default:
+                //        return BadRequest();
+                //}
             }
             catch (Exception ex)
             {
