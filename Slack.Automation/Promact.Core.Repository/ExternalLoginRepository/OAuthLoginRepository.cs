@@ -70,7 +70,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         }
 
         /// <summary>
-        /// Method to add Slack Users,channels and bots information 
+        /// Method to add Slack Users,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -138,7 +138,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
 
 
         /// <summary>
-        /// Method to update slack channel table when a channel is added in team.
+        /// Method to update slack channel table when a channel is added or updated in team.
         /// </summary>
         /// <param name="slackEvent"></param>
         public void SlackChannelAdd(SlackEventApiAC slackEvent)

@@ -132,7 +132,6 @@ namespace Promact.Erp.Core.Controllers
                 {
                     return Ok(slackEvent.Challenge);
                 }
-
                 eventQueue.Enqueue(slackEvent);
                 foreach (var events in eventQueue)
                 {
@@ -143,12 +142,7 @@ namespace Promact.Erp.Core.Controllers
                             _oAuthLoginRepository.SlackEventUpdate(events);
                         eventQueue.Dequeue();
                         return Ok();
-                        //}
-                        //else
-                        //{
-                        //    eventQueue.Dequeue();
-                        //    return Ok();
-                        //}
+
                     }
                     else if (eventType == "user_change")
                     {
@@ -168,44 +162,8 @@ namespace Promact.Erp.Core.Controllers
                         eventQueue.Dequeue();
                         return BadRequest();
                     }
-
                 }
                 return null;
-                //switch (eventType)
-                //{
-                //    case "team_join":
-                //        if (!slackEvent.Event.User.IsBot)
-                //        {
-                //            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-                //            return Ok();
-                //        }
-                //        else
-                //            return Ok();
-
-                //    case "user_change":
-                //        if (!slackEvent.Event.User.IsBot)
-                //        {
-                //            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-                //            return Ok();
-                //        }
-                //        else
-                //            return Ok();
-
-                //    case "channel_created":
-                //        _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-                //        return Ok();
-
-                //    //case "group_open":
-                //    //    _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-                //    //    return Ok();
-
-                //    case "channel_rename":
-                //        var a = "a";
-                //        var b = a;
-                //        return Ok();
-                //    default:
-                //        return BadRequest();
-                //}
             }
             catch (Exception ex)
             {
