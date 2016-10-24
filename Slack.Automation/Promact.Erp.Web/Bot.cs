@@ -24,7 +24,7 @@ namespace Promact.Erp.Web
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
         /// <param name="container"></param>
-        public static void Main(IComponentContext container)
+        public void Main(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
             _stringConstant = container.Resolve<IStringConstantRepository>();
@@ -87,7 +87,7 @@ namespace Promact.Erp.Web
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
         /// <param name="container"></param>
-        public static void ScrumMain(IComponentContext container)
+        public void ScrumMain(IComponentContext container)
         {
             _logger = container.Resolve<ILogger>();
             _stringConstant = container.Resolve<IStringConstantRepository>();
