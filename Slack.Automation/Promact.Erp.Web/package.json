@@ -67,8 +67,7 @@
     "systemjs": "^0.19.27",
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
-    "typings": "^1.0.4",
-    "remap-istanbul": "0.6.4"
+    "typings": "^1.0.4"
   },
   "repository":{}
 }
