@@ -11,7 +11,7 @@ cache:
   - packages -> **\packages.config
   - node_modules 
 build_script:
-- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn && yarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
+- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn"\nyarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
  project: .\Slack.Automation\Promact.ERP.sln
  parallel: true
