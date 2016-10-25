@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class LeaveRequestController : WebApiBaseController
+   public class LeaveRequestController : WebApiBaseController
     {
         private readonly ISlackRepository _slackRepository;
         private readonly IAttachmentRepository _attachmentRepository;
