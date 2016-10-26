@@ -25,6 +25,7 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Core.Test.EnvironmentVariableRepository;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Core.Test
 {
@@ -60,6 +61,7 @@ namespace Promact.Core.Test
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
+            builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();

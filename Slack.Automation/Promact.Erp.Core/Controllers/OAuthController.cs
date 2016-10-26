@@ -4,6 +4,7 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -15,11 +16,13 @@ namespace Promact.Erp.Core.Controllers
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
+        private readonly IStringConstantRepository _stringConstant;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
-        public OAuthController(IHttpClientRepository httpClientRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        public OAuthController(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientRepository = httpClientRepository;
             _logger = logger;
+            _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
         }
@@ -52,7 +55,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerRefreshToken, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerRefreshToken, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }
@@ -79,17 +82,17 @@ namespace Promact.Erp.Core.Controllers
             try
             {
                 await _oAuthLoginRepository.AddSlackUserInformation(code);
-                message = StringConstant.SlackAppAdded;
+                message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)
             {
-                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
-                message = StringConstant.SlackAppError + authEx.Message;
+                errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
+                message = _stringConstant.SlackAppError + authEx.Message;
             }
             catch (Exception ex)
             {
-                errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
-                message = StringConstant.SlackAppError + ex.Message;
+                errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackOAuth, ex.ToString());
+                message = _stringConstant.SlackAppError + ex.Message;
             }
             _logger.Error(errorMessage);
             var newUrl = this.Url.Link("Default", new
@@ -119,11 +122,11 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                if (slackEvent.Type == StringConstant.VerificationUrl)
+                if (slackEvent.Type == _stringConstant.VerificationUrl)
                 {
                     return Ok(slackEvent.Challenge);
                 }
-                if (slackEvent.Event.Type == StringConstant.TeamJoin)
+                if (slackEvent.Event.Type == _stringConstant.TeamJoin)
                 {
                     _oAuthLoginRepository.SlackEventUpdate(slackEvent);
                     return Ok();
@@ -140,7 +143,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageOAuthControllerSlackEvent, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackEvent, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }

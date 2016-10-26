@@ -3,6 +3,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +14,11 @@ namespace Promact.Core.Repository.LeaveReportRepository
     {
         private readonly IRepository<LeaveRequest> _leaveRequest;
         private readonly IProjectUserCallRepository _projectUserCall;
-
-        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IProjectUserCallRepository projectUserCall)
+        private readonly IStringConstantRepository _stringConstant;
+        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserCall)
         {
             _leaveRequest = leaveRequest;
+            _stringConstant = stringConstant;
             _projectUserCall = projectUserCall;
         }
 
@@ -32,19 +34,19 @@ namespace Promact.Core.Repository.LeaveReportRepository
                       
             User loginUser = await _projectUserCall.GetUserByUserName(userName, accessToken);
 
-            if (loginUser.Role.Equals(StringConstant.Admin))
+            if (loginUser.Role.Equals(_stringConstant.Admin))
             {
                 List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
                 List<LeaveReport> leaveReports = await GetLeaveReportList(distinctLeaveRequests, accessToken);
                 return leaveReports;
             }
-            else if (loginUser.Role.Equals(StringConstant.Employee))
+            else if (loginUser.Role.Equals(_stringConstant.Employee))
             {
                 List<LeaveRequest> distinctLeaveRequests = leaveRequests.FindAll(x => x.EmployeeId == loginUser.Id);
                 List<LeaveReport> leaveReports = await GetLeaveReportList(distinctLeaveRequests, accessToken);
                 return leaveReports;
             }
-            if(loginUser.Role.Equals(StringConstant.TeamLeader))
+            if(loginUser.Role.Equals(_stringConstant.TeamLeader))
             {
                 List<User> projectUsers = await _projectUserCall.GetProjectUsersByTeamLeaderId(loginUser.Id, accessToken);
                 List<LeaveReport> leaveReports = new List<LeaveReport>();
