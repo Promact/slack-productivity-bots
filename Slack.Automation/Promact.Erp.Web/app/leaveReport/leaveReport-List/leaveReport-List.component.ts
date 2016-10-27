@@ -2,14 +2,12 @@
 import { LeaveReport } from './leaveReport-List.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
-import { FilterPipe } from '../filter.pipe';
 import { StringConstant } from '../../shared/stringConstant';
 declare let jsPDF: any;
 
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
-    pipes: [FilterPipe]
+    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html'
 })
 
 export class LeaveReportListComponent implements OnInit {
