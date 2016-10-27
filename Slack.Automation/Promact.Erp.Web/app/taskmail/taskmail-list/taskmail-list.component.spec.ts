@@ -1,53 +1,61 @@
-﻿declare let describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
-import { provide, Component, OnInit } from "@angular/core";
-import { ActivatedRoute,Router } from '@angular/router';
-import { TaskMailListComponent } from './taskmail-list.component';
-import { TaskService } from '../taskmail.service';
-import { TestConnection } from "../../shared/mock/test.connection";
-import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
+import { Provider } from "@angular/core";
 import { Observable } from 'rxjs/Observable';
-import { SpinnerService} from '../../shared/spinner.service';
-import {StringConstant} from '../../shared/stringConstant';
+import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
+import { TaskService } from '../taskmail.service';
+import { SpinnerService } from '../../shared/spinner.service';
+import { StringConstant } from '../../shared/stringConstant';
+import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
+import { TaskMailListComponent } from './taskmail-list.component';
+import { TaskMailModule } from '../../taskmail/taskMail.module';
+
+let promise: TestBed;
 
 
-describe('TaskMailReport Tests', () => {
-    let taskMailListComponent: TaskMailListComponent;
-    let router: Router;
-    let Activatedrouter: ActivatedRoute;
+describe('Task Mail Report List Tests', () => {
+    class MockRouter { }
+    class MockDatePipe { }
+    class MockSpinnerService { }
+    const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
             this.params = Observable.of({ id: "1" });
         }
     }
-    class MockRouter { }
-    class MockSpinnerService { }
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async(() => {
+        this.promise = TestBed.configureTestingModule({
+            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
+            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            ],
             providers: [
-                provide(Router, { useClass: MockRouter }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(TaskService, { useClass: MockTaskMailService }),
-                provide(SpinnerService, { useClass: MockSpinnerService }),
-                provide(StringConstant, { useClass: StringConstant }),
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: TaskService, useClass: MockTaskMailService },
+                { provide: StringConstant, useClass: StringConstant },
+                { provide: Router, useClass: MockRouter },
+                { provide: SpinnerService, useClass: MockSpinnerService }
             ]
-        });
-    });
-
-    beforeEach(inject([TaskService, Router, SpinnerService, StringConstant], (taskService: TaskService, router: Router, spinner: SpinnerService, stringConstant: StringConstant) => {
-
-        taskMailListComponent = new TaskMailListComponent(router, taskService, spinner, stringConstant);
+        }).compileComponents();
     }));
 
+    it("should be defined", () => {
+        let fixture = TestBed.createComponent(TaskMailListComponent);           
+        let taskMailListComponent = fixture.componentInstance;
+        expect(taskMailListComponent).toBeDefined();
+    });
 
     it('Shows list of taskmailReport on initialization', () => {
+        let fixture = TestBed.createComponent(TaskMailListComponent);   
+        let taskMailListComponent = fixture.componentInstance;
         taskMailListComponent.getListOfEmployee();
         expect(taskMailListComponent.listOfUsers.length).toBe(1);
     });
+});
 
-})
+
 
 
 

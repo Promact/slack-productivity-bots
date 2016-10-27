@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import {ROUTER_DIRECTIVES, Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute } from '@angular/router';
 import { TaskService }   from '../taskmail.service';
 //import {taskmailModel} from '../taskmail.model';
 import {taskmailuserModel} from '../taskmailuser.model';
@@ -9,7 +9,6 @@ import {StringConstant} from '../../shared/stringConstant';
 
 @Component({
     templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
-    directives: [ROUTER_DIRECTIVES],
     providers: [StringConstant]
 })
 export class TaskMailListComponent {
