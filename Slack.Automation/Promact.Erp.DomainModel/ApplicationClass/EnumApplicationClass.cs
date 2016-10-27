@@ -47,13 +47,29 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     /// </summary>
     public enum TaskMailQuestion
     {
-        YourTask=1,
-        HoursSpent=2,
-        Status=3,
-        Comment=4,
-        SendEmail=5,
-        ConfirmSendEmail=6,
-        TaskMailSend=7
+        YourTask = 1,
+        HoursSpent = 2,
+        Status = 3,
+        Comment = 4,
+        SendEmail = 5,
+        ConfirmSendEmail = 6,
+        TaskMailSend = 7
+    }
+
+    /// <summary>
+    /// Scrum Status
+    /// </summary>
+    public enum ScrumStatus
+    {
+        NoProject,
+        NoEmployee,
+        NoQuestion,
+        NotStarted,
+        OnGoing,
+        Completed,
+        Halted,
+        MarkedForLater,
+        AnswerNow
     }
 
     /// <summary>

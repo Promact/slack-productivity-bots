@@ -101,16 +101,21 @@ namespace Promact.Erp.Web
                 // Method will be called when someone sends message
                 client.OnMessageReceived += (message) =>
                 {
-
+                    _logger.Info("Scrum bot got message :" + message);
                     try
                     {
+                        _logger.Info("Scrum bot got message, inside try");
                         string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
                         if (!String.IsNullOrEmpty(replyText))
+                        {
+                            _logger.Info("Scrum bot got reply");
                             client.SendMessage(showMethod, message.channel, replyText);
+                        }
                     }
                     catch (Exception ex)
                     {
                         _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+                        client.CloseSocket();
                         throw ex;
                     }
                 };

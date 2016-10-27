@@ -1509,7 +1509,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+                return "Either you are not in Promact OAuth or you haven't logged in with Promact OAuth server";
             }
         }
         public string HourSpentForTest
