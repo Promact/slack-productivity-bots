@@ -1,11 +1,13 @@
-﻿import {MockBackend, MockConnection} from "@angular/http/testing";
-import {ReflectiveInjector, bind} from "@angular/core";
-import {Http, HTTP_BINDINGS, XHRBackend} from "@angular/http";
+﻿import { MockBackend, MockConnection } from "@angular/http/testing";
 import { Injectable } from '@angular/core';
+import {ReflectiveInjector} from "@angular/core";
+import { Http, XHRBackend} from "@angular/http";
+declare var HTTP_BINDINGS, bind;
 
 @Injectable()
 export class TestConnection {
     mockConnection(url: string) {
+        let example: any;
         let connection: MockConnection;
         let injector = ReflectiveInjector.resolveAndCreate([
             HTTP_BINDINGS,
@@ -23,3 +25,5 @@ export class TestConnection {
         return connection;
     }
 }
+
+

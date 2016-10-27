@@ -1,9 +1,9 @@
 ﻿
 import { Component } from '@angular/core';
-import { SpinnerComponent} from './shared/spinner.component';
+//import { SpinnerComponent} from './shared/spinner.component';
 @Component({
     selector: 'my-app',
-    directives: [SpinnerComponent],
+    //directives: [SpinnerComponent],
     template: ` 
                 <h1>Welcome to leave analysis</h1>
                 <spinner-component></spinner-component>
