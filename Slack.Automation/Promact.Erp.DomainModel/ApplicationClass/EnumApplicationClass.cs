@@ -67,9 +67,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         NotStarted,
         OnGoing,
         Completed,
-        Halted,
-        MarkedForLater,
-        AnswerNow
+        Halted
     }
 
     /// <summary>
@@ -90,15 +88,15 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         sl
     }
 
-    /// <summary>
-    /// Scrum Answer Statuses
-    /// </summary>
-    public enum ScrumAnswerStatus
-    {
-        Answered,
-        Later,
-        AnswerNow
-    }
+    ///// <summary>
+    ///// Scrum Answer Statuses
+    ///// </summary>
+    //public enum ScrumAnswerStatus
+    //{
+    //    Answered,
+    //    Later,
+    //    AnswerNow
+    //}
 
     /// <summary>
     /// Scrum Actions

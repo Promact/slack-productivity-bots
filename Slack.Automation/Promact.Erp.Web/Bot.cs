@@ -19,6 +19,7 @@ namespace Promact.Erp.Web
         private static IStringConstantRepository _stringConstant;
         private static IScrumBotRepository _scrumBotRepository;
         private static IEnvironmentVariableRepository _environmentVariableRepository;
+        
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -74,8 +75,7 @@ namespace Promact.Erp.Web
             }
         }
 
-
-
+        
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
@@ -119,6 +119,8 @@ namespace Promact.Erp.Web
                         throw ex;
                     }
                 };
+                //ChannelCreated channel = new ChannelCreated();
+                //client.HandleChannelCreated(channel);
             }
             catch (Exception ex)
             {
