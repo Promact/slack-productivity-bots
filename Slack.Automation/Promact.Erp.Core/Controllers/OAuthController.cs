@@ -26,7 +26,7 @@ namespace Promact.Erp.Core.Controllers
         {
             eventQueue = new Queue<SlackEventApiAC>();
         }
-        public OAuthController(IHttpClientRepository httpClientRepository, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        public OAuthController(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientRepository = httpClientRepository;
             _logger = logger;
@@ -139,22 +139,21 @@ namespace Promact.Erp.Core.Controllers
                 foreach (var events in eventQueue)
                 {
                     string eventType = slackEvent.Event.Type;
-                    if (eventType == StringConstant.TeamJoin)
+                    if (eventType == _stringConstant.TeamJoin)
                     {
                         if (!slackEvent.Event.User.IsBot)
                             _oAuthLoginRepository.SlackEventUpdate(events);
                         eventQueue.Dequeue();
                         return Ok();
-
                     }
-                    else if (eventType == "user_change")
+                    else if (eventType == _stringConstant.UserChange)
                     {
                         if (!slackEvent.Event.User.IsBot)
                             _slackUserRepository.UpdateSlackUser(events.Event.User);
                         eventQueue.Dequeue();
                         return Ok();
                     }
-                    else if (eventType == "channel_created" || eventType == "channel_rename" || eventType == "group_rename")
+                    else if (eventType == _stringConstant.ChannelCreated || eventType == _stringConstant.ChannelRename || eventType == _stringConstant.GroupRename)
                     {
                         _oAuthLoginRepository.SlackChannelAdd(events);
                         eventQueue.Dequeue();
