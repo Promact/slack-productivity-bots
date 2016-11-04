@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Promact.Erp.Util
+namespace Promact.Erp.Util.ExceptionHandler
 {
     public class SlackAuthorizeException : Exception
     {

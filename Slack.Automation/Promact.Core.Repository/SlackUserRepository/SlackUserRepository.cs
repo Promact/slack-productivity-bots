@@ -1,15 +1,19 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using System;
+using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
     public class SlackUserRepository : ISlackUserRepository
     {
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
-        public SlackUserRepository(IRepository<SlackUserDetails> slackUserDetails)
+        private readonly IStringConstantRepository _stringConstant;
+        public SlackUserRepository(IRepository<SlackUserDetails> slackUserDetails, IStringConstantRepository stringConstant)
         {
             _slackUserDetails = slackUserDetails;
+            _stringConstant = stringConstant;
         }
 
         /// <summary>
@@ -60,6 +64,8 @@ namespace Promact.Core.Repository.SlackUserRepository
 
                 _slackUserDetails.Update(user);
             }
+            else
+                throw new SlackUserNotFoundException(_stringConstant.UserNotFound);
         }
 
         /// <summary>

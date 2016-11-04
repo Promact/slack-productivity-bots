@@ -720,6 +720,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "siddhartha@promactinfo.com";
             }
         }
+        public string UserNotFound
+        {
+            get
+            {
+                return "User Not Found";
+            }
+        }
         public string StringIdForTest
         {
             get

@@ -4,7 +4,7 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
-using Promact.Erp.Util;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
@@ -57,17 +57,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken)
         {
-            try
-            {
-                var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
-                return Ok(oAuth);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerRefreshToken, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
+            return Ok(oAuth);
         }
 
         /**
@@ -166,6 +157,12 @@ namespace Promact.Erp.Core.Controllers
                     }
                 }
                 return null;
+            }
+            catch (SlackUserNotFoundException userEx)
+            {
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackEvent, userEx.ToString());
+                _logger.Error(errorMessage, userEx);
+                throw userEx;
             }
             catch (Exception ex)
             {

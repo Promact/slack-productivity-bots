@@ -255,6 +255,7 @@ namespace Promact.Erp.Util.StringConstants
         string SlashCommandUpdateInValidId { get; }
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
+        string UserNotFound { get; }
 
         #region String Constants for Test Cases
 
