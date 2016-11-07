@@ -25,12 +25,33 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <param name="slackUserDetails"></param>
         public void AddSlackUser(SlackUserDetails slackUserDetails)
         {
-            slackUserDetails.Title = slackUserDetails.Profile.Title;
-            slackUserDetails.Email = slackUserDetails.Profile.Email;
-            slackUserDetails.Skype = slackUserDetails.Profile.Skype;
-            slackUserDetails.LastName = slackUserDetails.Profile.LastName;
-            slackUserDetails.FirstName = slackUserDetails.Profile.FirstName;
-            slackUserDetails.Phone = slackUserDetails.Profile.Phone;
+            Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
+
+                .ForMember(d => d.Title,
+                    opt => opt.MapFrom(src => src.Profile.Title)
+                  )
+                 .ForMember(d => d.Email,
+                       opt => opt.MapFrom(src => src.Profile.Email)
+                  )
+                   .ForMember(d => d.Skype,
+                         opt => opt.MapFrom(src => src.Profile.Skype)
+                    )
+                    .ForMember(d => d.LastName,
+                       opt => opt.MapFrom(src => src.Profile.LastName)
+                   )
+                 .ForMember(d => d.FirstName,
+                       opt => opt.MapFrom(src => src.Profile.FirstName)
+                   )
+                   .ForMember(d => d.Phone,
+                       opt => opt.MapFrom(src => src.Profile.Phone)
+                   )
+               );
+
+            Mapper.AssertConfigurationIsValid();
+
+            // Perform mapping
+            slackUserDetails = Mapper.Map(slackUserDetails, slackUserDetails);
+
             slackUserDetails.CreatedOn = DateTime.UtcNow;
             _slackUserDetails.Insert(slackUserDetails);
         }
@@ -55,19 +76,31 @@ namespace Promact.Core.Repository.SlackUserRepository
                  {
                      opt.UseDestinationValue();
                      opt.Ignore();
-                 }));
+                 })
+               .ForMember(d => d.Title,
+                      opt => opt.MapFrom(src => src.Profile.Title)
+                    )
+               .ForMember(d => d.Email,
+                       opt => opt.MapFrom(src => src.Profile.Email)
+                       )
+               .ForMember(d => d.Skype,
+                         opt => opt.MapFrom(src => src.Profile.Skype)
+                    )
+               .ForMember(d => d.LastName,
+                      opt => opt.MapFrom(src => src.Profile.LastName)
+                       )
+               .ForMember(d => d.FirstName,
+                          opt => opt.MapFrom(src => src.Profile.FirstName)
+                          )
+               .ForMember(d => d.Phone,
+                        opt => opt.MapFrom(src => src.Profile.Phone)
+                        )
+                 );
 
                 Mapper.AssertConfigurationIsValid();
 
                 // Perform mapping
                 user = Mapper.Map(slackUserDetails, user);
-
-                user.Title = slackUserDetails.Profile.Title;
-                user.Email = slackUserDetails.Profile.Email;
-                user.Skype = slackUserDetails.Profile.Skype;
-                user.LastName = slackUserDetails.Profile.LastName;
-                user.FirstName = slackUserDetails.Profile.FirstName;
-                user.Phone = slackUserDetails.Profile.Phone;
                 _slackUserDetails.Update(user);
             }
             else
