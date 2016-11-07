@@ -27,27 +27,25 @@ namespace Promact.Core.Repository.SlackUserRepository
         {
             Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
 
-                .ForMember(d => d.Title,
+                .ForMember(des => des.Title,
                     opt => opt.MapFrom(src => src.Profile.Title)
                   )
-                 .ForMember(d => d.Email,
+                 .ForMember(des => des.Email,
                        opt => opt.MapFrom(src => src.Profile.Email)
                   )
-                   .ForMember(d => d.Skype,
+                   .ForMember(des => des.Skype,
                          opt => opt.MapFrom(src => src.Profile.Skype)
                     )
-                    .ForMember(d => d.LastName,
+                    .ForMember(des => des.LastName,
                        opt => opt.MapFrom(src => src.Profile.LastName)
                    )
-                 .ForMember(d => d.FirstName,
+                 .ForMember(des => des.FirstName,
                        opt => opt.MapFrom(src => src.Profile.FirstName)
                    )
-                   .ForMember(d => d.Phone,
+                   .ForMember(des => des.Phone,
                        opt => opt.MapFrom(src => src.Profile.Phone)
                    )
                );
-
-            Mapper.AssertConfigurationIsValid();
 
             // Perform mapping
             slackUserDetails = Mapper.Map(slackUserDetails, slackUserDetails);
@@ -77,27 +75,25 @@ namespace Promact.Core.Repository.SlackUserRepository
                      opt.UseDestinationValue();
                      opt.Ignore();
                  })
-               .ForMember(d => d.Title,
+               .ForMember(des => des.Title,
                       opt => opt.MapFrom(src => src.Profile.Title)
                     )
-               .ForMember(d => d.Email,
+               .ForMember(des => des.Email,
                        opt => opt.MapFrom(src => src.Profile.Email)
                        )
-               .ForMember(d => d.Skype,
+               .ForMember(des => des.Skype,
                          opt => opt.MapFrom(src => src.Profile.Skype)
                     )
-               .ForMember(d => d.LastName,
+               .ForMember(des => des.LastName,
                       opt => opt.MapFrom(src => src.Profile.LastName)
                        )
-               .ForMember(d => d.FirstName,
+               .ForMember(des => des.FirstName,
                           opt => opt.MapFrom(src => src.Profile.FirstName)
                           )
-               .ForMember(d => d.Phone,
+               .ForMember(des => des.Phone,
                         opt => opt.MapFrom(src => src.Profile.Phone)
                         )
                  );
-
-                Mapper.AssertConfigurationIsValid();
 
                 // Perform mapping
                 user = Mapper.Map(slackUserDetails, user);
