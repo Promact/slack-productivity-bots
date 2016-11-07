@@ -3,6 +3,8 @@ using Promact.Erp.DomainModel.DataRepository;
 using System;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
+using AutoMapper;
+
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -15,6 +17,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             _slackUserDetails = slackUserDetails;
             _stringConstant = stringConstant;
         }
+
 
         /// <summary>
         /// Method to add slack user 
@@ -32,6 +35,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             _slackUserDetails.Insert(slackUserDetails);
         }
 
+
         /// <summary>
         /// Method to update slack user 
         /// </summary>
@@ -41,19 +45,22 @@ namespace Promact.Core.Repository.SlackUserRepository
             var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
             if (user != null)
             {
-                user.Deleted = slackUserDetails.Deleted;
-                user.IsAdmin = slackUserDetails.IsAdmin;
-                user.IsBot = slackUserDetails.IsBot;
-                user.IsOwner = slackUserDetails.IsOwner;
-                user.IsPrimaryOwner = slackUserDetails.IsPrimaryOwner;
-                user.IsRestrictedUser = slackUserDetails.IsRestrictedUser;
-                user.IsUltraRestrictedUser = slackUserDetails.IsUltraRestrictedUser;
-                user.Name = slackUserDetails.Name;
-                user.RealName = slackUserDetails.RealName;
-                user.Status = slackUserDetails.Status;
-                user.TeamId = slackUserDetails.TeamId;
-                user.TimeZoneLabel = slackUserDetails.TimeZoneLabel;
-                user.TimeZoneOffset = slackUserDetails.TimeZoneOffset;
+                Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
+                .ForMember(des => des.Id, opt =>
+                 {
+                     opt.UseDestinationValue();
+                     opt.Ignore();
+                 })
+                .ForMember(des => des.CreatedOn, opt =>
+                 {
+                     opt.UseDestinationValue();
+                     opt.Ignore();
+                 }));
+
+                Mapper.AssertConfigurationIsValid();
+
+                // Perform mapping
+                user = Mapper.Map(slackUserDetails, user);
 
                 user.Title = slackUserDetails.Profile.Title;
                 user.Email = slackUserDetails.Profile.Email;
@@ -61,12 +68,12 @@ namespace Promact.Core.Repository.SlackUserRepository
                 user.LastName = slackUserDetails.Profile.LastName;
                 user.FirstName = slackUserDetails.Profile.FirstName;
                 user.Phone = slackUserDetails.Profile.Phone;
-
                 _slackUserDetails.Update(user);
             }
             else
                 throw new SlackUserNotFoundException(_stringConstant.UserNotFound);
         }
+
 
         /// <summary>
         /// Method to get slack user information by their slack user id
