@@ -10,22 +10,28 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [Route("api/[controller]")]
     public class ScrumReportController : WebApiBaseController
     {
+        #region "Private variables"
         private readonly IScrumReportRepository _scrumReportRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private ApplicationUserManager _userManager;
+        #endregion
 
+        #region "Constructor"
         public ScrumReportController(IScrumReportRepository scrumRepository, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
         {
             _scrumReportRepository = scrumRepository;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
         }
+        #endregion
 
+        #region "Public methods"
 
         /**
-        * @api {get} scrumReport
+        * @api {get} GET/projects
         * @apiVersion 1.0.0
         * @apiName ScrumReport
         * @apiGroup ScrumReport    
@@ -36,7 +42,7 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("scrumReport")]
+        [Route("GET/projects")]
         public async Task<IHttpActionResult> ScrumProjectList()
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
@@ -45,7 +51,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} scrumDetails/{projectId}/{date}
+        * @api {get} GET/scrumDetails/{projectId}/{date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
@@ -58,12 +64,13 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("scrumDetails/{projectId}/{date}")]
+        [Route("GET/scrumDetails/{projectId}/{date}")]
         public async Task<IHttpActionResult> ScrumDetails(int projectId,DateTime date)
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
             return Ok(await _scrumReportRepository.ScrumReportDetails(projectId, date,loginUser.UserName, accessToken));
         }
+        #endregion
     }
 }

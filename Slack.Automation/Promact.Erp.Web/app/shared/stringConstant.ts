@@ -20,8 +20,8 @@ export class StringConstant {
     detail = '/detail';
     detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
-    scrumReport = "scrumReport";
-    scrumDetails = "scrumDetails/";
+    scrumProjects = "GET/projects";
+    scrumDetails = "GET/scrumDetails/";
     slash = "/";
     defaultDate = '1-01-01';
     notAvailableComment = 'Not Available';
@@ -31,5 +31,4 @@ export class StringConstant {
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
     taskDetails ="task/taskdetail"
-
 }
