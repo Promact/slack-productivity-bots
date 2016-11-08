@@ -1,43 +1,53 @@
-﻿declare let describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
-import { provide, Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
-import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
-import { LeaveReportService } from '../leaveReport.service';
-import { TestConnection } from "../../shared/mock/test.connection";
-import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
+import { Provider } from "@angular/core";
+import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
+import { LeaveModule } from '../../leaveReport/leaveReport.module';
+import { LeaveReportService } from '../leaveReport.service';
+import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { StringConstant } from '../../shared/stringConstant';
+import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
 
-describe('LeaveReport Tests', () => {
-    let leaveReportDetailsComponent: LeaveReportDetailsComponent;
-    let router: ActivatedRoute;
+let promise: TestBed;
+
+describe('LeaveReport Detials Tests', () => {
+    const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
-            this.params = Observable.of({ id: "abc" });
+            this.params = Observable.of({ id: "1" });
         }
-    }
+    };
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async(() => {
+        this.promise = TestBed.configureTestingModule({
+            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
+            imports: [LeaveModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            ],
             providers: [
-                provide(ActivatedRoute, { useClass: MockActivatedRoute }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(LeaveReportService, { useClass: MockLeaveReportService }),
-                provide(StringConstant, { useClass: StringConstant }),
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: LeaveReportService, useClass: MockLeaveReportService },
+                { provide: StringConstant, useClass: StringConstant },
             ]
+        }).compileComponents();
+    }));
+
+    it('Shows details of leave report for an employee on initialization', () => done => {
+        this.promise.then(() => {
+            let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+            let leaveReportDetailsComponent = fixture.componentInstance;
+            let result = leaveReportDetailsComponent.ngOnInit();
+            expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+            done();
         });
     });
 
-    beforeEach(inject([LeaveReportService, ActivatedRoute, StringConstant], (leaveReportService: LeaveReportService, mockRouter: ActivatedRoute, stringConstant: StringConstant) => {
-        router = mockRouter;
-        leaveReportDetailsComponent = new LeaveReportDetailsComponent(leaveReportService, router, stringConstant);
-    }));
+});
 
 
-    it('Shows details of leave report for an employee on initialization', () => {
-        leaveReportDetailsComponent.ngOnInit();
-        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
-    });
-})
+
+
+
+
