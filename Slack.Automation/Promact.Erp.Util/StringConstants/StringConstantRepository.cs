@@ -720,6 +720,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "siddhartha@promactinfo.com";
             }
         }
+        public string UserNotFound
+        {
+            get
+            {
+                return "User Not Found";
+            }
+        }
         public string StringIdForTest
         {
             get
@@ -732,6 +739,34 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "shaw";
+            }
+        }
+        public string UserChange
+        {
+            get
+            {
+                return "user_change";
+            }
+        }
+        public string ChannelRename
+        {
+            get
+            {
+                return "channel_rename";
+            }
+        }
+        public string GroupRename
+        {
+            get
+            {
+                return "group_rename";
+            }
+        }
+        public string ChannelCreated
+        {
+            get
+            {
+                return "channel_created";
             }
         }
         public string UserDetailsFromOauthServer

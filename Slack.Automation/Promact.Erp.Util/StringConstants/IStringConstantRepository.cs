@@ -92,6 +92,10 @@ namespace Promact.Erp.Util.StringConstants
         string NoEmployeeFound { get; }
         string WrongPerson { get; }
         string Unrecognized { get; }
+        string UserChange { get;}
+        string ChannelCreated { get; }
+        string ChannelRename { get; }
+        string GroupRename { get; }
 
         string NoProjectFound { get; }
         string ScrumComplete { get; }
@@ -251,6 +255,7 @@ namespace Promact.Erp.Util.StringConstants
         string SlashCommandUpdateInValidId { get; }
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
+        string UserNotFound { get; }
 
         #region String Constants for Test Cases
 

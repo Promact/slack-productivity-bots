@@ -1,11 +1,13 @@
 ﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
-using Promact.Erp.Util;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -13,18 +15,25 @@ namespace Promact.Erp.Core.Controllers
 {
     public class OAuthController : WebApiBaseController
     {
+        private static Queue<SlackEventApiAC> eventQueue;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
-        public OAuthController(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        private readonly ISlackUserRepository _slackUserRepository;
+        static OAuthController()
+        {
+            eventQueue = new Queue<SlackEventApiAC>();
+        }
+        public OAuthController(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientRepository = httpClientRepository;
             _logger = logger;
             _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
+            _slackUserRepository = slackUserRepository;
         }
 
         /**
@@ -48,17 +57,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken)
         {
-            try
-            {
-                var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
-                return Ok(oAuth);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerRefreshToken, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
+            return Ok(oAuth);
         }
 
         /**
@@ -113,7 +113,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
         * }
         */
         [HttpPost]
@@ -126,20 +126,43 @@ namespace Promact.Erp.Core.Controllers
                 {
                     return Ok(slackEvent.Challenge);
                 }
-                if (slackEvent.Event.Type == _stringConstant.TeamJoin)
+                eventQueue.Enqueue(slackEvent);
+                foreach (var events in eventQueue)
                 {
-                    _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-                    return Ok();
+                    string eventType = slackEvent.Event.Type;
+                    if (eventType == _stringConstant.TeamJoin)
+                    {
+                        if (!slackEvent.Event.User.IsBot)
+                            _oAuthLoginRepository.SlackEventUpdate(events);
+                        eventQueue.Dequeue();
+                        return Ok();
+                    }
+                    else if (eventType == _stringConstant.UserChange)
+                    {
+                        if (!slackEvent.Event.User.IsBot)
+                            _slackUserRepository.UpdateSlackUser(events.Event.User);
+                        eventQueue.Dequeue();
+                        return Ok();
+                    }
+                    else if (eventType == _stringConstant.ChannelCreated || eventType == _stringConstant.ChannelRename || eventType == _stringConstant.GroupRename)
+                    {
+                        _oAuthLoginRepository.SlackChannelAdd(events);
+                        eventQueue.Dequeue();
+                        return Ok();
+                    }
+                    else
+                    {
+                        eventQueue.Dequeue();
+                        return BadRequest();
+                    }
                 }
-                else if(slackEvent.Event.Type == "channel_created" || slackEvent.Event.Type =="group_open")
-                {
-                   _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return null;
+            }
+            catch (SlackUserNotFoundException userEx)
+            {
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageOAuthControllerSlackEvent, userEx.ToString());
+                _logger.Error(errorMessage, userEx);
+                throw userEx;
             }
             catch (Exception ex)
             {
