@@ -21,7 +21,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     maxDate = new Date().toISOString().slice(0, 10);
     minDate: any;
 
-    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant) { }
+    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant ) { }
 
     ngOnInit() {
         this.getScrumDetailsToday();
