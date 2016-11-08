@@ -55,8 +55,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
-        * @apiParam {int} id  
-        * @apiParam {DateTime} date   
+        * @apiParam {int} id   
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
