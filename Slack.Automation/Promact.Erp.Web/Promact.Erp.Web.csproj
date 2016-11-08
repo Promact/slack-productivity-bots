@@ -357,6 +357,7 @@
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.router.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.routerLink.ts" />
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
