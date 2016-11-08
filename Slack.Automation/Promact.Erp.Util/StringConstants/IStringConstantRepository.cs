@@ -272,6 +272,13 @@ namespace Promact.Erp.Util.StringConstants
         string GetProjectDetails { get; }
         string UserNotFound { get; }
         string BotNotFound { get; }
+        string PersonNotAvailable { get; }
+        string FormatForDate { get; }
+        string ScrumFirstQuestion { get; }
+        string ScrumSecondQuestion { get; }
+        string ScrumThirdQuestion { get; }
+        string AllProjectUrl { get; }
+        string GetProjectDetails { get; }
 
         #region String Constants for Test Cases
 
