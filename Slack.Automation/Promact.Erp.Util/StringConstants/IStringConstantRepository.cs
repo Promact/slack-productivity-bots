@@ -256,6 +256,13 @@ namespace Promact.Erp.Util.StringConstants
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
         string UserNotFound { get; }
+        string PersonNotAvailable { get; }
+        string FormatForDate { get; }
+        string ScrumFirstQuestion { get; }
+        string ScrumSecondQuestion { get; }
+        string ScrumThirdQuestion { get; }
+        string AllProjectUrl { get; }
+        string GetProjectDetails { get; }
 
         #region String Constants for Test Cases
 
@@ -296,6 +303,18 @@ namespace Promact.Erp.Util.StringConstants
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
         string UpdateAnswer { get; }
+        string AdminLogin { get; }
+        string TeamLeaderLogin { get;}
+        string EmployeeLogin { get; }
+        string TeamLeaderLoginDetails { get; }
+        string ProjectDetail { get; }
+        string ProjectDetailsForAdminFromOauth { get; }
+        string ProjectDetailsForTeamLeaderFromOauth { get; }
+        string ProjectDetailsForEmployeeFromOauth { get;  }
+        string TestAnswer { get; }
+        string TestId { get; }
+        string TestGroupName { get; }
+
         #endregion
 
         string RoleAdmin { get; }

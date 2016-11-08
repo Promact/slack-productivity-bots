@@ -224,7 +224,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<ProjectAc>> GetAllProjects(string accessToken)
         {
             List<ProjectAc> projects = new List<ProjectAc>();
-            var requestUrl = StringConstant.AllProjectUrl;
+            var requestUrl = _stringConstant.AllProjectUrl;
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {

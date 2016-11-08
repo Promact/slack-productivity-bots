@@ -13,7 +13,7 @@ export class ScrumReportService {
     constructor(private http: Http, private stringConstant: StringConstant) { }
 
     getScrumProjects(): Observable<ScrumProject[]> {
-        return this.http.get(this.stringConstant.scrumReport)
+        return this.http.get(this.stringConstant.scrumProjects)
             .map(res => res.json())
             .catch(this.handleError);
     }
