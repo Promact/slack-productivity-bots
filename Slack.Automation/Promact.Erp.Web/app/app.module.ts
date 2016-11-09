@@ -24,7 +24,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
         LeaveModule
     ],
     bootstrap: [AppComponent],
-    providers: [LeaveReportService, TaskService, SpinnerService, , StringConstant, { provide: LocationStrategy, useClass: HashLocationStrategy }],
+    providers: [SpinnerService, StringConstant, { provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 
 export class AppModule { }
