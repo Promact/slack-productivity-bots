@@ -154,14 +154,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "fetchProject/";
+                return "project/";
             }
         }
         public string UsersDetailByGroupUrl
         {
             get
             {
-                return "fetchProjectUsers/";
+                return "user/";
             }
         }
         public string UserDetailsByIdUrl
@@ -2021,14 +2021,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "featchListOfUser/";
+                return "employee/";
             }
         }
         public string ProjectInformationUrl
         {
             get
             {
-                return "featchUserRole/";
+                return "role/";
             }
         }
 
