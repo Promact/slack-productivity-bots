@@ -8,10 +8,9 @@ environment:
  COVERALLS_REPO_TOKEN:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
 cache:
- - Slack.Automation\packages -> **\packages.config
- - Slack.Automation\Promact.Erp.Web\node_modules
+  - Slack.Automation\packages -> **\packages.config 
 build_script:
-- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
+- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn && yarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
  project: .\Slack.Automation\Promact.ERP.sln
  parallel: true
