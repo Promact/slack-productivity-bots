@@ -14,6 +14,5 @@ import { Component } from '@angular/core';
 `
 
 })
-    //<h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
 export class AppComponent {
 }

@@ -12,16 +12,16 @@ const appRoutes: Routes =
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
 
 
-const appRoutes: Routes = [
-    { path: 'Home/AfterLogIn', component: LeaveReportComponent },
-    ...LeaveReportRoutes,
-    { path: 'leave', component: LeaveReportComponent },
-    ...ScrumReportRoutes,
-    { path: 'scrum', component: ScrumReportComponent }
-        //...TaskMailRoutes,
-    //{ path: 'task', component: TaskMailComponent },
+//const appRoutes: Routes = [
+//    { path: 'Home/AfterLogIn', component: LeaveReportComponent },
+//    ...LeaveReportRoutes,
+//    { path: 'leave', component: LeaveReportComponent },
+//    ...ScrumReportRoutes,
+//    { path: 'scrum', component: ScrumReportComponent }
+//        //...TaskMailRoutes,
+//    //{ path: 'task', component: TaskMailComponent },
 
-];
+//];
 
 
 
