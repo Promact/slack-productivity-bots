@@ -44,7 +44,12 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+            }
             return View();
+            
         }
 
         /**
