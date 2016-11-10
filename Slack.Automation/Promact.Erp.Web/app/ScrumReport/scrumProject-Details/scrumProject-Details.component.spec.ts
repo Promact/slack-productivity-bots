@@ -1,7 +1,9 @@
-﻿declare let describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
-import { provide, Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
+import { Provider } from "@angular/core";
+import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
+import { ScrumModule } from '../scrumReport.module';
 import { ScrumProjectDetailComponent } from './scrumProject-Details.component';
 import { ScrumReportService } from '../scrumReport.service';
 import { TestConnection } from "../../shared/mock/test.connection";
@@ -9,34 +11,37 @@ import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.servi
 import { Observable } from 'rxjs/Observable';
 import { StringConstant } from '../../shared/stringConstant';
 
+let promise: TestBed;
+
+
 describe('ScrumReport Tests', () => {
-    let scrumProjectDetailComponent: ScrumProjectDetailComponent;
-    let router: ActivatedRoute;
+    const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
             this.params = Observable.of({ id: "123" });
         }
     }
-
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+ 
+    beforeEach(async(() => {
+        this.promise = TestBed.configureTestingModule({
+            declarations: [RouterLinkStubDirective],
+            imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
-                provide(ActivatedRoute, { useClass: MockActivatedRoute }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(ScrumReportService, { useClass: MockScrumReportService }),
-                provide(StringConstant, { useClass: StringConstant }),
+               { provide : ActivatedRoute,  useClass: MockActivatedRoute },
+               { provide : ScrumReportService,  useClass: MockScrumReportService },
+               { provide : StringConstant,  useClass: StringConstant },
             ]
-        });
-    });
-
-    beforeEach(inject([ScrumReportService, ActivatedRoute, StringConstant], (scrumReportService: ScrumReportService, mockRouter: ActivatedRoute, stringConstant: StringConstant) => {
-        scrumProjectDetailComponent = new ScrumProjectDetailComponent(scrumReportService, mockRouter, stringConstant);
+        }).compileComponents();
     }));
 
-
-    it('Shows scrum answers of employees in a project on initialization', () => {
-        scrumProjectDetailComponent.ngOnInit();
-        expect(scrumProjectDetailComponent.employeeScrumAnswers.length).toBe(1);
+    it('Shows scrum answers of employees in a project on initialization', () => done => {
+        this.promise.then(() => {
+            let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
+            let scrumProjectDetailsComponent = fixture.componentInstance;
+            let result = scrumProjectDetailsComponent.ngOnInit();
+            expect(scrumProjectDetailsComponent.employeeScrumAnswers.length).toBe(1);
+            done();
+        });        
     });
 })
