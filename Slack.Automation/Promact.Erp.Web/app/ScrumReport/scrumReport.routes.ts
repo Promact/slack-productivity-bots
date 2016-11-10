@@ -1,10 +1,11 @@
-﻿import { provideRouter, RouterConfig } from '@angular/router';
+﻿import { ModuleWithProviders } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 import { ScrumReportComponent } from './scrumReport.component';
 import { ScrumProjectListComponent } from './scrumProject-List/scrumProject-List.component';
 import { ScrumProjectDetailComponent } from './scrumProject-Details/scrumProject-Details.component';
 
 
-export const ScrumReportRoutes: RouterConfig = [{
+ const ScrumReportRoutes: Routes = [{
     path: "scrum",
     component: ScrumReportComponent,
     children: [
@@ -17,4 +18,7 @@ export const ScrumReportRoutes: RouterConfig = [{
             component: ScrumProjectDetailComponent
         },
     ]
-}];
+}]
+
+export const scrumReportRoutes: ModuleWithProviders = RouterModule.forChild(ScrumReportRoutes);
+
