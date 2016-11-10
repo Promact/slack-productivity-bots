@@ -221,6 +221,8 @@
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
+    <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
+    <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
