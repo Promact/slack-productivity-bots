@@ -5,12 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { TaskService } from '../taskmail.service';
-import { SpinnerService } from '../../shared/spinner.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
-import { Observable } from 'rxjs/Observable';
 import { LoaderService } from '../../shared/loader.service';
-import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailListComponent } from './taskmail-list.component';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 
@@ -20,7 +17,7 @@ let promise: TestBed;
 describe('Task Mail Report List Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
-    class MockSpinnerService { }
+    class MockLoaderService { }
     const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
@@ -28,21 +25,17 @@ describe('Task Mail Report List Tests', () => {
             this.params = Observable.of({ id: "1" });
         }
     }
-    class MockRouter { }
-    class MockLoaderService { }
-
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
             imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
-                provide(Router, { useClass: MockRouter }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(TaskService, { useClass: MockTaskMailService }),
-                provide(SpinnerService, { useClass: MockSpinnerService }),
-                provide(LoaderService, { useClass: MockLoaderService }),
-                provide(StringConstant, { useClass: StringConstant }),
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: TaskService, useClass: MockTaskMailService },
+                { provide: StringConstant, useClass: StringConstant },
+                { provide: Router, useClass: MockRouter },
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));

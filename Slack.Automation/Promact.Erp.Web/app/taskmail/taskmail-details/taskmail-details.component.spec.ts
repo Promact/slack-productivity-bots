@@ -6,9 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
-import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
-import { SpinnerService } from '../../shared/spinner.service';
 import { DatePipe } from '@angular/common';
 import { LoaderService } from '../../shared/loader.service';
 import {StringConstant} from '../../shared/stringConstant';
@@ -19,7 +17,6 @@ let promise: TestBed;
 describe('LeaveReport Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
-    class MockSpinnerService { }
     class MockLoaderService { }
     const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
@@ -40,8 +37,7 @@ describe('LeaveReport Detials Tests', () => {
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
                 { provide: DatePipe, useClass: MockDatePipe },
-                { provide: SpinnerService, useClass: MockSpinnerService }
-                provide(LoaderService, { useClass: MockLoaderService }),
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));
