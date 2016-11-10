@@ -1,5 +1,5 @@
 ﻿
-<center>
+
     <div>
 
         <h2><u>Scrum Details</u></h2>
@@ -40,6 +40,6 @@
         <input type="date" [(ngModel)]="date" name="date" min="{{projectCreationDate}}" max="{{maxDate}}">
         <button [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
     </div>
-</center>
+
 
 
