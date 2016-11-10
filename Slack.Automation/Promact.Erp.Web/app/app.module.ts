@@ -10,7 +10,7 @@ import { LeaveReportListComponent } from './leaveReport/leaveReport-List/leaveRe
 import { LeaveReportDetailsComponent } from './leaveReport/leaveReport-Details/leaveReport-Details.component';
 import { LeaveReportService } from './leaveReport/leaveReport.service';
 import { TaskService }   from './taskmail/taskmail.service';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { StringConstant } from './shared/stringConstant';
 import { LoaderService } from "./shared/loader.service";
 
@@ -18,7 +18,7 @@ import { LoaderService } from "./shared/loader.service";
 
 
 @NgModule({
-    declarations: [AppComponent, SpinnerComponent],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         HttpModule,
