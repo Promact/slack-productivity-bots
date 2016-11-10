@@ -356,6 +356,9 @@
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\loader.service.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.spec.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.spec.ts" />
+
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.router.ts" />
