@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     public class ScrumReportController : WebApiBaseController
     {
         #region "Private variables"
@@ -31,7 +31,7 @@ namespace Promact.Erp.Core.Controllers
         #region "Public methods"
 
         /**
-        * @api {get} GET/projects
+        * @api {get} api/projects
         * @apiVersion 1.0.0
         * @apiName ScrumReport
         * @apiGroup ScrumReport    
@@ -42,7 +42,7 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("GET/projects")]
+        [Route("api/projects")]
         public async Task<IHttpActionResult> ScrumProjectList()
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
@@ -51,12 +51,12 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} GET/scrumDetails/{projectId}/{date}
+        * @api {get} api/details/{projectId}/{date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
-        * @apiParam {int} Id  projectId  
-        * @apiParam {DateTime} DateTime  date   
+        * @apiParam {int} id  
+        * @apiParam {DateTime} date   
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -64,12 +64,12 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("GET/scrumDetails/{projectId}/{date}")]
-        public async Task<IHttpActionResult> ScrumDetails(int projectId,DateTime date)
+        [Route("api/details/{id}/{date}")]
+        public async Task<IHttpActionResult> ScrumDetails(int id, DateTime date)
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetails(projectId, date,loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.ScrumReportDetails(id, date,loginUser.UserName, accessToken));
         }
         #endregion
     }

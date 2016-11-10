@@ -1,38 +1,41 @@
 ﻿
-declare let describe, it, beforeEach, expect;
+declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
-import { provide, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-
+import { Provider } from "@angular/core";
+import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
+import { ScrumModule } from '../scrumReport.module';
 import { ScrumProjectListComponent } from './scrumProject-List.component';
 import { ScrumReportService } from '../scrumReport.service';
-import { TestConnection } from '../../shared/mock/test.connection';
 import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 
+let promise: TestBed;   
+
 describe('ScrumReport Tests', () => {
-    let scrumProjectListComponent: ScrumProjectListComponent;
-    let router: Router;
+
     class MockRouter { }
+    const routes: Routes = [];
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async(() => {
+        this.promise = TestBed.configureTestingModule({
+            declarations: [RouterLinkStubDirective],
+            imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
-                provide(Router, { useClass: MockRouter }),
-                provide(TestConnection, { useClass: TestConnection }),
-                provide(ScrumReportService, { useClass: MockScrumReportService }),
-                provide(StringConstant, { useClass: StringConstant }),
+                { provide: Router,  useClass: MockRouter },
+                { provide: ScrumReportService,  useClass: MockScrumReportService },
+                { provide: StringConstant,  useClass: StringConstant },
             ]
-        });
-    });
-
-
-    beforeEach(inject([ScrumReportService, Router], (scrumReportService: ScrumReportService, mockRouter: Router) => {
-        scrumProjectListComponent = new ScrumProjectListComponent(scrumReportService, mockRouter);
+        }).compileComponents();
     }));
 
-    it('Shows list of projects on initialization', () => {
-        scrumProjectListComponent.ngOnInit();
-        expect(scrumProjectListComponent.scrumProjects.length).toBe(1);
+    it('Shows list of projects on initialization', () => done => {
+        this.promise.then(() => {
+            let fixture = TestBed.createComponent(ScrumProjectListComponent);
+            let scrumProjectListComponent = fixture.componentInstance;
+            let result = scrumProjectListComponent.ngOnInit();
+            expect(scrumProjectListComponent.scrumProjects.length).toBe(1);
+            done();
+        });
     });
 })
