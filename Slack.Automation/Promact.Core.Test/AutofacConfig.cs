@@ -27,7 +27,6 @@ using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Core.Test.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
-using Promact.Core.Repository.ScrumReportRepository;
 
 namespace Promact.Core.Test
 {
