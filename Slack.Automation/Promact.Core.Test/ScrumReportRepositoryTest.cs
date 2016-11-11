@@ -18,13 +18,13 @@ namespace Promact.Core.Test
 {
     public class ScrumReportRepositoryTest
     {
-
-        private IComponentContext _componentContext;
-        private IScrumReportRepository _scrumReportRepository;
+        #region Private Variables
+        private readonly IComponentContext _componentContext;
+        private readonly IScrumReportRepository _scrumReportRepository;
         private readonly Mock<IHttpClientRepository> _mockHttpClient;
-        private IRepository<Scrum> _scrumDataRepository;
-        private IRepository<ScrumAnswer> _scrumAnswerDataRepository;
-        private IRepository<Question> _questionDataRepository;
+        private readonly IRepository<Scrum> _scrumDataRepository;
+        private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
+        private readonly IRepository<Question> _questionDataRepository;
         private readonly IStringConstantRepository _stringConstant;
 
         private Scrum scrum = new Scrum();
@@ -32,7 +32,9 @@ namespace Promact.Core.Test
         private Question questionOne = new Question();
         private Question questionTwo = new Question();
         private Question questionThree = new Question();
+        #endregion
 
+        #region Constructor
         public ScrumReportRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -44,7 +46,9 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Method to test GetProjects when the logged in person is admin
         /// </summary>
@@ -189,7 +193,9 @@ namespace Promact.Core.Test
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetails(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+        #endregion
 
+        #region Initialisation
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
@@ -217,6 +223,6 @@ namespace Promact.Core.Test
             questionThree.QuestionStatement = _stringConstant.ScrumThirdQuestion;
             questionThree.Type = 1;
         }
-
+        #endregion
     }
 }

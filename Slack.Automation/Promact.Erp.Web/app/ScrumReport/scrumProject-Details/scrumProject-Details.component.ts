@@ -1,7 +1,5 @@
-﻿
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { ScrumDetails } from './scrumProject-Details.model';
 import { ScrumReportService } from '../scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
