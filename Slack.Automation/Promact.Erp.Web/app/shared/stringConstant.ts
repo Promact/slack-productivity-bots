@@ -29,5 +29,6 @@ export class StringConstant {
     taskList = "/task"
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
-    taskDetails ="task/taskdetail"
+    taskDetails = "task/taskdetail";
+    noProjectToDisplay = "No projects to display";
 }
