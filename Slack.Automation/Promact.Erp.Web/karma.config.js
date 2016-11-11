@@ -22,7 +22,7 @@ module.exports = function (config) {
                   'node_modules/systemjs/dist/system.src.js',
 
                   // Zone.js dependencies
-                    
+
                     'node_modules/zone.js/dist/zone.js',
                     'node_modules/zone.js/dist/proxy.js',
                     'node_modules/zone.js/dist/sync-test.js',
@@ -58,9 +58,9 @@ module.exports = function (config) {
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        //preprocessors: {
-        //    "**/app/*spec.js": "coverage"
-        //},
+        preprocessors: {
+            "**/app/*spec.js": "coverage"
+        },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -68,8 +68,8 @@ module.exports = function (config) {
         reporters: ['progress', 'coverage', 'coveralls'],
 
         coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
-            dir: 'coverage/'
+            reporters: [
+                { type: 'lcov', subdir: '.', file: 'lcov.info' }]
         },
 
         // proxied base paths
