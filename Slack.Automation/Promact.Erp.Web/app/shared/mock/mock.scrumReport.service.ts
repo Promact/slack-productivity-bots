@@ -17,7 +17,7 @@ export class MockScrumReportService {
         let mockScrumProject = new ScrumProject();
         mockScrumProject.Name = "aaaa";
         mockScrumProjects.push(mockScrumProject);
-        let connection = this.getMockResponse(this.stringConstant.scrumProjects, mockScrumProjects);
+        let connection = this.getMockResponse(this.stringConstant.scrum, mockScrumProjects);
         return connection;
     }    
 
@@ -36,7 +36,7 @@ export class MockScrumReportService {
             mockScrumDetails.EmployeeScrumAnswers = mockEmployeeScrumAnswers;
         }
 
-        let connection = this.getMockResponse(this.stringConstant.scrumDetails + Id + this.stringConstant.slash + Date, mockScrumDetails);
+        let connection = this.getMockResponse(this.stringConstant.scrum + this.stringConstant.slash + Id + this.stringConstant.slash + Date, mockScrumDetails);
         return connection;
     }
 
