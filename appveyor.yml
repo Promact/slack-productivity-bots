@@ -7,7 +7,7 @@ environment:
  COVERALLS_SERVICE_NAME: appveyor
  nodejs_version: "0.12"
  COVERALLS_REPO_TOKEN:
-   secure: D8x61Nm9X9g4SNR+hlU0iEyo8geAJTihK14SERmAAYZ9AbubQVRHBtS7vOp1et+h
+   secure: Nr8CqV+NMusnGcc6iVL9JryL7mNOQa08By1nN5wGM9hMmDkC0t7F/T72u24/stTu
 build_script:
 - cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn && yarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
