@@ -1,6 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
-
 import { Observable } from 'rxjs/Rx';
 import { ScrumProject } from './scrumProject-List/scrumProject-List.model';
 import { ScrumDetails } from './scrumProject-Details/scrumProject-Details.model';
@@ -16,7 +15,7 @@ export class ScrumReportService {
      * 
      */
     getScrumProjects(): Observable<ScrumProject[]> {
-        return this.http.get(this.stringConstant.scrumProjects)
+        return this.http.get(this.stringConstant.scrum)
             .map(res => res.json())
             .catch(this.handleError);
     }
@@ -27,13 +26,14 @@ export class ScrumReportService {
      * @param Date
      */
     getScrumDetails(Id: number, Date: any): Observable<ScrumDetails> {
-        return this.http.get((this.stringConstant.scrumDetails + this.stringConstant.slash + Id + this.stringConstant.slash + Date))
+        return this.http.get(this.stringConstant.scrum + this.stringConstant.slash + Id + this.stringConstant.slash + Date)
             .map(res => res.json())
             .catch(this.handleError);       
     }
 
     /*This method is used to handle errors
     *
+    *@param error
     */
     private handleError(error: any) {
         let errMsg = this.stringConstant.serverError;

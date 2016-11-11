@@ -9,18 +9,25 @@ namespace Promact.Core.Repository.ProjectUserCall
 {
     public class ProjectUserCallRepository : IProjectUserCallRepository
     {
+        #region Private Variables
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IStringConstantRepository _stringConstant;
+        #endregion
 
+        #region Constructor
         public ProjectUserCallRepository(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant)
         {
             _httpClientRepository = httpClientRepository;
             _stringConstant = stringConstant;
         }
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their slack userName
         /// </summary>
         /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
         /// <returns>user Details</returns>
         public async Task<User> GetUserByUsername(string userName, string accessToken)
         {
@@ -38,6 +45,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// Method to call an api from project oAuth server and get List of TeamLeader's slack UserName from employee userName
         /// </summary>
         /// <param name="userName"></param>
+        /// <param name="accessToken"></param>
         /// <returns>teamLeader details</returns>
         public async Task<List<User>> GetTeamLeaderUserName(string userName, string accessToken)
         {
@@ -54,6 +62,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <summary>
         /// Method to call an api from project oAuth server and get List of Management People's Slack UserName
         /// </summary>
+        /// <param name="accessToken"></param>
         /// <returns>management details</returns>
         public async Task<List<User>> GetManagementUserName(string accessToken)
         {
@@ -68,9 +77,10 @@ namespace Promact.Core.Repository.ProjectUserCall
 
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// Method to call an api from project oAuth server and get Project details of the given group 
         /// </summary>
         /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
         /// <returns>object of ProjectAc</returns>
         public async Task<ProjectAc> GetProjectDetails(string groupName, string accessToken)
         {
@@ -86,7 +96,7 @@ namespace Promact.Core.Repository.ProjectUserCall
 
 
         /// <summary>
-        /// This method is used to fetch list of users/employees of the given group name. - JJ
+        /// This method is used to fetch list of users/employees of the given group name
         /// </summary>
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
@@ -157,8 +167,6 @@ namespace Promact.Core.Repository.ProjectUserCall
             return userDetails;
         }
 
-
-
         /// <summary>
         /// Method to call an api from oauth server and get all the users including in a project using teamleader id
         /// </summary>
@@ -214,8 +222,6 @@ namespace Promact.Core.Repository.ProjectUserCall
 
 
 
-
-
         /// <summary>
         /// Method is used to call an api from oauth server and return list of all the projects
         /// </summary>
@@ -250,5 +256,7 @@ namespace Promact.Core.Repository.ProjectUserCall
             }
             return project;
         }
+
+        #endregion
     }
 }
