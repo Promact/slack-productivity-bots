@@ -4,9 +4,10 @@ pull_requests:
 configuration: Release
 platform: Any CPU
 environment:
- nodejs_version: "0.12"
- COVERALLS_REPO_TOKEN:
-   secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
+COVERALLS_SERVICE_NAME: appveyor
+nodejs_version: "0.12"
+COVERALLS_REPO_TOKEN:
+   secure: D8x61Nm9X9g4SNR+hlU0iEyo8geAJTihK14SERmAAYZ9AbubQVRHBtS7vOp1et+h
 build_script:
 - cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn && yarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
@@ -27,3 +28,5 @@ test_script:
    }
 - cd ./Slack.Automation/Promact.Erp.Web
 - npm test  
+after_test:
+- node ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info
