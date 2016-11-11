@@ -89,7 +89,6 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
-
         /// <returns>true or false</returns>
         Task<bool> UserIsAdmin(string slackUserId, string accessToken);
 
