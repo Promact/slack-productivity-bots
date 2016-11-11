@@ -30,7 +30,7 @@ namespace Promact.Erp.Core.Controllers
         #region Public methods
 
         /**
-        * @api {get} api/projects
+        * @api {get} api/
         * @apiVersion 1.0.0
         * @apiName ScrumReport
         * @apiGroup ScrumReport    
@@ -50,7 +50,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/details/{projectId}/{date}
+        * @api {get} api/{projectId}/{date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport

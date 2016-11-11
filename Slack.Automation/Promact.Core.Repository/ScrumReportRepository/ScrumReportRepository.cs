@@ -124,35 +124,38 @@ namespace Promact.Core.Repository.ScrumReportRepository
             User loginUser = await _projectUserCallRepository.GetUserByUserName(userName, accessToken);
             //Fetch list of all the projects from oauth server
             List<ProjectAc> projects = await _projectUserCallRepository.GetAllProjects(accessToken);
-
-            //Returning list of projects as per the role of the loggeed in user
-            if (loginUser.Role.Equals(_stringConstant.Admin))
+            //Checking if there are projects returned from oauth server or not
+            if (projects.Count != 0)
             {
-                return projects;
-            }
-
-            else if (loginUser.Role.Equals(_stringConstant.Employee))
-            {
-                List<ProjectAc> employeeProjects = new List<ProjectAc>();
-                foreach (var project in projects)
+                //Returning list of projects as per the role of the loggeed in user
+                if (loginUser.Role.Equals(_stringConstant.Admin))
                 {
-                    foreach (var user in project.ApplicationUsers)
+                    return projects;
+                }
+
+                else if (loginUser.Role.Equals(_stringConstant.Employee))
+                {
+                    List<ProjectAc> employeeProjects = new List<ProjectAc>();
+                    foreach (var project in projects)
                     {
-                        if (user.Id == loginUser.Id)
+                        foreach (var user in project.ApplicationUsers)
                         {
-                            employeeProjects.Add(project);
+                            if (user.Id == loginUser.Id)
+                            {
+                                employeeProjects.Add(project);
+                            }
                         }
                     }
+                    return employeeProjects;
                 }
-                return employeeProjects;
-            }
 
-            if (loginUser.Role.Equals(_stringConstant.TeamLeader))
-            {
-                List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
-                return leaderProjects;
+                else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
+                {
+                    List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
+                    return leaderProjects;
+                }
             }
-            return null;
+            return projects;                
         }
 
 
@@ -165,7 +168,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="accessToken"></param>
         /// <returns>Details of the scrum</returns>
         public async Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate,string userName, string accessToken)
-        {
+        {            
             //Getting details of the logged in user from Oauth server
             User loginUser = await _projectUserCallRepository.GetUserByUserName(userName, accessToken);
             //Getting details of the specific project from Oauth server
