@@ -50,7 +50,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/{projectId}/{date}
+        * @api {get} api/{id}/{date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
