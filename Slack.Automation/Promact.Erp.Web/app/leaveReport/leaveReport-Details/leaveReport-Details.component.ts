@@ -15,6 +15,7 @@ export class LeaveReportDetailsComponent {
     errorMessage: string;
     sub: any;
     Id: any;
+    noDetails: string;
 
     constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute, private stringConstant: StringConstant) { }
 
@@ -26,7 +27,16 @@ export class LeaveReportDetailsComponent {
         this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
-            leaveReportDetail => this.leaveReportDetail = leaveReportDetail,
+            leaveReportDetail => {
+                this.leaveReportDetail = leaveReportDetail
+                if (leaveReportDetail.length != 0) {
+                    return leaveReportDetail;
+                }
+                else {
+                    this.noDetails = this.stringConstant.noDetails;
+                    return this.noDetails;
+                }
+            },
             error => this.errorMessage = <any>error            
             );
     }
@@ -42,6 +52,7 @@ export class LeaveReportDetailsComponent {
             rows.push([
                 this.leaveReportDetail[key].EmployeeName,
                 this.leaveReportDetail[key].EmployeeUserName,
+                this.leaveReportDetail[key].Type,
                 this.leaveReportDetail[key].LeaveFrom,
                 this.leaveReportDetail[key].StartDay,
                 this.leaveReportDetail[key].LeaveUpto,

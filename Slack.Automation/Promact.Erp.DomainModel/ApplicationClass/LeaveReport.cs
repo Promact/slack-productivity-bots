@@ -36,7 +36,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Number of casusal leaves used
         /// </summary>
-        public int UtilisedCasualLeave { get; set; }
+        public double UtilisedCasualLeave { get; set; }
 
         /// <summary>
         /// Number of casual leaves left
@@ -47,12 +47,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Number of sick leaves used
         /// </summary>
-        public int? UtilisedSickLeave { get; set; }
+        public double UtilisedSickLeave { get; set; }
 
         /// <summary>
         /// Number of sick leaves left
         /// </summary>
-        public int? BalanceSickLeave { get; set; }
+        public double BalanceSickLeave { get; set; }
 
         /// <summary>
         /// Role of the user

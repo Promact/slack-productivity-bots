@@ -4,11 +4,9 @@
 @Injectable()
 export class StringConstant {
     constructor() { }
-
-    leaveReport = "leaveReport";
-    leaveReportDetails = "leaveReportDetails/";
+    leaveReport = "api/";
     serverError = 'Server error';
-    listColumns = ["Employee Name", "Employee Username", "Role", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave"];
+    listColumns = ["Employee Name", "Employee Username", "Role", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave", "Utilised Sick Leave", "Balance Sick Leave"];
     theme = 'plain';
     overflow = 'linebreak';
     pageBreak = 'auto';
@@ -18,7 +16,7 @@ export class StringConstant {
     unit = 'pt';
     format = 'a4';
     detail = '/detail';
-    detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
+    detailColumns = ["Employee Name", "Employee Username", "Type","Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
     defaultDate = '1-01-01';
     notAvailableComment = 'Not Available';
@@ -27,6 +25,8 @@ export class StringConstant {
     taskList = "/task"
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
-    taskDetails ="task/taskdetail"
-
+    taskDetails = "task/taskdetail";
+    noLeaves = "No employee has any approved leaves";
+    noDetails = "No details to show";
+    slash = "/";
 }
