@@ -32,7 +32,7 @@ namespace Promact.Erp.Core.Controllers
         /**
        * @api {get} api
        * @apiVersion 1.0.0
-       * @apiName LeaveReport
+       * @apiName GetLeaveReport
        * @apiGroup LeaveReport    
        * @apiSuccessExample {json} Success-Response:
        * HTTP/1.1 200 OK 
@@ -71,7 +71,7 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} api/{id}
         * @apiVersion 1.0 
-        * @apiName LeaveReport
+        * @apiName GetLeaveReportDetails
         * @apiGroup LeaveReport
         * @apiParam {string} id    
         * @apiSuccessExample {json} Success-Response:
