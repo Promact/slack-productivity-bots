@@ -30,4 +30,5 @@ export class StringConstant {
     taskDetails = "task/taskdetail";
     noLeaves = "No employee has any approved leaves";
     noDetails = "No details to show";
+    noProjectToDisplay = "No projects to display";
 }
