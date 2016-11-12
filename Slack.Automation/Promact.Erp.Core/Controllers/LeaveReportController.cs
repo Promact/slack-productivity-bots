@@ -8,13 +8,17 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [RoutePrefix("api")]
     public class LeaveReportController : WebApiBaseController
     {
+        #region Private Variables 
         private readonly ILeaveReportRepository _leaveReport;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
-        private ApplicationUserManager _userManager;
+        private readonly ApplicationUserManager _userManager;
+        #endregion
 
+        #region Constructor
         public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager, ILogger logger)
         {
             _leaveReport = leaveReport;
@@ -22,9 +26,11 @@ namespace Promact.Erp.Core.Controllers
             _userManager = userManager;
             _logger = logger;
         }
+        #endregion
 
+        #region Public methods
         /**
-       * @api {get} leaveReport
+       * @api {get} api
        * @apiVersion 1.0.0
        * @apiName LeaveReport
        * @apiGroup LeaveReport    
@@ -39,11 +45,13 @@ namespace Promact.Erp.Core.Controllers
        *     "TotalCasualLeave" : "14"
        *     "UtilisedCasualLeave" : "5"
        *     "BalanceCasualLeave" :  "9"
+       *     "UtilisedSickLeave" : "2"
+       *     "BalanceSickLeave" :  "5"
        *     "Role" : "Employee"
        * }
        */
         [HttpGet]
-        [Route("leaveReport")]
+        [Route("")]
         public async Task<IHttpActionResult> LeaveReport()
         {
             try
@@ -61,15 +69,15 @@ namespace Promact.Erp.Core.Controllers
 
 
         /**
-        * @api {get} leaveReportDetails/{employeeId}
+        * @api {get} api/{id}
         * @apiVersion 1.0 
         * @apiName LeaveReport
         * @apiGroup LeaveReport
-        * @apiParam {string} Id  EmployeeId    
+        * @apiParam {string} id    
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *     "Description":"A report will be generated based on the leaves of the employees "
+        *     "Description":"A report will be generated based on the leaves taken by a particular employee "
         *     "EmployeeName" : "Gourav Agarwal"
         *     "EmployeeUserName" : "gourav@promactinfo.com"
         *     "LeaveFrom" : "21/5/16"
@@ -77,21 +85,23 @@ namespace Promact.Erp.Core.Controllers
         *     "LeaveUpto" : "23/5/16"
         *     "EndDay" : "Wednesday"
         *     "Reason" : "Marriage"
+        *     "Type" : "cl"
         * }
         */
         [HttpGet]
-        [Route("leaveReportDetails/{employeeId}")]
-        public async Task<IHttpActionResult> LeaveReportDetails(string employeeId)
+        [Route("{id}")]
+        public async Task<IHttpActionResult> LeaveReportDetails(string id)
         {
-            if (employeeId != null)
+            if (id != null)
             {
                 var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReportDetails(employeeId, accessToken));
+                return Ok(await _leaveReport.LeaveReportDetails(id, accessToken));
             }
             else
             {
                 return BadRequest();
             }
         }
+        #endregion
     }
 }

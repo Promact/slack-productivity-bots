@@ -1,4 +1,9 @@
 ﻿
+<div>
+    <h3>
+        {{noLeaves}}
+    </h3>
+</div>
 <table>
     <thead>
         <tr>
@@ -9,12 +14,13 @@
             <th>Total Casual Leave</th>
             <th>Utilised Casual Leave</th>
             <th>Balance Casual Leave</th>
-            <!--<th>Utilised Sick Leave</th>
-            <th>Balance Sick Leave</th>-->
+            <th>Utilised Sick Leave</th>
+            <th>Balance Sick Leave</th>
         </tr>
     </thead>
+   
     <tr>
-        <td>
+        <!--<td>
             <input type="text" [(ngModel)]="EmployeeName" placeholder="EmployeeName">
         </td>
         <td></td>
@@ -25,7 +31,7 @@
         <td></td>
         <td>
             <input type="text" [(ngModel)]="UtilisedCasualLeave" placeholder="UtilisedCasualLeave">
-        </td>
+        </td>-->
     </tr>
     <tbody>
         <!--<tr *ngFor="let leaveReport of leaveReports | filter: EmployeeName : UtilisedCasualLeave : Role ">
@@ -39,6 +45,7 @@
             <td>{{leaveReport.UtilisedSickLeave}}</td>
             <td>{{leaveReport.BalanceSickLeave}}</td>
         </tr>-->
+
         <tr *ngFor="let leaveReport of leaveReports">
             <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
             <td>{{leaveReport.EmployeeUserName}}</td>
@@ -47,11 +54,10 @@
             <td>{{leaveReport.TotalCasualLeave}}</td>
             <td>{{leaveReport.UtilisedCasualLeave}}</td>
             <td>{{leaveReport.BalanceCasualLeave}}</td>
-
-            <!--<td>{{leaveReport.UtilisedSickLeave}}</td>
-        <td>{{leaveReport.BalanceSickLeave}}</td>-->
+            <td>{{leaveReport.UtilisedSickLeave}}</td>
+            <td>{{leaveReport.BalanceSickLeave}}</td>
         </tr>
-
     </tbody>
 </table>
+
 <button (click)="exportDataToPdf()">Export Data To Pdf</button>

@@ -19,8 +19,8 @@ export class LeaveReportService {
             .catch(this.handleError);
     }
 
-    getLeaveReportDetail(Id: string): Observable<LeaveReportDetail[]> {
-        return this.http.get(this.stringConstant.leaveReportDetails + Id)
+    getLeaveReportDetail(id: string): Observable<LeaveReportDetail[]> {
+        return this.http.get(this.stringConstant.leaveReport + this.stringConstant.slash + id)
             .map(res => res.json() || {})
             .catch(this.handleError);
     }
