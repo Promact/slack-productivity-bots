@@ -5,7 +5,7 @@ import { LeaveReportDetailsComponent } from './leaveReport-Details/leaveReport-D
 import { LeaveReportService } from './leaveReport.service';
 import { leaveReportRoutes } from "./leaveReport.routes";
 import { SharedModule } from '../shared/shared.module';
-
+import { FilterPipe } from './filter.pipe';
 
 
 @NgModule({
@@ -17,9 +17,10 @@ import { SharedModule } from '../shared/shared.module';
         LeaveReportComponent,
         LeaveReportListComponent,
         LeaveReportDetailsComponent,
+        FilterPipe,
     ],
     providers: [
         LeaveReportService
-    ]
+    ],
 })
 export class LeaveModule { }
