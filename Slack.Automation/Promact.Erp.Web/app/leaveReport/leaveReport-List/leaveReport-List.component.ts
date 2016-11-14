@@ -7,14 +7,13 @@ declare let jsPDF: any;
 
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html'
+    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
 })
 
 export class LeaveReportListComponent implements OnInit {
     leaveReports: LeaveReport[] = [];
     errorMessage: string;
     private EmployeeName: string;
-    private UtilisedCasualLeave: number;
     private Role: string;
     noLeaves: any;
 
