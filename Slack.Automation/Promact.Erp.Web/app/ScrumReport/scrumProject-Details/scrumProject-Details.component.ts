@@ -44,7 +44,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetails(date: any) {
-        this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
+        this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]); 
         this.scrumReportService.getScrumDetails(this.Id, date)
             .subscribe(
             (scrumDetails) => {

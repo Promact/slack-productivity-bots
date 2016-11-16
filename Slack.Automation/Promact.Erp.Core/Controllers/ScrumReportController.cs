@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
-{   [RoutePrefix("api")]
+{
+    [RoutePrefix("api/project")]
     public class ScrumReportController : WebApiBaseController
     {
         #region Private Variables
@@ -30,7 +31,7 @@ namespace Promact.Erp.Core.Controllers
         #region Public methods
 
         /**
-        * @api {get} api/
+        * @api {get} api/project
         * @apiVersion 1.0.0
         * @apiName ScrumReport
         * @apiGroup ScrumReport    
@@ -50,7 +51,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/{id}/{date}
+        * @api {get} api/project/{id}/detail?date={date}
         * @apiVersion 1.0 
         * @apiName ScrumReport
         * @apiGroup ScrumReport
@@ -63,9 +64,11 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("{id}/{date}")]
-        public async Task<IHttpActionResult> ScrumDetails(int id, DateTime date)
+        [Route("{id}/detail")]
+        public async Task<IHttpActionResult> ScrumDetails(int id)
         {
+            string queryString = Request.RequestUri.Query.Substring(1,24);
+            DateTime date = Convert.ToDateTime(queryString); 
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
             return Ok(await _scrumReportRepository.ScrumReportDetails(id, date,loginUser.UserName, accessToken));
