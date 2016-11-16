@@ -20,7 +20,7 @@ export class StringConstant {
     detail = '/detail';
     detailColumns = ["Employee Name", "Employee Username", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
-    scrum = "api/";
+    scrum = "api/project";
     slash = "/";
     defaultDate = '1-01-01';
     notAvailableComment = 'Not Available';

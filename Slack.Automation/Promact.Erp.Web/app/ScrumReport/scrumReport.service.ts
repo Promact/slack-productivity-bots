@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import {Http, Headers, RequestOptions, Response} from "@angular/http";
+import { Http, Headers, RequestOptions, Response} from "@angular/http";
 import { Observable } from 'rxjs/Rx';
 import { ScrumProject } from './scrumProject-List/scrumProject-List.model';
 import { ScrumDetails } from './scrumProject-Details/scrumProject-Details.model';
@@ -25,8 +25,8 @@ export class ScrumReportService {
      * @param Id
      * @param Date
      */
-    getScrumDetails(Id: number, Date: any): Observable<ScrumDetails> {
-        return this.http.get(this.stringConstant.scrum + this.stringConstant.slash + Id + this.stringConstant.slash + Date)
+    getScrumDetails(id: number, date: any): Observable<ScrumDetails> {
+        return this.http.get(this.stringConstant.scrum + this.stringConstant.slash + id + this.stringConstant.detail, { search: new Date(date).toJSON() })
             .map(res => res.json())
             .catch(this.handleError);       
     }
