@@ -727,6 +727,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "User Not Found";
             }
         }
+        public string BotNotFound
+        {
+            get
+            {
+                return "Bot Not Found";
+            }
+        }
         public string StringIdForTest
         {
             get

@@ -132,15 +132,15 @@ namespace Promact.Erp.Core.Controllers
                     string eventType = slackEvent.Event.Type;
                     if (eventType == _stringConstant.TeamJoin)
                     {
-                        if (!slackEvent.Event.User.IsBot)
-                            _oAuthLoginRepository.SlackEventUpdate(events);
+                        //if (!slackEvent.Event.User.IsBot)
+                        _oAuthLoginRepository.SlackEventUpdate(events);
                         eventQueue.Dequeue();
                         return Ok();
                     }
                     else if (eventType == _stringConstant.UserChange)
                     {
-                        if (!slackEvent.Event.User.IsBot)
-                            _slackUserRepository.UpdateSlackUser(events.Event.User);
+                        //if (!slackEvent.Event.User.IsBot)
+                        _slackUserRepository.UpdateSlackUser(events.Event.User);
                         eventQueue.Dequeue();
                         return Ok();
                     }

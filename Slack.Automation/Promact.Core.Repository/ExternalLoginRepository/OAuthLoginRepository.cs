@@ -89,7 +89,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var user in slackUsers.Members)
                 {
-                    if (!user.Deleted && !user.IsBot && user.Name != _stringConstant.SlackBotStringName)
+                    if (!user.Deleted)
                         _slackUserRepository.AddSlackUser(user);
                 }
             }

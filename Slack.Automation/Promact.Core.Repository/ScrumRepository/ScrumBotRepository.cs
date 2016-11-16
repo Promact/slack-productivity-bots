@@ -7,6 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly ISlackUserRepository _slackUserDetails;
         private readonly IStringConstantRepository _stringConstant;
 
+            
         #endregion
 
 
@@ -53,6 +55,9 @@ namespace Promact.Core.Repository.ScrumRepository
             _httpClientRepository = httpClientRepository;
             _slackUserDetails = slackUserDetails;
             _stringConstant = stringConstant;
+
+
+           // _environmentVariableRepository = environmentVariableRepository;
         }
 
 
@@ -61,6 +66,43 @@ namespace Promact.Core.Repository.ScrumRepository
 
         #region Public Method 
 
+        //public void ConnectToBot()
+        //{
+          
+        //    string botToken = _environmentVariableRepository.ScrumBotToken;
+        //    SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+         
+        //    // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+        //    MessageReceived messageReceive = new MessageReceived();
+        //    messageReceive.ok = true;
+        //    Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+        //    //Connecting the bot of the given token 
+        //    client.Connect((connected) => { });
+
+        //    // Method will be called when someone sends message
+        //    client.OnMessageReceived += (message) =>
+        //    {
+        //       // _logger.Info("Scrum bot got message :" + message);
+        //        try
+        //        {
+        //          //  _logger.Info("Scrum bot got message, inside try");
+        //            string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+        //            if (!String.IsNullOrEmpty(replyText))
+        //            {
+        //           //     _logger.Info("Scrum bot got reply");
+        //                client.SendMessage(showMethod, message.channel, replyText);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //          //  _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+        //            client.CloseSocket();
+        //            throw ex;
+        //        }
+        //    };
+        //    //ChannelCreated channel = new ChannelCreated();
+        //    //client.HandleChannelCreated(channel);
+        //}
 
         public async Task<string> ProcessMessages(string userId, string channelId, string message)
         {
@@ -246,8 +288,7 @@ namespace Promact.Core.Repository.ScrumRepository
             //}
             return message;
         }
-
-
+        
 
         /// <summary>
         /// This method will be called when the keyword "scrum time" or "scrum halt" or "scrum resume" is encountered
@@ -291,6 +332,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 return _stringConstant.YouAreNotInExistInOAuthServer;
 
         }
+
 
         /// <summary>
         /// This method will be called when the keyword "leave @username" or "later @username" or "scrum @username" is received as reply from a group member. - JJ
@@ -394,6 +436,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
             return returnMsg;
         }
+
 
         /// <summary>
         /// Used to check whether channelId is of a private channel
@@ -888,7 +931,15 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
-
+        /// <summary>
+        /// Fetch the status of the scrum
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="project"></param>
+        /// <param name="employees"></param>
+        /// <param name="questions"></param>
+        /// <returns></returns>
         private async Task<ScrumStatus> FetchScrumStatus(string groupName, string accessToken, ProjectAc project, List<User> employees, List<Question> questions)
         {
             if (project == null)
@@ -941,6 +992,13 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
+        /// <summary>
+        /// Halt the scrum meeting 
+        /// </summary>
+        /// <param name="scrum"></param>
+        /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         private string ScrumHalt(Scrum scrum, string groupName, string accessToken)
         {
             ScrumStatus status = FetchScrumStatus(groupName, accessToken, null, null, null).Result;
@@ -956,15 +1014,19 @@ namespace Promact.Core.Repository.ScrumRepository
                     scrum.IsHalted = true;
                     return _stringConstant.ScrumHalted;
                 }
-
             }
             else
-            {
                 return "Scrum cannot be halted." + ReplyToClient(status);
-            }
         }
 
 
+        /// <summary>
+        /// Resume the scrum meeting
+        /// </summary>
+        /// <param name="scrum"></param>
+        /// <param name="groupName"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         private string ScrumResume(Scrum scrum, string groupName, string accessToken)
         {
             ScrumStatus status = FetchScrumStatus(groupName, accessToken, null, null, null).Result;
@@ -989,6 +1051,11 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
+        /// <summary>
+        /// Select the appropriate reply to the client
+        /// </summary>
+        /// <param name="scrumStatus"></param>
+        /// <returns></returns>
         private string ReplyToClient(ScrumStatus scrumStatus)
         {
             string returnMessage = string.Empty;
@@ -1018,7 +1085,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 default: return null;
             }
             return returnMessage;
-
         }
 
 

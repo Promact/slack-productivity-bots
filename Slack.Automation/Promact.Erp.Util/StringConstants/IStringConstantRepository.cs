@@ -256,6 +256,7 @@ namespace Promact.Erp.Util.StringConstants
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
         string UserNotFound { get; }
+        string BotNotFound { get; }
 
         #region String Constants for Test Cases
 
