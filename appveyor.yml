@@ -4,15 +4,24 @@ pull_requests:
 configuration: Release
 platform: Any CPU
 environment:
- nodejs_version: "0.12"
+ nodejs_version: "6"
  COVERALLS_REPO_TOKEN:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
 build_script:
-- cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm install -g typings \ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nnpm install\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
+- ps: nuget restore .\Slack.Automation\Promact.ERP.sln
+- cmd: npm install -g typings yarn
+- ps: cd .\Slack.Automation\Promact.Erp.Web
+- ps: yarn
+- ps: cd ..\..
+- ps: msbuild .\Slack.Automation\Promact.ERP.sln /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
  project: .\Slack.Automation\Promact.ERP.sln
  parallel: true
  verbosity: minimal 
+cache:
+ - node_modules
+ - "%LOCALAPPDATA%/Yarn"
+ - packages
 test_script:
 - ps: >-
    .\Slack.Automation\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" "-targetargs:"".\Slack.Automation\Promact.Core.Test\bin\Release\Promact.Core.Test.dll"" -appveyor -noshadow" -filter:"+[Promact.Core.Repository*]*" -output:opencoverCoverage.xml
