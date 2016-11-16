@@ -8,20 +8,20 @@ environment:
  COVERALLS_REPO_TOKEN:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
 build_script:
-- ps: nuget restore .\Slack.Automation\Promact.ERP.sln
+- ps: nuget restore ./Slack.Automation/Promact.ERP.sln
 - cmd: npm install -g typings yarn
-- ps: cd .\Slack.Automation\Promact.Erp.Web
+- ps: cd ./Slack.Automation/Promact.Erp.Web
 - ps: yarn
-- ps: cd ..\..
-- ps: msbuild .\Slack.Automation\Promact.ERP.sln /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
+- ps: cd ../..
+- ps: msbuild ./Slack.Automation/Promact.ERP.sln /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
  project: .\Slack.Automation\Promact.ERP.sln
  parallel: true
  verbosity: minimal 
 cache:
- - node_modules
+ - "%APPVEYOR_BUILD_FOLDER%/Slack.Automation/Promact.Erp.Web/node_modules"
  - "%LOCALAPPDATA%/Yarn"
- - packages
+ - "%APPVEYOR_BUILD_FOLDER%/Slack.Automation/packages"
  - "%LOCALAPPDATA%/NuGet"
 test_script:
 - ps: >-
