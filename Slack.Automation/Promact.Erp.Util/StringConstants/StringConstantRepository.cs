@@ -150,18 +150,18 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string ProjectDetailsUrl
+        public string ProjectDetailsUrl  
         {
             get
             {
-                return "project/";
+                return "slackChannel/";
             }
         }
-        public string UsersDetailByGroupUrl
+        public string UsersDetailByGroupUrl  
         {
             get
             {
-                return "user/";
+                return "/slackChannel";
             }
         }
         public string UserDetailsByIdUrl
@@ -870,7 +870,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
             }
         }
         public string TaskMailReportTeamLeader
@@ -2071,14 +2071,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "employee/";
+                return "/teammembers";
             }
         }
         public string ProjectInformationUrl
         {
             get
             {
-                return "role/";
+                return "/role";
             }
         }
 

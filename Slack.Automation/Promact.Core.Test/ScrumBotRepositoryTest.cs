@@ -497,7 +497,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(testUser.Id, info);
 
             var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            var usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByGroupUrl, _stringConstant.GroupName);
+            var usersListRequestUrl = string.Format("{0}{1}",  _stringConstant.GroupName, _stringConstant.UsersDetailByGroupUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _scrumDataRepository.Insert(scrum);
@@ -726,7 +726,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(testUser.Id, info);
 
             var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            var usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByGroupUrl, _stringConstant.GroupName);
+            var usersListRequestUrl = string.Format("{0}{1}", _stringConstant.GroupName, _stringConstant.UsersDetailByGroupUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _botQuestionRepository.AddQuestion(question);
@@ -901,7 +901,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
 
             var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByGroupUrl, _stringConstant.GroupName);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.GroupName, _stringConstant.UsersDetailByGroupUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
