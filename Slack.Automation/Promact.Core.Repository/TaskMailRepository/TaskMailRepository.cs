@@ -365,7 +365,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             var user = _user.FirstOrDefault(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var jsonResult = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var jsonResult = await _projectUserRepository.GetUserRole(user.Id, accessToken);
             var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
             List<TaskMailUserAc> taskMailUsertAc = new List<TaskMailUserAc>();
             if (role.Role == _stringConstant.RoleAdmin)
@@ -546,7 +546,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -783,7 +783,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -1021,7 +1021,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? minDate = null;
                 DateTime? maxDate = null;
 

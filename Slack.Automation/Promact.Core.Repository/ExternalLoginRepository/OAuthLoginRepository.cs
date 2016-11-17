@@ -44,9 +44,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="accessToken"></param>
         /// <param name="slackUserName"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName)
+        public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName , string uerId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
+            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName , Id=uerId };
             //Creating a user with email only. Password not required
             var result = await _userManager.CreateAsync(user);
             //Adding external Oauth details
