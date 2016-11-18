@@ -34,9 +34,6 @@ export class MockTaskMailService {
         mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
-
-        //let connection = this.getMockResponse("taskMailDetailsReport/" + UserId + "/" + UserRole + "/" + UserName, mockTaskmailModels);
-        //return connection;
     }
 
     getTaskMailDetailsReportPreviousDate(UserId: string, UserRole: string, UserName: string, CreatedOn: string) {
@@ -56,8 +53,6 @@ export class MockTaskMailService {
         mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
-        //let connection = this.getMockResponse("taskMailDetailsReportPreviousDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
-        //return connection;
     }
     
     getTaskMailDetailsReportNextDate(UserId: string, UserRole: string, UserName: string, CreatedOn: string) {
@@ -77,8 +72,6 @@ export class MockTaskMailService {
         mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
-        //let connection = this.getMockResponse("taskMailDetailsReportNextDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
-        //return connection;
     }
     
     getTaskMailDetailsReportSelectedDate(UserId: string, UserRole: string, UserName: string, CreatedOn: string, SelectedDate: string) {
@@ -98,8 +91,6 @@ export class MockTaskMailService {
         mockTaskmailModel.IsMax = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
-        //let connection = this.getMockResponse("taskMailDetailsReportSelectedDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn + "/" + SelectedDate, mockTaskmailModels);
-        //return connection;
     }
 
 }

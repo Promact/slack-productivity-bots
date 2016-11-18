@@ -43,34 +43,34 @@ describe('TaskReport Detials Tests', () => {
     }));
 
     it("should be defined", () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);           
         let taskMailDetailsComponent = fixture.componentInstance;
         expect(taskMailDetailsComponent).toBeDefined();
     });
 
     it('Shows details of task mail report for an employee on initialization', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Privious Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious("test", "1", "Admin", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Next Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);          
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailNext("test", "1", "Admin", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Selected Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016","10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);

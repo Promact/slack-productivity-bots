@@ -1,10 +1,8 @@
 ﻿import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute } from '@angular/router';
 import { TaskService }   from '../taskmail.service';
-
 import { TaskMailDetailsModel } from '../taskmaildetails.model';
 import { TaskMailModel } from '../taskmail.model';
-
 import {TaskMailStatus} from '../../enums/TaskMailStatus';
 import { DatePipe } from '@angular/common';
 import { StringConstant } from '../../shared/stringConstant';
@@ -18,16 +16,12 @@ import { LoaderService } from '../../shared/loader.service';
 export class TaskMailDetailsComponent implements OnInit {
     taskMail: Array<TaskMailModel>;
     taskMailDetails: Array<TaskMailDetailsModel>;
-    public UserId: string;
-    public UserRole: string;
-    public UserName: string;
     public IsMaxDate: boolean;
     public IsMinDate: boolean;
     public SelectedDate: string;
     public MaxDate: string;
     public MinDate: string;
     public IsHide: boolean;
-    //public UserEmail: string;
     constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private spinner: SpinnerService, private stringConstant: StringConstant) {
         this.taskMailDetails = new Array<TaskMailDetailsModel>();
 
@@ -39,17 +33,14 @@ export class TaskMailDetailsComponent implements OnInit {
     }
     getTaskMailDetails() {
         this.route.params.subscribe(params => {
-            this.UserId = params['UserId']; 
-            this.UserRole = params['UserRole'];
-            this.UserName = params['UserName'];
-            if (this.UserRole === this.stringConstant.RoleAdmin) {
+            if (params['UserRole'] === this.stringConstant.RoleAdmin) {
                 this.IsHide = false;
             }
             else {
                 this.IsHide = true;
             }
             this.IsMaxDate = true;
-            this.taskService.getTaskMailDetailsReport(this.UserId, this.UserRole, this.UserName).subscribe(taskMailUser => {
+            this.taskService.getTaskMailDetailsReport(params['UserId'], params['UserRole'], params['UserName']).subscribe(taskMailUser => {
                 this.taskMail = taskMailUser;
                 let datePipeMinDate = new DatePipe("medium");
                 this.MinDate = datePipeMinDate.transform(this.taskMail[0].IsMin, this.stringConstant.dateDefaultFormat);
