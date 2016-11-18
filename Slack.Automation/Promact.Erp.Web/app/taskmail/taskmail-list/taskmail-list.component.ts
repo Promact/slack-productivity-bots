@@ -36,14 +36,14 @@ export class TaskMailListComponent implements OnInit {
                     let UserRole = result[0].UserRole;
                     let UserName = result[0].UserName;
                     let UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//, UserEmail]);
+                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
                 }
                 else {
                     let UserId = result[0].UserId;
                     let UserRole = result[0].UserRole;
                     let UserName = result[0].UserName;
                     let UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//,UserEmail]);
+                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
                 }
             this.loader.loader = false;
         }, err => {
@@ -53,7 +53,7 @@ export class TaskMailListComponent implements OnInit {
     }
     taskmailDetails(UserId, UserName, UserEmail) {
         let UserRole = this.stringConstant.RoleAdmin;
-        this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//, UserEmail]);
+        this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
     }
     
 }
