@@ -150,20 +150,21 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string ProjectDetailsUrl  
+        public string ProjectDetailsUrl
         {
             get
             {
                 return "slackChannel/";
             }
         }
-        public string UsersDetailByGroupUrl  
+        public string UsersDetailByGroupUrl
         {
             get
             {
-                return "/slackChannel";
+                return "slackChannel/";
             }
         }
+
         public string UserDetailsByIdUrl
         {
             get
@@ -2017,14 +2018,14 @@ namespace Promact.Erp.Util.StringConstants
         }
 
 
-        public string ProjectUasrInformationUrl
+        public string TeamMembersUrl
         {
             get
             {
                 return "/teammembers";
             }
         }
-        public string ProjectInformationUrl
+        public string UserRoleUrl
         {
             get
             {

@@ -579,7 +579,7 @@ namespace Promact.Core.Test
             //Assert.Equal(1, taskMailDetail.Count);
 
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.ProjectUasrInformationUrl);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
 
@@ -625,7 +625,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
 
             var response = Task.FromResult(_stringConstant.TaskMailReport);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.ProjectInformationUrl);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var role = _stringConstant.RoleAdmin;
           

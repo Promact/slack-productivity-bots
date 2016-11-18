@@ -30,6 +30,7 @@ namespace Promact.Erp.Util.StringConstants
         string SlackHelpMessage { get; }
         string SlackErrorMessage { get; }
 
+        
         string ProjectDetailsUrl { get; }
         string UsersDetailByGroupUrl { get; }
         string UserDetailsByIdUrl { get; }
@@ -302,8 +303,8 @@ namespace Promact.Erp.Util.StringConstants
         string RoleTeamLeader { get; }
         string RoleEmployee { get; }
 
-        string ProjectUasrInformationUrl { get; }
-        string ProjectInformationUrl { get; }
+        string TeamMembersUrl { get; }
+        string UserRoleUrl { get; }
 
         string NotAvailable { get; }
         string NextPage { get; }
