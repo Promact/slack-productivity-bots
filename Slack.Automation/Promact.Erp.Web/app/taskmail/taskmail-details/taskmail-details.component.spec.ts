@@ -4,7 +4,7 @@ import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
-import { TaskMailModule } from '../../taskmail/taskMail.module';
+import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
 import { TaskService } from '../taskmail.service';
 import { DatePipe } from '@angular/common';
@@ -23,7 +23,7 @@ describe('TaskMail Detials Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            imports: [TaskMailDetailsModel, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: ActivatedRouteStub },
