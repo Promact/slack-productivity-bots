@@ -2,11 +2,10 @@
 <div>
 
     <div>
-        Select Date:<input type="date" name="selectDate"  [(ngModel)]="SelectedDate" [max]="IsMaxDate" [min]="IsMinDate">
+        Select Date:<input type="date" name="selectDate"  [(ngModel)]="SelectedDate" [max]="MaxDate" [min]="MinDate">
         <button (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,SelectedDate)">Search</button>
         
     </div>
-    <!--<div *ngIf="!spinner.active" id="container">Nothing is Loading Now</div>-->
     <div *ngFor="let taskmailUser of taskMail">
         Name: {{taskmailUser.UserName}}
         Task Mail Date: {{taskmailUser.CreatedOns}}

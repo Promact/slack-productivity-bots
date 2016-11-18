@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class TaskService {
-    private TaskMailUrl = 'api/TaskReport';  // URL to web api
+    private TaskMailUrl = 'api/TaskReport'; 
     constructor(private http: Http) { }
     
     getListOfEmployee(): Observable<TaskMailModel[]> {
@@ -20,7 +20,6 @@ export class TaskService {
             .catch(this.handleError);
     }
     getTaskMailDetailsReport(UserId: string, UserRole: string, UserName: string): Observable<TaskMailModel[]> {//, UserName: string, UserEmail: string): Observable<taskmailuserModel[]> {
-        //return this.httpService.get("taskMailDetailsReport/"+ id);
         return this.http.get("taskMailDetailsReport/" + UserId + "/" + UserRole + "/" + UserName)
             .map(this.extractData)
             .catch(this.handleError);
