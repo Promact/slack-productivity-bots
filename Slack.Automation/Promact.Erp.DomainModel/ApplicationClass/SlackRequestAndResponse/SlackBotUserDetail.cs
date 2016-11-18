@@ -101,6 +101,12 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         public string FirstName { get; set; }
 
         /// <summary>
+        /// Slack User Bot's Id
+        /// </summary>
+        [JsonProperty("bot_id")]
+        public string BotId { get; set; }
+
+        /// <summary>
         /// Last Name of the slack user
         /// </summary>
         [JsonProperty("last_name")]

@@ -5,7 +5,6 @@ using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using AutoMapper;
 
-
 namespace Promact.Core.Repository.SlackUserRepository
 {
     public class SlackUserRepository : ISlackUserRepository
@@ -55,9 +54,10 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <returns>user</returns>
         public SlackUserDetails GetById(string slackId)
         {
-            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackId);
+            SlackUserDetails user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackId);
             return user;
         }
+
 
         #endregion
 
@@ -112,6 +112,12 @@ namespace Promact.Core.Repository.SlackUserRepository
                .ForMember(des => des.FirstName,
                   opt => opt.MapFrom(src => src.Profile.FirstName)
                )
+               .ForMember(des => des.LastName,
+                   opt => opt.MapFrom(src => src.Profile.LastName)
+               )
+               .ForMember(des => des.BotId,
+                  opt => opt.MapFrom(src => src.Profile.BotId)
+               )
             );
 
             // Perform mapping
@@ -122,7 +128,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         }
 
 
-        public void UpdateSlackUserDetail(SlackUserDetails slackUserDetails)
+        private void UpdateSlackUserDetail(SlackUserDetails slackUserDetails)
         {
             var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
             if (user != null)
@@ -167,7 +173,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         }
 
 
-        public void UpdateSlackBotUser(SlackUserDetails slackUserDetails)
+        private void UpdateSlackBotUser(SlackUserDetails slackUserDetails)
         {
             var botUser = _slackUserBotDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
             if (botUser != null)
@@ -185,12 +191,14 @@ namespace Promact.Core.Repository.SlackUserRepository
                 })
 
                .ForMember(des => des.LastName,
-                      opt => opt.MapFrom(src => src.Profile.LastName)
-                       )
+                    opt => opt.MapFrom(src => src.Profile.LastName)
+                   )
                .ForMember(des => des.FirstName,
-                          opt => opt.MapFrom(src => src.Profile.FirstName)
-                          )
-
+                     opt => opt.MapFrom(src => src.Profile.FirstName)
+                   )
+               .ForMember(des => des.BotId,
+                       opt => opt.MapFrom(src => src.Profile.BotId)
+                     )
                  );
 
                 // Perform mapping

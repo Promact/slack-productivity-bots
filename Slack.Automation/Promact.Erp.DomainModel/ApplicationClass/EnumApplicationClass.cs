@@ -62,6 +62,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     public enum ScrumStatus
     {
         NoProject,
+        InActiveProject,
         NoEmployee,
         NoQuestion,
         NotStarted,

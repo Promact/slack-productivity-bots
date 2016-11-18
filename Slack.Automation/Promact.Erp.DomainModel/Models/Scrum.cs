@@ -33,6 +33,12 @@ namespace Promact.Erp.DomainModel.Models
         /// True if scrum is halted
         /// </summary>
         public bool IsHalted { get; set; }
+
+
+        /// <summary>
+        /// True if scrum is halted
+        /// </summary>
+        public bool IsOngoing { get; set; }
     }
 }
 
