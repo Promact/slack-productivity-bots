@@ -1,13 +1,12 @@
-﻿import { TaskMailStatus } from '../enums/TaskMailStatus';
-export class taskmailModel {
-    Id: number;
+﻿import { TaskMailDetailsModel } from './taskmaildetails.model';
+export class TaskMailModel {
+    UserName: string;
+    UserId: string;
+    UserRole: string;
+    UserEmail: string;
     CreatedOn: Date;
     CreatedOns: string;
-    Description: string;
-    Comment: string;
-    Hours: number;
-    TotalItems: number;
-    Status: TaskMailStatus;
-    StatusName: string;
-   
+    IsMax: Date;
+    IsMin: Date;
+    TaskMails: Array<TaskMailDetailsModel>;
 }
