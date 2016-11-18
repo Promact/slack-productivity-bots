@@ -272,7 +272,7 @@ namespace Promact.Core.Test
         public void GetUserRole()
         {
             var response = Task.FromResult(_stringConstant.TaskMailReport);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.EmailForTest, _stringConstant.ProjectInformationUrl);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.EmailForTest, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var userRole =  _projectUserRepository.GetUserRole(_stringConstant.EmailForTest,_stringConstant.AccessTokenForTest);
             Assert.Equal(3, userRole.Result.Count);
