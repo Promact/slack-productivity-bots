@@ -51,9 +51,8 @@ export class TaskMailListComponent {
             });
        
     }
-    taskmailDetails(UserId, UserName, UserEmail)
-    {
-        var UserRole = this.stringConstant.RoleAdmin;
+    taskmailDetails(UserId, UserName, UserEmail) {
+        let UserRole = this.stringConstant.RoleAdmin;
         this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//, UserEmail]);
     }
     
