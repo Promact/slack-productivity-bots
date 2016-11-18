@@ -51,7 +51,7 @@ describe('Task Mail Report List Tests', () => {
         let fixture = TestBed.createComponent(TaskMailListComponent);   
         let taskMailListComponent = fixture.componentInstance;
         taskMailListComponent.getListOfEmployee();
-        expect(taskMailListComponent.listOfUsers.length).toBe(1);
+        expect(taskMailListComponent.taskMailUsers.length).toBe(1);
     });
 });
 

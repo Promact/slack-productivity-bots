@@ -4,10 +4,8 @@ import { taskmailModel } from '../../taskmail/taskmail.model';
 import { taskmailuserModel } from '../../taskmail/taskmailuser.model';
 
 @Injectable()
-export class MockTaskMailService
-{
-    constructor()
-    {
+export class MockTaskMailService {
+    constructor() {
 
     }
     getListOfEmployee() {
