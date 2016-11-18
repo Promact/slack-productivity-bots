@@ -12,8 +12,8 @@ import {StringConstant} from '../../shared/stringConstant';
     templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
     providers: [StringConstant]
 })
-export class TaskMailListComponent {
-    listOfUsers: any;
+export class TaskMailListComponent implements OnInit {
+    taskMailUsers: Array<TaskMailModel>;
     constructor(private router: Router, private taskService: TaskService, private loader: LoaderService, private stringConstant: StringConstant) {
 
     }
