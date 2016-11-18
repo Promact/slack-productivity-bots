@@ -9,5 +9,5 @@ const TaskMailRoutes: Routes = [{
     component: TaskMailComponent,
     children: [{ path: '', component: TaskMailListComponent },
     { path: 'taskdetail/:UserId/:UserRole/:UserName', component: TaskMailDetailsComponent }]
-}]
+}];
 export const taskMailRoutes: ModuleWithProviders = RouterModule.forChild(TaskMailRoutes);

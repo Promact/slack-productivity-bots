@@ -52,7 +52,7 @@ export class TaskService {
         return body || {};
     }
 
-    private handleError(error: any) {
+    private handleError(error: Observable<Response>) {
         let errMsg = 'Server error';
         return Observable.throw(errMsg);
     }

@@ -4,7 +4,7 @@ import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
-import { TaskMailModule } from '../../taskmail/taskMail.module';
+import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
 import { TaskService } from '../taskmail.service';
 import { DatePipe } from '@angular/common';
@@ -29,7 +29,7 @@ describe('LeaveReport Detials Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            imports: [TaskMailDetailsModel, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
@@ -52,21 +52,21 @@ describe('LeaveReport Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
-        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Privious Date', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious("test", "1", "Admin", "10-09-2016");
-        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Next Date', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailNext("test", "1", "Admin", "10-09-2016");
-        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Selected Date', () => {
