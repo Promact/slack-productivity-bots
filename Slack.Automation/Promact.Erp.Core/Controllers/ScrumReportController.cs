@@ -43,11 +43,11 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> ScrumProjectList()
+        public async Task<IHttpActionResult> ScrumProjectListAsync()
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.GetProjects(loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.UserName, accessToken));
         }
 
         /**
@@ -65,13 +65,13 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("{id}/detail")]
-        public async Task<IHttpActionResult> ScrumDetails(int id)
+        public async Task<IHttpActionResult> ScrumDetailsAsync(int id)
         {
             string queryString = Request.RequestUri.Query.Substring(1,24);
             DateTime date = Convert.ToDateTime(queryString); 
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetails(id, date,loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date,loginUser.UserName, accessToken));
         }
         #endregion
     }

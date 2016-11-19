@@ -485,7 +485,7 @@ namespace Promact.Core.Repository.SlackRepository
                         var secondDateConvertorResult = DateTime.TryParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                         if (firstDateConvertorResult && secondDateConvertorResult)
                         {
-                            var newUser = await _oauthCallsRepository.GetUserByEmployeeId(leave.EmployeeId, accessToken);
+                            var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
                             // convert string to date of indian culture
                             leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));

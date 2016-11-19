@@ -32,7 +32,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
         {
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList();
                       
-            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserNameAsync(userName, accessToken);
 
             if (loginUser.Role.Equals(_stringConstant.Admin))
             {
@@ -48,7 +48,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
             }
             if(loginUser.Role.Equals(_stringConstant.TeamLeader))
             {
-                List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderId(loginUser.Id, accessToken);
+                List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id, accessToken);
                 List<LeaveReport> leaveReports = new List<LeaveReport>();
                 foreach (var projectUser in projectUsers)
                 {
@@ -155,7 +155,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// <returns></returns>
         private async Task<User> GetEmployeeById(string employeeId,string accessToken)
         {
-            User user = await _oauthCallsRepository.GetUserByEmployeeId(employeeId,accessToken);
+            User user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId,accessToken);
             return user;
         }
     }
