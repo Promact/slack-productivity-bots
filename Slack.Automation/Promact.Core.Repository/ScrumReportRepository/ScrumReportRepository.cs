@@ -118,12 +118,12 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns>List of projects</returns>
-        public async Task<IEnumerable<ProjectAc>> GetProjects(string userName, string accessToken)
+        public async Task<IEnumerable<ProjectAc>> GetProjectsAsync(string userName, string accessToken)
         {
             //Getting the details of the logged in user from Oauth server
-            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserNameAsync(userName, accessToken);
             //Fetch list of all the projects from oauth server
-            List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjects(accessToken);
+            List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjectsAsync(accessToken);
             //Checking if there are projects returned from oauth server or not
             if (projects.Count != 0)
             {
@@ -167,12 +167,12 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns>Details of the scrum</returns>
-        public async Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string userName, string accessToken)
+        public async Task<ScrumProjectDetails> ScrumReportDetailsAsync(int projectId, DateTime scrumDate, string userName, string accessToken)
         {
             //Getting details of the logged in user from Oauth server
-            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserNameAsync(userName, accessToken);
             //Getting details of the specific project from Oauth server
-            ProjectAc project = await _oauthCallsRepository.GetProjectDetails(projectId, accessToken);
+            ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
             //Getting scrum for a specific project
             Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
