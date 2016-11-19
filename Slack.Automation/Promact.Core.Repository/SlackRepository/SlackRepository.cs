@@ -1,5 +1,5 @@
 ﻿using Promact.Core.Repository.LeaveRequestRepository;
-using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
@@ -19,20 +19,17 @@ namespace Promact.Core.Repository.SlackRepository
 {
     public class SlackRepository : ISlackRepository
     {
-        private readonly IProjectUserCallRepository _projectUser;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ILeaveRequestRepository _leaveRepository;
         private readonly IClient _client;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
-        public SlackRepository(ILeaveRequestRepository leaveRepository, 
-            IProjectUserCallRepository projectUser, 
-            IClient client, IStringConstantRepository stringConstant,
-            IAttachmentRepository attachmentRepository, 
-            IRepository<ApplicationUser> userManager)
+
+        public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository, IClient client, IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
         {
-            _projectUser = projectUser;
+            _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
             _client = client;
             _stringConstant = stringConstant;
@@ -79,7 +76,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                                         var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                                         // get user details from oAuth server
-                                        user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                        user = await _oauthCallsRepository.GetUserByUsername(leave.Username, accessToken);
                                         leaveRequest.EndDate = endDate;
                                         leaveRequest.RejoinDate = reJoinDate;
                                         leaveRequest.Status = Condition.Pending;
@@ -109,14 +106,14 @@ namespace Promact.Core.Repository.SlackRepository
                                 {
                                     bool IsAdmin = false;
                                     User newUser = new User();
-                                    user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                    user = await _oauthCallsRepository.GetUserByUsername(leave.Username, accessToken);
                                     if (slackRequest.Count > 4)
                                     {
-                                        IsAdmin = await _projectUser.UserIsAdmin(user.Email, accessToken);
+                                        IsAdmin = await _oauthCallsRepository.UserIsAdmin(user.Email, accessToken);
                                         if (IsAdmin)
                                         {
                                             // get user details from oAuth server for other user
-                                            newUser = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
+                                            newUser = await _oauthCallsRepository.GetUserByUsername(slackRequest[4], accessToken);
                                         }
                                         else
                                             replyText = _stringConstant.AdminErrorMessageApplySickLeave;
@@ -124,7 +121,7 @@ namespace Promact.Core.Repository.SlackRepository
                                     else
                                     {
                                         // get user details from oAuth server for own
-                                        newUser = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+                                        newUser = await _oauthCallsRepository.GetUserByUsername(leave.Username, accessToken);
                                         leaveRequest.EndDate = startDate;
                                         leaveRequest.RejoinDate = startDate.AddDays(1);
                                     }
@@ -180,7 +177,7 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> LeaveList(string userName, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _projectUser.GetUserByUsername(userName, accessToken);
+            var user = await _oauthCallsRepository.GetUserByUsername(userName, accessToken);
             // get list of leave from user Id
             var leaveList = _leaveRepository.LeaveListByUserId(user.Id);
             // if leave exit then further will get list in string else 
@@ -208,7 +205,7 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> CancelLeave(int leaveId, string userName, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _projectUser.GetUserByUsername(userName, accessToken);
+            var user = await _oauthCallsRepository.GetUserByUsername(userName, accessToken);
             // only authorize user of leave is allowed to cancel there leave
             if (user.Id == _leaveRepository.LeaveById(leaveId).EmployeeId)
             {
@@ -232,7 +229,7 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> LeaveStatus(string userName, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _projectUser.GetUserByUsername(userName, accessToken);
+            var user = await _oauthCallsRepository.GetUserByUsername(userName, accessToken);
             try
             {
                 // get only last leave of the user
@@ -363,11 +360,11 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> SlackLeaveBalance(SlashCommand leave, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _projectUser.GetUserByUsername(leave.Username, accessToken);
+            var user = await _oauthCallsRepository.GetUserByUsername(leave.Username, accessToken);
             if (user.Id != null)
             {
                 // get user leave allowed details from oAuth server
-                var allowedLeave = await _projectUser.CasualLeave(leave.Username, accessToken);
+                var allowedLeave = await _oauthCallsRepository.CasualLeave(leave.Username, accessToken);
                 // method to get user's number of leave taken
                 var leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
                 var casualLeaveTaken = leaveTaken.CasualLeave;
@@ -469,7 +466,7 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> UpdateSickLeave(List<string> slackText, ApplicationUser user, string accessToken)
         {
             // checking from oAuth whether user is Admin or not
-            var IsAdmin = await _projectUser.UserIsAdmin(user.UserName, accessToken);
+            var IsAdmin = await _oauthCallsRepository.UserIsAdmin(user.UserName, accessToken);
             if (IsAdmin)
             {
                 int leaveIdType;
@@ -486,7 +483,7 @@ namespace Promact.Core.Repository.SlackRepository
                         var secondDateConvertorResult = DateTime.TryParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                         if (firstDateConvertorResult && secondDateConvertorResult)
                         {
-                            var newUser = await _projectUser.GetUserByEmployeeId(leave.EmployeeId, accessToken);
+                            var newUser = await _oauthCallsRepository.GetUserByEmployeeId(leave.EmployeeId, accessToken);
                             // convert string to date of indian culture
                             leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));

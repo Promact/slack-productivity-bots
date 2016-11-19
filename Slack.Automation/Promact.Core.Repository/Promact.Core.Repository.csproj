@@ -124,8 +124,8 @@
     <Compile Include="LeaveReportRepository\LeaveReportRepository.cs" />
     <Compile Include="LeaveRequestRepository\ILeaveRequestRepository.cs" />
     <Compile Include="LeaveRequestRepository\LeaveRequestRepository.cs" />
-    <Compile Include="ProjectUserCall\IProjectUserCallRepository.cs" />
-    <Compile Include="ProjectUserCall\ProjectUserCallRepository.cs" />
+    <Compile Include="OauthCallsRepository\IOauthCallsRepository.cs" />
+    <Compile Include="OauthCallsRepository\OauthCallsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrumReportRepository\IScrumReportRepository.cs" />
     <Compile Include="ScrumReportRepository\ScrumReportRepository.cs" />

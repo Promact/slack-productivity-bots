@@ -1,5 +1,4 @@
-﻿using Promact.Core.Repository.ProjectUserCall;
-using Promact.Erp.DomainModel.ApplicationClass;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Promact.Core.Repository.OauthCallsRepository;
 
 namespace Promact.Core.Repository.ScrumReportRepository
 {
@@ -17,16 +17,16 @@ namespace Promact.Core.Repository.ScrumReportRepository
         #region Private Variables
         private readonly IRepository<Scrum> _scrumDataRepository;
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
-        private readonly IProjectUserCallRepository _projectUserCallRepository;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IStringConstantRepository _stringConstant;
         #endregion
 
         #region Constructor
-        public ScrumReportRepository(IRepository<Scrum> scrumDataRepository, IRepository<ScrumAnswer> scrumAnswerDataRepository, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserCallRepository)
+        public ScrumReportRepository(IRepository<Scrum> scrumDataRepository, IRepository<ScrumAnswer> scrumAnswerDataRepository, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository)
         {
             _scrumDataRepository = scrumDataRepository;
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
-            _projectUserCallRepository = projectUserCallRepository;
+            _oauthCallsRepository = oauthCallsRepository;
             _stringConstant = stringConstant;
         }
         #endregion
@@ -121,9 +121,9 @@ namespace Promact.Core.Repository.ScrumReportRepository
         public async Task<IEnumerable<ProjectAc>> GetProjects(string userName, string accessToken)
         {
             //Getting the details of the logged in user from Oauth server
-            User loginUser = await _projectUserCallRepository.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
             //Fetch list of all the projects from oauth server
-            List<ProjectAc> projects = await _projectUserCallRepository.GetAllProjects(accessToken);
+            List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjects(accessToken);
             //Checking if there are projects returned from oauth server or not
             if (projects.Count != 0)
             {
@@ -170,9 +170,9 @@ namespace Promact.Core.Repository.ScrumReportRepository
         public async Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string userName, string accessToken)
         {
             //Getting details of the logged in user from Oauth server
-            User loginUser = await _projectUserCallRepository.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
             //Getting details of the specific project from Oauth server
-            ProjectAc project = await _projectUserCallRepository.GetProjectDetails(projectId, accessToken);
+            ProjectAc project = await _oauthCallsRepository.GetProjectDetails(projectId, accessToken);
             //Getting scrum for a specific project
             Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();

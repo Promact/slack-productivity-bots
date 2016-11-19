@@ -3,7 +3,7 @@ using Promact.Erp.DomainModel.Context;
 using System.Data.Entity;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.Client;
-using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
@@ -57,7 +57,7 @@ namespace Promact.Core.Test
             builder.RegisterInstance(clientMockObject).As<IClient>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
             //builder.RegisterType<Client>().As<IClient>();
-            builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
+            builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();

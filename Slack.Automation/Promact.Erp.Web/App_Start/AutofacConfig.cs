@@ -11,7 +11,7 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
-using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackChannelRepository;
@@ -64,7 +64,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
-            builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
+            builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>().InstancePerDependency();
