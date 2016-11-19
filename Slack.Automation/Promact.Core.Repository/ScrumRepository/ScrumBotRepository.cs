@@ -170,7 +170,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         //list of scrum questions. Type =1
                         List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                         //employees of the given group name fetched from the oauth server
-                        List<User> employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
+                        List<User> employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
 
                         int questionCount = questions.Count();
                         //scrum answer of that day's scrum
@@ -363,7 +363,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     // get access token of user for promact oauth server
                     string accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
                     //get the project details of the given channel name
-                    ProjectAc project = await _oauthCallRepository.GetProjectDetails(channelName, accessToken);
+                    ProjectAc project = await _oauthCallsRepository.GetProjectDetails(channelName, accessToken);
                     //add channel details only if the channel has been registered as project in OAuth server
                     if (project != null && project.Id > 0)
                     {
@@ -436,8 +436,8 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> StartScrum(string groupName, string userName, string accessToken)
         {
             string replyMessage = string.Empty;
-            ProjectAc project = await _oauthCallRepository.GetProjectDetails(groupName, accessToken);
-            List<User> employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
+            ProjectAc project = await _oauthCallsRepository.GetProjectDetails(groupName, accessToken);
+            List<User> employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
             List<Question> questionList = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             ScrumStatus scrumStatus = FetchScrumStatus(groupName, accessToken, project, employees, questionList).Result;
             if (scrumStatus == ScrumStatus.NotStarted)
@@ -538,7 +538,7 @@ namespace Promact.Core.Repository.ScrumRepository
             if (questions == null)
                 questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             if (employees == null)
-                employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
+                employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
 
             if (scrumAnswer.Any())
             {
@@ -724,13 +724,13 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<ScrumStatus> FetchScrumStatus(string groupName, string accessToken, ProjectAc project, List<User> employees, List<Question> questions)
         {
             if (project == null)
-                project = await _projectUser.GetProjectDetails(groupName, accessToken);
+                project = await _oauthCallsRepository.GetProjectDetails(groupName, accessToken);
             if (project != null && project.Id > 0)
             {
                 if (project.IsActive)
                 {
                     if (employees == null || employees.Count == 0)
-                        employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
+                        employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count == 0)
