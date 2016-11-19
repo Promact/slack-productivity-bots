@@ -303,7 +303,7 @@ namespace Promact.Core.Test
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format("{0}{1}", _stringConstant.GetProjectDetails, testProjectId);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
-            var project = _oauthCallsRepository.GetProjectDetails(testProjectId,_stringConstant.TestAccessToken).Result;
+            var project = _oauthCallsRepository.GetProjectDetailsAsync(testProjectId, _stringConstant.TestAccessToken).Result;
             Assert.Equal(2, project.ApplicationUsers.Count);
         }
 
