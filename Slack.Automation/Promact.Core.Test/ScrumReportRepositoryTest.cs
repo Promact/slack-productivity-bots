@@ -61,7 +61,7 @@ namespace Promact.Core.Test
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
-            var projects = _scrumReportRepository.GetProjects(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.Equal(1, projects.Count());
 
         }
@@ -78,7 +78,7 @@ namespace Promact.Core.Test
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForTeamLeaderFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
-            var projects = _scrumReportRepository.GetProjects(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.Equal(1, projects.Count());
 
         }
@@ -95,7 +95,7 @@ namespace Promact.Core.Test
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForEmployeeFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
-            var projects = _scrumReportRepository.GetProjects(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.Equal(1, projects.Count());
 
         }
@@ -117,7 +117,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             _scrumDataRepository.Save();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetails(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
 
@@ -141,7 +141,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Save();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             _scrumAnswerDataRepository.Save();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetails(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
 
@@ -166,7 +166,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Save();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             _scrumAnswerDataRepository.Save();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetails(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
 
@@ -190,7 +190,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Save();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             _scrumAnswerDataRepository.Save();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetails(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
         #endregion

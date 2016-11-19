@@ -15,7 +15,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns>List of projects</returns>
-        Task<IEnumerable<ProjectAc>> GetProjects(string userName, string accessToken);
+        Task<IEnumerable<ProjectAc>> GetProjectsAsync(string userName, string accessToken);
 
         /// <summary>
         /// Method to return the details of scrum for a particular project
@@ -25,6 +25,6 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="userName"></param>
         /// <param name = "accessToken" ></ param >
         /// <returns>Details of the scrum</returns>
-        Task<ScrumProjectDetails> ScrumReportDetails(int projectId, DateTime scrumDate, string userName, string accessToken); 
+        Task<ScrumProjectDetails> ScrumReportDetailsAsync(int projectId, DateTime scrumDate, string userName, string accessToken); 
     }
 }
