@@ -26,7 +26,7 @@ export class StringConstant {
     notAvailableComment = 'Not Available';
     RoleAdmin = "Admin";
     RoleTeamLeader = "TeamLeader";
-    taskList = "/task"
+    taskList = "/task";
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";

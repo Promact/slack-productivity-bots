@@ -21,7 +21,7 @@ export class MockScrumReportService {
         return connection;
     }    
 
-    getScrumDetails(id: number, date: any) {
+    getScrumDetails(id: number, date: string) {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
         let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
@@ -30,7 +30,7 @@ export class MockScrumReportService {
         mockEmployeeScrumAnswer.Answer3 = "no";
         mockEmployeeScrumAnswer.EmployeeName = "xyz";
         mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
-        if (id == 123){
+        if (id === 123) {
             mockScrumDetails.ScrumDate = date;
             mockScrumDetails.ProjectCreationDate = "1/1/16";
             mockScrumDetails.EmployeeScrumAnswers = mockEmployeeScrumAnswers;

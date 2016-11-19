@@ -25,7 +25,7 @@ export class ScrumReportService {
      * @param Id
      * @param Date
      */
-    getScrumDetails(id: number, date: any): Observable<ScrumDetails> {
+    getScrumDetails(id: number, date: string): Observable<ScrumDetails> {
         return this.http.get(this.stringConstant.scrum + this.stringConstant.slash + id + this.stringConstant.detail, { search: new Date(date).toJSON() })
             .map(res => res.json())
             .catch(this.handleError);
@@ -35,7 +35,7 @@ export class ScrumReportService {
     *
     *@param error
     */
-    private handleError(error: any) {
+    private handleError(error: string) {
         let errMsg = this.stringConstant.serverError;
         return Observable.throw(errMsg);
     }

@@ -22,9 +22,9 @@ describe('ScrumReport Tests', () => {
             declarations: [RouterLinkStubDirective],
             imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
-                { provide: Router,  useClass: MockRouter },
-                { provide: ScrumReportService,  useClass: MockScrumReportService },
-                { provide: StringConstant,  useClass: StringConstant },
+                { provide: Router, useClass: MockRouter },
+                { provide: ScrumReportService, useClass: MockScrumReportService },
+                { provide: StringConstant, useClass: StringConstant },
             ]
         }).compileComponents();
     }));
@@ -38,4 +38,4 @@ describe('ScrumReport Tests', () => {
             done();
         });
     });
-})
+});
