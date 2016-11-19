@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
-    {      
+    {
         private readonly ApplicationUserManager _userManager;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
@@ -73,7 +73,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         }
 
         /// <summary>
-        /// Method to add Slack Users,channels and groups information 
+        /// Method to add/update Slack Users,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -101,10 +101,19 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in channels.Channels)
                 {
-                    if (!channel.Deleted)
+                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    if (slackChannel == null)
                     {
-                        channel.CreatedOn = DateTime.UtcNow;
-                        _slackChannelDetails.Insert(channel);
+                        if (!channel.Deleted)
+                        {
+                            channel.CreatedOn = DateTime.UtcNow;
+                            _slackChannelDetails.Insert(channel);
+                        }
+                    }
+                    else
+                    {
+                        slackChannel.Name = channel.Name;
+                        _slackChannelDetails.Update(slackChannel);
                     }
                 }
             }
@@ -117,10 +126,19 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in groups.Groups)
                 {
-                    if (!channel.Deleted)
+                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    if (slackChannel == null)
                     {
-                        channel.CreatedOn = DateTime.UtcNow;
-                        _slackChannelDetails.Insert(channel);
+                        if (!channel.Deleted)
+                        {
+                            channel.CreatedOn = DateTime.UtcNow;
+                            _slackChannelDetails.Insert(channel);
+                        }
+                    }
+                    else
+                    {
+                        slackChannel.Name = channel.Name;
+                        _slackChannelDetails.Update(slackChannel);
                     }
                 }
             }

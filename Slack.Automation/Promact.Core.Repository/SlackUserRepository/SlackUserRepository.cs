@@ -27,10 +27,17 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <param name="slackUserDetails"></param>
         public void AddSlackUser(SlackUserDetails slackUserDetails)
         {
-            if (slackUserDetails.IsBot || slackUserDetails.Name == _stringConstant.SlackBotStringName)
-                AddSlackBotUserDetail(slackUserDetails);
+            SlackUserDetails slackUser = _slackUserDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
+            SlackBotUserDetail slackBotUser = _slackUserBotDetails.FirstOrDefault(x=>x.UserId == slackUserDetails.UserId);
+            if (slackUser == null && slackBotUser == null)
+            {
+                if (slackUserDetails.IsBot || slackUserDetails.Name == _stringConstant.SlackBotStringName)
+                    AddSlackBotUserDetail(slackUserDetails);
+                else
+                    AddSlackUserDetail(slackUserDetails);
+            }
             else
-                AddSlackUserDetail(slackUserDetails);
+                UpdateSlackUser(slackUserDetails);
         }
 
 

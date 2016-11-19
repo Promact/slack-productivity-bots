@@ -456,7 +456,6 @@ namespace Promact.Core.Test
         }
 
 
-
         /// <summary>
         /// Method Leave Testing 
         /// </summary>
@@ -485,7 +484,6 @@ namespace Promact.Core.Test
         }
 
 
-
         /// <summary>
         /// Method Leave Testing 
         /// </summary>
@@ -506,7 +504,6 @@ namespace Promact.Core.Test
             var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">");
             Assert.Equal(_stringConstant.NoProjectFound, msg);
         }
-
 
 
         /// <summary>
@@ -616,6 +613,7 @@ namespace Promact.Core.Test
             Assert.Equal(compareString, msg);
         }
 
+
         /// <summary>
         /// Method Leave Testing where applicant is not in OAuth
         /// </summary>
@@ -698,7 +696,6 @@ namespace Promact.Core.Test
         }
 
 
-
         /// <summary>
         /// Method AddScrumAnswer Testing (update answer) with only One Answer marked to be asked later
         /// </summary>
@@ -716,28 +713,7 @@ namespace Promact.Core.Test
             string expectedMsg = string.Format(_stringConstant.WrongPerson, _stringConstant.TestUser);
             Assert.Equal(msg, expectedMsg);
         }
-
-
-        ///// <summary>
-        ///// Method UpdateScrumAnswer Testing with more than one answer marked to be asked later
-        ///// </summary>
-        //[Fact, Trait("Category", "Required")]
-        //public async void UpdateScrumAnswers()
-        //{
-        //    UserProjectSetup();
-        //    _botQuestionRepository.AddQuestion(question);
-        //    _botQuestionRepository.AddQuestion(question);
-        //    _scrumDataRepository.Insert(scrum);
-
-        //    _scrumAnswerDataRepository.Insert(scrumAnswer);
-        //    _scrumAnswerDataRepository.Insert(scrumAnswer);
-        //    AddChannelUser();
-
-        //    var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Scrum);
-        //    string compareString = "<@" + _stringConstant.UserNameForTest + "> " + _stringConstant.NoQuestion;
-        //    Assert.Equal(msg, compareString);
-        //}
-
+                  
 
         /// <summary>
         /// Method AddScrumAnswer Testing with next employee's first answer and scrum complete
