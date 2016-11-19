@@ -1,4 +1,4 @@
-﻿using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -13,13 +13,13 @@ namespace Promact.Core.Repository.LeaveReportRepository
     public class LeaveReportRepository : ILeaveReportRepository
     {
         private readonly IRepository<LeaveRequest> _leaveRequest;
-        private readonly IProjectUserCallRepository _projectUserCall;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IStringConstantRepository _stringConstant;
-        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserCall)
+        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository)
         {
             _leaveRequest = leaveRequest;
             _stringConstant = stringConstant;
-            _projectUserCall = projectUserCall;
+            _oauthCallsRepository = oauthCallsRepository;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
         {
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList();
                       
-            User loginUser = await _projectUserCall.GetUserByUserName(userName, accessToken);
+            User loginUser = await _oauthCallsRepository.GetUserByUserName(userName, accessToken);
 
             if (loginUser.Role.Equals(_stringConstant.Admin))
             {
@@ -48,7 +48,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
             }
             if(loginUser.Role.Equals(_stringConstant.TeamLeader))
             {
-                List<User> projectUsers = await _projectUserCall.GetProjectUsersByTeamLeaderId(loginUser.Id, accessToken);
+                List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderId(loginUser.Id, accessToken);
                 List<LeaveReport> leaveReports = new List<LeaveReport>();
                 foreach (var projectUser in projectUsers)
                 {
@@ -155,7 +155,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// <returns></returns>
         private async Task<User> GetEmployeeById(string employeeId,string accessToken)
         {
-            User user = await _projectUserCall.GetUserByEmployeeId(employeeId,accessToken);
+            User user = await _oauthCallsRepository.GetUserByEmployeeId(employeeId,accessToken);
             return user;
         }
     }

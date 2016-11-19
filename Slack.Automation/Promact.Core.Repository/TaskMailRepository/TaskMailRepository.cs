@@ -1,4 +1,4 @@
-﻿using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace Promact.Core.Repository.TaskMailRepository
     {
         private readonly IRepository<TaskMail> _taskMail;
         private readonly IRepository<TaskMailDetails> _taskMailDetail;
-        private readonly IProjectUserCallRepository _projectUserRepository;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _user;
@@ -27,11 +27,11 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
         {
             _taskMail = taskMail;
             _stringConstant = stringConstant;
-            _projectUserRepository = projectUserRepository;
+            _oauthCallsRepository = oauthCallsRepository;
             _taskMailDetail = taskMailDetail;
             _attachmentRepository = attachmentRepository;
             _user = user;
@@ -55,7 +55,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 // get access token of user for promact oauth server
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 // get user details from
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _oauthCallsRepository.GetUserByUsername(userName, accessToken);
                 TaskMailQuestion question = new TaskMailQuestion();
                 Question previousQuestion = new Question();
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
@@ -127,7 +127,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetails> taskList = new List<TaskMailDetails>();
                 TaskMail taskMail = new TaskMail();
                 // getting user information from Promact Oauth Server
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _oauthCallsRepository.GetUserByUsername(userName, accessToken);
                 try
                 {
                     // checking for previous task mail exist or not for today
@@ -279,8 +279,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
-                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userName, accessToken);
-                                                    var managements = await _projectUserRepository.GetManagementUserName(accessToken);
+                                                    var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserName(userName, accessToken);
+                                                    var managements = await _oauthCallsRepository.GetManagementUserName(accessToken);
                                                     foreach (var management in managements)
                                                     {
                                                         teamLeaders.Add(management);
@@ -365,7 +365,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             var user = _user.FirstOrDefault(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var jsonResult = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var jsonResult = await _oauthCallsRepository.GetUserRole(user.UserName, accessToken);
             var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
             List<TaskMailUserAc> taskMailUsertAc = new List<TaskMailUserAc>();
             if (role.Role == _stringConstant.RoleAdmin)
@@ -546,7 +546,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -783,7 +783,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -1021,7 +1021,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
                 DateTime? minDate = null;
                 DateTime? maxDate = null;
 
