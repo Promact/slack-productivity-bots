@@ -22,15 +22,15 @@ describe('ScrumReport Tests', () => {
             this.params = Observable.of({ id: "123" });
         }
     }
- 
+
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
             imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
-               { provide : ActivatedRoute,  useClass: MockActivatedRoute },
-               { provide : ScrumReportService,  useClass: MockScrumReportService },
-               { provide : StringConstant,  useClass: StringConstant },
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: ScrumReportService, useClass: MockScrumReportService },
+                { provide: StringConstant, useClass: StringConstant },
             ]
         }).compileComponents();
     }));
@@ -42,6 +42,6 @@ describe('ScrumReport Tests', () => {
             let result = scrumProjectDetailsComponent.ngOnInit();
             expect(scrumProjectDetailsComponent.employeeScrumAnswers.length).toBe(1);
             done();
-        });        
+        });
     });
-})
+});
