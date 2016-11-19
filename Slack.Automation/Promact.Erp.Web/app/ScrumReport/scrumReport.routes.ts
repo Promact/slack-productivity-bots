@@ -5,7 +5,7 @@ import { ScrumProjectListComponent } from './scrumProject-List/scrumProject-List
 import { ScrumProjectDetailComponent } from './scrumProject-Details/scrumProject-Details.component';
 
 
- const ScrumReportRoutes: Routes = [{
+const ScrumReportRoutes: Routes = [{
     path: "scrum",
     component: ScrumReportComponent,
     children: [
@@ -18,7 +18,7 @@ import { ScrumProjectDetailComponent } from './scrumProject-Details/scrumProject
             component: ScrumProjectDetailComponent
         },
     ]
-}]
+}];
 
 export const scrumReportRoutes: ModuleWithProviders = RouterModule.forChild(ScrumReportRoutes);
 

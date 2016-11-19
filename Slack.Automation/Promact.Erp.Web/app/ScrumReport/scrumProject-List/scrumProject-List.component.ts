@@ -10,8 +10,8 @@ import { StringConstant } from '../../shared/stringConstant';
 
 export class ScrumProjectListComponent implements OnInit {
     scrumProjects: ScrumProject[];
-    errorMessage: any;
-    noProject: any;
+    errorMessage: string;
+    noProject: string;
 
     constructor(private scrumReportService: ScrumReportService, private router: Router, private stringConstant: StringConstant) { }
 
@@ -20,22 +20,20 @@ export class ScrumProjectListComponent implements OnInit {
     }
 
     getScrumProjects() {
-        
+
         this.scrumReportService.getScrumProjects()
             .subscribe(
             scrumProjects => {
                 this.scrumProjects = scrumProjects;
-                if (scrumProjects.length != 0)
-                {
+                if (scrumProjects.length !== 0) {
                     return scrumProjects;
                 }
-                else
-                {
+                else {
                     this.noProject = this.stringConstant.noProjectToDisplay;
                     return this.noProject;
-                }                    
+                }
             },
-            error => this.errorMessage = <any>error
-        );
+            error => this.errorMessage = <string>error
+            );
     }
 }
