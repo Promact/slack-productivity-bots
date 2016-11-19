@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Promact.Core.Repository.ProjectUserCall
+namespace Promact.Core.Repository.OauthCallsRepository
 {
-    public interface IProjectUserCallRepository
+    public interface IOauthCallsRepository
     {
         /// <summary>
         /// Method to call an api of oAuth server and get Employee detail by their slack userId

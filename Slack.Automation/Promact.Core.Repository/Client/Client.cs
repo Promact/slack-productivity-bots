@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.HttpClientRepository;
-using Promact.Core.Repository.ProjectUserCall;
 using Promact.Core.Repository.SlackUserRepository;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
@@ -23,18 +23,18 @@ namespace Promact.Core.Repository.Client
     public class Client : IClient
     {
         private HttpClient _chatUpdateMessage;
-        private readonly IProjectUserCallRepository _projectUser;
         private readonly ISlackUserRepository _slackUserRepository;
+        private readonly IOauthCallsRepository _oauthCallRepository;
         private readonly IEmailService _email;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository,ISlackUserRepository slackUserRepository)
+        public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository,ISlackUserRepository slackUserRepository)
         {
             _chatUpdateMessage = new HttpClient();
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
-            _projectUser = projectUser;
+            _oauthCallRepository = oauthCallRepository;
             _email = email;
             _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
@@ -168,9 +168,9 @@ namespace Promact.Core.Repository.Client
         /// <returns></returns>
         private async Task GetAttachmentAndSendToTLAndManagement(string slackUserId,string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
         {
-            var teamLeaders = await _projectUser.GetTeamLeaderUserId(slackUserId, accessToken);
-            var management = await _projectUser.GetManagementUserName(accessToken);
-            var userDetail = await _projectUser.GetUserByUserId(slackUserId, accessToken);
+            var teamLeaders = await _oauthCallRepository.GetTeamLeaderUserId(slackUserId, accessToken);
+            var management = await _oauthCallRepository.GetManagementUserName(accessToken);
+            var userDetail = await _oauthCallRepository.GetUserByUserId(slackUserId, accessToken);
             foreach (var user in management)
             {
                 teamLeaders.Add(user);

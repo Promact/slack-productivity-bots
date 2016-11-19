@@ -5,9 +5,9 @@ using Promact.Erp.Util.StringConstants;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Promact.Core.Repository.ProjectUserCall
+namespace Promact.Core.Repository.OauthCallsRepository
 {
-    public class ProjectUserCallRepository : IProjectUserCallRepository
+    public class OauthCallsRepository : IOauthCallsRepository
     {
         #region Private Variables
         private readonly IHttpClientRepository _httpClientRepository;
@@ -15,7 +15,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         #endregion
 
         #region Constructor
-        public ProjectUserCallRepository(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant)
+        public OauthCallsRepository(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant)
         {
             _httpClientRepository = httpClientRepository;
             _stringConstant = stringConstant;

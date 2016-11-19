@@ -1,6 +1,6 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.HttpClientRepository;
-using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -26,13 +26,12 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<ApplicationUser> _applicationUser;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IRepository<Question> _questionRepository;
-        private readonly IProjectUserCallRepository _projectUser;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly ISlackUserRepository _slackUserDetails;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IRepository<SlackBotUserDetail> _slackBotUserDetail;
-
 
         #endregion
 
@@ -40,7 +39,7 @@ namespace Promact.Core.Repository.ScrumRepository
         #region Constructor
 
 
-        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IProjectUserCallRepository projectUser,
+        public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository, IOauthCallsRepository oauthCallsRepository,
             IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository, IRepository<Question> questionRepository,
             IHttpClientRepository httpClientRepository, IRepository<ApplicationUser> applicationUser,
             ISlackChannelRepository slackChannelRepository, ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant,
@@ -49,7 +48,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _scrumAnswerRepository = scrumAnswerRepository;
             _scrumRepository = scrumRepository;
             _questionRepository = questionRepository;
-            _projectUser = projectUser;
+            _oauthCallsRepository = oauthCallsRepository;
             _slackChannelRepository = slackChannelRepository;
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
@@ -171,7 +170,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         //list of scrum questions. Type =1
                         List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                         //employees of the given group name fetched from the oauth server
-                        List<User> employees = await _projectUser.GetUsersByGroupName(groupName, accessToken);
+                        List<User> employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
 
                         int questionCount = questions.Count();
                         //scrum answer of that day's scrum
@@ -364,7 +363,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     // get access token of user for promact oauth server
                     string accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
                     //get the project details of the given channel name
-                    ProjectAc project = await _projectUser.GetProjectDetails(channelName, accessToken);
+                    ProjectAc project = await _oauthCallRepository.GetProjectDetails(channelName, accessToken);
                     //add channel details only if the channel has been registered as project in OAuth server
                     if (project != null && project.Id > 0)
                     {
@@ -437,8 +436,8 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> StartScrum(string groupName, string userName, string accessToken)
         {
             string replyMessage = string.Empty;
-            ProjectAc project = await _projectUser.GetProjectDetails(groupName, accessToken);
-            List<User> employees = await _projectUser.GetUsersByGroupName(groupName, accessToken);
+            ProjectAc project = await _oauthCallRepository.GetProjectDetails(groupName, accessToken);
+            List<User> employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
             List<Question> questionList = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             ScrumStatus scrumStatus = FetchScrumStatus(groupName, accessToken, project, employees, questionList).Result;
             if (scrumStatus == ScrumStatus.NotStarted)
@@ -539,7 +538,7 @@ namespace Promact.Core.Repository.ScrumRepository
             if (questions == null)
                 questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             if (employees == null)
-                employees = await _projectUser.GetUsersByGroupName(groupName, accessToken);
+                employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
 
             if (scrumAnswer.Any())
             {
@@ -731,7 +730,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 if (project.IsActive)
                 {
                     if (employees == null || employees.Count == 0)
-                        employees = await _projectUser.GetUsersByGroupName(groupName, accessToken);
+                        employees = await _oauthCallRepository.GetUsersByGroupName(groupName, accessToken);
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count == 0)
