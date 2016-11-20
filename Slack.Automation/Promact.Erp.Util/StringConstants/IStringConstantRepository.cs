@@ -87,12 +87,19 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumLaterDone { get; }
         string AlreadyAnswered { get; }
         string NotExpected { get; }
-        string ServerClosed { get; }
+        string ScrumIsHalted { get; }
+        string NoSlackDetails { get; }
+        string ScrumCannotBeHalted { get; }
+        string ScrumCannotBeResumed { get; }
+        string ProjectInActive { get; }
+        string ScrumInProgress { get; }
+
+
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
         string WrongPerson { get; }
         string Unrecognized { get; }
-        string UserChange { get;}
+        string UserChange { get; }
         string ChannelCreated { get; }
         string ChannelRename { get; }
         string GroupRename { get; }
@@ -256,16 +263,16 @@ namespace Promact.Erp.Util.StringConstants
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
         string UserNotFound { get; }
+        string BotNotFound { get; }
 
         #region String Constants for Test Cases
 
+        string InActiveProjectDetailsFromOauth { get; }
         string UserNameForTest { get; }
         string GroupName { get; }
         string AnswerStatement { get; }
-        //  string LeaveApplicant { get; }
         string ChannelIdForTest { get; }
         string PhoneForTest { get; }
-        // string TitleForTest { get; }
         string ScrumQuestionForTest { get; }
         string ChannelNameForTest { get; }
         string ProjectDetailsFromOauth { get; }
@@ -295,7 +302,7 @@ namespace Promact.Erp.Util.StringConstants
         string NextQuestion { get; }
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
-        string UpdateAnswer { get; }
+
         #endregion
 
         string RoleAdmin { get; }

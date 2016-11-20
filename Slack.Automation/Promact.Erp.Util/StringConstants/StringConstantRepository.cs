@@ -133,7 +133,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You are trying with wrong leaveId which not belong to you";
+                return "You are trying with wrong leave id which does not belong to you";
             }
         }
         public string SlackHelpMessage
@@ -315,7 +315,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please enter numeric value. And it should be in range of 0.5 to 8";
+                return "Please enter numeric value. And it should be in the range of 0.5 to 8";
+            }
+        }
+        public string ScrumInProgress
+        {
+            get
+            {
+                return "Scrum is in progress";
             }
         }
         public string TaskMailDescription
@@ -386,7 +393,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "This group doesn't is not registered as Project in OAuth. Please add it to OAuth first";
+                return "This channel is not registered as Project in OAuth. Please add it to OAuth first";
             }
         }
         public string GroupNameStartsWith
@@ -409,6 +416,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Scrum has been halted";
+            }
+        }
+        public string ScrumIsHalted
+        {
+            get
+            {
+                return "Scrum is halted";
             }
         }
         public string ScrumAlreadyHalted
@@ -464,7 +478,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "To automate your stand up meet.\nAdd me to your channel.\n>If your channel is private then start by adding your channel. The command is *add channel _channelname_*\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is unavailable at the moment and asked question,then any team member can write *later _@team member's name_*. That person's scrum can be conducted later by wriring *scrum _@team member's name_*\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+                return "To automate your stand up meet.\nAdd me to your channel.\n>If your channel is private and added as project with same slack channel name in Promact-OAuth then start by adding your channel. The command is *add channel _channelname_*\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
             }
         }
         public string NotAUser
@@ -478,7 +492,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please add Project details of the group on Promact";
+                return "Please add Project details of the channel on Promact";
             }
         }
         public string Leave
@@ -499,7 +513,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "How come you mark yourself on leave ? ";
+                return "How can you mark yourself on leave ? :joy:";
             }
         }
         public string ResumeScrum
@@ -558,13 +572,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. <@{0}> is not expected to answer now.\n";
             }
         }
-        public string ServerClosed
-        {
-            get
-            {
-                return "Sorry :worried: \nWe cannot process your request due to technical glitches.Please try after some time";
-            }
-        }
+
         public string NoQuestion
         {
             get
@@ -598,7 +606,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "No project found for this group.";
+                return "No project found for this channel.";
             }
         }
         public string ScrumComplete
@@ -615,11 +623,43 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum has not been initiated yet";
             }
         }
+
+        public string ScrumCannotBeHalted
+        {
+            get
+            {
+                return " So scrum cannot be halted.";
+            }
+        }
+
+        public string ScrumCannotBeResumed
+        {
+            get
+            {
+                return " So scrum cannot be resumed.";
+            }
+        }
+
+        public string ProjectInActive
+        {
+            get
+            {
+                return "Project is marked as Inactive in Promact OAuth";
+            }
+        }             
+        
         public string ScrumAlreadyConducted
         {
             get
             {
                 return "Scrum for today has been concluded";
+            }
+        }
+        public string NoSlackDetails
+        {
+            get
+            {
+                return "Sorry we do not have your slack details";
             }
         }
         public string Channel
@@ -689,7 +729,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You have already sended mail for today. No more task mail for today";
+                return "You have already send mail for today. No more task mail for today";
             }
         }
         public string TaskMailSubject
@@ -725,6 +765,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "User Not Found";
+            }
+        }
+        public string BotNotFound
+        {
+            get
+            {
+                return "Bot Not Found";
             }
         }
         public string StringIdForTest
@@ -776,7 +823,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"siddhartha\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
             }
         }
-       
+
         public string SlashCommandText
         {
             get
@@ -795,7 +842,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "On which task you worked on Today?";
+                return "On which task did you work today?";
             }
         }
         public string TeamLeaderDetailsFromOauthServer
@@ -1215,7 +1262,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "There is something wrong Internally.The response from Slack is : ";
+                return "There is something wrong internally.The response from Slack is : ";
             }
         }
         public string SlackAppError
@@ -1467,7 +1514,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "How many hours you spent on this task?";
+                return "How many hours did you spend on this task?";
             }
         }
         public string ThirdQuestionForTest
@@ -1509,7 +1556,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Either you are not in Promact OAuth or yet u haven't login in promact-slack server";
+                return "Either you are not in Promact OAuth or you haven't logged in with Promact OAuth";
             }
         }
         public string HourSpentForTest
@@ -1802,6 +1849,15 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
             }
         }
+
+        public string InActiveProjectDetailsFromOauth
+        {
+            get
+            {
+                return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":false,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
+            }
+        }
+
         public string EmployeeDetailsFromOauth
         {
             get
@@ -1968,7 +2024,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@apoorvapatel> What did you do yesterday?";
+                return "<@pranali> What did you do yesterday?";
             }
         }
         public string QuestionToNextEmployee
@@ -1985,13 +2041,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
             }
         }
-        public string UpdateAnswer
-        {
-            get
-            {
-                return "Good luck <@apoorvapatel> ! You have answered all scrum questions.\r\nGood Day <@pranali>!\nWhat did you do yesterday?";
-            }
-        }
+    
         #endregion
 
         public string RoleAdmin
