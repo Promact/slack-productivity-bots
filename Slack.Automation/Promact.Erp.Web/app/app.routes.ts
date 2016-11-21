@@ -8,5 +8,5 @@ const appRoutes: Routes =
     [
         { path: 'Home/AfterLogIn', component: LeaveReportComponent },
         { path: '', component: LeaveReportComponent }
-    ]
+    ];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
