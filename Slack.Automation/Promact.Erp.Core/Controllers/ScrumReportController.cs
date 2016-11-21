@@ -30,13 +30,61 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} api/project
         * @apiVersion 1.0.0
-        * @apiName ScrumReport
+        * @apiName GetProject
         * @apiGroup ScrumReport    
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
         *     "Description":"A report will be generated to display the projects based on the logged in users role"
-        * }
+        *    
+        *     [
+        *       {
+        *         "id": 8,
+        *         "name": "abc",
+        *         "slackChannelName": "abc",
+        *         "isActive": true,
+        *         "teamLeaderId": "74df3a1d-d755-4260-801a-bb964fb83293",
+        *         "createdBy": "7b722d05-a448-4c08-b768-2b0ff98f92e2",
+        *         "createdDate": "2016-11-11",
+        *         "updatedBy": null,
+        *         "updatedDate": null,
+        *         "teamLeader": {
+        *           "Id": "74df3a1d-d755-4260-801a-bb964fb83293",
+        *           "FirstName": "raj",
+        *           "LastName": "raj",
+        *           "IsActive": true,
+        *           "Role": "TeamLeader",
+        *           "NumberOfCasualLeave": 14, 
+        *           "NumberOfSickLeave": 7,
+        *           "JoiningDate": "2016-07-20T18:30:00",
+        *           "SlackUserName": "raj",   
+        *           "Email": "raj@promactinfo.com", 
+        *           "Password": null,
+        *           "UserName": "raj@promactinfo.com", 
+        *           "UniqueName": "raj-raj@promactinfo.com",
+        *           "RoleName": null
+        *         },
+        *         "applicationUsers": [
+        *           {
+        *             "Id": "f2e3a733-96cb-4164-ba04-599718ff0ae1",
+        *             "FirstName": "ram",
+        *             "LastName": "ram",
+        *             "IsActive": true,
+        *             "Role": "Employee",
+        *             "NumberOfCasualLeave": 14,
+        *             "NumberOfSickLeave": 7,
+        *             "JoiningDate": "2016-01-13T18:30:00",
+        *             "SlackUserName": "ram",
+        *             "Email": "ram@promactinfo.com",
+        *             "Password": null,
+        *             "UserName": "ram@promactinfo.com",
+        *             "UniqueName": "ram-ram@promactinfo.com",
+        *             "RoleName": null
+        *           }
+        *         ] 
+        *       },
+        *     ]      
+        * }   
         */
         [HttpGet]
         [Route("")]
@@ -50,13 +98,29 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} api/project/{id}/detail?date={date}
         * @apiVersion 1.0 
-        * @apiName ScrumReport
+        * @apiName GetProjectDetail
         * @apiGroup ScrumReport
         * @apiParam {int} id   
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
         *     "Description":"A report will be generated displaying the details of a scrum for a particular project "
+        *     
+        *     [
+        *      {
+        *       "ScrumDate": "2016-11-15",
+        *       "ProjectCreationDate": "Nov 21,2016",
+        *       "EmployeeScrumAnswers" : [
+        *         {   
+        *           "EmployeeName": "gourav agarwal",
+        *           "Answer1": null,
+        *           "Answer2": null,
+        *           "Answer3": null,
+        *           "Status" : "Person not available"
+        *         },
+        *        ]
+        *      },
+        *     ]       
         * }
         */
         [HttpGet]
