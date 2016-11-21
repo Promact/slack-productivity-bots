@@ -154,7 +154,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "slackChannel/";
+                return "";
             }
         }
         public string UsersDetailByGroupUrl
