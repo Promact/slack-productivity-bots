@@ -17,7 +17,7 @@ export class MockLeaveReportService {
         mockLeaveReport.EmployeeName = "abc";
         mockLeaveReport.TotalSickLeave = 7;
         mockLeaveReport.TotalCasualLeave = 14;
-        mockLeaveReports.push(mockLeaveReport)
+        mockLeaveReports.push(mockLeaveReport);
         return new BehaviorSubject(mockLeaveReports).asObservable();
         //let connection = this.getMockResponse(this.stringConstant.leaveReport, mockLeaveReports);
         //return connection;
@@ -30,7 +30,7 @@ export class MockLeaveReportService {
             mockLeaveReportDetail.EmployeeUserName = "abc@abc.com";
             mockLeaveReportDetail.EmployeeName = "abc";
             mockLeaveReportDetail.LeaveFrom = "1/1/16";
-            mockLeaveReportDetails.push(mockLeaveReportDetail)
+            mockLeaveReportDetails.push(mockLeaveReportDetail);
         }
         return new BehaviorSubject(mockLeaveReportDetails).asObservable();
         //let connection = this.getMockResponse(this.stringConstant.leaveReportDetails +Id, mockLeaveReportDetails);

@@ -10,7 +10,7 @@ import { StringConstant } from '../shared/stringConstant';
 @Injectable()
 
 export class LeaveReportService {
-    empty: any;
+
     constructor(private http: Http, private stringConstant: StringConstant) { }
 
     getLeaveReports(): Observable<LeaveReport[]> {
@@ -25,7 +25,7 @@ export class LeaveReportService {
             .catch(this.handleError);
     }
 
-    private handleError(error: any) {
+    private handleError(error: string) {
         let errMsg = this.stringConstant.serverError;
         return Observable.throw(errMsg);
     }
