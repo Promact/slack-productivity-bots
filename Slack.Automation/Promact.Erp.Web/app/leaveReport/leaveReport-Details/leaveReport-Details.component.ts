@@ -1,20 +1,19 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { LeaveReportDetail } from './leaveReport-Details.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { ActivatedRoute } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
 
-declare let jsPDF: any;
+declare let jsPDF;
 
 @Component({
     templateUrl: './app/leaveReport/leaveReport-Details/leaveReport-Details.html',
 })
 
-export class LeaveReportDetailsComponent {
+export class LeaveReportDetailsComponent implements OnInit {
     leaveReportDetail: LeaveReportDetail[] = [];
     errorMessage: string;
-    sub: any;
-    Id: any;
+    Id: string;
     noDetails: string;
 
     constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute, private stringConstant: StringConstant) { }
@@ -24,12 +23,12 @@ export class LeaveReportDetailsComponent {
     }
 
     getLeaveReportDetail() {
-        this.sub = this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
+        this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => {
-                this.leaveReportDetail = leaveReportDetail
-                if (leaveReportDetail.length != 0) {
+                this.leaveReportDetail = leaveReportDetail;
+                if (leaveReportDetail.length !== 0) {
                     return leaveReportDetail;
                 }
                 else {
@@ -37,7 +36,7 @@ export class LeaveReportDetailsComponent {
                     return this.noDetails;
                 }
             },
-            error => this.errorMessage = <any>error            
+            error => this.errorMessage = <string>error            
             );
     }
 
@@ -46,9 +45,9 @@ export class LeaveReportDetailsComponent {
     }
 
     exportDataToPdf() {
-        var columns = this.stringConstant.detailColumns;
-        var rows: any = [];
-        for (var key in this.leaveReportDetail) {
+        let columns = this.stringConstant.detailColumns;
+        let rows = [];
+        for (let key in this.leaveReportDetail) {
             rows.push([
                 this.leaveReportDetail[key].EmployeeName,
                 this.leaveReportDetail[key].EmployeeUserName,
@@ -61,7 +60,7 @@ export class LeaveReportDetailsComponent {
             ]);
         };
 
-        var doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
+        let doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
 
         doc.autoTable(columns, rows, {
             styles: {

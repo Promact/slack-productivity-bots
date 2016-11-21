@@ -3,7 +3,8 @@ import { LeaveReport } from './leaveReport-List.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
-declare let jsPDF: any;
+
+declare let jsPDF;
 
 
 @Component({
@@ -15,7 +16,7 @@ export class LeaveReportListComponent implements OnInit {
     errorMessage: string;
     private EmployeeName: string;
     private Role: string;
-    noLeaves: any;
+    noLeaves: string;
 
     constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant) { }
 
@@ -28,15 +29,15 @@ export class LeaveReportListComponent implements OnInit {
             .subscribe(
             leaveReports => {
                 this.leaveReports = leaveReports;
-                if (leaveReports.length != 0) {
+                if (leaveReports.length !== 0) {
                     return leaveReports;
                 }
                 else {
                     this.noLeaves = this.stringConstant.noLeaves;
                     return this.noLeaves;
                 }                    
-            },                               
-            error => this.errorMessage = <any>error
+            },
+            error => this.errorMessage = <string>error
         );
     }
 
@@ -46,9 +47,9 @@ export class LeaveReportListComponent implements OnInit {
     }
 
     exportDataToPdf() {
-        var columns = this.stringConstant.listColumns;
-        var rows: any = [];
-        for (var key in this.leaveReports) {
+        let columns = this.stringConstant.listColumns;
+        let rows = [];
+        for (let key in this.leaveReports) {
             rows.push([
                 this.leaveReports[key].EmployeeName,
                 this.leaveReports[key].EmployeeUserName,
@@ -62,7 +63,7 @@ export class LeaveReportListComponent implements OnInit {
                 ]);
         };
 
-        var doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
+        let doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
 
         doc.autoTable(columns, rows, {
             styles: {
