@@ -309,7 +309,6 @@ namespace Promact.Erp.Util.StringConstants
         string NextQuestion { get; }
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
-        string UpdateAnswer { get; }
         string AdminLogin { get; }
         string TeamLeaderLogin { get;}
         string EmployeeLogin { get; }

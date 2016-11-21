@@ -2139,7 +2139,6 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-
         public string NotAvailable
         {
             get

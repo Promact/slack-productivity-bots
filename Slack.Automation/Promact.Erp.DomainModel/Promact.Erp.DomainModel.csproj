@@ -151,7 +151,6 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashCommand.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashIncomingWebhook.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashResponse.cs" />
-    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailUserAc.cs" />
