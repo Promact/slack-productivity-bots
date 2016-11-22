@@ -183,69 +183,69 @@ namespace Promact.Core.Test
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveList from Slack respository for Own with true value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListForOwn()
-        {
-            await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
-            slackLeave.Text = _stringConstant.LeaveListTestForOwn;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveList from Slack respository for Own with true value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveListForOwn()
+        //{
+        //    await AddUser();
+        //    var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+        //    var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    var replyText = string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
+        //    slackLeave.Text = _stringConstant.LeaveListTestForOwn;
+        //    var slackText = slackLeave.Text.Split('"')
+        //                    .Select((element, index) => index % 2 == 0 ? element
+        //                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+        //                    .SelectMany(element => element).ToList();
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveList from Slack respository for Own with false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListForOwnFalse()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = _stringConstant.SlashCommandLeaveListErrorMessage;
-            slackLeave.Text = _stringConstant.LeaveListTestForOwn;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveList from Slack respository for Own with false value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveListForOwnFalse()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    var replyText = _stringConstant.SlashCommandLeaveListErrorMessage;
+        //    slackLeave.Text = _stringConstant.LeaveListTestForOwn;
+        //    var slackText = slackLeave.Text.Split('"')
+        //                    .Select((element, index) => index % 2 == 0 ? element
+        //                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+        //                    .SelectMany(element => element).ToList();
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveCancel from Slack respository with True value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveCancel()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), _stringConstant.Cancel);
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
-            var slackText = slackLeave.Text.Split('"')
-                .Select((element, index) => index % 2 == 0 ? element
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveCancel from Slack respository with True value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveCancel()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    var replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), _stringConstant.Cancel);
+        //    var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+        //    var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        //    slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
+        //    var slackText = slackLeave.Text.Split('"')
+        //        .Select((element, index) => index % 2 == 0 ? element
+        //        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+        //        .SelectMany(element => element).ToList();
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
         /// <summary>
         /// Test cases for checking method SlackLeaveCancel from Slack respository with False value
@@ -345,76 +345,76 @@ namespace Promact.Core.Test
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveStatus from Slack respository for Own with true value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusForOwn()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
-            slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveStatus from Slack respository for Own with true value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveStatusForOwn()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    var replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
+        //    slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
+        //    var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+        //    var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveStatus from Slack respository for Own with false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusOwnFalse()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
-            var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
-            slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveStatus from Slack respository for Own with false value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveStatusOwnFalse()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
+        //    slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveBalance from Slack respository with True value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveBalance()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
-            var replyText = _stringConstant.LeaveBalanceReplyTextForTest;
-            replyText += string.Format("{0}{1}", Environment.NewLine, _stringConstant.LeaveBalanceSickReplyTextForTest);
-            var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveBalance from Slack respository with True value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveBalance()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
+        //    var replyText = _stringConstant.LeaveBalanceReplyTextForTest;
+        //    replyText += string.Format("{0}{1}", Environment.NewLine, _stringConstant.LeaveBalanceSickReplyTextForTest);
+        //    var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
+        //    var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        //    var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+        //    var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveHelp from Slack respository for true value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveHelp()
-        {
-            await AddUser();
-            slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
-            var replyText = _stringConstant.SlackHelpMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveHelp from Slack respository for true value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveHelp()
+        //{
+        //    await AddUser();
+        //    slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
+        //    var replyText = _stringConstant.SlackHelpMessage;
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
         /// <summary>
         /// Test cases for checking method SlackLeaveHelp from Slack respository for false value
@@ -764,20 +764,20 @@ namespace Promact.Core.Test
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method SlackLeaveBalance from Slack respository with false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveBalanceWrong()
-        {
-            await AddUser();
-            _leaveRequestRepository.ApplyLeave(leave);
-            slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
-            var replyText = _stringConstant.LeaveNoUserErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method SlackLeaveBalance from Slack respository with false value
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task SlackLeaveBalanceWrong()
+        //{
+        //    await AddUser();
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
+        //    var replyText = _stringConstant.LeaveNoUserErrorMessage;
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
@@ -803,23 +803,23 @@ namespace Promact.Core.Test
             _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSLOtherUserNotAdmin()
-        {
-            await AddUser();
-            slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
-            var slackText = slackLeave.Text.Split('"')
-                   .Select((element, index) => index % 2 == 0 ? element
-                   .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                   .SelectMany(element => element).ToList();
-            var replyText = _stringConstant.AdminErrorMessageApplySickLeave + _stringConstant.SorryYouCannotApplyLeave;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async void LeaveApplyForSLOtherUserNotAdmin()
+        //{
+        //    await AddUser();
+        //    slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
+        //    var slackText = slackLeave.Text.Split('"')
+        //           .Select((element, index) => index % 2 == 0 ? element
+        //           .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+        //           .SelectMany(element => element).ToList();
+        //    var replyText = _stringConstant.AdminErrorMessageApplySickLeave + _stringConstant.SorryYouCannotApplyLeave;
+        //    _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+        //    await _slackRepository.LeaveRequest(slackLeave);
+        //    _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        //}
 
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
