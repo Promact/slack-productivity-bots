@@ -53,11 +53,11 @@ namespace Promact.Erp.Web
                         var text = message.text;
                         if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                         {
-                            replyText = _taskMailRepository.StartTaskMail(user.Name).Result;
+                            replyText = _taskMailRepository.StartTaskMail(user.Name,user.UserId).Result;
                         }
                         else
                         {
-                            replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text).Result;
+                            replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text,user.UserId).Result;
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);

@@ -34,7 +34,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var user = _projectUserRepository.GetUserByUsername(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
+            var user = _projectUserRepository.GetUserByUserId(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
             Assert.Equal(user.Email, _stringConstant.ManagementEmailForTest);
         }
 
@@ -83,7 +83,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var user = _projectUserRepository.GetUserByUsername(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
+            var user = _projectUserRepository.GetUserByUserId(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
             Assert.NotEqual(user.Email, _stringConstant.TeamLeaderEmailForTest);
         }
 

@@ -18,14 +18,14 @@ namespace Promact.Core.Repository.ProjectUserCall
             _stringConstant = stringConstant;
         }
         /// <summary>
-        /// Method to call an api from project oAuth server and get Employee detail by their slack userName
+        /// Method to call an api from project oAuth server and get Employee detail by their slack userId
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <returns>user Details</returns>
-        public async Task<User> GetUserByUsername(string userName, string accessToken)
+        public async Task<User> GetUserByUserId(string slackUserId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, userName);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, slackUserId);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -37,12 +37,12 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <summary>
         /// Method to call an api from project oAuth server and get List of TeamLeader's slack UserName from employee userName
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <returns>teamLeader details</returns>
-        public async Task<List<User>> GetTeamLeaderUserName(string userName, string accessToken)
+        public async Task<List<User>> GetTeamLeaderUserName(string slackUserId, string accessToken)
         {
             List<User> teamLeader = new List<User>();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, userName);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, slackUserId);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -124,13 +124,13 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        public async Task<LeaveAllowed> CasualLeave(string slackUserName, string accessToken)
+        public async Task<LeaveAllowed> CasualLeave(string slackUserId, string accessToken)
         {
             LeaveAllowed casualLeave = new LeaveAllowed();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, slackUserName);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, slackUserId);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -180,13 +180,13 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <summary>
         /// Method to call an api from oAuth server and get whether user is admin or not
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>true or false</returns>
-        public async Task<bool> UserIsAdmin(string userName, string accessToken)
+        public async Task<bool> UserIsAdmin(string slackUserId, string accessToken)
         {
             bool result = false;
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, userName);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, slackUserId);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {

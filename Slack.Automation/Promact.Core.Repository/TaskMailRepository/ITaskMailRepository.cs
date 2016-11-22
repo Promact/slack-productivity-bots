@@ -14,16 +14,18 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// Method to start task mail
         /// </summary>
         /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        Task<string> StartTaskMail(string userName);
+        Task<string> StartTaskMail(string userName,string userId);
 
         /// <summary>
         /// Method to conduct task mail after started
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="answer"></param>
+        /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        Task<string> QuestionAndAnswer(string userName, string answer);
+        Task<string> QuestionAndAnswer(string userName, string answer,string userId);
         
         /// <summary>
         /// This method use to fetch the task mail details.

@@ -29,7 +29,8 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken, string replyText, string username);
+        /// <param name="slackUserId"></param>
+        Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken, string replyText, string username,string slackUserId);
 
         /// <summary>
         /// Method to send message on slack using WebRequest 
@@ -45,8 +46,9 @@ namespace Promact.Core.Repository.Client
         /// <param name="leaveRequest"></param>
         /// <param name="accessToken"></param>
         /// <param name="replyText"></param>
+        /// <param name="slackUserId"></param>
         /// <returns></returns>
-        Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken, string replyText, string username);
+        Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken, string replyText, string username,string slackUserId);
 
         /// <summary>
         /// Method to send slack message to user whom leave has been applied by admin
