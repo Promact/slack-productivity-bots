@@ -60,7 +60,7 @@ namespace Promact.Core.Test
                 leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
                 leave.RejoinDate.Value.ToShortDateString());
-            var response = _attachmentRepository.ReplyText(_stringConstant.FirstNameForTest,leave);
+            var response = _attachmentRepository.ReplyText(_stringConstant.FirstNameForTest, leave);
             Assert.Equal(response, replyText);
         }
 
@@ -91,7 +91,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void AccessToken()
         {
-            var user = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserName = _stringConstant.FirstNameForTest};
+            var user = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.FirstNameForTest };
             var result = _userManager.CreateAsync(user).Result;
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             var secondResult = _userManager.AddLoginAsync(user.Id, info).Result;
@@ -154,8 +154,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void AccessTokenFalse()
         {
-            var firstUser = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserName = _stringConstant.FirstNameForTest };
-            var secondUser = new ApplicationUser() { Email = _stringConstant.TeamLeaderEmailForTest, UserName = _stringConstant.TeamLeaderEmailForTest, SlackUserName = _stringConstant.LastNameForTest };
+            var firstUser = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.FirstNameForTest };
+            var secondUser = new ApplicationUser() { Email = _stringConstant.TeamLeaderEmailForTest, UserName = _stringConstant.TeamLeaderEmailForTest, SlackUserId = _stringConstant.LastNameForTest };
             var result = _userManager.CreateAsync(firstUser).Result;
             result = _userManager.CreateAsync(secondUser).Result;
             UserLoginInfo firstInfo = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);

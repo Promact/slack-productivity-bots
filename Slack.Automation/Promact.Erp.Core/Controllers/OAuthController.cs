@@ -171,5 +171,75 @@ namespace Promact.Erp.Core.Controllers
                 throw ex;
             }
         }
+
+
+        /**
+       * @api {post} oAuth/SlackUserDetails
+       * @apiVersion 1.0.0
+       * @apiName SlackUserDetails
+       * @apiGroup oAuth  
+       * @apiSuccessExample {json} Success-Response:
+       * HTTP/1.1 200 OK 
+       * {
+       *      [
+       *        {
+       *            userId: "abc43252345",
+       *            name: "abc"
+       *        },
+       *        
+       *      ]
+       * }
+       */
+        [HttpGet]
+        [Route("oAuth/SlackUserDetails")]
+        public IHttpActionResult GetSlackUserDetails()
+        {
+            List<SlackUserDetailAc> slackUserDetails = _slackUserRepository.GetAllSlackUsers();
+            return Ok(slackUserDetails);
+        }
+
+
+        /**
+    * @api {post} oAuth/SlackUserDetails
+    * @apiVersion 1.0.0
+    * @apiName SlackUserDetails
+    * @apiGroup oAuth  
+    * @apiParam {string} Name    slackUserId
+    * @apiSuccessExample {json} Success-Response:
+    * HTTP/1.1 200 OK 
+    * {      
+    *        {
+    *            id: "Uabc43252345",
+    *            team_id: "Tewr3245",
+    *            deleted: false,
+    *            real_name: "dsf sdf",
+    *            status: "sdfsdf",
+    *            name: "abc",
+    *            tz_label: "India Standard Time",
+    *            tz_offset :"19800",
+    *            is_admin: false,
+    *            is_owner: false,
+    *            is_primary_owner: false,
+    *            is_restricted: false,
+    *            is_ultra_restricted: false,
+    *            is_bot: false,
+    *            title: "sdf",
+    *            phone: "4534",
+    *            skype: "asdsad",
+    *            first_name: "asdas",
+    *            last_name: "asdfas",
+    *            email: "asd"    
+    *        }
+    * }
+    */
+        [HttpGet]
+        [Route("oAuth/SlackUserDetails/{slackUserId}")]
+        public IHttpActionResult GetSlackUserNameBySlackId(string slackUserId)
+        {
+            SlackUserDetails slackUserDetail = _slackUserRepository.GetById(slackUserId);
+            return Ok(slackUserDetail);
+        }
+
+
     }
 }

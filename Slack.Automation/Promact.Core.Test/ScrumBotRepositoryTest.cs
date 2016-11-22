@@ -77,7 +77,7 @@ namespace Promact.Core.Test
 
             user.Email = _stringConstant.EmailForTest;
             user.UserName = _stringConstant.EmailForTest;
-            user.SlackUserName = _stringConstant.UserNameForTest;
+            user.SlackUserId = _stringConstant.StringIdForTest;
 
             question.CreatedOn = DateTime.UtcNow;
             question.OrderNumber = 1;
@@ -86,7 +86,7 @@ namespace Promact.Core.Test
 
             testUser.Email = _stringConstant.EmailForTest;
             testUser.UserName = _stringConstant.EmailForTest;
-            testUser.SlackUserName = _stringConstant.TestUser;
+            testUser.SlackUserId = _stringConstant.IdForTest;
 
             profile.Skype = _stringConstant.TestUserId;
             profile.Email = _stringConstant.EmailForTest;
@@ -566,7 +566,7 @@ namespace Promact.Core.Test
         {
             _slackChannelReposiroty.AddSlackChannel(slackChannelDetails);
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            testSlackUserDetails.UserId = _stringConstant.TestUserId;
+            testSlackUserDetails.UserId = _stringConstant.IdForTest;
             _slackUserRepository.AddSlackUser(testSlackUserDetails);
             UserProjectSetup();
 
@@ -576,7 +576,7 @@ namespace Promact.Core.Test
             scrumAnswer.EmployeeId = _stringConstant.TestUserId;
             _scrumAnswerDataRepository.Insert(scrumAnswer);
 
-            var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.TestUserId + ">");
+            var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.IdForTest + ">");
             string compareString = string.Format(_stringConstant.AlreadyAnswered, _stringConstant.TestUser);
             Assert.Equal(compareString + Environment.NewLine + _stringConstant.NextQuestion, msg);
         }
@@ -713,7 +713,7 @@ namespace Promact.Core.Test
             string expectedMsg = string.Format(_stringConstant.WrongPerson, _stringConstant.TestUser);
             Assert.Equal(msg, expectedMsg);
         }
-                  
+
 
         /// <summary>
         /// Method AddScrumAnswer Testing with next employee's first answer and scrum complete
@@ -800,7 +800,7 @@ namespace Promact.Core.Test
             string compareString = string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.UserNameForTest);
 
             var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume);
-            Assert.Equal(_stringConstant.ProjectInActive+_stringConstant.ScrumCannotBeResumed, msg);
+            Assert.Equal(_stringConstant.ProjectInActive + _stringConstant.ScrumCannotBeResumed, msg);
         }
 
 
