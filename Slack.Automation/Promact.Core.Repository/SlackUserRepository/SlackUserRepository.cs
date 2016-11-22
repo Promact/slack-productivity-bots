@@ -4,6 +4,9 @@ using System;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using AutoMapper;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -62,6 +65,32 @@ namespace Promact.Core.Repository.SlackUserRepository
         public SlackUserDetails GetById(string slackId)
         {
             SlackUserDetails user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackId);
+            return user;
+        }
+
+
+        /// <summary>
+        /// Fetch the list of Slack Users
+        /// </summary>
+        /// <returns>list of object of SlackUserDetails</returns>
+        public  List<SlackUserDetailAc> GetAllSlackUsers()
+        {
+            List<SlackUserDetailAc> slackUserAcList = new List<SlackUserDetailAc>();
+            List<SlackUserDetails> slackUserList = _slackUserDetails.Fetch(x => !x.IsBot).ToList();
+            Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>());
+            slackUserAcList = Mapper.Map(slackUserList, slackUserAcList);
+            return slackUserAcList;
+        }
+
+
+        /// <summary>
+        /// Method to get slack user information by their slack user name
+        /// </summary>
+        /// <param name="slackName"></param>
+        /// <returns>user</returns>
+        public SlackUserDetails GetBySlackName(string slackName)
+        {
+            SlackUserDetails user = _slackUserDetails.FirstOrDefault(x => x.Name == slackName);
             return user;
         }
 

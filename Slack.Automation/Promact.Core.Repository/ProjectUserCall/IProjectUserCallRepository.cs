@@ -7,18 +7,18 @@ namespace Promact.Core.Repository.ProjectUserCall
     public interface IProjectUserCallRepository
     {
         /// <summary>
-        /// Method to call an api of oAuth server and get Employee detail by their slack userName
+        /// Method to call an api of oAuth server and get Employee detail by their slack userId
         /// </summary>
         /// <param name="userName"></param>
         /// <returns>user Details</returns>
-        Task<User> GetUserByUsername(string userName, string accessToken);
+        Task<User> GetUserByUserId(string userName, string accessToken);
 
         /// <summary>
         /// Method to call an api of oAuth server and get List of TeamLeader's slack UserName from employee userName
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <returns>teamLeader details</returns>
-        Task<List<User>> GetTeamLeaderUserName(string userName, string accessToken);
+        Task<List<User>> GetTeamLeaderUserName(string slackUserId, string accessToken);
 
         /// <summary>
         /// Method to call an api of oAuth server and get List of Management People's Slack UserName
@@ -47,6 +47,8 @@ namespace Promact.Core.Repository.ProjectUserCall
 
         Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken);
 
+        Task<List<UserRoleAc>> GetListOfEmployee(string slackUserId, string accessToken);
+
 
         /// <summary>
         /// This method is used to fetch list of users/employees of the given group name. - JJ
@@ -56,24 +58,14 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>list of object of User</returns>
         Task<List<User>> GetUsersByGroupName(string groupName, string accessToken);
 
-        
-        
-        //Task<User> GetUserById(string EmployeeId);
-        //Task<User> GetUserByEmployeeId(string employeeId);
-        
-        
-        //Task<User> GetUserById(string EmployeeId);
-       
-        
 
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        Task<LeaveAllowed> CasualLeave(string slackUserName, string accessToken);
-        //Task<List<User>> GetUsersByGroupName(string groupName);
+        Task<LeaveAllowed> CasualLeave(string slackUserId, string accessToken);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their Id
