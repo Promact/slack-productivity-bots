@@ -200,7 +200,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
@@ -220,7 +220,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
             var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
             Assert.Equal(_stringConstant.NoEmployeeFound, msg);
@@ -473,7 +473,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
 
@@ -601,7 +601,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -816,7 +816,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
 
             var projectResponse = Task.FromResult(_stringConstant.InActiveProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             _botQuestionRepository.AddQuestion(question);
@@ -931,7 +931,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            var projectRequestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, _stringConstant.GroupName);
+            var projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
         }

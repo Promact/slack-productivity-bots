@@ -150,13 +150,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string ProjectDetailsUrl
-        {
-            get
-            {
-                return "";
-            }
-        }
         public string UsersDetailByGroupUrl
         {
             get
