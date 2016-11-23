@@ -30,42 +30,41 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This method use to fetch the task mail details.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="role"></param>
-        /// <param name="name"></param>
-        /// <param name="loginId"></param>
-        /// <returns></returns>
-        Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id,string role,string name,string loginId);
+        /// <param name="UserId"></param>
+        /// <param name="UserRole"></param>
+        /// <param name="UserName"></param>
+        /// <param name="LoginId"></param>
+        /// <returns>task mail</returns>
+        Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string UserId,string UserRole,string UserName,string LoginId);
         /// <summary>
         /// This method getting list of Employees
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string id);
+        /// <param name="UserId"></param>
+        /// <returns>list of employees</returns>
+        Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string UserId);
 
         /// <summary>
         /// This method use to fetch the selected date task mail details.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="role"></param>
-        /// <param name="createdOn"></param>
-        /// <param name="loginId"></param>
-        /// <param name="selectedDate"></param>
-        /// <returns></returns>
-        Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string name, string role, string createdOn, string loginId, string selectedDate);
-        
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <param name="UserRole"></param>
+        /// <param name="CreatedOn"></param>
+        /// <param name="LoginId"></param>
+        /// <param name="SelectedDate"></param>
+        /// <returns>task mail</returns>
+        Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string SelectedDate);
         /// <summary>
         /// This method use to fetch the next and previous date task mail details.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="role"></param>
-        /// <param name="createdOn"></param>
-        /// <param name="loginId"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string name, string role, string createdOn, string loginId,string type);
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <param name="UserRole"></param>
+        /// <param name="CreatedOn"></param>
+        /// <param name="LoginId"></param>
+        /// <param name="Type"></param>
+        /// <returns>task mail</returns>
+        Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId,string Type);
 
     }
 }
