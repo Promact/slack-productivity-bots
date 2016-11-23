@@ -39,7 +39,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="slackUserId"></param>
         /// <returns>teamLeader details</returns>
-        public async Task<List<User>> GetTeamLeaderUserName(string slackUserId, string accessToken)
+        public async Task<List<User>> GetTeamLeaderUserId(string slackUserId, string accessToken)
         {
             List<User> teamLeader = new List<User>();
             var requestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, slackUserId);

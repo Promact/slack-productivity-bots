@@ -6,7 +6,6 @@ using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
@@ -147,39 +146,5 @@ namespace Promact.Core.Test
                         
         }
 
-
-
-
-        //private static SlackProfile profile = new SlackProfile()
-        //{
-        //    Skype = _stringConstant.TestUserId,
-        //    Email = _stringConstant.EmailForTest,
-        //    FirstName = _stringConstant.UserNameForTest,
-        //    LastName = _stringConstant.TestUser,
-        //    Phone = _stringConstant.PhoneForTest,
-        //    Title = _stringConstant.UserNameForTest
-        //};
-
-        //private SlackEventApiAC slackEvent = new SlackEventApiAC()
-        //{
-        //    ApiAppId = _stringConstant.StringIdForTest,
-        //    Challenge = _stringConstant.SlackHelpMessage,
-        //    EventTs = _stringConstant.MessageTsForTest,
-        //    TeamId = _stringConstant.ChannelIdForTest,
-        //    Token = _stringConstant.AccessTokenForTest,
-        //    Type = _stringConstant.TeamJoin,
-        //    Event = new SlackEventDetailAC()
-        //    {
-        //        Type = _stringConstant.TeamJoin,
-        //        User = new SlackUserDetails()
-        //        {
-        //            Deleted = false,
-        //            Name = _stringConstant.FirstNameForTest,
-        //            TeamId = _stringConstant.ChannelIdForTest,
-        //            UserId = _stringConstant.StringIdForTest,
-        //            Profile = profile
-        //        }
-        //    }
-        //};
     }
 }

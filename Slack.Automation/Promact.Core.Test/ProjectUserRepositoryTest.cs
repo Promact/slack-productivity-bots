@@ -26,10 +26,10 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method GetUserByUsername Testing with True Value
+        /// Method GetUserByUserId Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetUserByUsername()
+        public void GetUserByUserId()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -48,7 +48,7 @@ namespace Promact.Core.Test
             var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
             string teamLeaderUsername = "";
-            var teamLeader = _projectUserRepository.GetTeamLeaderUserName(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
+            var teamLeader = _projectUserRepository.GetTeamLeaderUserId(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
             foreach (var team in teamLeader)
             {
                 teamLeaderUsername = team.Email;
@@ -75,10 +75,10 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method GetUserByUsernameFalse Testing with False Value
+        /// Method GetUserByUserIdFalse Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetUserByUsernameFalse()
+        public void GetUserByUserIdFalse()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -88,16 +88,16 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method GetTeamLeaderUserNameFalse Testing with False Value
+        /// Method GetTeamLeaderUserIdFalse Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetTeamLeaderUserNameFalse()
+        public void GetTeamLeaderUserIdFalse()
         {
             var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
             var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
             string teamLeaderUsername = "";
-            var teamLeader = _projectUserRepository.GetTeamLeaderUserName(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
+            var teamLeader = _projectUserRepository.GetTeamLeaderUserId(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest).Result;
             foreach (var team in teamLeader)
             {
                 teamLeaderUsername = team.FirstName;

@@ -281,7 +281,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
-                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userId, accessToken);
+                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserId(userId, accessToken);
                                                     var managements = await _projectUserRepository.GetManagementUserName(accessToken);
                                                     foreach (var management in managements)
                                                     {
