@@ -777,12 +777,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             return maxDate.Value;
         }
 
-        /// <summary>
-        /// This Method use to fetch Minimum Date
-        /// </summary>
-        /// <param name="taskMails"></param>
-        /// <returns></returns>
-        private DateTime GetMinDate(IEnumerable<TaskMail> taskMails)
+        public DateTime GetMinDate(IEnumerable<TaskMail> taskMails)
         {
             DateTime? minDate = null;
             var taskMail = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault();
