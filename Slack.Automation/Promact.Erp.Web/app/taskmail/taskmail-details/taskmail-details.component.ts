@@ -49,11 +49,11 @@ export class TaskMailDetailsComponent {
             this.taskService.getTaskMailDetailsReport(this.UserId, this.UserRole, this.UserName).subscribe(taskMailUser => {
                 this.taskMailUser = taskMailUser;
                 var datePipeMinDate = new DatePipe("medium");
-                this.isMinDate = datePipeMinDate.transform(this.taskMailUser[0].IsMin, this.stringConstant.dateDefaultFormat);
+                this.isMinDate = datePipeMinDate.transform(this.taskMailUser[0].MinDate, this.stringConstant.dateDefaultFormat);
                 if (this.isMinDate == this.stringConstant.defaultDate)
                 { this.isMin = true; }
                 var datePipeMaxDate = new DatePipe("medium");
-                this.isMaxDate = datePipeMaxDate.transform(this.taskMailUser[0].IsMax, this.stringConstant.dateDefaultFormat);
+                this.isMaxDate = datePipeMaxDate.transform(this.taskMailUser[0].MaxDate, this.stringConstant.dateDefaultFormat);
                 this.taskMailUser.forEach(taskmailuser => {
                     var datePipe = new DatePipe("medium");
                     taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
@@ -77,7 +77,7 @@ export class TaskMailDetailsComponent {
         this.SelectedDate = "";
        this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMailUser => {
            this.taskMailUser = taskMailUser;
-                if (this.taskMailUser[0].IsMin === this.taskMailUser[0].CreatedOn) {
+           if (this.taskMailUser[0].MinDate == this.taskMailUser[0].CreatedOn) {
                     this.isMin = true;
                 }
                 this.taskMailUser.forEach(taskmailuser => {
@@ -98,7 +98,7 @@ export class TaskMailDetailsComponent {
         this.SelectedDate = "";
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMailUser => {
             this.taskMailUser = taskMailUser;
-            if (this.taskMailUser[0].IsMax === this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].MaxDate == this.taskMailUser[0].CreatedOn) {
                 this.isMax = true;
             }
             this.isMin = false;
@@ -119,11 +119,11 @@ export class TaskMailDetailsComponent {
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMailUser => {
             this.taskMailUser = taskMailUser;
-            if (this.taskMailUser[0].IsMax === this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].MaxDate == this.taskMailUser[0].CreatedOn) {
                 this.isMax = true;
                 this.isMin = false;
             }
-            if (this.taskMailUser[0].IsMin === this.taskMailUser[0].CreatedOn) {
+            if (this.taskMailUser[0].MinDate == this.taskMailUser[0].CreatedOn) {
                 this.isMax = false;
                 this.isMin = true;
             }

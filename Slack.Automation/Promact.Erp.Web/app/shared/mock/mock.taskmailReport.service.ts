@@ -32,8 +32,8 @@ export class MockTaskMailService
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.MinDate = new Date("10-09-2016");
+        mockTaskmailModel.MaxDate = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
 
@@ -54,8 +54,8 @@ export class MockTaskMailService
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.MinDate = new Date("10-09-2016");
+        mockTaskmailModel.MaxDate = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
         //let connection = this.getMockResponse("taskMailDetailsReportPreviousDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
@@ -75,8 +75,8 @@ export class MockTaskMailService
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.MinDate = new Date("10-09-2016");
+        mockTaskmailModel.MaxDate = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
         //let connection = this.getMockResponse("taskMailDetailsReportNextDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
@@ -96,8 +96,8 @@ export class MockTaskMailService
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.MinDate = new Date("10-09-2016");
+        mockTaskmailModel.MaxDate = new Date("10-09-2016");
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
         //let connection = this.getMockResponse("taskMailDetailsReportSelectedDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn + "/" + SelectedDate, mockTaskmailModels);
@@ -142,8 +142,8 @@ class MockmailModel extends taskmailModel {
 //        mockTaskmailModel.UserRole = UserRole;
 //        mockTaskmailModel.UserId = UserId;
 //        mockTaskmailModel.TaskMails = mockmailModels;
-//        mockTaskmailModel.IsMin = new Date("10-09-2016");
-//        mockTaskmailModel.IsMax = new Date("10-09-2016");
+//        mockTaskmailModel.MinDate = new Date("10-09-2016");
+//        mockTaskmailModel.MaxDate = new Date("10-09-2016");
 //        mockTaskmailModels.push(mockTaskmailModel);
 //        let connection = this.getMockResponse("taskMailDetailsReportNextDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn, mockTaskmailModels);
 //        return connection;
@@ -161,8 +161,8 @@ class MockmailModel extends taskmailModel {
 //        mockTaskmailModel.UserRole = UserRole;
 //        mockTaskmailModel.UserId = UserId;
 //        mockTaskmailModel.TaskMails = mockmailModels;
-//        mockTaskmailModel.IsMin = new Date("10-09-2016");
-//        mockTaskmailModel.IsMax = new Date("10-09-2016");
+//        mockTaskmailModel.MinDate = new Date("10-09-2016");
+//        mockTaskmailModel.MaxDate = new Date("10-09-2016");
 //        mockTaskmailModels.push(mockTaskmailModel);
 //        let connection = this.getMockResponse("taskMailDetailsReportSelectedDate/" + UserId + "/" + UserRole + "/" + UserName + "/" + CreatedOn + "/" + SelectedDate, mockTaskmailModels);
 //        return connection;
