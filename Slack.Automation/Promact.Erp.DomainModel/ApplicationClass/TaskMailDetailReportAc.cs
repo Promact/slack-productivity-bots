@@ -18,6 +18,10 @@ namespace Promact.Erp.DomainModel.ApplicationClass
             Status  = status.Value;
         }
         public int Id { get; set; }
+        public string UserName { get; set; }
+        public string UserId { get; set; }
+        public string UserRole { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string Description { get; set; }
         public string Comment { get; set; }
         public decimal Hours { get; set; }
