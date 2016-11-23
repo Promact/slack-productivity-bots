@@ -7,6 +7,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/leaveReport")]
     [Authorize]
     public class LeaveReportController : WebApiBaseController
