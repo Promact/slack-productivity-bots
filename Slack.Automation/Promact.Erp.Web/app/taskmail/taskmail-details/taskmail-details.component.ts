@@ -113,11 +113,11 @@ export class TaskMailDetailsComponent implements OnInit {
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMails => {
             this.taskMail = taskMails;
-            if (this.taskMail[0].IsMax === this.taskMail[0].CreatedOn) {
+            if (this.taskMail[0].MaxDate === this.taskMail[0].CreatedOn) {
                 this.IsMaxDate = true;
                 this.IsMinDate = false;
             }
-            if (this.taskMail[0].IsMin === this.taskMail[0].CreatedOn) {
+            if (this.taskMail[0].MinDate === this.taskMail[0].CreatedOn) {
                 this.IsMaxDate = false;
                 this.IsMinDate = true;
             }
