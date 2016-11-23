@@ -389,12 +389,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         public async Task<List<TaskMailUserAc>> GetAllEmployeeAsync(string userId)
         {
-            var user = await _user.FirstOrDefaultAsync(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-            var jsonResult = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
-            var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
-            List<TaskMailUserAc> taskMailUsertAc = new List<TaskMailUserAc>();
-            if (role.Role == _stringConstant.RoleAdmin)
+            var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
+            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+            List<UserRoleAc> userRoleAc = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var role = userRoleAc.FirstOrDefault(x => x.UserName == user.UserName).Role;
+            List<TaskMailReportAc> taskMailReportListAc = new List<TaskMailReportAc>();
+            if (role == _stringConstant.RoleAdmin)
             {
                 foreach (var userRole in userRoleAc)
                 {
