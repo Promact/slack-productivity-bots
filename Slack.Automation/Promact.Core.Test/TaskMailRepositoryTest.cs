@@ -522,7 +522,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportAsync()
+        public async void TaskMailDetailsReportAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -710,7 +710,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest,Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -718,7 +718,7 @@ namespace Promact.Core.Test
         /// get the user information.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task GetAllEmployeeAsync()
+        public async void GetAllEmployeeAsync()
         {
 
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -775,7 +775,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the selected date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportSelectedDateAsync()
+        public async void TaskMailDetailsReportSelectedDateAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -806,7 +806,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportNextPreviousDateAsync()
+        public async void TaskMailDetailsReportNextPreviousDateAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
