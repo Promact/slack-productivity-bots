@@ -420,15 +420,21 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         ///Method geting Employee or list of Employees 
         /// </summary>
-        /// <param name="leaveRequest">TaskMail template object</param>
-        /// <returns>template emailBody as string</returns>
-        private string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string userId)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
             if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
+            var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
+            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+            List<UserRoleAc> userRoleAc = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var role = userRoleAc.FirstOrDefault(x => x.UserName == user.UserName).Role;
+            List<TaskMailReportAc> taskMailReportListAc = new List<TaskMailReportAc>();
+            if (role == _stringConstant.RoleAdmin)
             {
                 foreach (var userRole in userRoleAcList)
                 {
