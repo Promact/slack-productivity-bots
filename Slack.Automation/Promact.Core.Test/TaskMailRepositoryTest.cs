@@ -522,7 +522,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportAsync()
+        public async void TaskMailDetailsReportAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
