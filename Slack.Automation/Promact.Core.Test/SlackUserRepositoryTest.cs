@@ -25,7 +25,7 @@ namespace Promact.Core.Test
         /// Method to check the functionality of Slack User add method for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackResponseAttachment()
+        public void AddSlackUser()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
             Assert.Equal(slackUserDetails.Id, 1);
@@ -46,7 +46,7 @@ namespace Promact.Core.Test
         /// Method to check the functionality of Slack User add method for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackResponseAttachmentFalse()
+        public void AddSlackUserFalse()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
             Assert.NotEqual(slackUserDetails.Id, 3);
@@ -67,6 +67,28 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
+        /// Test case to check the functionality of GetAllSlackUsers method of Slack User Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetAllSlackUser()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            var slackUsers = _slackUserRepository.GetAllSlackUsers();
+            Assert.Equal(slackUsers.Count, 1);
+        }
+
+        /// <summary>
+        /// Test case to check the functionality of GetBySlackName method of Slack User Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetBySlackName()
+        {
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            var slackUser = _slackUserRepository.GetBySlackName(_stringConstant.FirstNameForTest);
+            Assert.Equal(slackUser.UserId, _stringConstant.StringIdForTest);
+        }
+
+        /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
         public void Initialize()
@@ -81,6 +103,7 @@ namespace Promact.Core.Test
             slackUserDetails.UserId = _stringConstant.StringIdForTest;
             slackUserDetails.Name = _stringConstant.FirstNameForTest;
             slackUserDetails.TeamId = _stringConstant.PromactStringName;
+            slackUserDetails.IsBot = false;
             slackUserDetails.Profile = profile;
         }
     }

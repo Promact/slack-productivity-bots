@@ -168,7 +168,7 @@ namespace Promact.Core.Repository.Client
         /// <returns></returns>
         private async Task GetAttachmentAndSendToTLAndManagement(string slackUserId,string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
         {
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(slackUserId, accessToken);
+            var teamLeaders = await _projectUser.GetTeamLeaderUserId(slackUserId, accessToken);
             var management = await _projectUser.GetManagementUserName(accessToken);
             var userDetail = await _projectUser.GetUserByUserId(slackUserId, accessToken);
             foreach (var user in management)

@@ -18,7 +18,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// </summary>
         /// <param name="slackUserId"></param>
         /// <returns>teamLeader details</returns>
-        Task<List<User>> GetTeamLeaderUserName(string slackUserId, string accessToken);
+        Task<List<User>> GetTeamLeaderUserId(string slackUserId, string accessToken);
 
         /// <summary>
         /// Method to call an api of oAuth server and get List of Management People's Slack UserName

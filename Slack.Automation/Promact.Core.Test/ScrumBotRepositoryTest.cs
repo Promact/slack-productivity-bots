@@ -7,7 +7,6 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.SlackUserRepository;
