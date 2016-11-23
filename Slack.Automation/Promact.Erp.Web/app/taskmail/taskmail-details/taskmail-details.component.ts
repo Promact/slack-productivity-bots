@@ -69,7 +69,7 @@ export class TaskMailDetailsComponent implements OnInit {
         this.SelectedDate = this.stringConstant.empty;
        this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMails => {
            this.taskMail = taskMails;
-           if (this.taskMail[0].IsMin === this.taskMail[0].CreatedOn) {
+           if (this.taskMail[0].MinDate === this.taskMail[0].CreatedOn) {
                this.IsMinDate = true;
                 }
            this.taskMail.forEach(taskmails => {
@@ -91,7 +91,7 @@ export class TaskMailDetailsComponent implements OnInit {
         this.SelectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
             this.taskMail = taskMails;
-            if (this.taskMail[0].IsMax === this.taskMail[0].CreatedOn) {
+            if (this.taskMail[0].MaxDate === this.taskMail[0].CreatedOn) {
                 this.IsMaxDate = true;
             }
             this.IsMinDate = false;

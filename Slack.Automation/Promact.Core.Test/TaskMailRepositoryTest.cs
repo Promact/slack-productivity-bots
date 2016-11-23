@@ -584,8 +584,7 @@ namespace Promact.Core.Test
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(0, taskMailDetail.Count);
-
+            Assert.Equal(3, taskMailDetail.Count);
         }
 
 
@@ -831,6 +830,7 @@ namespace Promact.Core.Test
             firstQuestion.QuestionStatement = _stringConstant.FirstQuestionForTest;
             firstQuestion.Type = 2;
 
+            user.Id = "1";
             user.Email = _stringConstant.EmailForTest;
             user.UserName = _stringConstant.EmailForTest;
             user.SlackUserId = _stringConstant.FirstNameForTest;

@@ -32,8 +32,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
-        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MinDate = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MaxDate = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -51,8 +51,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
-        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MinDate = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MaxDate = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -70,8 +70,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
-        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MinDate = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MaxDate = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -89,8 +89,8 @@ export class MockTaskMailService {
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
-        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MinDate = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.MaxDate  = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
