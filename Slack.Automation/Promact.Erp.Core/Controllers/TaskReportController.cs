@@ -8,8 +8,7 @@ using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Core.Controllers
 {
-   
-   
+    [Authorize]
     public class TaskReportController: ApiController
     {
         private readonly ITaskMailRepository _taskMailReport;

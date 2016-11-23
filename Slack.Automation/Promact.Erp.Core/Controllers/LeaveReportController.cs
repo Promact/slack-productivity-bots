@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [Authorize]
     public class LeaveReportController : WebApiBaseController
     {
         private readonly ILeaveReportRepository _leaveReport;
