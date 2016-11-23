@@ -8,6 +8,7 @@ using System.Web.Http;
 namespace Promact.Erp.Core.Controllers
 {
     [RoutePrefix("api/leaveReport")]
+    [Authorize]
     public class LeaveReportController : WebApiBaseController
     {
         #region Private Variables 
