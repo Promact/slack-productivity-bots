@@ -385,9 +385,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         ///Method geting Employee or list of Employees 
         /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> GetAllEmployeeAsync(string userId)
+        /// <param name="leaveRequest">TaskMail template object</param>
+        /// <returns>template emailBody as string</returns>
+        private string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
         {
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
@@ -471,7 +471,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="name"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportAsync(string UserId, string UserRole, string UserName, string LoginId)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string UserId, string UserRole, string UserName, string LoginId)
         {
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
             {
