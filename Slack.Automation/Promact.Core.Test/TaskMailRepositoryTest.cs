@@ -574,14 +574,17 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-          
+            //var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
+            //Assert.Equal(1, taskMailDetail.Count);
+
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectUasrInformationUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(0, taskMailDetail.Count);
+
         }
 
 
@@ -619,13 +622,15 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void GetAllEmployee()
         {
-            var response = Task.FromResult(_stringConstant.TaskMailReport);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectInformationUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var role = _stringConstant.RoleAdmin;
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
+
+            var response = Task.FromResult(_stringConstant.TaskMailReport);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var role = _stringConstant.RoleAdmin;
+
 
             var result = await _taskMailRepository.GetAllEmployee(user.Id);
             Assert.Equal(0, result.Count);
