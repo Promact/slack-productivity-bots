@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         //Task<User> GetUserById(string EmployeeId);
         //Task<User> GetUserByEmployeeId(string employeeId);
 
-        Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
+        Task<List<UserRoleAc>> GetUserRole(string userId, string accessToken);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
@@ -45,7 +45,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         //Task<User> GetUserByEmployeeId(string employeeId);
         //Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken);
 
-        Task<List<UserRoleAc>> GetListOfEmployee(string userName, string accessToken);
+        Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken);
 
 
         /// <summary>

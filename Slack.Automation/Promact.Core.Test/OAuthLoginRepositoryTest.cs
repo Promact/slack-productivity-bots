@@ -47,7 +47,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void AddNewUserFromExternalLogin()
         {
-            var user = _oAuthLoginRepository.AddNewUserFromExternalLogin(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest).Result;
+            var user = _oAuthLoginRepository.AddNewUserFromExternalLogin(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest,_stringConstant.UserIdForTest).Result;
             var accessToken = _attachmentRepository.AccessToken(user.UserName).Result;
             Assert.Equal(user.UserName, _stringConstant.EmailForTest);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);

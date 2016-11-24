@@ -74,7 +74,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         /// <returns>object of ProjectAc</returns>
         public async Task<ProjectAc> GetProjectDetails(string groupName, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectDetailsUrl, groupName);
+            var requestUrl = string.Format("{0}", groupName);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             ProjectAc project = new ProjectAc();
             if (response != null)
@@ -94,7 +94,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<User>> GetUsersByGroupName(string groupName, string accessToken)
         {
             var requestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByGroupUrl, groupName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             List<User> users = new List<User>();
             if (response != null)
             {
@@ -195,18 +195,18 @@ namespace Promact.Core.Repository.ProjectUserCall
             return result;
         }
 
-        public async Task<List<UserRoleAc>> GetUserRole(string userName, string accessToken)
+        public async Task<List<UserRoleAc>> GetUserRole(string userId, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectInformationUrl, userName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format("{0}{1}", userId, _stringConstant.UserRoleUrl);
+            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return Json;
         }
 
-        public async Task<List<UserRoleAc>> GetListOfEmployee(string userName, string accessToken)
+        public async Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectUasrInformationUrl, userName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format("{0}{1}", userId,_stringConstant.TeamMembersUrl);
+            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             //var responseContent = response.Content.ReadAsStringAsync().Result;
             var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return Json;

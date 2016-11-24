@@ -150,20 +150,14 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string ProjectDetailsUrl
-        {
-            get
-            {
-                return "fetchProject/";
-            }
-        }
         public string UsersDetailByGroupUrl
         {
             get
             {
-                return "fetchProjectUsers/";
+                return "slackChannel/";
             }
         }
+
         public string UserDetailsByIdUrl
         {
             get
@@ -870,7 +864,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
             }
         }
         public string TaskMailReportTeamLeader
@@ -2067,18 +2061,18 @@ namespace Promact.Erp.Util.StringConstants
         }
 
 
-        public string ProjectUasrInformationUrl
+        public string TeamMembersUrl
         {
             get
             {
-                return "featchListOfUser/";
+                return "/teammembers";
             }
         }
-        public string ProjectInformationUrl
+        public string UserRoleUrl
         {
             get
             {
-                return "featchUserRole/";
+                return "/role";
             }
         }
 

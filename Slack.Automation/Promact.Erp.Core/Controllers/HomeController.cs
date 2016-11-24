@@ -143,7 +143,7 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
         * }
         */
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName , string userId)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace Promact.Erp.Core.Controllers
                 }
                 if (user == null)
                 {
-                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserName);
+                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserName ,userId);
                     //Signing user with username or email only
                     await _signInManager.SignInAsync(user, false, false);
                     return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
