@@ -574,9 +574,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            //var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
-            //Assert.Equal(1, taskMailDetail.Count);
-
+          
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
