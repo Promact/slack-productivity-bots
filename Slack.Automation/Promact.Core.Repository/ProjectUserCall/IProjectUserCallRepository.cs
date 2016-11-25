@@ -47,8 +47,7 @@ namespace Promact.Core.Repository.ProjectUserCall
 
         Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken);
 
-        Task<List<UserRoleAc>> GetListOfEmployee(string slackUserId, string accessToken);
-
+      
 
         /// <summary>
         /// This method is used to fetch list of users/employees of the given group name. - JJ
