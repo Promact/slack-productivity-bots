@@ -173,7 +173,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // if previous question was hour of task and it was not null/wrong value then answer will ask next question
                                         var hour = Convert.ToDecimal(answer);
                                         // checking range of hours
-                                        if (hour > 0 && hour < 8)
+                                        if (hour > 0 && hour <= 8)
                                         {
                                             taskDetails.Hours = hour;
                                             questionText = nextQuestion.QuestionStatement;
