@@ -6,6 +6,6 @@ import { LeaveReportComponent } from './leaveReport/leaveReport.component';
 
 const appRoutes: Routes =
     [
-        { path: '', component: LeaveReportComponent }
+       { path: '', component: LeaveReportComponent }
     ]
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);

@@ -6,10 +6,10 @@ import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
-import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
-import { SpinnerService } from '../../shared/spinner.service';
 import { DatePipe } from '@angular/common';
+import { LoaderService } from '../../shared/loader.service';
+import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
@@ -17,7 +17,7 @@ let promise: TestBed;
 describe('LeaveReport Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
-    class MockSpinnerService { }
+    class MockLoaderService { }
     const routes: Routes = [];
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
@@ -25,7 +25,7 @@ describe('LeaveReport Detials Tests', () => {
             this.params = Observable.of({ UserId: "1", UserRole: "Admin", UserName: "test" });
         }
     }
-    
+
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
@@ -37,7 +37,7 @@ describe('LeaveReport Detials Tests', () => {
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
                 { provide: DatePipe, useClass: MockDatePipe },
-                { provide: SpinnerService, useClass: MockSpinnerService }
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));
@@ -72,13 +72,8 @@ describe('LeaveReport Detials Tests', () => {
     it('Shows details of task mail report for an employee on Selected Date', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
         let taskMailDetailsComponent = fixture.componentInstance;
-        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016","10-09-2016");
+        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
         expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
     });
 });
-
-
-
-
-
 

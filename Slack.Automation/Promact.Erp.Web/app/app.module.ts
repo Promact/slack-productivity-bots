@@ -1,21 +1,21 @@
 ﻿
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { routing } from './app.routes';
-import { AppComponent } from './app.component';
-import { SpinnerService } from './shared/spinner.service';
-import { HttpModule, XHRBackend } from "@angular/http";
+import { FormsModule }   from '@angular/forms';
+import { AppComponent }  from './app.component';
+import { HttpModule, JsonpModule } from '@angular/http';
+import { routing }       from './app.routes';
+
+import { TaskService }   from './taskmail/taskmail.service';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { StringConstant } from './shared/stringConstant';
+import { LoaderService } from "./shared/loader.service";
+
 import { TaskMailModule } from './taskmail/taskMail.module';
 import { LeaveModule } from './leaveReport/leaveReport.module';
-//import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { SpinnerComponent } from './shared/spinner.component';
-import { StringConstant } from './shared/stringConstant';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-
-
 
 @NgModule({
-    declarations: [AppComponent, SpinnerComponent],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         HttpModule,
@@ -24,7 +24,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
         LeaveModule
     ],
     bootstrap: [AppComponent],
-    providers: [SpinnerService, StringConstant, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [StringConstant, LoaderService,{ provide: LocationStrategy, useClass: HashLocationStrategy }]
 })
 
 export class AppModule { }
