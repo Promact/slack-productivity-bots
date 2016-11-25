@@ -37,29 +37,22 @@ describe('Task Mail Report List Tests', () => {
                 { provide: Router, useClass: MockRouter },
                 { provide: LoaderService, useClass: MockLoaderService }
             ]
-        });
-    });
-
-    beforeEach(inject([TaskService, Router, LoaderService, StringConstant], (taskService: TaskService, router: Router, loader: LoaderService, stringConstant: StringConstant) => {
-
-        taskMailListComponent = new TaskMailListComponent(router, taskService, stringConstant,loader );
+        }).compileComponents();
     }));
 
     it("should be defined", () => {
-        let fixture = TestBed.createComponent(TaskMailListComponent);           
+        let fixture = TestBed.createComponent(TaskMailListComponent);
         let taskMailListComponent = fixture.componentInstance;
         expect(taskMailListComponent).toBeDefined();
     });
 
     it('Shows list of taskmailReport on initialization', () => {
-        let fixture = TestBed.createComponent(TaskMailListComponent);   
+        let fixture = TestBed.createComponent(TaskMailListComponent);
         let taskMailListComponent = fixture.componentInstance;
         taskMailListComponent.getListOfEmployee();
         expect(taskMailListComponent.listOfUsers.length).toBe(1);
     });
 });
-
-
 
 
 

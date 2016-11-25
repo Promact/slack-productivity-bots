@@ -6,10 +6,10 @@ import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
+import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
-import { DatePipe } from '@angular/common';
 import { LoaderService } from '../../shared/loader.service';
-import {StringConstant} from '../../shared/stringConstant';
+import { DatePipe } from '@angular/common';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
@@ -25,12 +25,12 @@ describe('LeaveReport Detials Tests', () => {
             this.params = Observable.of({ UserId: "1", UserRole: "Admin", UserName: "test" });
         }
     }
-    class MockRouter { }
-    class MockDatePipe { }
-    class MockLoaderService { }
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async(() => {
+        this.promise = TestBed.configureTestingModule({
+            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
+            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            ],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 { provide: TaskService, useClass: MockTaskMailService },
@@ -39,12 +39,7 @@ describe('LeaveReport Detials Tests', () => {
                 { provide: DatePipe, useClass: MockDatePipe },
                 { provide: LoaderService, useClass: MockLoaderService }
             ]
-        });
-    });
-
-    beforeEach(inject([ActivatedRoute, Router, TaskService, LoaderService, StringConstant],
-        (mockRouter: ActivatedRoute, router: Router, taskService: TaskService, loader: LoaderService, stringConstant: StringConstant) => {
-            taskMailDetailsComponent = new TaskMailDetailsComponent(mockRouter, router, taskService, stringConstant,loader );
+        }).compileComponents();
     }));
 
     it("should be defined", () => {
@@ -77,13 +72,8 @@ describe('LeaveReport Detials Tests', () => {
     it('Shows details of task mail report for an employee on Selected Date', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component            
         let taskMailDetailsComponent = fixture.componentInstance;
-        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016","10-09-2016");
+        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
         expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
     });
 });
-
-
-
-
-
 
