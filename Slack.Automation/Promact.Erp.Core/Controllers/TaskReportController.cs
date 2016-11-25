@@ -1,12 +1,10 @@
 ﻿using Promact.Core.Repository.TaskMailRepository;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Promact.Erp.DomainModel.Models;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
-using System;
-using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -15,10 +13,11 @@ namespace Promact.Erp.Core.Controllers
     public class TaskReportController: ApiController
     {
         private readonly ITaskMailRepository _taskMailReport;
-
-        public TaskReportController(ITaskMailRepository taskMailReport)
+        private readonly IStringConstantRepository _stringConstant;
+        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
         {
             this._taskMailReport = taskMailReport;
+            _stringConstant = stringConstant;
         }
 
         //[HttpGet]
@@ -107,7 +106,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailUserAc>> TaskMailDetailsReportPreviousDate(string UserRole, string CreatedOn,string UserId,string UserName)
         {
             string LoginId = User.Identity.GetUserId();
-            string PreviousPage = StringConstant.PriviousPage;
+            string PreviousPage = _stringConstant.PriviousPage;
             return await _taskMailReport.TaskMailDetailsReportNextPreviousDate(UserId, UserName, UserRole,CreatedOn, LoginId, PreviousPage);
             //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }
@@ -145,7 +144,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextDate(string UserRole, string CreatedOn, string UserId, string UserName)
         {
             string LoginId = User.Identity.GetUserId();
-            string NextPage = StringConstant.NextPage;
+            string NextPage = _stringConstant.NextPage;
             return await _taskMailReport.TaskMailDetailsReportNextPreviousDate(UserId, UserName, UserRole, CreatedOn, LoginId, NextPage);
             //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }

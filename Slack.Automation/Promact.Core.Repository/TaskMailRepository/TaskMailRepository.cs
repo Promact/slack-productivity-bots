@@ -3,7 +3,6 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using Promact.Erp.Util;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
@@ -12,7 +11,7 @@ using System.Data.Entity;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using System.Net.Mail;
-
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -26,11 +25,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IRepository<ApplicationUser> _user;
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
-        
+        private readonly IStringConstantRepository _stringConstant;
         string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
         {
             _taskMail = taskMail;
+            _stringConstant = stringConstant;
             _projectUserRepository = projectUserRepository;
             _taskMailDetail = taskMailDetail;
             _attachmentRepository = attachmentRepository;
@@ -44,18 +44,19 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// Method to start task mail
         /// </summary>
         /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> StartTaskMail(string userName)
+        public async Task<string> StartTaskMail(string userName,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
             // getting access token for that user
             if (user != null)
             {
                 // get access token of user for promact oauth server
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 // get user details from
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _projectUserRepository.GetUserByUserId(userId, accessToken);
                 TaskMailQuestion question = new TaskMailQuestion();
                 Question previousQuestion = new Question();
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
@@ -79,7 +80,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // Before going to create new task it will check whether the user has send mail for today or not.
                     if (taskMailDetail != null && taskMailDetail.SendEmailConfirmation == SendEmailConfirmation.yes)
                         // If mail is send then user will not be able to add task mail for that day
-                        questionText = StringConstant.AlreadyMailSend;
+                        questionText = _stringConstant.AlreadyMailSend;
                     else
                     {
                         // If mail is not send then user will be able to add task mail for that day
@@ -101,12 +102,12 @@ namespace Promact.Core.Repository.TaskMailRepository
                 else
                 {
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswer(userName, null);
+                    var questionText = await QuestionAndAnswer(userName, null,userId);
                 }
             }
             else
                 // if user doesn't exist then this message will be shown to user
-                questionText = StringConstant.YouAreNotInExistInOAuthServer;
+                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
             return questionText;
         }
 
@@ -115,11 +116,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="answer"></param>
+        /// 
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> QuestionAndAnswer(string userName, string answer)
+        public async Task<string> QuestionAndAnswer(string userName, string answer,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
             if (user != null)
             {
                 // getting access token for that user
@@ -127,7 +129,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetails> taskList = new List<TaskMailDetails>();
                 TaskMail taskMail = new TaskMail();
                 // getting user information from Promact Oauth Server
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _projectUserRepository.GetUserByUserId(userId, accessToken);
                 try
                 {
                     // checking for previous task mail exist or not for today
@@ -179,11 +181,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                            questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                     }
                                     else
                                         // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                        questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             case TaskMailQuestion.Status:
@@ -201,7 +203,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                        questionText = string.Format("{0}{1}{2}", StringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             case TaskMailQuestion.Comment:
@@ -245,14 +247,14 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
                                                     nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(7, 2);
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    questionText = StringConstant.ThankYou;
+                                                    questionText = _stringConstant.ThankYou;
                                                 }
                                                 break;
                                         }
                                     }
                                     else
                                         // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                        questionText = string.Format("{0}{1}{2}", StringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                     break;
                                 }
                             case TaskMailQuestion.ConfirmSendEmail:
@@ -264,7 +266,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     {
                                         // convert answer to SendEmailConfirmation type
                                         var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), answer.ToLower().ToString());
-                                        questionText = StringConstant.ThankYou;
+                                        questionText = _stringConstant.ThankYou;
                                         switch (confirmation)
                                         {
                                             case SendEmailConfirmation.yes:
@@ -279,7 +281,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
-                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userName, accessToken);
+                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserId(userId, accessToken);
                                                     var managements = await _projectUserRepository.GetManagementUserName(accessToken);
                                                     foreach (var management in managements)
                                                     {
@@ -293,7 +295,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         email.Body = emailBody;
                                                         email.From = oAuthUser.Email;
                                                         email.To = teamLeader.Email;
-                                                        email.Subject = StringConstant.TaskMailSubject;
+                                                        email.Subject = _stringConstant.TaskMailSubject;
                                                         // Email send 
                                                         _emailService.Send(email);
                                                     }
@@ -310,11 +312,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                        questionText = string.Format("{0}{1}{2}", StringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             default:
-                                    questionText = StringConstant.RequestToStartTaskMail;
+                                questionText = _stringConstant.RequestToStartTaskMail;
                                 break;
                         }
                         _taskMailDetail.Update(taskDetails);
@@ -324,17 +326,17 @@ namespace Promact.Core.Repository.TaskMailRepository
                 catch (SmtpException ex)
                 {
                     // error message will be send to email. But leave will be applied
-                    questionText = string.Format("{0}. {1}", StringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
+                    questionText = string.Format("{0}. {1}", _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
                 }
                 catch (Exception)
                 {
                     // if previous task mail doesnot exist then ask user to start task mail
-                    questionText = StringConstant.RequestToStartTaskMail;
+                    questionText = _stringConstant.RequestToStartTaskMail;
                 }
             }
             else
                 // if user doesn't exist in oAuth server
-                questionText = StringConstant.YouAreNotInExistInOAuthServer;
+                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
             return questionText;
         }
 
@@ -349,102 +351,13 @@ namespace Promact.Core.Repository.TaskMailRepository
             // Assigning Value in template page
             leaveTemplate.Session = new Dictionary<string, object>
             {
-                {StringConstant.TaskMailDescription, taskMail},
+                {_stringConstant.TaskMailDescription, taskMail},
             };
             leaveTemplate.Initialize();
             var emailBody = leaveTemplate.TransformText();
             return emailBody;
         }
 
-        /// <summary>
-        /// Method geting the user/users information 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailReport(string userId,int currentPage,int itemsPerPage)
-        {
-            var user = _user.FirstOrDefault(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var Json = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
-            var role = Json.FirstOrDefault(x => x.UserName == user.UserName);
-            var skip=0;
-            if (currentPage == 1)
-            { skip = 0; }
-            else { skip = (currentPage * itemsPerPage) - itemsPerPage; }
-            var take = itemsPerPage;
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (role.Role == StringConstant.RoleAdmin)
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                foreach (var j in Json)
-                {
-                    var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
-                    if (employeeId != null)
-                    {
-                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeId.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                        taskMails.ForEach(taskMail =>
-                        {
-                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                            {
-                                Id = taskMail.Id,
-                                UserName = j.Name,
-                                CreatedOn = taskMail.CreatedOn
-                            };
-                            taskMailReportAc.Add(taskmailReportAc);
-                        });
-                    }
-                }
-            }
-            else if (role.Role == StringConstant.RoleTeamLeader)
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                foreach (var t in Json)
-                {
-                    //var employeeId = _user.FirstOrDefault(x => x.UserName == t.UserName);
-                    var employeeIds = await _userManager.FindByNameAsync(t.UserName);
-                    if (employeeIds != null)
-                    {
-                        taskMails = _taskMail.Fetch(x => x.EmployeeId == employeeIds.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                        taskMails.ForEach(taskMail =>
-                        {
-                            TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                            {
-                                Id = taskMail.Id,
-                                UserName = t.Name,
-                                CreatedOn = taskMail.CreatedOn
-                            };
-                            taskMailReportAc.Add(taskmailReportAc);
-                        });
-                    }
-                }
-               
-            }
-            else
-            {
-                List<TaskMail> taskMails = new List<TaskMail>();
-                var employee = await _userManager.FindByNameAsync(role.UserName);//_user.FirstOrDefault(x => x.UserName == role.UserName);
-                taskMails = _taskMail.Fetch(x => x.EmployeeId == employee.Id).OrderByDescending(o => o.CreatedOn).ToList();
-                taskMails.ForEach(taskMail =>
-                {
-                    TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                    {
-                        Id = taskMail.Id,
-                        UserName = role.Name,
-                        CreatedOn = taskMail.CreatedOn
-                    };
-                    taskMailReportAc.Add(taskmailReportAc);
-                });
-
-              
-            }
-            foreach (var taskMail in taskMailReportAc)
-            {
-                taskMail.TotalItems = taskMailReportAc.Count;
-            }
-            return taskMailReportAc.OrderByDescending(o => o.CreatedOn).Skip(skip).Take(take).ToList();
-            //return taskMailReportAc.OrderByDescending(o => o.CreatedOn).ToList();
-        }
-        
         /// <summary>
         ///Method geting list of Employee 
         /// </summary>
@@ -454,10 +367,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             var user = _user.FirstOrDefault(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var jsonResult = await _projectUserRepository.GetUserRole(user.UserName, accessToken);
+            var jsonResult = await _projectUserRepository.GetUserRole(user.Id, accessToken);
             var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
             List<TaskMailUserAc> taskMailUsertAc = new List<TaskMailUserAc>();
-            if (role.Role == StringConstant.RoleAdmin)
+            if (role.Role == _stringConstant.RoleAdmin)
             {
                 foreach (var j in jsonResult)
                 {
@@ -471,13 +384,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                             UserName = j.Name,
                             UserId = employeeId.Id,
                             UserRole = j.Role,
-                            UserEmail=j.UserName
+                            UserEmail = j.UserName
                         };
                         taskMailUsertAc.Add(taskmailUserAc);
                     }
                 }
             }
-            else if (role.Role == StringConstant.RoleTeamLeader)
+            else if (role.Role == _stringConstant.RoleTeamLeader)
             {
                 foreach (var j in jsonResult)
                 {
@@ -491,13 +404,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                             UserId = employeeId.Id,
                             UserRole = j.Role,
                             UserEmail = j.UserName
-                            
+
                         };
                         taskMailUsertAc.Add(taskmailUserAc);
                     }
                 }
             }
-            else if(role.Role == StringConstant.RoleEmployee)
+            else if (role.Role == _stringConstant.RoleEmployee)
             {
                 foreach (var j in jsonResult)
                 {
@@ -573,8 +486,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                     TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
                     {
                         Id = 0,
-                        Description = StringConstant.NotAvailable,
-                        Comment = StringConstant.NotAvailable,
+                        Description = _stringConstant.NotAvailable,
+                        Comment = _stringConstant.NotAvailable,
                         Hours = 0
                     };
                     taskMailReportObject.Add(taskmailReportAcForTeamLeader);
@@ -597,8 +510,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                 TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
                 {
                     Id = 0,
-                    Description = StringConstant.NotAvailable,
-                    Comment = StringConstant.NotAvailable,
+                    Description = _stringConstant.NotAvailable,
+                    Comment = _stringConstant.NotAvailable,
                     Hours = 0
                 };
                 taskMailReportObject.Add(taskmailReportAcForTeamLeader);
@@ -623,19 +536,19 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="UserName"></param>
         /// <param name="LoginId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReport(string UserId,string UserRole,string UserName,string LoginId)
+        public async Task<List<TaskMailUserAc>> TaskMailDetailsReport(string UserId, string UserRole, string UserName, string LoginId)
         {
             List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (UserRole == StringConstant.RoleAdmin || UserRole==StringConstant.RoleEmployee)
+            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
             {
-                taskMailAc =await GetTaskMailDetailsInformation(UserId,UserRole,UserName,LoginId);
+                taskMailAc = await GetTaskMailDetailsInformation(UserId, UserRole, UserName, LoginId);
             }
-            else if (UserRole == StringConstant.RoleTeamLeader)
+            else if (UserRole == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -704,21 +617,22 @@ namespace Promact.Core.Repository.TaskMailRepository
                             {
                                 UserId = employee.Id,
                                 UserName = j.Name,
-                                UserRole= UserRole,
+                                UserRole = UserRole,
                                 CreatedOn = taskTL.CreatedOn.Date,
                                 TaskMails = taskMailReport,
-                                IsMax=Convert.ToDateTime(maxDate).Date,
-                                IsMin=Convert.ToDateTime(minDate).Date
+                                IsMax = Convert.ToDateTime(maxDate).Date,
+                                IsMin = Convert.ToDateTime(minDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
-                        else {
+                        else
+                        {
                             List<TaskMailReportAc> taskMailReportObject = new List<TaskMailReportAc>();
                             TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
                             {
                                 Id = 0,
-                                Description = StringConstant.NotAvailable,
-                                Comment = StringConstant.NotAvailable,
+                                Description = _stringConstant.NotAvailable,
+                                Comment = _stringConstant.NotAvailable,
                                 Hours = 0
                             };
                             taskMailReportObject.Add(taskmailReportAcForTeamLeader);
@@ -739,10 +653,10 @@ namespace Promact.Core.Repository.TaskMailRepository
 
                 }
             }
-           return taskMailAc;
+            return taskMailAc;
         }
 
-       
+
         /// <summary>
         /// TaskMailDetails Information For the selected date
         /// </summary>
@@ -807,8 +721,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                     TaskMailReportAc taskmailReportAcObject = new TaskMailReportAc
                     {
                         Id = 0,
-                        Description = StringConstant.NotAvailable,
-                        Comment = StringConstant.NotAvailable,
+                        Description = _stringConstant.NotAvailable,
+                        Comment = _stringConstant.NotAvailable,
                         Status = TaskMailStatus.completed,
                         Hours = 0
                     };
@@ -826,12 +740,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                     taskMailAc.Add(taskMailUserAc);
                 }
             }
-            else {
+            else
+            {
                 TaskMailReportAc taskmailReportAc = new TaskMailReportAc
                 {
                     Id = 0,
-                    Description = StringConstant.NotAvailable,
-                    Comment = StringConstant.NotAvailable,
+                    Description = _stringConstant.NotAvailable,
+                    Comment = _stringConstant.NotAvailable,
                     Hours = 0
                 };
                 taskMailReportAc.Add(taskmailReportAc);
@@ -860,17 +775,17 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="LoginId"></param>
         /// <param name="SelectedDate"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportSelectedDate(string UserId, string UserName, string UserRole, string CreatedOn,  string LoginId, string SelectedDate)
+        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportSelectedDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string SelectedDate)
         {
             List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (UserRole == StringConstant.RoleAdmin || UserRole==StringConstant.RoleEmployee)
-            {taskMailAc = await TaskMailDetailsReportInformationForSelectedDate(UserId, UserName, UserRole, CreatedOn, LoginId, SelectedDate);}
-            else if (UserRole == StringConstant.RoleTeamLeader)
+            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
+            { taskMailAc = await TaskMailDetailsReportInformationForSelectedDate(UserId, UserName, UserRole, CreatedOn, LoginId, SelectedDate); }
+            else if (UserRole == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var j in json)
@@ -951,7 +866,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 CreatedOn = taskTL.CreatedOn,
                                 TaskMails = listTaskMailReport,
                                 IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin=Convert.ToDateTime(minDate).Date
+                                IsMin = Convert.ToDateTime(minDate).Date
 
                             };
                             taskMailAc.Add(taskMailUserAc);
@@ -962,8 +877,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                             TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
                             {
                                 Id = 0,
-                                Description = StringConstant.NotAvailable,
-                                Comment = StringConstant.NotAvailable,
+                                Description = _stringConstant.NotAvailable,
+                                Comment = _stringConstant.NotAvailable,
                                 Status = TaskMailStatus.completed,
                                 Hours = 0
                             };
@@ -976,34 +891,12 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 CreatedOn = Convert.ToDateTime(SelectedDate).Date,
                                 TaskMails = taskMailReport,
                                 IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin=Convert.ToDateTime(minDate).Date
+                                IsMin = Convert.ToDateTime(minDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
                     }
-                    else
-                    {
-                        List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                        TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
-                        {
-                            Id = 0,
-                            Description = StringConstant.NotAvailable,
-                            Comment = StringConstant.NotAvailable,
-                            Hours = 0
-                        };
-                        taskMailReport.Add(taskmailReportAcTL);
-                        TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                        {
-                            UserId = employee.Id,
-                            UserName = j.Name,
-                            UserRole = UserRole,
-                            CreatedOn = Convert.ToDateTime(SelectedDate).Date,
-                            TaskMails = taskMailReport,
-                            IsMax = Convert.ToDateTime(SelectedDate).Date,
-                            IsMin = Convert.ToDateTime(SelectedDate).Date
-                        };
-                        taskMailAc.Add(taskMailUserAc);
-                    }
+                   
 
                 }
             }
@@ -1017,7 +910,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
             DateTime? minDate = null;
             DateTime? maxDate = null;
-            var listOfTask= await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
+            var listOfTask = await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
             if (listOfTask != null)
             {
                 var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
@@ -1065,8 +958,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                     TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
                     {
                         Id = 0,
-                        Description = StringConstant.NotAvailable,
-                        Comment = StringConstant.NotAvailable,
+                        Description = _stringConstant.NotAvailable,
+                        Comment = _stringConstant.NotAvailable,
                         Hours = 0
                     };
                     taskMailReport.Add(taskmailReportAcTL);
@@ -1084,13 +977,14 @@ namespace Promact.Core.Repository.TaskMailRepository
                     taskMailAc.Add(taskMailUserAc);
                 }
             }
-            else {
+            else
+            {
                 List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
                 TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
                 {
                     Id = 0,
-                    Description = StringConstant.NotAvailable,
-                    Comment = StringConstant.NotAvailable,
+                    Description = _stringConstant.NotAvailable,
+                    Comment = _stringConstant.NotAvailable,
                     Hours = 0
                 };
                 taskMailReport.Add(taskmailReportAcTL);
@@ -1111,28 +1005,28 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
 
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextPreviousDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId,string Type)
+        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextPreviousDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string Type)
         {
             List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
             List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            DateTime? CreatedDate=null ;
-            if (Type == StringConstant.NextPage)
+            DateTime? CreatedDate = null;
+            if (Type == _stringConstant.NextPage)
             { CreatedDate = Convert.ToDateTime(CreatedOn).AddDays(+1); }
-            else 
+            else
             { CreatedDate = Convert.ToDateTime(CreatedOn).AddDays(-1); }
-            
-            if (UserRole == StringConstant.RoleAdmin || UserRole == StringConstant.RoleEmployee)
+
+            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
             {
                 taskMailAc = await TaskMailDetailsReportInformationForNextPreviousDate(UserId, UserName, UserRole, Convert.ToDateTime(CreatedDate), LoginId);
             }
-            else if (UserRole == StringConstant.RoleTeamLeader)
+            else if (UserRole == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? minDate = null;
                 DateTime? maxDate = null;
-            
+
                 foreach (var j in json)
                 {
                     var employeeObject = await _userManager.FindByNameAsync(j.UserName);
@@ -1178,7 +1072,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     }
 
                 }
-              
+
                 foreach (var j in json)
                 {
                     var employee = await _userManager.FindByNameAsync(j.UserName);
@@ -1212,7 +1106,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 CreatedOn = taskMails.CreatedOn.Date,
                                 TaskMails = taskMailDetailsReport,
                                 IsMin = Convert.ToDateTime(minDate).Date,
-                                IsMax= Convert.ToDateTime(maxDate).Date
+                                IsMax = Convert.ToDateTime(maxDate).Date
                             };
                             taskMailAc.Add(taskMailUserAc);
                         }
@@ -1222,8 +1116,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                             TaskMailReportAc taskmailDetailsReportAc = new TaskMailReportAc
                             {
                                 Id = 0,
-                                Description = StringConstant.NotAvailable,
-                                Comment = StringConstant.NotAvailable,
+                                Description = _stringConstant.NotAvailable,
+                                Comment = _stringConstant.NotAvailable,
                                 Hours = 0
                             };
                             taskMailReport.Add(taskmailDetailsReportAc);
@@ -1242,7 +1136,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     }
 
                 }
-               
+
             }
             return taskMailAc;
         }

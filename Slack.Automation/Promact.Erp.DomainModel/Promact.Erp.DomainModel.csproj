@@ -131,6 +131,7 @@
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackBotUserDetail.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackEventApiAC.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackGroupDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackProfile.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetailAc.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachment.cs" />

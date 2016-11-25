@@ -20,5 +20,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// </summary>
         [JsonProperty("channels")]
         public List<SlackChannelDetails> Channels { get; set; }
+
+        /// <summary>
+        /// Error Message
+        /// </summary>
+        [JsonProperty("error")]
+        public string ErrorMessage { get; set; }
     }
 }
