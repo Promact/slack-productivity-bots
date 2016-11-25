@@ -55,9 +55,11 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("oAuth/RefreshToken")]
-        public IHttpActionResult RefreshToken(string refreshToken)
+        public IHttpActionResult RefreshToken(string refreshToken,string slackUserName)
         {
             var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
+            SlackUserDetailAc user = _slackUserRepository.GetBySlackName(slackUserName);
+            oAuth.UserId = user.UserId;
             return Ok(oAuth);
         }
 
@@ -239,7 +241,6 @@ namespace Promact.Erp.Core.Controllers
             SlackUserDetails slackUserDetail = _slackUserRepository.GetById(slackUserId);
             return Ok(slackUserDetail);
         }
-
-
+      
     }
 }

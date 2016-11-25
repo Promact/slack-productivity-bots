@@ -31,7 +31,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         public void AddSlackUser(SlackUserDetails slackUserDetails)
         {
             SlackUserDetails slackUser = _slackUserDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
-            SlackBotUserDetail slackBotUser = _slackUserBotDetails.FirstOrDefault(x=>x.UserId == slackUserDetails.UserId);
+            SlackBotUserDetail slackBotUser = _slackUserBotDetails.FirstOrDefault(x => x.UserId == slackUserDetails.UserId);
             if (slackUser == null && slackBotUser == null)
             {
                 if (slackUserDetails.IsBot || slackUserDetails.Name == _stringConstant.SlackBotStringName)
@@ -73,7 +73,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// Fetch the list of Slack Users
         /// </summary>
         /// <returns>list of object of SlackUserDetails</returns>
-        public  List<SlackUserDetailAc> GetAllSlackUsers()
+        public List<SlackUserDetailAc> GetAllSlackUsers()
         {
             List<SlackUserDetailAc> slackUserAcList = new List<SlackUserDetailAc>();
             List<SlackUserDetails> slackUserList = _slackUserDetails.Fetch(x => !x.IsBot).ToList();
@@ -88,10 +88,13 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// </summary>
         /// <param name="slackName"></param>
         /// <returns>user</returns>
-        public SlackUserDetails GetBySlackName(string slackName)
+        public SlackUserDetailAc GetBySlackName(string slackName)
         {
+            SlackUserDetailAc slackUser = new SlackUserDetailAc();
             SlackUserDetails user = _slackUserDetails.FirstOrDefault(x => x.Name == slackName);
-            return user;
+            Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>());
+            slackUser = Mapper.Map(user, slackUser);
+            return slackUser;
         }
 
 
