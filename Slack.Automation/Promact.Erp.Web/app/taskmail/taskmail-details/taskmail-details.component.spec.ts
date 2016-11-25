@@ -6,10 +6,10 @@ import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
-import { StringConstant } from '../../shared/stringConstant';
 import { TaskService } from '../taskmail.service';
-import { LoaderService } from '../../shared/loader.service';
 import { DatePipe } from '@angular/common';
+import { LoaderService } from '../../shared/loader.service';
+import {StringConstant} from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
