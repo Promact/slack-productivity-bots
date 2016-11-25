@@ -49,11 +49,11 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
             }
         }
 
-        public int Port
+        public string Port
         {
             get
             {
-                return 1234;
+                return "1234";
             }
         }
 
