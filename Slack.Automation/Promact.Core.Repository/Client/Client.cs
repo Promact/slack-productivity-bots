@@ -2,6 +2,7 @@
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
@@ -23,12 +24,13 @@ namespace Promact.Core.Repository.Client
     {
         private HttpClient _chatUpdateMessage;
         private readonly IProjectUserCallRepository _projectUser;
+        private readonly ISlackUserRepository _slackUserRepository;
         private readonly IEmailService _email;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientRepository _httpClientRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository)
+        public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository,ISlackUserRepository slackUserRepository)
         {
             _chatUpdateMessage = new HttpClient();
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
@@ -38,6 +40,7 @@ namespace Promact.Core.Repository.Client
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
             _envVariableRepository = envVariableRepository;
+            _slackUserRepository = slackUserRepository;
         }
 
         /// <summary>
@@ -72,11 +75,12 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public async Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken,string replyText, string username)
+        /// <param name="slackUserId"></param>
+        public async Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken,string replyText, string username,string slackUserId)
         {
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
+            await GetAttachmentAndSendToTLAndManagement(slackUserId,username, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
@@ -86,12 +90,13 @@ namespace Promact.Core.Repository.Client
         /// <param name="leaveRequest"></param>
         /// <param name="accessToken"></param>
         /// <param name="replyText"></param>
+        /// <param name="slackUserId"></param>
         /// <returns></returns>
-        public async Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken,string replyText,string username)
+        public async Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken,string replyText,string username,string slackUserId)
         {
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
+            await GetAttachmentAndSendToTLAndManagement(slackUserId,username, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
@@ -161,19 +166,20 @@ namespace Promact.Core.Repository.Client
         /// <param name="accessToken"></param>
         /// <param name="attachment"></param>
         /// <returns></returns>
-        private async Task GetAttachmentAndSendToTLAndManagement(string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
+        private async Task GetAttachmentAndSendToTLAndManagement(string slackUserId,string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
         {
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(username, accessToken);
+            var teamLeaders = await _projectUser.GetTeamLeaderUserId(slackUserId, accessToken);
             var management = await _projectUser.GetManagementUserName(accessToken);
-            var userDetail = await _projectUser.GetUserByUsername(username, accessToken);
+            var userDetail = await _projectUser.GetUserByUserId(slackUserId, accessToken);
             foreach (var user in management)
             {
                 teamLeaders.Add(user);
             }
             foreach (var teamLeader in teamLeaders)
             {
+                SlackUserDetails slackUser = _slackUserRepository.GetById(teamLeader.SlackUserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
+                var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
                 EmailApplication email = new EmailApplication();
@@ -196,7 +202,8 @@ namespace Promact.Core.Repository.Client
         public void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            SlackUserDetails slackUser = _slackUserRepository.GetById(user.SlackUserId);
+            var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
             WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
             EmailApplication email = new EmailApplication();

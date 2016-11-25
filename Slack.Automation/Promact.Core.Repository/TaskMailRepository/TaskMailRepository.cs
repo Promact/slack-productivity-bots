@@ -44,18 +44,19 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// Method to start task mail
         /// </summary>
         /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> StartTaskMail(string userName)
+        public async Task<string> StartTaskMail(string userName,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
             // getting access token for that user
             if (user != null)
             {
                 // get access token of user for promact oauth server
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
                 // get user details from
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _projectUserRepository.GetUserByUserId(userId, accessToken);
                 TaskMailQuestion question = new TaskMailQuestion();
                 Question previousQuestion = new Question();
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
@@ -101,7 +102,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 else
                 {
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswer(userName, null);
+                    var questionText = await QuestionAndAnswer(userName, null,userId);
                 }
             }
             else
@@ -115,11 +116,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="answer"></param>
+        /// 
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> QuestionAndAnswer(string userName, string answer)
+        public async Task<string> QuestionAndAnswer(string userName, string answer,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
+            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
             if (user != null)
             {
                 // getting access token for that user
@@ -127,7 +129,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetails> taskList = new List<TaskMailDetails>();
                 TaskMail taskMail = new TaskMail();
                 // getting user information from Promact Oauth Server
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
+                var oAuthUser = await _projectUserRepository.GetUserByUserId(userId, accessToken);
                 try
                 {
                     // checking for previous task mail exist or not for today
@@ -279,7 +281,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
-                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userName, accessToken);
+                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserId(userId, accessToken);
                                                     var managements = await _projectUserRepository.GetManagementUserName(accessToken);
                                                     foreach (var management in managements)
                                                     {

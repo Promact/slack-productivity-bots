@@ -27,5 +27,10 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// OAuth App ReturnUrl
         /// </summary>
         public string ReturnUrl { get; set; }
+
+        /// <summary>
+        /// User Id of Slack for user
+        /// </summary>
+        public string UserId { get; set; }
     }
 }
