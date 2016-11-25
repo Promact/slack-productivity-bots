@@ -67,11 +67,11 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
             }
         }
 
-        public int Port
+        public string Port
         {
             get
             {
-                return Convert.ToInt32(GetVariables(_stringConstant.Port));
+                return GetVariables(_stringConstant.Port);
             }
         }
 
