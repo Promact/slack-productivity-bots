@@ -125,12 +125,12 @@ namespace Promact.Core.Repository.ScrumRepository
                 else
                     replyText = _stringConstant.ChannelAddInstruction;
             }
-            else if (user == null)
-            {
-                SlackBotUserDetail botUser = _slackBotUserDetail.FirstOrDefault(x => x.UserId == userId);
-                if (botUser == null)
-                    replyText = _stringConstant.NoSlackDetails;
-            }
+            //else if (user == null)
+            //{
+            //    SlackBotUserDetail botUser = _slackBotUserDetail.FirstOrDefault(x => x.UserId == userId);
+            //    if (botUser == null)
+            //        replyText = _stringConstant.NoSlackDetails;
+            //}
 
             return replyText;
         }
