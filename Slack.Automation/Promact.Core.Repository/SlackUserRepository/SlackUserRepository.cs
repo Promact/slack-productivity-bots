@@ -70,20 +70,6 @@ namespace Promact.Core.Repository.SlackUserRepository
 
 
         /// <summary>
-        /// Fetch the list of Slack Users
-        /// </summary>
-        /// <returns>list of object of SlackUserDetails</returns>
-        public List<SlackUserDetailAc> GetAllSlackUsers()
-        {
-            List<SlackUserDetailAc> slackUserAcList = new List<SlackUserDetailAc>();
-            List<SlackUserDetails> slackUserList = _slackUserDetails.Fetch(x => !x.IsBot).ToList();
-            Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>());
-            slackUserAcList = Mapper.Map(slackUserList, slackUserAcList);
-            return slackUserAcList;
-        }
-
-
-        /// <summary>
         /// Method to get slack user information by their slack user name
         /// </summary>
         /// <param name="slackName"></param>

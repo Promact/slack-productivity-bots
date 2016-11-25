@@ -66,16 +66,6 @@ namespace Promact.Core.Test
             Assert.NotEqual(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
-        /// <summary>
-        /// Test case to check the functionality of GetAllSlackUsers method of Slack User Repository
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void GetAllSlackUser()
-        {
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUsers = _slackUserRepository.GetAllSlackUsers();
-            Assert.Equal(slackUsers.Count, 1);
-        }
 
         /// <summary>
         /// Test case to check the functionality of GetBySlackName method of Slack User Repository

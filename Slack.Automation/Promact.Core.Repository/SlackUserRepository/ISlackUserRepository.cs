@@ -25,13 +25,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <returns>user</returns>
         SlackUserDetails GetById(string slackId);
 
-        /// <summary>
-        /// Fetch the list of Slack Users
-        /// </summary>
-        /// <returns>list of object of SlackUserDetails</returns>
-        List<SlackUserDetailAc> GetAllSlackUsers();
-
-
+      
         /// <summary>
         /// Method to get slack user information by their slack user name
         /// </summary>
