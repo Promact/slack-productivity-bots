@@ -37,8 +37,8 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// </summary>
         /// <param name="slackName"></param>
         /// <returns>user</returns>
-        SlackUserDetails GetBySlackName(string slackName);
+        SlackUserDetailAc GetBySlackName(string slackName);
 
-
+              
     }
 }

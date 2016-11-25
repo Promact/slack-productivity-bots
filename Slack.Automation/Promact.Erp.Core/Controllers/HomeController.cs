@@ -143,7 +143,7 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
         * }
         */
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId, string userId)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId,string userId)
         {
             try
             {
