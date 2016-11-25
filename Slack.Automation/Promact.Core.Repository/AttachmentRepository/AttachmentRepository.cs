@@ -1,6 +1,7 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,9 +13,11 @@ namespace Promact.Core.Repository.AttachmentRepository
     public class AttachmentRepository:IAttachmentRepository
     { 
         private readonly ApplicationUserManager _userManager;
-        public AttachmentRepository(ApplicationUserManager userManager)
+        private readonly IStringConstantRepository _stringConstant;
+        public AttachmentRepository(ApplicationUserManager userManager,IStringConstantRepository stringConstant)
         {
             _userManager = userManager;
+            _stringConstant = stringConstant;
         }
         /// <summary>
         /// Method to create attchment of slack with a text as reply, can be used generically
@@ -29,32 +32,32 @@ namespace Promact.Core.Repository.AttachmentRepository
             SlashAttachment attachmentList = new SlashAttachment();
             SlashAttachmentAction Approved = new SlashAttachmentAction()
             {
-                Name = StringConstant.Approved,
-                Text = StringConstant.Approved,
-                Type = StringConstant.Button,
-                Value = StringConstant.Approved,
+                Name = _stringConstant.Approved,
+                Text = _stringConstant.Approved,
+                Type = _stringConstant.Button,
+                Value = _stringConstant.Approved,
             };
             ActionList.Add(Approved);
             SlashAttachmentAction Rejected = new SlashAttachmentAction()
             {
-                Name = StringConstant.Rejected,
-                Text = StringConstant.Rejected,
-                Type = StringConstant.Button,
-                Value = StringConstant.Rejected,
+                Name = _stringConstant.Rejected,
+                Text = _stringConstant.Rejected,
+                Type = _stringConstant.Button,
+                Value = _stringConstant.Rejected,
             };
             ActionList.Add(Rejected);
             // Adding action button on attachment
             attachmentList.Actions = ActionList;
             // Fallback as a string on attachment
-            attachmentList.Fallback = StringConstant.Fallback;
+            attachmentList.Fallback = _stringConstant.Fallback;
             // attaching reply text as title of attachment
             attachmentList.Title = replyText;
             // assigning callbackId of attachment with leaveRequestId
             attachmentList.CallbackId = leaveRequestId;
             // assigning color of attachment as string format
-            attachmentList.Color = StringConstant.Color;
+            attachmentList.Color = _stringConstant.Color;
             // Assigning attachment type as default
-            attachmentList.AttachmentType = StringConstant.AttachmentType;
+            attachmentList.AttachmentType = _stringConstant.AttachmentType;
             attachment.Add(attachmentList);
             return attachment;
         }
@@ -99,16 +102,16 @@ namespace Promact.Core.Repository.AttachmentRepository
         {
             SlashCommand leave = new SlashCommand()
             {
-                ChannelId = value.Get(StringConstant.ChannelId),
-                ChannelName = value.Get(StringConstant.ChannelName),
-                Command = value.Get(StringConstant.Command),
-                ResponseUrl = value.Get(StringConstant.ResponseUrl),
-                TeamDomain = value.Get(StringConstant.TeamDomain),
-                TeamId = value.Get(StringConstant.TeamId),
-                Text = value.Get(StringConstant.Text),
-                Token = value.Get(StringConstant.Token),
-                UserId = value.Get(StringConstant.UserId),
-                Username = value.Get(StringConstant.UserName),
+                ChannelId = value.Get(_stringConstant.ChannelId),
+                ChannelName = value.Get(_stringConstant.ChannelName),
+                Command = value.Get(_stringConstant.Command),
+                ResponseUrl = value.Get(_stringConstant.ResponseUrl),
+                TeamDomain = value.Get(_stringConstant.TeamDomain),
+                TeamId = value.Get(_stringConstant.TeamId),
+                Text = value.Get(_stringConstant.Text),
+                Token = value.Get(_stringConstant.Token),
+                UserId = value.Get(_stringConstant.UserId),
+                Username = value.Get(_stringConstant.UserName),
             };
             return leave;
         }
@@ -124,7 +127,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             var accessToken = "";
             foreach (var provider in providerInfo)
             {
-                if(provider.LoginProvider == StringConstant.PromactStringName)
+                if(provider.LoginProvider == _stringConstant.PromactStringName)
                 {
                     accessToken = provider.ProviderKey;
                 }
@@ -158,15 +161,15 @@ namespace Promact.Core.Repository.AttachmentRepository
             List<SlashAttachment> attachment = new List<SlashAttachment>();
             SlashAttachment attachmentList = new SlashAttachment();
             // Fallback as a string on attachment
-            attachmentList.Fallback = StringConstant.Fallback;
+            attachmentList.Fallback = _stringConstant.Fallback;
             // attaching reply text as title of attachment
             attachmentList.Title = replyText;
             // assigning callbackId of attachment with leaveRequestId
             attachmentList.CallbackId = leaveRequestId;
             // assigning color of attachment as string format
-            attachmentList.Color = StringConstant.Color;
+            attachmentList.Color = _stringConstant.Color;
             // Assigning attachment type as default
-            attachmentList.AttachmentType = StringConstant.AttachmentType;
+            attachmentList.AttachmentType = _stringConstant.AttachmentType;
             attachment.Add(attachmentList);
             return attachment;
         }

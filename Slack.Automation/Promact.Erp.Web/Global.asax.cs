@@ -1,4 +1,5 @@
-﻿using Promact.Erp.Web.App_Start;
+﻿using Newtonsoft.Json;
+using Promact.Erp.Web.App_Start;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -17,9 +18,10 @@ namespace Promact.Erp.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
+                     
             Bot.ScrumMain(container);
             Bot.Main(container);
+
         }
     }
 }

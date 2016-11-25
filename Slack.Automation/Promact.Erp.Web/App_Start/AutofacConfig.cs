@@ -24,6 +24,7 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.StringConstants;
 using System.Data.Entity;
 using System.Net.Http;
 using System.Web;
@@ -42,6 +43,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
+  
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
@@ -58,6 +60,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
+            builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<ProjectUserCallRepository>().As<IProjectUserCallRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();

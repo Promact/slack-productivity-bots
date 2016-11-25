@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -10,10 +10,15 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly ISlackUserRepository _slackUserRepository;
+        private readonly IStringConstantRepository _stringConstant;
+        private SlackProfile profile = new SlackProfile();
+        private SlackUserDetails slackUserDetails = new SlackUserDetails();
         public SlackUserRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
+            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            Initialize();
         }
 
         /// <summary>
@@ -33,8 +38,8 @@ namespace Promact.Core.Test
         public void GetById()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUser = _slackUserRepository.GetById(StringConstant.StringIdForTest);
-            Assert.Equal(slackUser.Name, StringConstant.FirstNameForTest);
+            var slackUser = _slackUserRepository.GetById(_stringConstant.StringIdForTest);
+            Assert.Equal(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
         /// <summary>
@@ -54,29 +59,29 @@ namespace Promact.Core.Test
         public void GetByIdFalse()
         {
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            slackUserDetails.UserId = StringConstant.SlackChannelIdForTest;
-            slackUserDetails.Name = StringConstant.FalseStringNameForTest;
+            slackUserDetails.UserId = _stringConstant.SlackChannelIdForTest;
+            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUser = _slackUserRepository.GetById(StringConstant.SlackChannelIdForTest);
-            Assert.NotEqual(slackUser.Name, StringConstant.FirstNameForTest);
+            var slackUser = _slackUserRepository.GetById(_stringConstant.SlackChannelIdForTest);
+            Assert.NotEqual(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
-        private static SlackProfile profile = new SlackProfile()
+        /// <summary>
+        /// A method is used to initialize variables which are repetitively used
+        /// </summary>
+        public void Initialize()
         {
-            Skype = StringConstant.TestUserId,
-            Email = StringConstant.EmailForTest,
-            FirstName = StringConstant.UserNameForTest,
-            LastName = StringConstant.TestUser,
-            Phone = StringConstant.PhoneForTest,
-            Title = StringConstant.TitleForTest
-        };
+            profile.Skype = _stringConstant.TestUserId;
+            profile.Email = _stringConstant.EmailForTest;
+            profile.FirstName = _stringConstant.UserNameForTest;
+            profile.LastName = _stringConstant.TestUser;
+            profile.Phone = _stringConstant.PhoneForTest;
+            profile.Title = _stringConstant.UserNameForTest;
 
-        private SlackUserDetails slackUserDetails = new SlackUserDetails()
-        {
-            UserId = StringConstant.StringIdForTest,
-            Name = StringConstant.FirstNameForTest,
-            TeamId = StringConstant.PromactStringName,
-            Profile = profile
-        };
+            slackUserDetails.UserId = _stringConstant.StringIdForTest;
+            slackUserDetails.Name = _stringConstant.FirstNameForTest;
+            slackUserDetails.TeamId = _stringConstant.PromactStringName;
+            slackUserDetails.Profile = profile;
+        }
     }
 }

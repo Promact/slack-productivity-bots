@@ -6,8 +6,9 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
 
@@ -20,15 +21,17 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<SlackUserDetails> _slackUserDetails;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
+        private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         public OAuthLoginRepository(ApplicationUserManager userManager,
             IHttpClientRepository httpClientRepository, IRepository<SlackUserDetails> slackUserDetails,
-            IRepository<SlackChannelDetails> slackChannelDetails,
+            IRepository<SlackChannelDetails> slackChannelDetails, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository)
         {
             _userManager = userManager;
             _httpClientRepository = httpClientRepository;
             _slackUserDetails = slackUserDetails;
+            _stringConstant = stringConstant;
             _slackUserRepository = slackUserRepository;
             _slackChannelDetails = slackChannelDetails;
             _envVariableRepository = envVariableRepository;
@@ -41,13 +44,13 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="accessToken"></param>
         /// <param name="slackUserName"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName)
+        public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName , string uerId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName };
+            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserName = slackUserName , Id=uerId };
             //Creating a user with email only. Password not required
             var result = await _userManager.CreateAsync(user);
             //Adding external Oauth details
-            UserLoginInfo info = new UserLoginInfo(StringConstant.PromactStringName, accessToken);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
             result = await _userManager.AddLoginAsync(user.Id, info);
             return user;
         }
@@ -65,49 +68,82 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
             oAuth.RefreshToken = refreshToken;
-            oAuth.ReturnUrl = StringConstant.ClientReturnUrl;
+            oAuth.ReturnUrl = _stringConstant.ClientReturnUrl;
             return oAuth;
         }
 
         /// <summary>
-        /// Method to add Slack Users,channels and bots information 
+        /// Method to add/update Slack Users,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
         public async Task AddSlackUserInformation(string code)
         {
             var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
-            var slackOAuthResponse = await _httpClientRepository.GetAsync(StringConstant.OAuthAcessUrl, slackOAuthRequest, null);
+            var slackOAuthResponse = await _httpClientRepository.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
-            var userDetailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
-            var userDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackUserListUrl, userDetailsRequest, null);
+            var detailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
+            var userDetailsResponse = await _httpClientRepository.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
-            foreach (var user in slackUsers.Members)
+            if (slackUsers.Ok)
             {
-                if (!user.Deleted && !user.IsBot && user.Name != StringConstant.SlackBotStringName)
-                    _slackUserRepository.AddSlackUser(user);
+                foreach (var user in slackUsers.Members)
+                {
+                    if (!user.Deleted)
+                        _slackUserRepository.AddSlackUser(user);
+                }
             }
-            var channelDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackChannelListUrl, userDetailsRequest, null);
+            else
+                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
+            var channelDetailsResponse = await _httpClientRepository.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
             var channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
-            foreach (var channel in channels.Channels)
+            if (channels.Ok)
             {
-                if (!channel.Deleted)
+                foreach (var channel in channels.Channels)
                 {
-                    channel.CreatedOn = DateTime.UtcNow;
-                    _slackChannelDetails.Insert(channel);
+                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    if (slackChannel == null)
+                    {
+                        if (!channel.Deleted)
+                        {
+                            channel.CreatedOn = DateTime.UtcNow;
+                            _slackChannelDetails.Insert(channel);
+                        }
+                    }
+                    else
+                    {
+                        slackChannel.Name = channel.Name;
+                        _slackChannelDetails.Update(slackChannel);
+                    }
                 }
             }
+            else
+                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
 
-            var groupDetailsResponse = await _httpClientRepository.GetAsync(StringConstant.SlackGroupListUrl, userDetailsRequest, null);
+            var groupDetailsResponse = await _httpClientRepository.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
             var groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
-            foreach (var channel in groups.Groups)
+            if (groups.Ok)
             {
-                if (!channel.Deleted)
+                foreach (var channel in groups.Groups)
                 {
-                    channel.CreatedOn = DateTime.UtcNow;
-                    _slackChannelDetails.Insert(channel);
+                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    if (slackChannel == null)
+                    {
+                        if (!channel.Deleted)
+                        {
+                            channel.CreatedOn = DateTime.UtcNow;
+                            _slackChannelDetails.Insert(channel);
+                        }
+                    }
+                    else
+                    {
+                        slackChannel.Name = channel.Name;
+                        _slackChannelDetails.Update(slackChannel);
+                    }
                 }
             }
+            else
+                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + groups.ErrorMessage);
         }
 
         /// <summary>
@@ -116,8 +152,30 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackEvent"></param>
         public void SlackEventUpdate(SlackEventApiAC slackEvent)
         {
-            slackEvent.Event.User.TeamId = slackEvent.TeamId;
-            _slackUserDetails.Insert(slackEvent.Event.User);
+            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
+            if (user == null)
+                _slackUserRepository.AddSlackUser(slackEvent.Event.User);
+        }
+
+
+        /// <summary>
+        /// Method to update slack channel table when a channel is added or updated in team.
+        /// </summary>
+        /// <param name="slackEvent"></param>
+        public void SlackChannelAdd(SlackEventApiAC slackEvent)
+        {
+
+            var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            if (channel == null)
+            {
+                slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
+                _slackChannelDetails.Insert(slackEvent.Event.Channel);
+            }
+            else
+            {
+                channel.Name = slackEvent.Event.Channel.Name;
+                _slackChannelDetails.Update(channel);
+            }
         }
     }
 }

@@ -12,44 +12,41 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-        'node_modules/jspdf/dist/jspdf.min.js',
-        'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js',
-        'node_modules/core-js/client/shim.min.js',
-        'node_modules/reflect-metadata/Reflect.js',
+                  'node_modules/jspdf/dist/jspdf.min.js',
+                  'node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js',
+                  'node_modules/core-js/client/shim.min.js',
+                  'node_modules/reflect-metadata/Reflect.js',
 
-        // System.js for module loading
-        'node_modules/systemjs/dist/system-polyfills.js',
-        'node_modules/systemjs/dist/system.src.js',
+                  // System.js for module loading
+                  'node_modules/systemjs/dist/system-polyfills.js',
+                  'node_modules/systemjs/dist/system.src.js',
 
-        // Zone.js dependencies
-        'node_modules/zone.js/dist/zone.js',
-        'node_modules/zone.js/dist/zone.js',
-        //'node_modules/zone.js/dist/jasmine-patch.js',
-        'node_modules/zone.js/dist/async-test.js',
-        'node_modules/zone.js/dist/fake-async-test.js',
+                  // Zone.js dependencies
+                    
+                    'node_modules/zone.js/dist/zone.js',
+                    'node_modules/zone.js/dist/proxy.js',
+                    'node_modules/zone.js/dist/sync-test.js',
+                    'node_modules/zone.js/dist/async-test.js',
+                    'node_modules/zone.js/dist/jasmine-patch.js',
+                    'node_modules/zone.js/dist/async-test.js',
+                    'node_modules/zone.js/dist/fake-async-test.js',
 
-        // RxJs.
-        { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
-        { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
+                  // RxJs.
+                  { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+                  { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
 
+                  'karma-test-shim.js',
 
-        'karma-test-shim.js',
+                   // paths loaded via module imports
+                   // Angular itself
+                  { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
+                  { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: true },
 
-         // paths loaded via module imports
-
-         // Angular itself
-        { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
-        { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: true },
-
-
-        // Our built application code
-        { pattern: 'app/**/*.ts', included: false, watched: true },
-        { pattern: 'app/**/*.js', included: false, watched: true },
-        { pattern: 'app/**/*.js.map', included: false, watched: true },
-        { pattern: 'app/**/*.html', included: false, watched: true },
-        //{ pattern: 'app/leaveReport/**/*.js', included: false, watched: true },
-        //{ pattern: 'app/leaveReport/**/*.js.map', included: false, watched: true },
-        //{ pattern: 'app/leaveReport/**/*.html', included: false, watched: true },
+                  // Our built application code
+                  { pattern: 'app/**/*.ts', included: false, watched: true },
+                  { pattern: 'app/**/*.js', included: false, watched: true },
+                  { pattern: 'app/**/*.js.map', included: false, watched: true },
+                  { pattern: 'app/**/*.html', included: false, watched: true }
         ],
 
 
@@ -75,6 +72,11 @@ module.exports = function (config) {
             dir: 'coverage/'
         },
 
+        // proxied base paths
+        proxies: {
+            // required for component assests fetched by Angular's compiler
+            "/app/": "/base//app/"
+        },
 
         // web server port
         port: 9876,
@@ -97,6 +99,7 @@ module.exports = function (config) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         // browsers: ['Chrome', 'Firefox', 'IE'],
         browsers: ['Chrome'],
+
 
 
         // Continuous Integration mode

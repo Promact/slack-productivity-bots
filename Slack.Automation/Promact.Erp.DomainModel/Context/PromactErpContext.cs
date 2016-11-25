@@ -27,6 +27,7 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<TaskMailDetails> TaskMailDetails { get; set; }
         public DbSet<TaskMail> TaskMail { get; set; }
         public DbSet<SlackUserDetails> SlackUserDetails { get; set; }
+        public DbSet<SlackBotUserDetail> SlackBotUserDetail { get; set; }
         public DbSet<SlackChannelDetails> SlackChannelDetails { get; set; }
 
         public static PromactErpContext Create()

@@ -6,7 +6,6 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Promact.Erp.Util;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Linq;
@@ -14,6 +13,7 @@ using System.Globalization;
 using Promact.Erp.DomainModel.DataRepository;
 using Autofac.Extras.NLog;
 using System.Net.Mail;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -22,18 +22,20 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IProjectUserCallRepository _projectUser;
         private readonly ILeaveRequestRepository _leaveRepository;
         private readonly IClient _client;
+        private readonly IStringConstantRepository _stringConstant;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
         public SlackRepository(ILeaveRequestRepository leaveRepository, 
             IProjectUserCallRepository projectUser, 
-            IClient client, 
+            IClient client, IStringConstantRepository stringConstant,
             IAttachmentRepository attachmentRepository, 
             IRepository<ApplicationUser> userManager)
         {
             _projectUser = projectUser;
             _leaveRepository = leaveRepository;
             _client = client;
+            _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
         }
@@ -96,11 +98,11 @@ namespace Promact.Core.Repository.SlackRepository
                                         }
                                         else
                                             // if user doesn't exist in OAuth server then user can't apply leave, will get this message
-                                            replyText = StringConstant.SorryYouCannotApplyLeave;
+                                            replyText = _stringConstant.SorryYouCannotApplyLeave;
                                     }
                                     else
                                         // if date is not proper than date format error message will be send to user
-                                        replyText = StringConstant.DateFormatErrorMessage;
+                                        replyText = _stringConstant.DateFormatErrorMessage;
                                 }
                                 break;
                             case LeaveType.sl:
@@ -117,7 +119,7 @@ namespace Promact.Core.Repository.SlackRepository
                                             newUser = await _projectUser.GetUserByUsername(slackRequest[4], accessToken);
                                         }
                                         else
-                                            replyText = StringConstant.AdminErrorMessageApplySickLeave;
+                                            replyText = _stringConstant.AdminErrorMessageApplySickLeave;
                                     }
                                     else
                                     {
@@ -145,23 +147,23 @@ namespace Promact.Core.Repository.SlackRepository
                                     }
                                     else
                                         // if user doesn't exist in OAuth server then user can't apply leave, will get this message
-                                        replyText += StringConstant.SorryYouCannotApplyLeave;
+                                        replyText += _stringConstant.SorryYouCannotApplyLeave;
                                 }
                                 break;
                         }
                     }
                     else
                         // if leave type is not proper than not of leave type format error message will be send to user
-                        replyText = StringConstant.NotTypeOfLeave;
+                        replyText = _stringConstant.NotTypeOfLeave;
                 }
                 else
                     // if date is not proper than date format error message will be send to user
-                    replyText = StringConstant.DateFormatErrorMessage;
+                    replyText = _stringConstant.DateFormatErrorMessage;
             }
             catch (SmtpException ex)
             {
                 // error message will be send to email. But leave will be applied
-                replyText = string.Format("{0}. {1}", StringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
+                replyText = string.Format("{0}. {1}", _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             }
             catch (Exception ex)
             {
@@ -192,7 +194,7 @@ namespace Promact.Core.Repository.SlackRepository
             else
             {
                 // if leave doesnot exit for that user
-                replyText = StringConstant.SlashCommandLeaveListErrorMessage;
+                replyText = _stringConstant.SlashCommandLeaveListErrorMessage;
             }
             return replyText;
         }
@@ -217,7 +219,7 @@ namespace Promact.Core.Repository.SlackRepository
             else
             {
                 // if leave doesn't exist or unauthorize trespass try to do
-                replyText = string.Format("{0}{1}{2}", StringConstant.LeaveDoesnotExist, StringConstant.OrElseString, StringConstant.CancelLeaveError);
+                replyText = string.Format("{0}{1}{2}", _stringConstant.LeaveDoesnotExist, _stringConstant.OrElseString, _stringConstant.CancelLeaveError);
             }
             return replyText;
         }
@@ -240,7 +242,7 @@ namespace Promact.Core.Repository.SlackRepository
             catch (Exception)
             {
                 // if leave doesn't exist 
-                replyText = StringConstant.SlashCommandLeaveStatusErrorMessage;
+                replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             }
             return replyText;
         }
@@ -258,7 +260,7 @@ namespace Promact.Core.Repository.SlackRepository
             // only pending status can be modified
             if (leave.Status == Condition.Pending)
             {
-                if (leaveResponse.Actions.Value == StringConstant.Approved)
+                if (leaveResponse.Actions.Value == _stringConstant.Approved)
                 {
                     leave.Status = Condition.Approved;
                 }
@@ -323,7 +325,7 @@ namespace Promact.Core.Repository.SlackRepository
             }
             else
                 // if string converting to integer return false then user will get cancel command error message
-                replyText = StringConstant.SlashCommandLeaveCancelErrorMessage;
+                replyText = _stringConstant.SlashCommandLeaveCancelErrorMessage;
             return replyText;
         }
 
@@ -378,7 +380,7 @@ namespace Promact.Core.Repository.SlackRepository
             else
             {
                 // if user doesn't exist in Oauth server
-                replyText = StringConstant.LeaveNoUserErrorMessage;
+                replyText = _stringConstant.LeaveNoUserErrorMessage;
             }
             return replyText;
         }
@@ -389,7 +391,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leave"></param>
         private string SlackLeaveHelp(SlashCommand leave)
         {
-            var replyText = StringConstant.SlackHelpMessage;
+            var replyText = _stringConstant.SlackHelpMessage;
             return replyText;
         }
 
@@ -438,11 +440,11 @@ namespace Promact.Core.Repository.SlackRepository
                 }
                 else
                     // if error in converting then user will get message to enter proper action command
-                    replyText = StringConstant.RequestToEnterProperAction;
+                    replyText = _stringConstant.RequestToEnterProperAction;
             }
             else
                 // if user doesn't exist then will get message of user doesn't exist and ask to externally logic from Oauth server
-                replyText = StringConstant.SorryYouCannotApplyLeave;
+                replyText = _stringConstant.SorryYouCannotApplyLeave;
             _client.SendMessage(leave, replyText);
         }
 
@@ -453,7 +455,7 @@ namespace Promact.Core.Repository.SlackRepository
         public void Error(SlashCommand leave)
         {
             // if something error will happen user will get this message
-            var replyText = string.Format("{0}{1}{2}{1}{3}", StringConstant.LeaveNoUserErrorMessage, Environment.NewLine, StringConstant.OrElseString, StringConstant.SlackErrorMessage);
+            var replyText = string.Format("{0}{1}{2}{1}{3}", _stringConstant.LeaveNoUserErrorMessage, Environment.NewLine, _stringConstant.OrElseString, _stringConstant.SlackErrorMessage);
             _client.SendMessage(leave, replyText);
         }
 
@@ -497,19 +499,19 @@ namespace Promact.Core.Repository.SlackRepository
                         }
                         else
                             // if date is not proper than date format error message will be send to user
-                            replyText = StringConstant.DateFormatErrorMessage;
+                            replyText = _stringConstant.DateFormatErrorMessage;
                     }
                     else
                         // if sick leave will doesn't exist for leaveId
-                        replyText = StringConstant.SickLeaveDoesnotExist;
+                        replyText = _stringConstant.SickLeaveDoesnotExist;
                 }
                 else
                     // if string converting to integer return false then user will get cancel command error message
-                    replyText = StringConstant.UpdateEnterAValidLeaveId;
+                    replyText = _stringConstant.UpdateEnterAValidLeaveId;
             }
             else
                 // if user is not admin then this message will be show to user
-                replyText = StringConstant.AdminErrorMessageUpdateSickLeave;
+                replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
             return replyText;
         }
     }

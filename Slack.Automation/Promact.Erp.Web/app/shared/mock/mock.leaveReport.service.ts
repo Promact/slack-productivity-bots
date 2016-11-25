@@ -1,16 +1,13 @@
-﻿
-import { TestConnection } from "./test.connection";
-import { Injectable } from '@angular/core';
-import { ResponseOptions, Response } from "@angular/http";
+﻿import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
 import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
 import { StringConstant } from '../stringConstant';
 
+
 @Injectable()
 
 export class MockLeaveReportService {
-
-    constructor(private connection: TestConnection, private stringConstant: StringConstant ) {  }
 
     getLeaveReports() {
         let mockLeaveReports = new Array<MockLeaveReport>();
@@ -21,8 +18,9 @@ export class MockLeaveReportService {
         mockLeaveReport.TotalSickLeave = 7;
         mockLeaveReport.TotalCasualLeave = 14;
         mockLeaveReports.push(mockLeaveReport)
-        let connection = this.getMockResponse(this.stringConstant.leaveReport, mockLeaveReports);
-        return connection;
+        return new BehaviorSubject(mockLeaveReports).asObservable();
+        //let connection = this.getMockResponse(this.stringConstant.leaveReport, mockLeaveReports);
+        //return connection;
     }
 
     getLeaveReportDetail(Id: string) {
@@ -34,19 +32,11 @@ export class MockLeaveReportService {
             mockLeaveReportDetail.LeaveFrom = "1/1/16";
             mockLeaveReportDetails.push(mockLeaveReportDetail)
         }
-        let connection = this.getMockResponse(this.stringConstant.leaveReportDetails +Id, mockLeaveReportDetails);
-        return connection;
+        return new BehaviorSubject(mockLeaveReportDetails).asObservable();
+        //let connection = this.getMockResponse(this.stringConstant.leaveReportDetails +Id, mockLeaveReportDetails);
+        //return connection;
     }
-
-
-    getMockResponse(api: string, mockBody: string  | Array<LeaveReport> | Array<LeaveReportDetail>) {
-        let connection = this.connection.mockConnection(api);
-        let response = new Response(new ResponseOptions({ body: mockBody }));
-
-        //sends mock response to connection
-        connection.mockRespond(response.json());
-        return connection.response;
-    }
+    
 }
 
 class MockLeaveReport extends LeaveReport {

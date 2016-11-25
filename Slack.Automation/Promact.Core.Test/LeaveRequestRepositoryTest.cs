@@ -3,6 +3,7 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Linq;
 using Xunit;
@@ -17,10 +18,15 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
+        private readonly IStringConstantRepository _stringConstant;
+        private LeaveRequest leave = new LeaveRequest();
+        
         public LeaveRequestRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
+            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            Initialize();
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var status = new Condition();
-            var leaves = _leaveRequestRepository.LeaveListByUserId(StringConstant.StringIdForTest);
+            var leaves = _leaveRequestRepository.LeaveListByUserId(_stringConstant.StringIdForTest);
             foreach (var leave in leaves)
             {
                 status = leave.Status;
@@ -81,7 +87,7 @@ namespace Promact.Core.Test
         public void LeaveListStatusByUserId()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(StringConstant.StringIdForTest);
+            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(_stringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Cancel, leaves.Status);
         }
 
@@ -151,7 +157,7 @@ namespace Promact.Core.Test
         {
             int Id = 0;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveListByUserId(StringConstant.StringIdForTest);
+            var leaves = _leaveRequestRepository.LeaveListByUserId(_stringConstant.StringIdForTest);
             foreach (var leave in leaves)
             {
                 Id = leave.Id;
@@ -166,7 +172,7 @@ namespace Promact.Core.Test
         public void LeaveListStatusByUserIdFalse()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(StringConstant.StringIdForTest);
+            var leaves = _leaveRequestRepository.LeaveListStatusByUserId(_stringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
@@ -215,7 +221,7 @@ namespace Promact.Core.Test
         public void NumberOfLeaveTakenFalseCasual()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(StringConstant.SlackChannelIdForTest);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
             Assert.Equal(0.0, casualLeave.CasualLeave);
         }
 
@@ -242,10 +248,25 @@ namespace Promact.Core.Test
         {
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(StringConstant.SlackChannelIdForTest);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
             Assert.Equal(0.0, casualLeave.CasualLeave);
         }
 
-        private LeaveRequest leave = new LeaveRequest() { FromDate = DateTime.UtcNow, EndDate = DateTime.UtcNow, Reason = StringConstant.LeaveReasonForTest, RejoinDate = DateTime.UtcNow, Status = Condition.Pending, Type = LeaveType.cl, CreatedOn = DateTime.UtcNow, EmployeeId = StringConstant.StringIdForTest };
+        /// <summary>
+        /// A method is used to initialize variables which are repetitively used
+        /// </summary>
+        public void Initialize()
+        {
+            leave.FromDate = DateTime.UtcNow;
+            leave.EndDate = DateTime.UtcNow;
+            leave.Reason = _stringConstant.LeaveReasonForTest;
+            leave.RejoinDate = DateTime.UtcNow;
+            leave.Status = Condition.Pending;
+            leave.Type = LeaveType.cl;
+            leave.CreatedOn = DateTime.UtcNow;
+            leave.EmployeeId = _stringConstant.StringIdForTest;
+        }
+
+     
     }
 }

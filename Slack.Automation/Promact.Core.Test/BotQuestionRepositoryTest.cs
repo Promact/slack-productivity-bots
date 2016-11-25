@@ -2,11 +2,9 @@
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Xunit;
 
 namespace Promact.Core.Test
@@ -15,10 +13,14 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly IBotQuestionRepository _botQuestionRepository;
+        private readonly IStringConstantRepository _stringConstant;
+        private Question question = new Question();
         public BotQuestionRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
+            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            Initialize();
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace Promact.Core.Test
         public void FindByTypeAndOrderNumber()
         {
             _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1,2);
+            var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1, 2);
             Assert.Equal(responseQuestion.QuestionStatement, question.QuestionStatement);
         }
 
@@ -87,7 +89,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _botQuestionRepository.AddQuestion(question);
             var responseQuestion = _botQuestionRepository.FindById(3);
-            Assert.NotEqual(StringConstant.TaskMailBotStatusErrorMessage, responseQuestion.QuestionStatement);
+            Assert.NotEqual(_stringConstant.TaskMailBotStatusErrorMessage, responseQuestion.QuestionStatement);
         }
 
         /// <summary>
@@ -111,18 +113,18 @@ namespace Promact.Core.Test
         {
             _botQuestionRepository.AddQuestion(question);
             var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1, 2);
-            Assert.NotEqual(responseQuestion.QuestionStatement, StringConstant.TaskMailBotStatusErrorMessage);
+            Assert.NotEqual(responseQuestion.QuestionStatement, _stringConstant.TaskMailBotStatusErrorMessage);
         }
 
         /// <summary>
-        /// Private variable
+        /// A method is used to initialize variables which are repetitively used
         /// </summary>
-        private Question question = new Question()
+        public void Initialize()
         {
-            CreatedOn = DateTime.UtcNow,
-            OrderNumber = 1,
-            QuestionStatement = StringConstant.FirstQuestionForTest,
-            Type = 2
-        };
+            question.CreatedOn = DateTime.UtcNow;
+            question.OrderNumber = 1;
+            question.QuestionStatement = _stringConstant.FirstQuestionForTest;
+            question.Type = 2;
+        }
     }
 }

@@ -17,8 +17,7 @@ namespace Promact.Erp.DomainModel.Models
         public string EmployeeId { get; set; }
         [Required]
         public DateTime AnswerDate { get; set; }
-        public ScrumAnswerStatus ScrumAnswerStatus { get; set; }
-
+    
         [ForeignKey("QuestionId")]
         public virtual Question Question { get; set; }
         [ForeignKey("ScrumId")]

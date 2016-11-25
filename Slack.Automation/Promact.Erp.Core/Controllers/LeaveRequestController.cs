@@ -2,7 +2,7 @@
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,12 +15,13 @@ namespace Promact.Erp.Core.Controllers
         private readonly ISlackRepository _slackRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
-
-        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository,  ILogger logger)
+        private readonly IStringConstantRepository _stringConstant;
+        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository,  ILogger logger, IStringConstantRepository stringConstant)
         {
             _slackRepository = slackRepository;
             _attachmentRepository = attachmentRepository;
             _logger = logger;
+            _stringConstant = stringConstant;
         }
 
         /**
@@ -59,7 +60,7 @@ namespace Promact.Erp.Core.Controllers
             catch (Exception ex)
             {
                 _slackRepository.Error(leave);
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 return BadRequest();
             }
@@ -88,7 +89,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", StringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw;
             }
