@@ -54,7 +54,7 @@ namespace Promact.Erp.Web
                         if (user != null)
                         { 
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
-                            {
+                            { 
                                 replyText = _taskMailRepository.StartTaskMail(user.Name, user.UserId).Result;
                             }
                             else
