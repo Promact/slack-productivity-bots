@@ -13,6 +13,8 @@ import { LoaderService } from "./shared/loader.service";
 
 import { TaskMailModule } from './taskmail/taskMail.module';
 import { LeaveModule } from './leaveReport/leaveReport.module';
+import { ScrumModule } from './ScrumReport/scrumReport.module';
+
 
 @NgModule({
     declarations: [AppComponent],
@@ -21,7 +23,8 @@ import { LeaveModule } from './leaveReport/leaveReport.module';
         HttpModule,
         routing,
         TaskMailModule,
-        LeaveModule
+        LeaveModule,
+        ScrumModule
     ],
     bootstrap: [AppComponent],
     providers: [StringConstant, LoaderService,{ provide: LocationStrategy, useClass: HashLocationStrategy }]

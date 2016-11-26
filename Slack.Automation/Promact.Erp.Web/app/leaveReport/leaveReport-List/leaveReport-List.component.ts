@@ -26,16 +26,16 @@ export class LeaveReportListComponent implements OnInit {
     getLeaveReports() {
         this.leaveReportService.getLeaveReports()
             .subscribe(
-            leaveReports => this.leaveReports = leaveReports,               
+            leaveReports => this.leaveReports = leaveReports,
             error => this.errorMessage = <any>error
-        );
+            );
         return this.leaveReports;
     }
 
-    leaveDetails(employeeId: string) {
-        let link = [this.stringConstant.detail, employeeId];
-        this.router.navigate(link);
-    }
+    //leaveDetails(employeeId: string) {
+    //    let link = ['/detail', employeeId];
+    //    this.router.navigate(link);
+    //}
 
     exportDataToPdf() {
         var columns = this.stringConstant.listColumns;
@@ -49,7 +49,7 @@ export class LeaveReportListComponent implements OnInit {
                 this.leaveReports[key].TotalCasualLeave,
                 this.leaveReports[key].UtilisedCasualLeave,
                 this.leaveReports[key].BalanceCasualLeave
-                ]);
+            ]);
         };
 
         var doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
@@ -63,5 +63,5 @@ export class LeaveReportListComponent implements OnInit {
             },
         });
         doc.save(this.stringConstant.save);
-    }    
+    }
 }

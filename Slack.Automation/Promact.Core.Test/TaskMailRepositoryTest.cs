@@ -3,7 +3,7 @@ using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.HttpClientRepository;
-using Promact.Core.Repository.ProjectUserCall;
+//using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -31,7 +31,7 @@ namespace Promact.Core.Test
         private readonly IRepository<TaskMailDetails> _taskMailDetailsDataRepository;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly IProjectUserCallRepository _projectUserRepository;
+   //     private readonly IOauthCallsRepository _oauthCallsRepository;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         private Question firstQuestion = new Question();
@@ -56,7 +56,7 @@ namespace Promact.Core.Test
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _taskMailDataRepository = _componentContext.Resolve<IRepository<TaskMail>>();
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
-            _projectUserRepository = _componentContext.Resolve<IProjectUserCallRepository>();
+          //  _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
             Initialize();
