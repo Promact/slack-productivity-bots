@@ -248,7 +248,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
             ProjectAc project = new ProjectAc();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.GetProjectDetails,projectId);
+            var requestUrl = string.Format("{0}{1}", projectId,_stringConstant.GetProjectDetails);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if(response != null)
             {

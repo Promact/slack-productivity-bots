@@ -2080,7 +2080,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "allProjects/";
+                return "list";
             }
         }
 
@@ -2088,7 +2088,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "projectDetails/";
+                return "/detail";
             }
         }
 

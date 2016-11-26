@@ -131,6 +131,7 @@
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
+    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackBotUserDetail.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />
@@ -152,11 +153,9 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashCommand.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashIncomingWebhook.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashResponse.cs" />
-    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailUserAc.cs" />
-    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="ApplicationClass\UserRoleAc.cs" />
     <Compile Include="Context\PromactErpContext.cs" />

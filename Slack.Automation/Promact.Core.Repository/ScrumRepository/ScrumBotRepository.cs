@@ -310,7 +310,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             // get access token of user for promact oauth server
                             var accessToken = await _attachmentRepository.AccessToken(applicationUser.UserName);
                             List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
-                            List<User> employees = await _projectUser.GetUsersByGroupName(groupName, accessToken);
+                            List<User> employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
 
                             ScrumStatus scrumStatus = FetchScrumStatus(groupName, accessToken, null, employees, questions).Result;
 

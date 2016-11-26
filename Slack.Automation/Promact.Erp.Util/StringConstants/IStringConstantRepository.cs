@@ -262,13 +262,6 @@ namespace Promact.Erp.Util.StringConstants
         string SlashCommandUpdateInValidId { get; }
         string ErrorOfEmailServiceFailureTaskMail { get; }
         string AdminErrorMessageApplySickLeave { get; }
-        string PersonNotAvailable { get; }
-        string FormatForDate { get; }
-        string ScrumFirstQuestion { get; }
-        string ScrumSecondQuestion { get; }
-        string ScrumThirdQuestion { get; }
-        string AllProjectUrl { get; }
-        string GetProjectDetails { get; }
         string UserNotFound { get; }
         string BotNotFound { get; }
         string PersonNotAvailable { get; }
@@ -316,7 +309,6 @@ namespace Promact.Erp.Util.StringConstants
         string NextQuestion { get; }
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
-        string UpdateAnswer { get; }
         string AdminLogin { get; }
         string TeamLeaderLogin { get;}
         string EmployeeLogin { get; }

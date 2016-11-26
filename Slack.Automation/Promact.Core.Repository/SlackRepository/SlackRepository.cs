@@ -28,7 +28,7 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
 
-        public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository, IClient client, IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
+        public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository, ISlackUserRepository slackUserRepository, IClient client, IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager)
         {
             _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
