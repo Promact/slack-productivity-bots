@@ -140,7 +140,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("For leave apply: /leaves apply [LeaveType: sl/cl] [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
+                return string.Format("For leave apply: /leaves apply [LeaveType: sl/cl] [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance{0}For sick leave update: /leaves update [leave id] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]", Environment.NewLine);
             }
         }
         public string SlackErrorMessage
