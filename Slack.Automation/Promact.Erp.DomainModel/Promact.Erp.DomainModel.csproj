@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationClass\EmailApplication.cs" />
+    <Compile Include="ApplicationClass\EmployeeScrumDetails.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
     <Compile Include="ApplicationClass\LeaveAllowed.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
+    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackBotUserDetail.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />

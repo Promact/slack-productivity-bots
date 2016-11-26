@@ -125,9 +125,10 @@
     <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
     <Compile Include="OAuthLoginRepositoryTest.cs" />
-    <Compile Include="ProjectUserRepositoryTest.cs" />
+    <Compile Include="OauthCallsRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrumBotRepositoryTest.cs" />
+    <Compile Include="ScrumReportRepositoryTest.cs" />
     <Compile Include="SlackChannelRepositoryTest.cs" />
     <Compile Include="SlackRepositoryTest.cs" />
     <Compile Include="SlackUserRepositoryTest.cs" />
