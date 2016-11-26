@@ -118,7 +118,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         if (IsAdmin)
                                         {
                                             // get user details from oAuth server for other user
-                                            newUser = await _projectUser.GetUserByUserId(slackRequest[4], accessToken);
+                                            newUser = await _projectUser.GetUserByUserId(_slackUserRepository.GetBySlackName(slackRequest[4]).UserId, accessToken);
                                         }
                                         else
                                             replyText = _stringConstant.AdminErrorMessageApplySickLeave;

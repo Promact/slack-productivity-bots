@@ -32,11 +32,11 @@ namespace Promact.Core.Repository.Client
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository,ISlackUserRepository slackUserRepository)
         {
+            _stringConstant = stringConstant;
             _chatUpdateMessage = new HttpClient();
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _projectUser = projectUser;
             _email = email;
-            _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
             _envVariableRepository = envVariableRepository;
@@ -183,8 +183,16 @@ namespace Promact.Core.Repository.Client
                 var textJson = JsonConvert.SerializeObject(text);
                 WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
                 EmailApplication email = new EmailApplication();
-                // creating email templates corresponding to leave applied
-                email.Body = EmailServiceTemplate(leaveRequest);
+                if (leaveRequest.EndDate != null)
+                {
+                    // creating email templates corresponding to leave applied for casual leave
+                    email.Body = EmailServiceTemplate(leaveRequest);
+                }
+                else
+                {
+                    // creating email templates corresponding to leave applied for casual leave
+                    email.Body = EmailServiceTemplateSickLeave(leaveRequest);
+                }
                 email.From = userDetail.Email;
                 email.Subject = _stringConstant.EmailSubject;
                 email.To = teamLeader.Email;
@@ -208,11 +216,40 @@ namespace Promact.Core.Repository.Client
             WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
             EmailApplication email = new EmailApplication();
             // creating email templates corresponding to leave applied
-            email.Body = EmailServiceTemplate(leaveRequest);
+            email.Body = EmailServiceTemplateSickLeave(leaveRequest);
             email.From = managementEmail;
             email.Subject = _stringConstant.EmailSubject;
             email.To = user.Email;
             _email.Send(email);
+        }
+
+        /// <summary>
+        /// Method to generate template body
+        /// </summary>
+        /// <param name="leaveRequest">LeaveRequest template object</param>
+        /// <returns>template emailBody as string</returns>
+        private string EmailServiceTemplateSickLeave(LeaveRequest leaveRequest)
+        {
+            try
+            {
+                SickLeaveApplication leaveTemplate = new SickLeaveApplication();
+                // Assigning Value in template page
+                leaveTemplate.Session = new Dictionary<string, object>
+            {
+                {_stringConstant.FromDate,leaveRequest.FromDate.ToString(_stringConstant.DateFormat) },
+                {_stringConstant.Reason,leaveRequest.Reason },
+                {_stringConstant.Type,leaveRequest.Type.ToString() },
+                {_stringConstant.Status,leaveRequest.Status.ToString() },
+                {_stringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(_stringConstant.DateFormat) },
+            };
+                leaveTemplate.Initialize();
+                var emailBody = leaveTemplate.TransformText();
+                return emailBody;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
