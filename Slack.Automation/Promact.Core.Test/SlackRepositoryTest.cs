@@ -477,6 +477,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void LeaveApplyForSLForUser()
         {
+            _slackUserRepository.AddSlackUser(slackUser);
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
