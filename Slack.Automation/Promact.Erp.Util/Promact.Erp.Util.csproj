@@ -57,6 +57,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LeaveApproveAndRejected.tt</DependentUpon>
     </Compile>
+    <Compile Include="Email Templates\SickLeaveApplication.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SickLeaveApplication.tt</DependentUpon>
+    </Compile>
     <Compile Include="Email Templates\TaskMail.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -83,6 +88,10 @@
     <Content Include="Email Templates\LeaveApproveAndRejected.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>LeaveApproveAndRejected.cs</LastGenOutput>
+    </Content>
+    <Content Include="Email Templates\SickLeaveApplication.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>SickLeaveApplication.cs</LastGenOutput>
     </Content>
     <Content Include="Email Templates\TaskMail.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
