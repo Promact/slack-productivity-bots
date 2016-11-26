@@ -19,7 +19,7 @@ namespace Promact.Erp.Web
         private static IStringConstantRepository _stringConstant;
         private static IScrumBotRepository _scrumBotRepository;
         private static IEnvironmentVariableRepository _environmentVariableRepository;
-        
+
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -51,13 +51,20 @@ namespace Promact.Erp.Web
                         var user = _slackUserDetails.GetById(message.user);
                         string replyText = "";
                         var text = message.text;
-                        if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
+                        if (user != null)
                         {
-                            replyText = _taskMailRepository.StartTaskMail(user.Name,user.UserId).Result;
+                            if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
+                            {
+                                replyText = _taskMailRepository.StartTaskMail(user.Name, user.UserId).Result;
+                            }
+                            else
+                            {
+                                replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text, user.UserId).Result;
+                            }
                         }
                         else
                         {
-                            replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text,user.UserId).Result;
+                            replyText = _stringConstant.NoSlackDetails;
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
@@ -75,7 +82,7 @@ namespace Promact.Erp.Web
             }
         }
 
-        
+
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
