@@ -73,7 +73,7 @@ describe('TaskReport Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
-        expect(taskMailDetailsComponent.taskMailUser.length).toBe(1);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 });
 
