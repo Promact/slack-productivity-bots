@@ -638,17 +638,7 @@ namespace Promact.Core.Test
 
         #region AddScrumAnswer Test Cases 
 
-
-        /// <summary>
-        /// Not is Slack
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async void NoSlackDetails()
-        {
-            var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Scrum);
-            Assert.Equal(msg, _stringConstant.NoSlackDetails);
-        }
-
+             
 
         /// <summary>
         /// Method AddScrumAnswer Testing without registered user
