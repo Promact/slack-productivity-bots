@@ -391,8 +391,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
-            if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
+            List<UserRoleAc> userRoleAc = await _oauthCallsRepository.GetUserRole(user.Id, accessToken);
+            var role = userRoleAc.FirstOrDefault(x => x.UserName == user.UserName).Role;
+            List<TaskMailReportAc> taskMailReportListAc = new List<TaskMailReportAc>();
+            if (role == _stringConstant.RoleAdmin)
             {
                 foreach (var userRole in userRoleAcList)
                 {
@@ -482,7 +484,9 @@ namespace Promact.Core.Repository.TaskMailRepository
 
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<UserRoleAc> userRoles = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
+                List<UserRoleAc> userRoles = await _oauthCallsRepository.GetListOfEmployee(user.Id, accessToken);
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
                 foreach (var userRole in userRoles)
                 {
                     List<TaskMail> taskMailList = (await _taskMail.FetchAsync(y => y.EmployeeId == userRole.UserId)).ToList();
@@ -589,8 +593,10 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<UserRoleAc> userRolesAcList = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
-                foreach (var userRoleAc in userRolesAcList)
+                List<UserRoleAc> userRolesAc = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
+                foreach (var userRoleAc in userRolesAc)
                 {
                    var taskMailsRecodes = await _taskMail.FetchAsync(y => y.EmployeeId == userRoleAc.UserId);
                     if (taskMailsRecodes.Count() != 0)
@@ -703,7 +709,10 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<UserRoleAc> usersRole = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
+                List<UserRoleAc> usersRole = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
+                DateTime? minDate = null;
+                DateTime? maxDate = null;
+
                 foreach (var userRole in usersRole)
                 {
                    var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userRole.UserId);
