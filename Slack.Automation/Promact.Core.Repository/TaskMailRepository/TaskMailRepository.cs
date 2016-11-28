@@ -589,7 +589,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<UserRoleAc> userRolesAc = await _projectUserRepository.GetListOfEmployee(user.UserName, accessToken);
+                List<UserRoleAc> userRolesAc = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var userRoleAc in userRolesAc)
