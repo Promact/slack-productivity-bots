@@ -157,9 +157,9 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl,requestUrl,_stringConstant.TestAccessToken)).Returns(response);
-            var userDetails = _oauthCallsRepository.GetUserByEmployeeId(_stringConstant.EmployeeIdForTest,_stringConstant.TestAccessToken).Result;
-            Assert.Equal(userDetails.UserName,_stringConstant.TestUserName); 
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
+            var userDetails = _oauthCallsRepository.GetUserByEmployeeIdAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
+            Assert.Equal(userDetails.UserName, _stringConstant.TestUserName);
         }
 
         /// <summary>
