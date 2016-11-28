@@ -4,7 +4,7 @@
 @Injectable()
 export class StringConstant {
     constructor() { }
-    leaveReport = "api/";
+    leaveReport = "api/leaveReport";
     serverError = 'Server error';
     listColumns = ["Employee Name", "Employee Username", "Role", "Total Sick Leave", "Total Casual Leave", "Utilised Casual Leave", "Balance Casual Leave", "Utilised Sick Leave", "Balance Sick Leave"];
     theme = 'plain';
@@ -29,6 +29,6 @@ export class StringConstant {
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";
     noLeaves = "No employee has any approved leaves";
-    noDetails = "No details to show";  
+    noDetails = "No details to show";
     noProjectToDisplay = "No projects to display";
 }

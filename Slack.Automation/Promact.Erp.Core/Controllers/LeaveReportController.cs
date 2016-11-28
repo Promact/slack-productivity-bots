@@ -8,23 +8,21 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    [RoutePrefix("api")]
+    [RoutePrefix("api/leaveReport")]
     public class LeaveReportController : WebApiBaseController
     {
         #region Private Variables 
         private readonly ILeaveReportRepository _leaveReport;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly ILogger _logger;
         private readonly ApplicationUserManager _userManager;
         #endregion
 
         #region Constructor
-        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager, ILogger logger)
+        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
         {
             _leaveReport = leaveReport;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
-            _logger = logger;
         }
         #endregion
 
@@ -54,17 +52,9 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<IHttpActionResult> LeaveReport()
         {
-            try
-            {
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-                var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.ToString());
-                throw ex;
-            }
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
+            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
         }
 
 
