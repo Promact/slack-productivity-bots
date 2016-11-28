@@ -622,6 +622,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task GetAllEmployeeAsync()
         {
+
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
@@ -634,6 +635,7 @@ namespace Promact.Core.Test
 
             var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
             Assert.Equal(0, result.Count);
+            //Assert.Equal(3, result.Count);
         }
 
 
