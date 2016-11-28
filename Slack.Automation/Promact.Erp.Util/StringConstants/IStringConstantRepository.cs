@@ -303,6 +303,7 @@ namespace Promact.Erp.Util.StringConstants
         string NextQuestion { get; }
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
+        string WrongActionSlashCommand { get; }
 
         #endregion
 
