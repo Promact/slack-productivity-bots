@@ -231,7 +231,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "projectUsersById/";
+                return "/project";
             }
         }
         public string ProjectUserDetailsUrl
@@ -259,14 +259,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userDetail/";
+                return "/detail";
             }
         }
         public string LoginUserDetail
         {
             get
             {
-                return "getByUserName/";
+                return "/details";
             }
         }
         public string ThankYou

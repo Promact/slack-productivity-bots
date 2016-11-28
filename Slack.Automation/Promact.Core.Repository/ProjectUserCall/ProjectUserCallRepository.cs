@@ -112,7 +112,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<User> GetUserByEmployeeId(string employeeId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, employeeId);
+            var requestUrl = string.Format("{0}{1}", employeeId, _stringConstant.UserDetailUrl);
             var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -148,7 +148,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<User> GetUserByUserName(string userName, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, userName);
+            var requestUrl = string.Format("{0}{1}", userName, _stringConstant.LoginUserDetail);
             var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -168,7 +168,7 @@ namespace Promact.Core.Repository.ProjectUserCall
         public async Task<List<User>> GetProjectUsersByTeamLeaderId(string teamLeaderId, string accessToken)
         {
             List<User> projectUsers = new List<User>();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectUsersByTeamLeaderId, teamLeaderId);
+            var requestUrl = string.Format("{0}{1}", teamLeaderId,_stringConstant.ProjectUsersByTeamLeaderId);
             var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {
