@@ -11,7 +11,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
 
         string SlackOAuthClientId { get; }
 
-        string Port { get; }
+        int Port { get; }
 
         string From { get; }
 
