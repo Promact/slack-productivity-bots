@@ -618,7 +618,7 @@ namespace Promact.Core.Test
                             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                             .SelectMany(element => element).ToList();
             var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
             _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
             _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
