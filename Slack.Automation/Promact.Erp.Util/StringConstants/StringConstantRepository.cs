@@ -2275,5 +2275,12 @@ namespace Promact.Erp.Util.StringConstants
                 return "9";
             }
         }
+        public string WrongActionSlashCommand
+        {
+            get
+            {
+                return "applied cl Testing 14-09-2016 14-09-2016 14-09-2016";
+            }
+        }
     }
 }
