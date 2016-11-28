@@ -1,9 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import {Router, ActivatedRoute } from '@angular/router';
 import { TaskService }   from '../taskmail.service';
-
 import { TaskMailModel } from '../taskmail.model';
-
 import { TaskMailStatus } from '../../enums/TaskMailStatus';
 import { LoaderService } from '../../shared/loader.service';
 import {StringConstant} from '../../shared/stringConstant';
@@ -14,7 +12,7 @@ import {StringConstant} from '../../shared/stringConstant';
 })
 export class TaskMailListComponent implements OnInit {
     taskMailUsers: Array<TaskMailModel>;
-    constructor(private router: Router, private taskService: TaskService, private loader: LoaderService, private stringConstant: StringConstant) {
+    constructor(private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
 
     }
 
@@ -24,7 +22,7 @@ export class TaskMailListComponent implements OnInit {
         
     }
     getListOfEmployee() {
-
+        this.loader.loader = true;
         this.taskService.getListOfEmployee().subscribe((result) => {
 
             if (result.length > 0)

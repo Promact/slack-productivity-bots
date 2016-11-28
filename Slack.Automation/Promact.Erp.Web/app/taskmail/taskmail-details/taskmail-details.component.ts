@@ -22,7 +22,7 @@ export class TaskMailDetailsComponent implements OnInit {
     public MaxDate: string;
     public MinDate: string;
     public IsHide: boolean;
-    constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private spinner: SpinnerService, private stringConstant: StringConstant) {
+    constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
         this.taskMailDetails = new Array<TaskMailDetailsModel>();
 
     }
@@ -32,6 +32,7 @@ export class TaskMailDetailsComponent implements OnInit {
         
     }
     getTaskMailDetails() {
+        this.loader.loader = true;
         this.route.params.subscribe(params => {
             if (params['UserRole'] === this.stringConstant.RoleAdmin) {
                 this.IsHide = false;

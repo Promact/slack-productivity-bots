@@ -72,7 +72,7 @@ describe('TaskReport Detials Tests', () => {
     it('Shows details of task mail report for an employee on Selected Date', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
         let taskMailDetailsComponent = fixture.componentInstance;
-        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016","10-09-2016");
+        taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 });
