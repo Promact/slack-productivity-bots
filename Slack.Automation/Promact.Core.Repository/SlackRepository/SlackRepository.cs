@@ -187,13 +187,20 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 foreach (var leave in leaveList)
                 {
-                    replyText += string.Format("{0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
+                    if (leave.Type == LeaveType.cl)
+                    {
+                        replyText += string.Format("Casual leave {0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
+                    }
+                    else
+                    {
+                        replyText += string.Format("Sick leave {0} {1} {2} {3} {4}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.Status, System.Environment.NewLine);
+                    }
                 }
             }
             else
             {
                 // if leave doesnot exit for that user
-                replyText = _stringConstant.SlashCommandLeaveListErrorMessage;
+                replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             }
             return replyText;
         }
@@ -236,7 +243,14 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 // get only last leave of the user
                 var leave = _leaveRepository.LeaveListStatusByUserId(user.Id);
-                replyText = string.Format("Your leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
+                if (leave.Type == LeaveType.cl)
+                {
+                    replyText = string.Format("Casual leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
+                }
+                else
+                {
+                    replyText = string.Format("Sick leave Id no: {0} From {1} for {2} is {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.Reason, leave.Status);
+                }
             }
             catch (Exception)
             {
