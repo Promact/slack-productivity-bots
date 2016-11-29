@@ -2,7 +2,6 @@
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
-using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -28,7 +27,7 @@ namespace Promact.Erp.Core.Controllers
 
         #region Public methods
         /**
-       * @api {get} api
+       * @api {get} api/leaveReport
        * @apiVersion 1.0.0
        * @apiName GetLeaveReport
        * @apiGroup LeaveReport    
@@ -59,7 +58,7 @@ namespace Promact.Erp.Core.Controllers
 
 
         /**
-        * @api {get} api/{id}
+        * @api {get} api/leaveReport/{id}
         * @apiVersion 1.0 
         * @apiName GetLeaveReportDetails
         * @apiGroup LeaveReport
