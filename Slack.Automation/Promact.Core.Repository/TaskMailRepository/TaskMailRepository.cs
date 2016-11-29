@@ -172,12 +172,29 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     {
                                         // if previous question was hour of task and it was not null/wrong value then answer will ask next question
                                         var hour = Convert.ToDecimal(answer);
+                                        decimal totalHourSpented = 0;
                                         // checking range of hours
                                         if (hour > 0 && hour <= 8)
                                         {
-                                            taskDetails.Hours = hour;
-                                            questionText = nextQuestion.QuestionStatement;
-                                            taskDetails.QuestionId = nextQuestion.Id;
+                                            var todayTaskMail = _taskMail.Fetch(x => x.EmployeeId == taskMail.EmployeeId && x.CreatedOn.Date == DateTime.UtcNow.Date);
+                                            foreach (var item in todayTaskMail)
+                                            {
+                                                var recentTask = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
+                                                totalHourSpented += recentTask.Hours;
+                                            }
+                                            if (totalHourSpented < 8)
+                                            {
+                                                taskDetails.Hours = hour;
+                                                questionText = nextQuestion.QuestionStatement;
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                            }
+                                            else
+                                            {
+                                                nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(6, 2);
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                                questionText = string.Format("{0} {1} {2} {3}{4}{5}", _stringConstant.HourLimitExceed, _stringConstant.HourLeftMessage, (8 - totalHourSpented), _stringConstant.TaskMailHours, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                taskDetails.Comment = _stringConstant.StartWorking;
+                                            }
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again

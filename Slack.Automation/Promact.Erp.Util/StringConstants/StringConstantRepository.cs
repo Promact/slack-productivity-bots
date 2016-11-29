@@ -2243,5 +2243,29 @@ namespace Promact.Erp.Util.StringConstants
                 return "angular";
             }
         }
+
+        public string HourLimitExceed
+        {
+            get
+            {
+                return "Your daily limit of task is 8 hour.";
+            }
+        }
+
+        public string HourLeftMessage
+        {
+            get
+            {
+                return "For today you are only left with";
+            }
+        }
+
+        public string StartWorking
+        {
+            get
+            {
+                return "Just start working";
+            }
+        }
     }
 }
