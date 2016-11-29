@@ -29,18 +29,18 @@ namespace Promact.Erp.Util.Email_Templates
         public virtual string TransformText()
         {
             this.Write("\r\n");
-            this.Write("\n\n<!DOCTYPE> \n<html>\n<head>\n</head>\n<body>\n    Daily Task Mail ");
+            this.Write("\r\n<!DOCTYPE> \r\n<html>\r\n<head>\r\n</head>\r\n<body>\r\n    Daily Task Mail ");
             
-            #line 7 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(DateTime.UtcNow.Date));
+            #line 14 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(DateTime.UtcNow.Date.ToShortDateString()));
             
             #line default
             #line hidden
-            this.Write("\n    <table>\n\t\t<tr>\n\t\t\t<td>\n\t\t\t\t<b>Sl. No.</b>\n\t\t\t</td>\n\t\t\t<td>\n\t\t\t\t<b>Descriptio" +
-                    "n</b>\n\t\t\t</td>\n\t\t\t<td>\n\t\t\t\t<b>Hours</b>\n\t\t\t</td>\n\t\t\t<td>\n\t\t\t\t<b>Comment</b>\n\t\t\t<" +
-                    "/td>\n\t\t\t<td>\n\t\t\t\t<b>Status</b>\n\t\t\t</td>\n        </tr>\n\t\t\t\t");
+            this.Write("\r\n    <table>\r\n\t\t<tr>\r\n\t\t\t<td>\r\n\t\t\t\t<b>Sl. No.</b>\r\n\t\t\t</td>\r\n\t\t\t<td>\r\n\t\t\t\t<b>Des" +
+                    "cription</b>\r\n\t\t\t</td>\r\n\t\t\t<td>\r\n\t\t\t\t<b>Hours</b>\r\n\t\t\t</td>\r\n\t\t\t<td>\r\n\t\t\t\t<b>Com" +
+                    "ment</b>\r\n\t\t\t</td>\r\n\t\t\t<td>\r\n\t\t\t\t<b>Status</b>\r\n\t\t\t</td>\r\n        </tr>\r\n\t\t\t\t");
             
-            #line 7 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 33 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
 
 				int i = 0;
             foreach (var item in Descriptions)
@@ -50,51 +50,51 @@ namespace Promact.Erp.Util.Email_Templates
             
             #line default
             #line hidden
-            this.Write("\n        <tr>\n            <td>\n\t\t\t\t");
+            this.Write("        <tr>\r\n            <td>\r\n\t\t\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 41 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(i));
             
             #line default
             #line hidden
-            this.Write("\n\t\t\t</td>\n            <td>\n\t\t\t\t");
+            this.Write("\r\n\t\t\t</td>\r\n            <td>\r\n\t\t\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 44 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Description));
             
             #line default
             #line hidden
-            this.Write("\n\t\t\t</td>\n            <td>\n\t\t\t\t");
+            this.Write("\r\n\t\t\t</td>\r\n            <td>\r\n\t\t\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 47 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Hours));
             
             #line default
             #line hidden
-            this.Write("\n\t\t\t</td>\n\t\t\t<td>\n\t\t\t\t");
+            this.Write("\r\n\t\t\t</td>\r\n\t\t\t<td>\r\n\t\t\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 50 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Comment));
             
             #line default
             #line hidden
-            this.Write("\n\t\t\t</td>\n            <td>\n\t\t\t\t");
+            this.Write("\r\n\t\t\t</td>\r\n            <td>\r\n\t\t\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 53 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Status));
             
             #line default
             #line hidden
-            this.Write("\n\t\t\t</td>\n        </tr>\n\t\t");
+            this.Write("\r\n\t\t\t</td>\r\n        </tr>\r\n\t\t");
             
-            #line 12 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
+            #line 56 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\TaskMail.tt"
 
     } 
 
             
             #line default
             #line hidden
-            this.Write("\n    </table>\n</body>");
+            this.Write("    </table>\r\n</body>");
             return this.GenerationEnvironment.ToString();
         }
         
