@@ -388,7 +388,7 @@ namespace Promact.Core.Repository.SlackRepository
                 var casualLeaveLeft = allowedLeave.CasualLeave - casualLeaveTaken;
                 var sickLeaveLeft = allowedLeave.SickLeave - sickLeaveTaken;
                 replyText = string.Format("You have taken {0} casual leave out of {1}{2}You have casual leave left {3}", casualLeaveTaken, allowedLeave.CasualLeave, Environment.NewLine, casualLeaveLeft);
-                replyText += string.Format("{2}You have taken {0} sick leave out of {1}{2}You have sick leave left {3}", casualLeaveTaken, allowedLeave.SickLeave, Environment.NewLine, sickLeaveLeft);
+                replyText += string.Format("{2}You have taken {0} sick leave out of {1}{2}You have sick leave left {3}", sickLeaveTaken, allowedLeave.SickLeave, Environment.NewLine, sickLeaveLeft);
             }
             else
             {
