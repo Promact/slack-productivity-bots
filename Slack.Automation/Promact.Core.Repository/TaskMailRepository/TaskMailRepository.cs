@@ -182,7 +182,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 var recentTask = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
                                                 totalHourSpented += recentTask.Hours;
                                             }
-                                            if (totalHourSpented < 8)
+                                            totalHourSpented += hour;
+                                            if (totalHourSpented <= 8)
                                             {
                                                 taskDetails.Hours = hour;
                                                 questionText = nextQuestion.QuestionStatement;
@@ -192,7 +193,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             {
                                                 nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(6, 2);
                                                 taskDetails.QuestionId = nextQuestion.Id;
-                                                questionText = string.Format("{0} {1} {2} {3}{4}{5}", _stringConstant.HourLimitExceed, _stringConstant.HourLeftMessage, (8 - totalHourSpented), _stringConstant.TaskMailHours, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                questionText = string.Format("{0}{1}{2}", _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
                                                 taskDetails.Comment = _stringConstant.StartWorking;
                                             }
                                         }

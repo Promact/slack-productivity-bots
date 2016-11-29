@@ -2248,15 +2248,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Your daily limit of task is 8 hour.";
-            }
-        }
-
-        public string HourLeftMessage
-        {
-            get
-            {
-                return "For today you are only left with";
+                return "Your daily limit of task is 8 hour. For today you can't add task. Your working hour is exceeded";
             }
         }
 
@@ -2265,6 +2257,22 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Just start working";
+            }
+        }
+
+        public string HourSpentForTesting
+        {
+            get
+            {
+                return "5";
+            }
+        }
+
+        public string HourSpentExceeded
+        {
+            get
+            {
+                return "9";
             }
         }
     }

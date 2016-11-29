@@ -31,7 +31,7 @@ namespace Promact.Core.Test
         private readonly IRepository<TaskMailDetails> _taskMailDetailsDataRepository;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly IStringConstantRepository _stringConstant;
-   //     private readonly IOauthCallsRepository _oauthCallsRepository;
+        //     private readonly IOauthCallsRepository _oauthCallsRepository;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         private Question firstQuestion = new Question();
@@ -56,7 +56,7 @@ namespace Promact.Core.Test
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _taskMailDataRepository = _componentContext.Resolve<IRepository<TaskMail>>();
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
-          //  _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
+            //  _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
             Initialize();
@@ -574,7 +574,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-          
+
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
@@ -744,6 +744,62 @@ namespace Promact.Core.Test
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
+        }
+
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started after second question for exceed then 8 hour
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void QuestionAndAnswerAfterSecondAnswerExceedHours()
+        {
+            await mockAndUserCreate();
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            _botQuestionRepository.AddQuestion(secondQuestion);
+            _botQuestionRepository.AddQuestion(thirdQuestion);
+            _botQuestionRepository.AddQuestion(SixthQuestion);
+            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = secondQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            TaskMail newTaskMail = new TaskMail()
+            {
+                CreatedOn = DateTime.UtcNow,
+                EmployeeId = _stringConstant.StringIdForTest
+            };
+            _taskMailDataRepository.Insert(newTaskMail);
+            _taskMailDataRepository.Save();
+            TaskMailDetails newTaskMailDetails = new TaskMailDetails();
+            newTaskMailDetails.TaskId = newTaskMail.Id;
+            newTaskMailDetails.QuestionId = secondQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var expectedResponse = string.Format("{0}{1}{2}", _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
+            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
+            Assert.Equal(response, expectedResponse);
+        }
+
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started after second question
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void QuestionAndAnswerAfterSecondAnswerForLimitExceedAnswer()
+        {
+            await mockAndUserCreate();
+            _slackUserRepository.AddSlackUser(slackUserDetails);
+            _botQuestionRepository.AddQuestion(secondQuestion);
+            _botQuestionRepository.AddQuestion(thirdQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = secondQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
+            var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
+            Assert.Equal(response, text);
         }
 
 
