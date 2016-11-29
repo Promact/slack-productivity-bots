@@ -109,18 +109,18 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                     }
                     else
-                        replyText = await AddScrumAnswer(user.Name, message, channel.Name,user.UserId);
+                        replyText = await AddScrumAnswer(user.Name, message, channel.Name, user.UserId);
                 }
                 //all other texts
                 else
-                    replyText = await AddScrumAnswer(user.Name, message, channel.Name,user.UserId);
+                    replyText = await AddScrumAnswer(user.Name, message, channel.Name, user.UserId);
             }
             //If channel is not registered in the database
             else if (user != null)
             {
                 //If channel is not registered in the database and the command encountered is "add channel channelname"
                 if (channel == null && String.Compare(messageArray[0], _stringConstant.Add, true) == 0 && String.Compare(messageArray[1], _stringConstant.Channel, true) == 0)
-                    replyText = AddChannelManually(messageArray[2], user.Name, channelId,user.UserId).Result;
+                    replyText = AddChannelManually(messageArray[2], user.Name, channelId, user.UserId).Result;
                 else
                     replyText = _stringConstant.ChannelAddInstruction;
             }
@@ -149,7 +149,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="groupName"></param>
         /// <param name="userId"></param>
         /// <returns>the next question statement</returns>
-        private async Task<string> AddScrumAnswer(string userName, string message, string groupName,string userId)
+        private async Task<string> AddScrumAnswer(string userName, string message, string groupName, string userId)
         {
             string reply = string.Empty;
             //today's scrum of the group 
@@ -176,7 +176,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         //scrum answer of that day's scrum
                         List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
                         //status would be empty if the interacting user is same as the expected user.
-                        string status = ExpectedUser(scrum.Id, questions, employees, userName,userId);
+                        string status = ExpectedUser(scrum.Id, questions, employees, userName, userId);
                         if (status == string.Empty)
                         {
                             #region Normal Scrum
@@ -320,7 +320,7 @@ namespace Promact.Core.Repository.ScrumRepository
                                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
 
                                 //keyword "leave @username" 
-                                returnMsg = LeaveLater(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken,userId,applicantId);
+                                returnMsg = LeaveLater(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken, userId, applicantId);
                             }
                             else
                                 returnMsg = ReplyToClient(scrumStatus);
@@ -349,7 +349,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="username"></param>
         /// <param name="userId"></param>
         /// <returns>status message</returns>
-        private async Task<string> AddChannelManually(string channelName, string username, string channelId,string userId)
+        private async Task<string> AddChannelManually(string channelName, string username, string channelId, string userId)
         {
             string returnMsg = string.Empty;
             //Checks whether channelId starts with "G". This is done inorder to make sure that only private channels are added manually
@@ -484,10 +484,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        private string LeaveLater(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId,  string userName, string accessToken, string userId, string applicantId)
+        private string LeaveLater(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId, string userName, string accessToken, string userId, string applicantId)
         {
             string returnMsg = string.Empty;
-            string status = ExpectedUser(scrumId, questions, employees, applicant,applicantId);//checks whether the applicant is the expected user
+            string status = ExpectedUser(scrumId, questions, employees, applicant, applicantId);//checks whether the applicant is the expected user
             if (status == string.Empty)//if the interacting user is the expected user
             {
                 string EmployeeId = employees.FirstOrDefault(x => x.SlackUserId == applicantId).Id;
@@ -607,7 +607,7 @@ namespace Promact.Core.Repository.ScrumRepository
         ///<param name="projectId"></param>
         ///<param name="applicantId"></param>
         /// <returns>empty string if the expected user is same as the applicant</returns>
-        private string ExpectedUser(int scrumId, List<Question> questions, List<User> employees, string applicant,string applicantId)
+        private string ExpectedUser(int scrumId, List<Question> questions, List<User> employees, string applicant, string applicantId)
         {
             //List of scrum answer of the given scrumId.
             List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrumId).ToList();

@@ -319,7 +319,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum is in progress";
             }
         }
-        public string TaskMailDescription
+              public string TaskMailDescription
         {
             get
             {
