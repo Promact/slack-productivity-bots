@@ -672,7 +672,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
 
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string UserId, string UserRole, string UserName, string CreatedOn, string LoginId, string Type)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string Type)
         {
             DateTime? createdDate = null;
             if (type == _stringConstant.NextPage)
