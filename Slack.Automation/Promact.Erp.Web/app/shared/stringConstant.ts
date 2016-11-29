@@ -38,7 +38,6 @@ export class StringConstant {
     comment = "test Comment";
     description = "test Description";
     empty = "";
-    userRole = "UserRole";
     paramsUserId = "UserId";
     paramsUserName = "UserName";
     userRole= "UserRole";
