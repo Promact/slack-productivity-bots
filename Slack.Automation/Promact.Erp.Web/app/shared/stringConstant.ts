@@ -31,4 +31,10 @@ export class StringConstant {
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";
     noProjectToDisplay = "No projects to display";
+    userRole= "UserRole";
+    userName= "UserName";
+    createdOns = "CreatedOns";
+    taskDetailsUrl = "/details";
+    selectedDate = "SelectedDate";
+    taskMaiUrl = "api/TaskReport"
 }
