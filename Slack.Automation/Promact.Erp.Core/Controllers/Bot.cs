@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Autofac.Extras.NLog;
+﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -9,31 +8,38 @@ using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
 
-namespace Promact.Erp.Web
+namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
-        private static ITaskMailRepository _taskMailRepository;
-        private static ISlackUserRepository _slackUserDetails;
-        private static ILogger _logger;
-        private static IStringConstantRepository _stringConstant;
-        private static IScrumBotRepository _scrumBotRepository;
-        private static IEnvironmentVariableRepository _environmentVariableRepository;
+        private readonly ITaskMailRepository _taskMailRepository;
+        private readonly ISlackUserRepository _slackUserDetails;
+        private readonly ILogger _logger;
+        private readonly IStringConstantRepository _stringConstant;
+        private readonly IScrumBotRepository _scrumBotRepository;
+        private readonly IEnvironmentVariableRepository _environmentVariableRepository;
+
+
+        public Bot(ITaskMailRepository taskMailRepository,
+           ISlackUserRepository slackUserDetails, ILogger logger,
+           IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
+           IEnvironmentVariableRepository environmentVariableRepository)
+        {
+            _taskMailRepository = taskMailRepository;
+            _slackUserDetails = slackUserDetails;
+            _logger = logger;
+            _stringConstant = stringConstant;
+            _scrumBotRepository = scrumBotRepository;
+            _environmentVariableRepository = environmentVariableRepository;
+        }
 
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
-        /// <param name="container"></param>
-        public void Main(IComponentContext container)
+        public void Main()
         {
-            _logger = container.Resolve<ILogger>();
-            _stringConstant = container.Resolve<IStringConstantRepository>();
             try
             {
-                _taskMailRepository = container.Resolve<ITaskMailRepository>();
-                _slackUserDetails = container.Resolve<ISlackUserRepository>();
-
-                _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
                 // assigning bot token on Slack Socket Client
                 string botToken = _environmentVariableRepository.TaskmailAccessToken;
                 SlackSocketClient client = new SlackSocketClient(botToken);
@@ -86,18 +92,12 @@ namespace Promact.Erp.Web
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
-        /// <param name="container"></param>
-        public void ScrumMain(IComponentContext container)
+        public void ScrumMain()
         {
-            _logger = container.Resolve<ILogger>();
-            _stringConstant = container.Resolve<IStringConstantRepository>();
             try
             {
-                _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
                 string botToken = _environmentVariableRepository.ScrumBotToken;
-                SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-                _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-
+                SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot      
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
@@ -126,8 +126,6 @@ namespace Promact.Erp.Web
                         throw ex;
                     }
                 };
-                //ChannelCreated channel = new ChannelCreated();
-                //client.HandleChannelCreated(channel);
             }
             catch (Exception ex)
             {

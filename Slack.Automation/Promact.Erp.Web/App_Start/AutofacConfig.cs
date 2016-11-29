@@ -22,7 +22,6 @@ using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
@@ -44,6 +43,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
+
             builder.RegisterType<Bot>().AsSelf();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             // register webapi controller

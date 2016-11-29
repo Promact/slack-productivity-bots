@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Newtonsoft.Json;
+using Promact.Erp.Core.Controllers;
 using Promact.Erp.Web.App_Start;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -20,8 +20,8 @@ namespace Promact.Erp.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bot bot = container.Resolve<Bot>();
-            bot.ScrumMain(container);
-            bot.Main(container);
+            bot.ScrumMain();
+            bot.Main();
         }
     }
 }
