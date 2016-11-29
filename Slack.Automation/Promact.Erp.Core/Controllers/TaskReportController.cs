@@ -8,8 +8,9 @@ using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Core.Controllers
 {
-   
-   
+
+    [RoutePrefix("api/TaskReport")]
+    [Authorize]
     public class TaskReportController: ApiController
     {
         private readonly ITaskMailRepository _taskMailReport;
@@ -20,24 +21,7 @@ namespace Promact.Erp.Core.Controllers
             _stringConstant = stringConstant;
         }
 
-        //[HttpGet]
-        //[Route("taskMailReport")]
-        //public async Task<IHttpActionResult> taskMailReport()
-        //{
-        //    string UserId = User.Identity.GetUserId();
-        //    IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId);
-        //    return Ok(taskMailReportAc);
-        //}
-
-        //[HttpGet]
-        //[Route("taskMailReport/{currentPage}/{itemsPerPage}")]
-        //public async Task<IHttpActionResult> taskMailReport(int currentPage,int itemsPerPage)
-        //{
-        //    string UserId = User.Identity.GetUserId();
-        //    IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId,currentPage, itemsPerPage);
-        //    return Ok(taskMailReportAc);
-        //}
-
+        
         /**
          * @api {get} taskMailDetailsReport:{UserId}/{UserRole}/{UserName}
          * @apiVersion 1.0.0
@@ -65,7 +49,7 @@ namespace Promact.Erp.Core.Controllers
          */
 
         [HttpGet]
-        [Route("taskMailDetailsReport/{UserId}/{UserRole}/{UserName}")]
+        [Route("{UserId}/{UserRole}/{UserName}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReport(string UserId,string UserRole,string UserName)
         {
             string LoginId = User.Identity.GetUserId();
@@ -108,7 +92,6 @@ namespace Promact.Erp.Core.Controllers
             string LoginId = User.Identity.GetUserId();
             string PreviousPage = _stringConstant.PriviousPage;
             return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole,CreatedOn, LoginId, PreviousPage);
-            //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }
 
         /**
@@ -146,7 +129,6 @@ namespace Promact.Erp.Core.Controllers
             string LoginId = User.Identity.GetUserId();
             string NextPage = _stringConstant.NextPage;
             return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole, CreatedOn, LoginId, NextPage);
-            //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
         }
 
         /**
@@ -181,7 +163,7 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("taskMailDetailsReportSelectedDate/{UserRole}/{CreatedOn}/{UserId}/{UserName}/{SelectedDate}")]
+        [Route("{UserRole}/{CreatedOn}/{UserId}/{UserName}/{SelectedDate}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDate(string UserRole, string CreatedOn, string UserId, string UserName,string SelectedDate)
         {
             string LoginId = User.Identity.GetUserId();
@@ -207,7 +189,7 @@ namespace Promact.Erp.Core.Controllers
        * }
        */
         [HttpGet]
-        [Route("getAllEmployee")]
+        [Route("")]
         public async Task<List<TaskMailReportAc>> getAllEmployee()
         {
             string UserId = User.Identity.GetUserId();
