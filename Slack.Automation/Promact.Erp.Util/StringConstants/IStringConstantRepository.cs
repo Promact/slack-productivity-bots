@@ -321,6 +321,7 @@ namespace Promact.Erp.Util.StringConstants
         string TestId { get; }
         string TestGroupName { get; }
         string WrongActionSlashCommand { get; }
+        string WrongActionSlashCommand { get; }
 
         #endregion
 

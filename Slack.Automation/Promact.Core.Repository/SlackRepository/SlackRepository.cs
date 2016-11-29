@@ -115,7 +115,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         if (IsAdmin)
                                         {
                                             // get user details from oAuth server for other user
-                                            newUser = await _oauthCallsRepository.GetUserByUserId(_slackUserRepository.GetBySlackName(slackRequest[4]).UserId, accessToken);
+                                            newUser = await _projectUser.GetUserByUserId(_slackUserRepository.GetBySlackName(slackRequest[4]).UserId, accessToken);
                                         }
                                         else
                                             replyText = _stringConstant.AdminErrorMessageApplySickLeave;
@@ -188,7 +188,7 @@ namespace Promact.Core.Repository.SlackRepository
                 foreach (var leave in leaveList)
                 {
                     if (leave.Type == LeaveType.cl)
-                    { 
+                    {
                         replyText += string.Format("Casual leave {0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
                     }
                     else
