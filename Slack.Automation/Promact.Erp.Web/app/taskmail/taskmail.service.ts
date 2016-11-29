@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
-import { TaskMailDetailsModel } from './taskmaildetails.model';
-import { TaskMailModel } from './taskmail.model';
+import { taskmailModel } from './taskmail.model';
+import {taskmailuserModel} from './taskmailuser.model';
 import {Http, Headers, RequestOptions, Response} from "@angular/http";
 import { Observable } from 'rxjs/Rx';
 import { StringConstant } from '../shared/stringConstant';
