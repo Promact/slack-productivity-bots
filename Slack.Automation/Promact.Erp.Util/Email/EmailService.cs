@@ -36,7 +36,7 @@ namespace Promact.Erp.Util.Email
                 message.IsBodyHtml = true;
                 SmtpClient client = new SmtpClient();
                 client.Host = _envVariableRepository.Host;
-                client.Port = Convert.ToInt32(_envVariableRepository.Port);
+                client.Port = _envVariableRepository.Port;
                 client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.From, _envVariableRepository.Password);
                 client.EnableSsl = Convert.ToBoolean(_envVariableRepository.EnableSsl);
                 client.Send(message);

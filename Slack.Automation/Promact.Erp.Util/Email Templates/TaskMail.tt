@@ -11,7 +11,7 @@
 <head>
 </head>
 <body>
-    Daily Task Mail <#= DateTime.UtcNow.Date #>
+    Daily Task Mail <#= DateTime.UtcNow.Date.ToShortDateString() #>
     <table>
 		<tr>
 			<td>
