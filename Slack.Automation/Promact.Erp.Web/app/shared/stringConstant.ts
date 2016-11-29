@@ -41,4 +41,10 @@ export class StringConstant {
     userRole = "UserRole";
     paramsUserId = "UserId";
     paramsUserName = "UserName";
+    userRole = "UserRole";
+    userName = "UserName";
+    createdOns = "CreatedOns";
+    taskDetailsUrl = "/details";
+    selectedDate = "SelectedDate";
+    taskMaiUrl = "api/TaskReport"
 }
