@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
+using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
