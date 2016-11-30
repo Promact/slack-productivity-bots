@@ -683,6 +683,14 @@ namespace Promact.Core.Test
             Assert.Equal(1, taskMailDetail.Count);
         }
 
+            var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleTeamLeader, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            Assert.Equal(3, taskMailDetail.Count);
+        }
+
         ///<summary>
         /// this test case for the task mail details 
         /// </summary>
@@ -759,6 +767,18 @@ namespace Promact.Core.Test
         public async void GetEmployeeInfromationAsync()
         {
 
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var response = Task.FromResult(_stringConstant.EmployeeInformation);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+
+            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            Assert.Equal(1, result.Count);
+        }
+        
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
@@ -887,7 +907,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case for conduct task mail after started for task mail started after second question for exceed then 8 hour
+        /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task QuestionAndAnswerAfterSecondAnswerExceedHoursAsync()
@@ -940,8 +960,8 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = secondQuestion.Id;
+            taskMailDetails.TaskId = taskMailPrvious.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);

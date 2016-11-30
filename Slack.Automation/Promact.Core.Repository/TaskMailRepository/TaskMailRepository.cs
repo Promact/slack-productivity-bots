@@ -424,7 +424,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="UserName"></param>
         /// <param name="LoginId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> GetTaskMailDetailsInformationAsync(string UserId, string UserRole, string UserName, string LoginId)
+        private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string UserId, string UserRole, string UserName, string LoginId)
         {
             List<TaskMailReportAc> taskMailAc = new List<TaskMailReportAc>();
             List<TaskMailDetailReportAc> taskMailDetailReportAc = new List<TaskMailDetailReportAc>();
