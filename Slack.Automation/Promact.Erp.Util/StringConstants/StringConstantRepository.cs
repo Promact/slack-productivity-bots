@@ -864,7 +864,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string ListOfEmployeeForTeamLeader
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string EmployeeInformation
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"}]";
             }
         }
         public string TaskMailReportTeamLeader
