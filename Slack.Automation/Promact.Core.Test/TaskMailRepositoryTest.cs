@@ -913,8 +913,12 @@ namespace Promact.Core.Test
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = secondQuestion.Id;
+
+            taskMailPrvious.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMailPrvious);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMailPrvious.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
             TaskMail newTaskMail = new TaskMail()
