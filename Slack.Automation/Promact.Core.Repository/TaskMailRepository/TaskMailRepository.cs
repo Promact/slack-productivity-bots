@@ -593,7 +593,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 var user = _user.FirstOrDefault(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<UserRoleAc> userRolesAc = await _oauthCallsRepository.GetListOfEmployee(user.UserName, accessToken);
+                List<UserRoleAc> userRolesAc = await _oauthCallsRepository.GetListOfEmployee(user.Id, accessToken);
                 DateTime? maxDate = null;
                 DateTime? minDate = null;
                 foreach (var userRoleAc in userRolesAc)
@@ -777,7 +777,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             return maxDate.Value;
         }
 
-        public DateTime GetMinDate(IEnumerable<TaskMail> taskMails)
+        private DateTime GetMinDate(IEnumerable<TaskMail> taskMails)
         {
             DateTime? minDate = null;
             var taskMail = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault();
