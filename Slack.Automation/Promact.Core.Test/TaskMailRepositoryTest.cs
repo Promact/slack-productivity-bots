@@ -533,7 +533,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _slackUserRepository.AddSlackUser(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
@@ -576,7 +576,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleEmployee, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(1, taskMailDetail.Count);
         }
         ///<summary>
@@ -594,7 +594,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _slackUserRepository.AddSlackUser(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
