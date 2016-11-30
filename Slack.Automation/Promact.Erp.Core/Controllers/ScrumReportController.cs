@@ -11,6 +11,7 @@ using System.Web.Http;
 namespace Promact.Erp.Core.Controllers
 {
     [RoutePrefix("api/project")]
+    [Authorize]
     public class ScrumReportController : WebApiBaseController
     {
         #region Private Variables
