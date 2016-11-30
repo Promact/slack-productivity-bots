@@ -4,17 +4,17 @@ import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
-import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
+import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.service';
 import { TaskService } from '../taskmail.service';
 import { DatePipe } from '@angular/common';
 import { LoaderService } from '../../shared/loader.service';
-import {StringConstant} from '../../shared/stringConstant';
+import { StringConstant } from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
 
-describe('TaskReport Detials Tests', () => {
+describe('TaskMail Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
     class MockLoaderService { }
@@ -28,8 +28,8 @@ describe('TaskReport Detials Tests', () => {
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [TaskMailDetailsModel, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            declarations: [RouterLinkStubDirective], 
+            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
@@ -43,20 +43,20 @@ describe('TaskReport Detials Tests', () => {
     }));
 
     it("should be defined", () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);           
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);             
         let taskMailDetailsComponent = fixture.componentInstance;
         expect(taskMailDetailsComponent).toBeDefined();
     });
 
     it('Shows details of task mail report for an employee on initialization', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Privious Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious("test", "1", "Admin", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
@@ -70,10 +70,9 @@ describe('TaskReport Detials Tests', () => {
     });
 
     it('Shows details of task mail report for an employee on Selected Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 });
-
