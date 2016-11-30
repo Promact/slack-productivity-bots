@@ -53,11 +53,11 @@ namespace Promact.Core.Repository.SlackRepository
                 DateTime dateTime;
                 User user = new User();
                 // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                var dateConvertorResult = DateTime.TryParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
+                var dateConvertorResult = DateTime.TryParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                 if (dateConvertorResult)
                 {
                     // converting string to date of indian culture
-                    var startDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                    var startDate = DateTime.ParseExact(slackRequest[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                     LeaveRequest leaveRequest = new LeaveRequest();
                     var validStartDate = LeaveStartDateValid(startDate);
                     if (validStartDate)
@@ -73,13 +73,13 @@ namespace Promact.Core.Repository.SlackRepository
                                 case LeaveType.cl:
                                     {
                                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                                        var firstDateConvertorResult = DateTime.TryParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
-                                        var secondDateConvertorResult = DateTime.TryParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
+                                        var firstDateConvertorResult = DateTime.TryParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
+                                        var secondDateConvertorResult = DateTime.TryParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                                         if (firstDateConvertorResult && secondDateConvertorResult)
                                         {
                                             // converting string to date time of indian culture
-                                            var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                                            var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                                            var endDate = DateTime.ParseExact(slackRequest[4], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                                            var reJoinDate = DateTime.ParseExact(slackRequest[5], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                                             var validDate = ValidDateTimeForLeave(startDate, endDate, reJoinDate);
                                             if (validDate)
                                             {
@@ -507,14 +507,14 @@ namespace Promact.Core.Repository.SlackRepository
                     if (leave != null && leave.Type == LeaveType.sl)
                     {
                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                        var firstDateConvertorResult = DateTime.TryParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
-                        var secondDateConvertorResult = DateTime.TryParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
+                        var firstDateConvertorResult = DateTime.TryParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
+                        var secondDateConvertorResult = DateTime.TryParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"), DateTimeStyles.None, out dateTime);
                         if (firstDateConvertorResult && secondDateConvertorResult)
                         {
                             var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
                             // convert string to date of indian culture
-                            leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                            leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                            leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+                            leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             var validDate = ValidDateTimeForLeave(leave.FromDate, leave.EndDate.Value, leave.RejoinDate.Value);
                             if (validDate)
                             {
