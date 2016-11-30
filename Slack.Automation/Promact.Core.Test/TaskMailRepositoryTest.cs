@@ -992,9 +992,9 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
-            var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
-            Assert.Equal(response, text);
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
+            Assert.Equal(1, taskMailDetail.Count);
         }
 
         #endregion
