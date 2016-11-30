@@ -9,12 +9,12 @@ import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.servi
 import { TaskService } from '../taskmail.service';
 import { DatePipe } from '@angular/common';
 import { LoaderService } from '../../shared/loader.service';
-import {StringConstant} from '../../shared/stringConstant';
+import { StringConstant } from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 
 let promise: TestBed;
 
-describe('TaskReport Detials Tests', () => {
+describe('TaskMail Detials Tests', () => {
     class MockRouter { }
     class MockDatePipe { }
     class MockLoaderService { }
@@ -43,20 +43,20 @@ describe('TaskReport Detials Tests', () => {
     }));
 
     it("should be defined", () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);           
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);             
         let taskMailDetailsComponent = fixture.componentInstance;
         expect(taskMailDetailsComponent).toBeDefined();
     });
 
     it('Shows details of task mail report for an employee on initialization', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
     it('Shows details of task mail report for an employee on Privious Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious("test", "1", "Admin", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
@@ -70,10 +70,9 @@ describe('TaskReport Detials Tests', () => {
     });
 
     it('Shows details of task mail report for an employee on Selected Date', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate("test", "1", "Admin", "10-09-2016", "10-09-2016");
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 });
-
