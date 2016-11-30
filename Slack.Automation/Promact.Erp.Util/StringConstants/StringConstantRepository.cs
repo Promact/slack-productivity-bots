@@ -77,7 +77,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "dd/MM/yyyy";
+                return "dd-MM-yyyy";
             }
         }
         public string ResponseTypeEphemeral
@@ -822,7 +822,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToString(DateFormat), DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
         public string PromactStringName
@@ -1662,14 +1662,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply sl Testing {0}",DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply sl Testing {0}",DateTime.UtcNow.ToString(DateFormat));
             }
         }
         public string SlashCommandTextSickForUser
         {
             get
             {
-                return string.Format("apply sl Testing {0} siddhartha",DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply sl Testing {0} siddhartha",DateTime.UtcNow.ToString(DateFormat));
             }
         }
         public string NameForTest
@@ -1690,7 +1690,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply kl Testing {0} siddhartha",DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply kl Testing {0} siddhartha",DateTime.UtcNow.ToString(DateFormat));
             }
         }
         public string SlashCommandTextErrorDateFormatSick
@@ -1704,35 +1704,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} 05/04/2016 05/04/2016",DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply cl Testing {0} 05/04/2016 05/04/2016",DateTime.UtcNow.ToString(DateFormat));
             }
         }
         public string SlashCommandTextCasual
         {
             get
             {
-                return string.Format("apply cl Testing {0} {0} {1}",DateTime.UtcNow.ToShortDateString(),DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("apply cl Testing {0} {0} {1}",DateTime.UtcNow.ToString(DateFormat), DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
         public string SlashCommandUpdate
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 1,DateTime.UtcNow.ToShortDateString(),DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("update {0} {1} {2}", 1,DateTime.UtcNow.ToString(DateFormat), DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
         public string SlashCommandUpdateDateError
         {
             get
             {
-                return string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
         public string SlashCommandUpdateWrongId
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToString(DateFormat), DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
         public string SickLeaveDoesnotExist
@@ -1753,7 +1753,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update abc {0}",DateTime.UtcNow.ToShortDateString());
+                return string.Format("update abc {0}",DateTime.UtcNow.ToString(DateFormat));
             }
         }
         public string ErrorOfEmailServiceFailureTaskMail
@@ -2311,7 +2311,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} 29-11-2016 {1}",DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("apply cl Testing {0} 29-11-2016 {1}",DateTime.UtcNow.ToString(DateFormat), DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
 
@@ -2319,7 +2319,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} {0} 29-11-2016", DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply cl Testing {0} {0} 29-11-2016", DateTime.UtcNow.ToString(DateFormat));
             }
         }
 
@@ -2335,7 +2335,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} 29-11-2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
+                return string.Format("update {0} 29-11-2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToString(DateFormat));
             }
         }
 
@@ -2343,7 +2343,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} {1} 29-11-2016", 1, DateTime.UtcNow.ToShortDateString());
+                return string.Format("update {0} {1} 29-11-2016", 1, DateTime.UtcNow.ToString(DateFormat));
             }
         }
     }
