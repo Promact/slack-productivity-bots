@@ -822,7 +822,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string PromactStringName
@@ -1662,14 +1662,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply sl Testing 14-09-2016";
+                return string.Format("apply sl Testing {0}",DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextSickForUser
         {
             get
             {
-                return "apply sl Testing 14-09-2016 siddhartha";
+                return string.Format("apply sl Testing {0} siddhartha",DateTime.UtcNow.ToShortDateString());
             }
         }
         public string NameForTest
@@ -1690,7 +1690,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply kl Testing 14-09-2016 siddhartha";
+                return string.Format("apply kl Testing {0} siddhartha",DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextErrorDateFormatSick
@@ -1704,35 +1704,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+                return string.Format("apply cl Testing {0} 05/04/2016 05/04/2016",DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextCasual
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}",DateTime.UtcNow.ToShortDateString(),DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdate
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 1);
+                return string.Format("update {0} {1} {2}", 1,DateTime.UtcNow.ToShortDateString(),DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateDateError
         {
             get
             {
-                return string.Format("update {0} 30/09/2016 14-09-2016", 1);
+                return string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateWrongId
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 10);
+                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SickLeaveDoesnotExist
@@ -1753,7 +1753,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "update abc 14-09-2016";
+                return string.Format("update abc {0}",DateTime.UtcNow.ToShortDateString());
             }
         }
         public string ErrorOfEmailServiceFailureTaskMail
@@ -2280,6 +2280,70 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "applied cl Testing 14-09-2016 14-09-2016 14-09-2016";
+            }
+        }
+
+        public string BackDateErrorMessage
+        {
+            get
+            {
+                return "Sorry! You cannot apply leave on back date.";
+            }
+        }
+
+        public string InValidDateErrorMessage
+        {
+            get
+            {
+                return "Please check end date and re-join date. End date cannot beyond start date and rejoin date cannot beyond and same end date";
+            }
+        }
+
+        public string LeaveWrongCommandForBackDateCL
+        {
+            get
+            {
+                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+            }
+        }
+
+        public string LeaveWrongCommandForBeyondDateFirstExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} 29-11-2016 {1}",DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+
+        public string LeaveWrongCommandForBeyondDateSecondExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {0} 29-11-2016", DateTime.UtcNow.ToShortDateString());
+            }
+        }
+
+        public string LeaveWrongCommandForBackDateSL
+        {
+            get
+            {
+                return "apply sl Testing 14-09-2016";
+            }
+        }
+
+        public string SlashCommandUpdateForBeyondStartDateFirstExample
+        {
+            get
+            {
+                return string.Format("update {0} 29-11-2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+
+        public string SlashCommandUpdateForBeyondStartDateSecondExample
+        {
+            get
+            {
+                return string.Format("update {0} {1} 29-11-2016", 1, DateTime.UtcNow.ToShortDateString());
             }
         }
     }

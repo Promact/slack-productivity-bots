@@ -889,6 +889,142 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with back date value casual leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForCLWithBackDate()
+        {
+            await AddUser();
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var replyText = _stringConstant.BackDateErrorMessage;
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateCL;
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with end date beyond start date value casual leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForCLWithWrongDateFirstTest()
+        {
+            await AddUser();
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var replyText = _stringConstant.InValidDateErrorMessage;
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateFirstExample;
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForCLWithWrongDateSecondTest()
+        {
+            await AddUser();
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var replyText = _stringConstant.InValidDateErrorMessage;
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateSecondExample;
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with back date value sick leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveApplyForSLWithBackDate()
+        {
+            await AddUser();
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var replyText = _stringConstant.BackDateErrorMessage;
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateSL;
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveUpdate from Slack respository with end date beyond start date value sick leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveUpdateForBeyondStartDate()
+        {
+            await AddUser();
+            leave.Status = Condition.Approved;
+            leave.Type = LeaveType.sl;
+            _leaveRequestRepository.ApplyLeave(leave);
+            var adminResponse = Task.FromResult(_stringConstant.True);
+            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            var replyText = _stringConstant.InValidDateErrorMessage;
+            slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateFirstExample;
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var slackText = slackLeave.Text.Split('"')
+                            .Select((element, index) => index % 2 == 0 ? element
+                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+                            .SelectMany(element => element).ToList();
+            var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveUpdate from Slack respository with rejoin date beyond end date value sick leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void LeaveUpdateForBeyondEndDate()
+        {
+            await AddUser();
+            leave.Status = Condition.Approved;
+            leave.Type = LeaveType.sl;
+            _leaveRequestRepository.ApplyLeave(leave);
+            var adminResponse = Task.FromResult(_stringConstant.True);
+            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            var replyText = _stringConstant.InValidDateErrorMessage;
+            slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateSecondExample;
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var slackText = slackLeave.Text.Split('"')
+                            .Select((element, index) => index % 2 == 0 ? element
+                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
+                            .SelectMany(element => element).ToList();
+            var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
+            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
+            await _slackRepository.LeaveRequest(slackLeave);
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+        }
+
+        /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
         public void Initialize()
@@ -919,10 +1055,10 @@ namespace Promact.Core.Test
                 Name = _stringConstant.FirstNameForTest
             };
             
-            leave.FromDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-            leave.EndDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leave.FromDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leave.EndDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leave.Reason = _stringConstant.LeaveReasonForTest;
-            leave.RejoinDate = DateTime.ParseExact("14-09-2016", "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leave.RejoinDate = DateTime.ParseExact(DateTime.UtcNow.AddDays(1).ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leave.Status = Condition.Pending;
             leave.Type = LeaveType.cl;
             leave.CreatedOn = DateTime.UtcNow;

@@ -321,6 +321,12 @@ namespace Promact.Erp.Util.StringConstants
         string TestId { get; }
         string TestGroupName { get; }
         string WrongActionSlashCommand { get; }
+        string LeaveWrongCommandForBackDateCL { get; }
+        string LeaveWrongCommandForBeyondDateFirstExample { get; }
+        string LeaveWrongCommandForBeyondDateSecondExample { get; }
+        string LeaveWrongCommandForBackDateSL { get; }
+        string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
+        string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
 
         #endregion
 
@@ -338,5 +344,7 @@ namespace Promact.Erp.Util.StringConstants
         string StartWorking { get; }
         string HourSpentForTesting { get; }
         string HourSpentExceeded { get; }
+        string BackDateErrorMessage { get; }
+        string InValidDateErrorMessage { get; }
     }
 }
