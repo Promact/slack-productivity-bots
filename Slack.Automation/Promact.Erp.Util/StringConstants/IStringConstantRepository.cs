@@ -132,6 +132,8 @@ namespace Promact.Erp.Util.StringConstants
         string CommentAndDescriptionForTest { get; }
         string ManagementDetailsFromOauthServer { get; }
         string TaskMailReport { get; }
+        string ListOfEmployeeForTeamLeader { get; }
+        string EmployeeInformation { get; }
         string TaskMailReportTeamLeader { get; }
         string TeamLeaderEmailForTest { get; }
         string ManagementFirstForTest { get; }
