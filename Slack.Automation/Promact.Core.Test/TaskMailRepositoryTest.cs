@@ -743,6 +743,18 @@ namespace Promact.Core.Test
             Assert.Equal(1, result.Count);
         }
         
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var response = Task.FromResult(_stringConstant.EmployeeInformation);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+
+            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            Assert.Equal(1, result.Count);
+        }
+        
         /// <summary>
         /// this test case for the task mail details for the selected date.
         /// </summary>
@@ -859,7 +871,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case for conduct task mail after started for task mail started after second question for exceed then 8 hour
+        /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task QuestionAndAnswerAfterSecondAnswerExceedHoursAsync()
@@ -912,8 +924,8 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = secondQuestion.Id;
+            taskMailDetails.TaskId = taskMailPrvious.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
