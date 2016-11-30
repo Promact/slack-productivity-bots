@@ -17,9 +17,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of taskMailUsers">
-                    <td>{{user.UserName}}</td>
-                    <td><button (click)="taskmailDetails(user.UserId,user.UserName,user.UserEmail)">Task Mail</button></td>
+                <tr *ngFor="let taskMailUser of taskMailUsers">
+                    <td>{{taskMailUser.UserName}}</td>
+                    <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)">Task Mail</button></td>
                 </tr>
             </tbody>
         </table>
