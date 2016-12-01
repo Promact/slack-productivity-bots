@@ -21,7 +21,7 @@ namespace Promact.Erp.Core.Controllers
             _stringConstant = stringConstant;
         }
 
-        
+
         /**
          * @api {get}  api/TaskReport/user/:userId
          * @apiVersion 1.0.0
