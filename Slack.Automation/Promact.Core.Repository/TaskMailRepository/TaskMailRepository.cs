@@ -467,7 +467,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
         /// <summary>
-        /// This Method use to featch the task mail detils.
+        /// This Method use to fetch the task mail detils.
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="UserRole"></param>
@@ -591,7 +591,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
         /// <summary>
-        /// this Method use to featch the task mail details for the selected date.
+        /// this Method use to fetch the task mail details for the selected date.
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="UserName"></param>
@@ -654,7 +654,15 @@ namespace Promact.Core.Repository.TaskMailRepository
             return taskMailAc;
         }
 
-
+        /// <summary>
+        /// This Method use to fetch the task mail details for the next and previous date
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <param name="UserRole"></param>
+        /// <param name="CreatedOn"></param>
+        /// <param name="LoginId"></param>
+        /// <returns></returns>
         private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string UserId, string UserName, string UserRole, DateTime CreatedOn, string LoginId)
         {
             List<TaskMailReportAc> taskMailAc = new List<TaskMailReportAc>();
@@ -711,7 +719,16 @@ namespace Promact.Core.Repository.TaskMailRepository
             return taskMailAc;
         }
 
-
+        /// <summary>
+        /// This Method use to fetch the task mail details for the next and previous date
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="UserName"></param>
+        /// <param name="UserRole"></param>
+        /// <param name="CreatedOn"></param>
+        /// <param name="LoginId"></param>
+        /// <param name="Type"></param>
+        /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string Type)
         {
             List<TaskMailReportAc> taskMailAc = new List<TaskMailReportAc>();
@@ -791,6 +808,11 @@ namespace Promact.Core.Repository.TaskMailRepository
             return taskMailDetailReportListAc;
         }
 
+        /// <summary>
+        /// This Method use to fetch Maximum Date
+        /// </summary>
+        /// <param name="taskMails"></param>
+        /// <returns></returns>
         private DateTime GetMaxDate(IEnumerable<TaskMail> taskMails)
         {
             DateTime? maxDate = null;
@@ -812,6 +834,11 @@ namespace Promact.Core.Repository.TaskMailRepository
             return maxDate.Value;
         }
 
+        /// <summary>
+        /// This Method use to fetch Minimum Date
+        /// </summary>
+        /// <param name="taskMails"></param>
+        /// <returns></returns>
         private DateTime GetMinDate(IEnumerable<TaskMail> taskMails)
         {
             DateTime? minDate = null;
