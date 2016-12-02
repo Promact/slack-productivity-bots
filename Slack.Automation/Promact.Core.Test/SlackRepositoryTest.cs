@@ -738,7 +738,7 @@ namespace Promact.Core.Test
             AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
             slackLeave.Text = _stringConstant.SlashCommandUpdate;
             MockingOfUserDetails();

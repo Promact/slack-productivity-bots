@@ -22,6 +22,7 @@ namespace Promact.Core.Test
             Initialize();
         }
 
+
         /// <summary>
         /// Method to check the functionality of Slack User add method for true value
         /// </summary>
@@ -31,6 +32,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             Assert.Equal(slackUserDetails.Id, 1);
         }
+
 
         /// <summary>
         /// Test case to check the functionality of GetbyId method of Slack User Repository for true value
@@ -43,15 +45,18 @@ namespace Promact.Core.Test
             Assert.Equal(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
+
         /// <summary>
         /// Method to check the functionality of Slack User add method for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task AddSlackUserFalseAsync()
+        public async Task AddSlackBotUser()
         {
+            slackUserDetails.IsBot = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, 3);
+            Assert.NotEqual(slackUserDetails.Id, 1);
         }
+
 
         /// <summary>
         /// Test case to check the functionality of GetbyId method of Slack User Repository for false value
@@ -69,6 +74,37 @@ namespace Promact.Core.Test
 
 
         /// <summary>
+        /// Test case to check the functionality of GetbyId method of Slack User Repository for false value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackUserUpdate()
+        {
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+
+            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            var slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+            Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
+        }
+
+
+        ///// <summary>
+        ///// Test case to check the functionality of GetbyId method of Slack User Repository for false value
+        ///// </summary>
+        //  [Fact, Trait("Category", "Required")]
+        //public async void SlackBotUserUpdate()
+        //{
+        //    slackUserDetails.IsBot = true;
+        //    await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+        //    slackUserDetails.IsBot = true;
+        //    slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
+        //    await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+        //    var slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+        //    Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
+        //}
+
+
+        /// <summary>
         /// Test case to check the functionality of GetBySlackName method of Slack User Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -78,6 +114,7 @@ namespace Promact.Core.Test
             var slackUser = await _slackUserRepository.GetBySlackNameAsync(_stringConstant.FirstNameForTest);
             Assert.Equal(slackUser.UserId, _stringConstant.StringIdForTest);
         }
+
 
         /// <summary>
         /// A method is used to initialize variables which are repetitively used

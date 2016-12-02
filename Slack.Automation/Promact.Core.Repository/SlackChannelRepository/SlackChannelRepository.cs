@@ -17,9 +17,10 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// Method to add slack channel 
         /// </summary>
         /// <param name="slackChannelDetails"></param>
-        public void AddSlackChannel(SlackChannelDetails slackChannelDetails)
+        public async Task AddSlackChannelAsync(SlackChannelDetails slackChannelDetails)
         {
             _slackChannelDetailsContext.Insert(slackChannelDetails);
+            await _slackChannelDetailsContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <returns>object of SlackChannelDetails</returns>
         public async Task<SlackChannelDetails> GetByIdAsync(string slackId)
         {
-            var channel = await _slackChannelDetailsContext.FirstOrDefaultAsync(x => x.ChannelId == slackId);
+            SlackChannelDetails channel = await _slackChannelDetailsContext.FirstOrDefaultAsync(x => x.ChannelId == slackId);
             return channel;
         }
     }
