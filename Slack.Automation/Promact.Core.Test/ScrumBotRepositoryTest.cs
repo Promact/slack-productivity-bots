@@ -172,11 +172,11 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task ScrumNoUser()
         {
-            await AddChannelUser();
-            var msg = await _scrumBotRepository.ProcessMessages(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
+            await AddChannelUserAsync();
+            var msg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
             Assert.Equal(msg, _stringConstant.YouAreNotInExistInOAuthServer);
         }
-
+        
 
         /// <summary>
         /// No slack channel found testing
@@ -209,7 +209,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task ScrumInitiateNoQuestion()
         {
-            await AddChannelUser();
+            await AddChannelUserAsync();
             await UserProjectSetup();
 
             string msg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);

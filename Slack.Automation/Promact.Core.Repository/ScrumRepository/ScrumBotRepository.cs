@@ -1,4 +1,5 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+﻿using Autofac.Extras.NLog;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
