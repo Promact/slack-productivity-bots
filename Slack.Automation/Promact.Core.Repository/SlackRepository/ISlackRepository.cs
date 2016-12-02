@@ -12,7 +12,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <param name="status"></param>
-        void UpdateLeave(SlashChatUpdateResponse leaveResponse);
+        Task UpdateLeaveAsync(SlashChatUpdateResponse leaveResponse);
 
         /// <summary>
         /// Method to excute for leave slash command

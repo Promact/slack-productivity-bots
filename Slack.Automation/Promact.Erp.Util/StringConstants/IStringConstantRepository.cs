@@ -93,6 +93,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumCannotBeResumed { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
+        string SlackUserNotFound { get; }
 
 
         string NoQuestion { get; }

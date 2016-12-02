@@ -33,10 +33,11 @@ namespace Promact.Core.Repository.Client
         public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository,ISlackUserRepository slackUserRepository)
         {
             _chatUpdateMessage = new HttpClient();
+            _stringConstant = stringConstant;
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _oauthCallRepository = oauthCallRepository;
             _email = email;
-            _stringConstant = stringConstant;
+          
             _attachmentRepository = attachmentRepository;
             _httpClientRepository = httpClientRepository;
             _envVariableRepository = envVariableRepository;
@@ -177,7 +178,7 @@ namespace Promact.Core.Repository.Client
             }
             foreach (var teamLeader in teamLeaders)
             {
-                SlackUserDetails slackUser = _slackUserRepository.GetById(teamLeader.SlackUserId);
+                SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(teamLeader.SlackUserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
@@ -199,10 +200,10 @@ namespace Promact.Core.Repository.Client
         /// <param name="managementEmail"></param>
         /// <param name="replyText"></param>
         /// <param name="user"></param>
-        public void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
+        public async Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            SlackUserDetails slackUser = _slackUserRepository.GetById(user.SlackUserId);
+            SlackUserDetails slackUser = await  _slackUserRepository.GetByIdAsync(user.SlackUserId);
             var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
             WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);

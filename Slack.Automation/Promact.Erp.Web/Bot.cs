@@ -8,6 +8,8 @@ using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Promact.Erp.Web
 {
@@ -48,13 +50,13 @@ namespace Promact.Erp.Web
                     // Method will hit when someone send some text in task mail bot
                     client.OnMessageReceived += (message) =>
                     {
-                        var user = _slackUserDetails.GetById(message.user);
+                        var user = _slackUserDetails.GetByIdAsync(message.user).Result;
                         string replyText = "";
                         var text = message.text;
                         if (user != null)
-                        {  
+                        {
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
-                            { 
+                            {
                                 replyText = _taskMailRepository.StartTaskMail(user.Name, user.UserId).Result;
                             }
                             else
@@ -91,49 +93,67 @@ namespace Promact.Erp.Web
         {
             _logger = container.Resolve<ILogger>();
             _stringConstant = container.Resolve<IStringConstantRepository>();
-            try
+            //try
+            //{
+            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
+            string botToken = _environmentVariableRepository.ScrumBotToken;
+            SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
+
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            //Connecting the bot of the given token 
+            client.Connect((connected) => { });
+
+            // Method will be called when someone sends message
+            client.OnMessageReceived += (message) =>
             {
-                _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
-                string botToken = _environmentVariableRepository.ScrumBotToken;
-                SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-                _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
-                MessageReceived messageReceive = new MessageReceived();
-                messageReceive.ok = true;
-                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                //Connecting the bot of the given token 
-                client.Connect((connected) => { });
-
-                // Method will be called when someone sends message
-                client.OnMessageReceived += (message) =>
+                _logger.Info("Scrum bot got message :" + message);
+                try
                 {
-                    _logger.Info("Scrum bot got message :" + message);
-                    try
+                    _logger.Info("Scrum bot got message, inside try");
+                    string replyText = "";
+                    Task.Run(async () =>
                     {
-                        _logger.Info("Scrum bot got message, inside try");
-                        string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
-                        if (!String.IsNullOrEmpty(replyText))
-                        {
-                            _logger.Info("Scrum bot got reply");
-                            client.SendMessage(showMethod, message.channel, replyText);
-                        }
-                    }
-                    catch (Exception ex)
+                        await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                    }).GetAwaiter().GetResult();
+                    if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
-                        client.CloseSocket();
-                        throw ex;
+                        _logger.Info("Scrum bot got reply");
+                        client.SendMessage(showMethod, message.channel, replyText);
                     }
-                };
-                //ChannelCreated channel = new ChannelCreated();
-                //client.HandleChannelCreated(channel);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
-                throw ex;
-            }
+                }
+                catch (HttpRequestException ex)
+                {
+                    client.SendMessage(showMethod, message.channel, "OAuth Server closed");
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                    client.CloseSocket();
+                    throw ex;
+                }
+                //catch (TaskCanceledException ex)
+                //{
+                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                //    client.CloseSocket();
+                //    throw ex;
+                //}
+                //catch (NullReferenceException ex)
+                //{
+                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                //    client.CloseSocket();
+                //    throw ex;
+                //}
+            };
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+            //    throw ex;
+            //}
         }
 
     }

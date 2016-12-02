@@ -69,8 +69,8 @@ namespace Promact.Core.Test
         public async void StartTaskMail()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, firstQuestion.QuestionStatement);
         }
@@ -82,15 +82,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.RequestToStartTaskMail);
         }
@@ -102,12 +102,14 @@ namespace Promact.Core.Test
         public async void StartTaskMailAlreadyStart()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.QuestionId = firstQuestion.Id;
             taskMailDetails.TaskId = taskMail.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, firstQuestion.QuestionStatement);
         }
@@ -119,14 +121,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerFirstNotAnswered()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.FirstQuestionForTest);
         }
@@ -138,13 +140,15 @@ namespace Promact.Core.Test
         public async void StartTaskMailAlreadyMailSend()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.QuestionId = SeventhQuestion.Id;
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.AlreadyMailSend);
         }
@@ -176,15 +180,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterFirstAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
-            _botQuestionRepository.AddQuestion(secondQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.SecondQuestionForTest);
         }
@@ -196,14 +200,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerSecondNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
@@ -216,15 +220,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSecondAnswerForStringAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
@@ -237,15 +241,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSecondAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThirdQuestionForTest);
         }
@@ -257,14 +261,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerThirdNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, _stringConstant.ThirdQuestionForTest);
             Assert.Equal(response, text);
@@ -277,15 +281,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterThirdAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
-            _botQuestionRepository.AddQuestion(forthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
+            await _botQuestionRepository.AddQuestionAsync(forthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ForthQuestionForTest);
         }
@@ -297,14 +301,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerForthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(forthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(forthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, forthQuestion.QuestionStatement);
         }
@@ -316,15 +320,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterForthAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(forthQuestion);
-            _botQuestionRepository.AddQuestion(fifthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(forthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.FifthQuestionForTest);
         }
@@ -336,14 +340,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerFifthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(fifthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, fifthQuestion.QuestionStatement);
             Assert.Equal(response, text);
@@ -356,15 +360,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterFifthAnswerForYes()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(fifthQuestion);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.SixthQuestionForTest);
         }
@@ -376,16 +380,16 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterFifthAnswerForNo()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(fifthQuestion);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
@@ -397,14 +401,14 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerSixthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, SixthQuestion.QuestionStatement);
             Assert.Equal(response, text);
@@ -418,15 +422,15 @@ namespace Promact.Core.Test
         {
             await mockAndUserCreate();
             _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>()));
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
@@ -438,15 +442,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSixthAnswerForNo()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
@@ -458,15 +462,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSendingMail()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SeventhQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.RequestToStartTaskMail);
         }
@@ -500,15 +504,15 @@ namespace Promact.Core.Test
             SmtpException ex = new SmtpException();
             await mockAndUserCreate();
             _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws<SmtpException>();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             var expectReply = string.Format("{0}. {1}", _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
             Assert.Equal(response, expectReply);
@@ -530,18 +534,18 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(1, taskMailDetail.Count);
         }
@@ -562,23 +566,22 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(0, taskMailDetail.Count);
@@ -601,18 +604,18 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
@@ -650,20 +653,18 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
-
-
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
@@ -685,26 +686,26 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMailPrvious.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
@@ -725,22 +726,22 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(firstQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMailPrvious.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
@@ -753,29 +754,29 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSecondAnswerExceedHours()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             TaskMail newTaskMail = new TaskMail()
             {
                 CreatedOn = DateTime.UtcNow,
                 EmployeeId = _stringConstant.StringIdForTest
             };
             _taskMailDataRepository.Insert(newTaskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             TaskMailDetails newTaskMailDetails = new TaskMailDetails();
             newTaskMailDetails.TaskId = newTaskMail.Id;
             newTaskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var expectedResponse = string.Format("{0}{1}{2}", _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
             Assert.Equal(response, expectedResponse);
@@ -788,15 +789,15 @@ namespace Promact.Core.Test
         public async void QuestionAndAnswerAfterSecondAnswerForLimitExceedAnswer()
         {
             await mockAndUserCreate();
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);

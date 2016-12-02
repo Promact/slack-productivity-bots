@@ -20,7 +20,7 @@ namespace Promact.Core.Test
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly IStringConstantRepository _stringConstant;
         private LeaveRequest leave = new LeaveRequest();
-        
+
         public LeaveRequestRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -33,9 +33,9 @@ namespace Promact.Core.Test
         /// Method LeaveApply Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void ApplyLeave()
+        public async void ApplyLeave()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             Assert.Equal(1, leave.Id);
         }
 
@@ -43,11 +43,11 @@ namespace Promact.Core.Test
         /// Method LeaveList Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveList()
+        public async void LeaveList()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveList();
             Assert.Equal(3, leaves.Count());
         }
@@ -56,10 +56,10 @@ namespace Promact.Core.Test
         /// Method CancelLeave Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void CancelLeave()
+        public async void CancelLeave()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.CancelLeave(1);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            var leaves = await _leaveRequestRepository.CancelLeaveAsync(1);
             Assert.Equal(Condition.Cancel, leaves.Status);
         }
 
@@ -67,10 +67,10 @@ namespace Promact.Core.Test
         /// Method LeaveListByUserId Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveListByUserId()
+        public async void LeaveListByUserId()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var status = new Condition();
             var leaves = _leaveRequestRepository.LeaveListByUserId(_stringConstant.StringIdForTest);
             foreach (var leave in leaves)
@@ -84,9 +84,9 @@ namespace Promact.Core.Test
         /// Method LeaveListStatusByUserId Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveListStatusByUserId()
+        public async void LeaveListStatusByUserId()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveListStatusByUserId(_stringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Cancel, leaves.Status);
         }
@@ -95,9 +95,9 @@ namespace Promact.Core.Test
         /// Method LeaveById Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveById()
+        public async void LeaveById()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveById(1);
             Assert.Equal(Condition.Pending, leaves.Status);
         }
@@ -106,12 +106,12 @@ namespace Promact.Core.Test
         /// Method UpdateLeave Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void UpdateLeave()
+        public async void UpdateLeave()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveById(1);
             leaves.Status = Condition.Rejected;
-            _leaveRequestRepository.UpdateLeave(leaves);
+            await _leaveRequestRepository.UpdateLeaveAsync(leaves);
             Assert.Equal(Condition.Rejected, leaves.Status);
         }
 
@@ -120,9 +120,9 @@ namespace Promact.Core.Test
         /// Method ApplyLeave Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void ApplyLeaveFalse()
+        public async void ApplyLeaveFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             Assert.NotEqual(31, leave.Id);
         }
 
@@ -130,9 +130,9 @@ namespace Promact.Core.Test
         /// Method LeaveList Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveListFalse()
+        public async void LeaveListFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveList();
             Assert.NotEqual(20, leaves.Count());
         }
@@ -141,11 +141,11 @@ namespace Promact.Core.Test
         /// Method CancelLeave Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void CancelLeaveFalse()
+        public async void CancelLeaveFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
-            _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.CancelLeave(2);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            var leaves = await _leaveRequestRepository.CancelLeaveAsync(2);
             Assert.NotEqual(Condition.Pending, leaves.Status);
         }
 
@@ -153,10 +153,10 @@ namespace Promact.Core.Test
         /// Method LeaveListByUserId Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveListByUserIdFalse()
+        public async void LeaveListByUserIdFalse()
         {
             int Id = 0;
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveListByUserId(_stringConstant.StringIdForTest);
             foreach (var leave in leaves)
             {
@@ -169,9 +169,9 @@ namespace Promact.Core.Test
         /// Method LeaveListStatusByUserId Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveListStatusByUserIdFalse()
+        public async void LeaveListStatusByUserIdFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveListStatusByUserId(_stringConstant.StringIdForTest);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
@@ -180,9 +180,9 @@ namespace Promact.Core.Test
         /// Method LeaveById Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveByIdFalse()
+        public async void LeaveByIdFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveById(1);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
@@ -191,12 +191,12 @@ namespace Promact.Core.Test
         /// Method UpdateLeave Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void UpdateLeaveFalse()
+        public async void UpdateLeaveFalse()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = _leaveRequestRepository.LeaveById(1);
             leaves.Status = Condition.Rejected;
-            _leaveRequestRepository.UpdateLeave(leaves);
+            await _leaveRequestRepository.UpdateLeaveAsync(leaves);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
@@ -204,37 +204,11 @@ namespace Promact.Core.Test
         /// Method NumberOfLeaveTaken testing with True Value Casual Leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTakenCasual()
+        public async void NumberOfLeaveTakenCasual()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             leave.Status = Condition.Approved;
-            _leaveRequestRepository.UpdateLeave(leave);
-            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
-            Assert.NotEqual(1,casualLeave.CasualLeave);
-        }
-
-
-        /// <summary>
-        /// Method NumberOfLeaveTaken testing with false Value Casual Leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTakenFalseCasual()
-        {
-            _leaveRequestRepository.ApplyLeave(leave);
-            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
-            Assert.Equal(0.0, casualLeave.CasualLeave);
-        }
-
-        /// <summary>
-        /// Method NumberOfLeaveTaken testing with True Value Casual Leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTakenSick()
-        {
-            leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
-            leave.Status = Condition.Approved;
-            _leaveRequestRepository.UpdateLeave(leave);
+            await _leaveRequestRepository.UpdateLeaveAsync(leave);
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
             Assert.NotEqual(1, casualLeave.CasualLeave);
         }
@@ -244,10 +218,36 @@ namespace Promact.Core.Test
         /// Method NumberOfLeaveTaken testing with false Value Casual Leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void NumberOfLeaveTakenFalseSick()
+        public async void NumberOfLeaveTakenFalseCasual()
+        {
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
+            Assert.Equal(0.0, casualLeave.CasualLeave);
+        }
+
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with True Value Casual Leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void NumberOfLeaveTakenSick()
         {
             leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            leave.Status = Condition.Approved;
+            await _leaveRequestRepository.UpdateLeaveAsync(leave);
+            var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
+            Assert.NotEqual(1, casualLeave.CasualLeave);
+        }
+
+
+        /// <summary>
+        /// Method NumberOfLeaveTaken testing with false Value Casual Leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async void NumberOfLeaveTakenFalseSick()
+        {
+            leave.Type = LeaveType.sl;
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
             Assert.Equal(0.0, casualLeave.CasualLeave);
         }
@@ -267,6 +267,6 @@ namespace Promact.Core.Test
             leave.EmployeeId = _stringConstant.StringIdForTest;
         }
 
-     
+
     }
 }

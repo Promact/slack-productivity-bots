@@ -90,7 +90,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         if (user.Id != null)
                                         {
                                             leaveRequest.EmployeeId = user.Id;
-                                            _leaveRepository.ApplyLeave(leaveRequest);
+                                            await _leaveRepository.ApplyLeaveAsync(leaveRequest);
                                             replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
                                             // method to send slack notification and email to team leaders and management
                                             await _client.SendMessageWithAttachmentIncomingWebhook(leaveRequest, accessToken, replyText, leave.Username, leave.UserId);
@@ -136,12 +136,12 @@ namespace Promact.Core.Repository.SlackRepository
                                     if (newUser.Id != null)
                                     {
                                         leaveRequest.EmployeeId = newUser.Id;
-                                        _leaveRepository.ApplyLeave(leaveRequest);
+                                        await _leaveRepository.ApplyLeaveAsync(leaveRequest);
                                         replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
                                         await _client.SendMessageWithoutButtonAttachmentIncomingWebhook(leaveRequest, accessToken, replyText, newUser.FirstName, newUser.SlackUserId);
                                         if (IsAdmin)
                                         {
-                                            _client.SendSickLeaveMessageToUserIncomingWebhook(leaveRequest, user.Email, replyText, newUser);
+                                            await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leaveRequest, user.Email, replyText, newUser);
                                         }
                                     }
                                     else
@@ -212,7 +212,7 @@ namespace Promact.Core.Repository.SlackRepository
             if (user.Id == _leaveRepository.LeaveById(leaveId).EmployeeId)
             {
                 // method to cancel leave
-                var leave = _leaveRepository.CancelLeave(leaveId);
+                var leave = await _leaveRepository.CancelLeaveAsync(leaveId);
                 replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status);
             }
             else
@@ -252,7 +252,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leaveId"></param>
         /// <param name="status"></param>
         /// <returns>replyText</returns>
-        public void UpdateLeave(SlashChatUpdateResponse leaveResponse)
+        public async Task UpdateLeaveAsync(SlashChatUpdateResponse leaveResponse)
         {
             // method to get leave by its id
             var leave = _leaveRepository.LeaveById(leaveResponse.CallbackId);
@@ -268,7 +268,7 @@ namespace Promact.Core.Repository.SlackRepository
                     leave.Status = Condition.Rejected;
                 }
             }
-            _leaveRepository.UpdateLeave(leave);
+            await _leaveRepository.UpdateLeaveAsync(leave);
 
             replyText = string.Format("You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}",
                             leave.Status,
@@ -277,7 +277,7 @@ namespace Promact.Core.Repository.SlackRepository
                             leave.EndDate.Value.ToShortDateString(),
                             leave.Reason,
                             leave.RejoinDate.Value.ToShortDateString());
-            _client.UpdateMessage(leaveResponse, replyText);
+            await _client.UpdateMessage(leaveResponse, replyText);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Promact.Core.Repository.SlackRepository
             if (slackText.Count > 1)
             {
                 // other user slack user name
-                SlackUserDetailAc slackUser = _slackUserRepository.GetBySlackName(slackText[1]);
+                SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
                 // leave list of other user 
                 replyText = await LeaveList(slackUser.UserId, accessToken);
             }
@@ -340,7 +340,7 @@ namespace Promact.Core.Repository.SlackRepository
             if (slackText.Count > 1)
             {
                 // other user slack user name
-                SlackUserDetailAc slackUser = _slackUserRepository.GetBySlackName(slackText[1]);
+                SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
                 // last leave details of other user 
                 replyText = await LeaveStatus(slackUser.UserId, accessToken);
             }
@@ -489,12 +489,12 @@ namespace Promact.Core.Repository.SlackRepository
                             // convert string to date of indian culture
                             leave.EndDate = DateTime.ParseExact(slackText[2], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
                             leave.RejoinDate = DateTime.ParseExact(slackText[3], "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-                            _leaveRepository.UpdateLeave(leave);
+                            await _leaveRepository.UpdateLeaveAsync(leave);
                             replyText = string.Format("Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}"
                                 , newUser.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                 leave.Reason, leave.RejoinDate.Value.ToShortDateString());
                             await _client.SendMessageWithoutButtonAttachmentIncomingWebhook(leave, accessToken, replyText, newUser.FirstName, newUser.SlackUserId);
-                            _client.SendSickLeaveMessageToUserIncomingWebhook(leave, user.Email, replyText, newUser);
+                            await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leave, user.Email, replyText, newUser);
                         }
                         else
                             // if date is not proper than date format error message will be send to user

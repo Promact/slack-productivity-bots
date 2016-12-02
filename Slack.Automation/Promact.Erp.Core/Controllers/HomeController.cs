@@ -159,7 +159,7 @@ namespace Promact.Erp.Core.Controllers
                 }
                 if (user == null)
                 {
-                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserId, userId);
+                    user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
                     //Signing user with username or email only
                     await _signInManager.SignInAsync(user, false, false);
                     return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);

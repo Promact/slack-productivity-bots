@@ -57,6 +57,6 @@ namespace Promact.Core.Repository.Client
         /// <param name="managementEmail"></param>
         /// <param name="replyText"></param>
         /// <param name="user"></param>
-        void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user);
+        Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user);
     }
 }

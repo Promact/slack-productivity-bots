@@ -319,6 +319,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum is in progress";
             }
         }
+        public string SlackUserNotFound
+        {
+            get
+            {
+                return "Slack details of {0} have not been found.";
+            }
+        }
         public string TaskMailDescription
         {
             get
@@ -365,7 +372,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Channel details has been added";
+                return "Channel details have been added";
             }
         }
         public string Add
@@ -640,8 +647,8 @@ namespace Promact.Erp.Util.StringConstants
             {
                 return "Project is marked as Inactive in Promact OAuth";
             }
-        }             
-        
+        }
+
         public string ScrumAlreadyConducted
         {
             get
@@ -2035,7 +2042,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
             }
         }
-    
+
         #endregion
 
         public string RoleAdmin
@@ -2267,7 +2274,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5";
             }
         }
-
         public string HourSpentExceeded
         {
             get

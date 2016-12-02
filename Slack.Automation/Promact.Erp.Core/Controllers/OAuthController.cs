@@ -55,10 +55,10 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("oAuth/RefreshToken")]
-        public IHttpActionResult RefreshToken(string refreshToken, string slackUserName)
+        public async Task<IHttpActionResult> RefreshToken(string refreshToken, string slackUserName)
         {
             var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
-            SlackUserDetailAc user = _slackUserRepository.GetBySlackName(slackUserName);
+            SlackUserDetailAc user = await _slackUserRepository.GetBySlackNameAsync(slackUserName);
             if (user != null)
                 oAuth.UserId = user.UserId;
             return Ok(oAuth);
@@ -84,7 +84,7 @@ namespace Promact.Erp.Core.Controllers
             var errorMessage = string.Empty;
             try
             {
-                await _oAuthLoginRepository.AddSlackUserInformation(code);
+                await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
                 message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)
@@ -121,7 +121,7 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("slack/eventAlert")]
-        public IHttpActionResult SlackEvent(SlackEventApiAC slackEvent)
+        public async Task<IHttpActionResult> SlackEvent(SlackEventApiAC slackEvent)
         {
             try
             {
@@ -134,22 +134,20 @@ namespace Promact.Erp.Core.Controllers
                 {
                     string eventType = slackEvent.Event.Type;
                     if (eventType == _stringConstant.TeamJoin)
-                    {
-                        //if (!slackEvent.Event.User.IsBot)
-                        _oAuthLoginRepository.SlackEventUpdate(events);
+                    {                       
+                        await _oAuthLoginRepository.SlackEventUpdateAsync(events);
                         eventQueue.Dequeue();
                         return Ok();
                     }
                     else if (eventType == _stringConstant.UserChange)
-                    {
-                        //if (!slackEvent.Event.User.IsBot)
-                        _slackUserRepository.UpdateSlackUser(events.Event.User);
+                    {                       
+                        await _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
                         eventQueue.Dequeue();
                         return Ok();
                     }
                     else if (eventType == _stringConstant.ChannelCreated || eventType == _stringConstant.ChannelRename || eventType == _stringConstant.GroupRename)
                     {
-                        _oAuthLoginRepository.SlackChannelAdd(events);
+                        await _oAuthLoginRepository.SlackChannelAddAsync(events);
                         eventQueue.Dequeue();
                         return Ok();
                     }

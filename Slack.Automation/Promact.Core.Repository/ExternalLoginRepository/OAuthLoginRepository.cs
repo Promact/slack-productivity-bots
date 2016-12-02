@@ -44,7 +44,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="accessToken"></param>
         /// <param name="slackUserId"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserId, string uerId)
+        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string uerId)
         {
             ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id=uerId };
             //Creating a user with email only. Password not required
@@ -77,7 +77,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task AddSlackUserInformation(string code)
+        public async Task AddSlackUserInformationAsync(string code)
         {
             var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientRepository.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
@@ -90,7 +90,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 foreach (var user in slackUsers.Members)
                 {
                     if (!user.Deleted)
-                        _slackUserRepository.AddSlackUser(user);
+                       await _slackUserRepository.AddSlackUserAsync(user);
                 }
             }
             else
@@ -101,19 +101,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in channels.Channels)
                 {
-                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    SlackChannelDetails slackChannel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == channel.ChannelId);
                     if (slackChannel == null)
                     {
                         if (!channel.Deleted)
                         {
                             channel.CreatedOn = DateTime.UtcNow;
                             _slackChannelDetails.Insert(channel);
+                            await _slackChannelDetails.SaveChangesAsync();
                         }
                     }
                     else
                     {
                         slackChannel.Name = channel.Name;
                         _slackChannelDetails.Update(slackChannel);
+                        await _slackChannelDetails.SaveChangesAsync();
                     }
                 }
             }
@@ -126,19 +128,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in groups.Groups)
                 {
-                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    SlackChannelDetails slackChannel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == channel.ChannelId);
                     if (slackChannel == null)
                     {
                         if (!channel.Deleted)
                         {
                             channel.CreatedOn = DateTime.UtcNow;
                             _slackChannelDetails.Insert(channel);
+                            await _slackChannelDetails.SaveChangesAsync();
                         }
                     }
                     else
                     {
                         slackChannel.Name = channel.Name;
                         _slackChannelDetails.Update(slackChannel);
+                        await _slackChannelDetails.SaveChangesAsync();
                     }
                 }
             }
@@ -150,11 +154,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to update slack user table when there is any changes in slack
         /// </summary>
         /// <param name="slackEvent"></param>
-        public void SlackEventUpdate(SlackEventApiAC slackEvent)
+        public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
         {
-            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
+            var user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
             if (user == null)
-                _slackUserRepository.AddSlackUser(slackEvent.Event.User);
+                await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
         }
 
 
@@ -162,19 +166,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to update slack channel table when a channel is added or updated in team.
         /// </summary>
         /// <param name="slackEvent"></param>
-        public void SlackChannelAdd(SlackEventApiAC slackEvent)
+        public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
         {
 
-            var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            var channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(slackEvent.Event.Channel);
+                await _slackChannelDetails.SaveChangesAsync();
             }
             else
             {
                 channel.Name = slackEvent.Event.Channel.Name;
                 _slackChannelDetails.Update(channel);
+                await _slackChannelDetails.SaveChangesAsync();
             }
         }
     }

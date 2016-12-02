@@ -16,7 +16,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
-        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository,  ILogger logger, IStringConstantRepository stringConstant)
+        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, ILogger logger, IStringConstantRepository stringConstant)
         {
             _slackRepository = slackRepository;
             _attachmentRepository = attachmentRepository;
@@ -80,11 +80,11 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
+        public async Task<IHttpActionResult> SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
         {
             try
             {
-                _slackRepository.UpdateLeave(leaveResponse);
+                await _slackRepository.UpdateLeaveAsync(leaveResponse);
                 return Ok();
             }
             catch (Exception ex)

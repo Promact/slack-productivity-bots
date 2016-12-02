@@ -1,5 +1,6 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
@@ -16,9 +17,10 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// Method to add slack channel 
         /// </summary>
         /// <param name="slackChannelDetails"></param>
-        public void AddSlackChannel(SlackChannelDetails slackChannelDetails)
+        public async Task AddSlackChannelAsync(SlackChannelDetails slackChannelDetails)
         {
             _slackChannelDetailsContext.Insert(slackChannelDetails);
+            await _slackChannelDetailsContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -26,9 +28,9 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// </summary>
         /// <param name="slackId"></param>
         /// <returns>object of SlackChannelDetails</returns>
-        public SlackChannelDetails GetById(string slackId)
+        public async Task<SlackChannelDetails> GetByIdAsync(string slackId)
         {
-            var channel = _slackChannelDetailsContext.FirstOrDefault(x => x.ChannelId == slackId);
+            SlackChannelDetails channel = await _slackChannelDetailsContext.FirstOrDefaultAsync(x => x.ChannelId == slackId);
             return channel;
         }
     }

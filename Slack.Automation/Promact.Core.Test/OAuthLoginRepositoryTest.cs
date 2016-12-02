@@ -44,9 +44,9 @@ namespace Promact.Core.Test
         /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository with true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddNewUserFromExternalLogin()
+        public async Task AddNewUserFromExternalLogin()
         {
-            var user = _oAuthLoginRepository.AddNewUserFromExternalLogin(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest,_stringConstant.UserIdForTest).Result;
+            var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest, _stringConstant.UserIdForTest);
             var accessToken = _attachmentRepository.AccessToken(user.UserName).Result;
             Assert.Equal(user.UserName, _stringConstant.EmailForTest);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
@@ -66,7 +66,7 @@ namespace Promact.Core.Test
         ///// Test case to check AddSlackUserInformation of OAuth Login Repository
         ///// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddSlackUserInformation()
+        public async Task AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
             var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
@@ -78,7 +78,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null)).Returns(channelDetailsResponse);
             var groupDetailsResponse = Task.FromResult(_stringConstant.GroupDetailsResponseText);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null)).Returns(groupDetailsResponse);
-            _oAuthLoginRepository.AddSlackUserInformation(_stringConstant.MessageTsForTest);
+            await _oAuthLoginRepository.AddSlackUserInformationAsync(_stringConstant.MessageTsForTest);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null), Times.Once);
@@ -89,10 +89,10 @@ namespace Promact.Core.Test
         /// Test case to check SlackEventUpdate of OAuth Login Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackEventUpdate()
+        public async Task SlackEventUpdate()
         {
-            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-            var user = _slackUserRepository.GetById(slackEvent.Event.User.UserId);
+            await _oAuthLoginRepository.SlackEventUpdateAsync(slackEvent);
+            var user = _slackUserRepository.GetByIdAsync(slackEvent.Event.User.UserId).Result;
             Assert.Equal(user.Name, slackEvent.Event.User.Name);
         }
 
@@ -100,11 +100,11 @@ namespace Promact.Core.Test
         /// Test case to check SlackEventUpdate of OAuth Login Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackAddChannel()
+        public async Task SlackAddChannel()
         {
             slackEvent.Event.Channel = channel;
-            _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-            var channelAdded = _slackChannelRepository.GetById(slackEvent.Event.Channel.ChannelId);
+            await _oAuthLoginRepository.SlackChannelAddAsync(slackEvent);
+            var channelAdded = _slackChannelRepository.GetByIdAsync(slackEvent.Event.Channel.ChannelId).Result;
             Assert.Equal(channelAdded.Name, slackEvent.Event.Channel.Name);
         }
 
@@ -143,7 +143,7 @@ namespace Promact.Core.Test
             channel.CreatedOn = DateTime.UtcNow;
             channel.Deleted = false;
             channel.Name = _stringConstant.Employee;
-                        
+
         }
 
     }

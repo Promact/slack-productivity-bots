@@ -1,5 +1,6 @@
 ﻿using Promact.Erp.DomainModel.Models;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
@@ -15,10 +16,10 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// Method to add Question
         /// </summary>
         /// <param name="question"></param>
-        public void AddQuestion(Question question)
+        public async Task AddQuestionAsync(Question question)
         {
             _questionRepository.Insert(question);
-            _questionRepository.Save();
+            await _questionRepository.SaveChangesAsync();
         }
 
         /// <summary>

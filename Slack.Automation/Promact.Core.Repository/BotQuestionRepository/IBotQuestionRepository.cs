@@ -1,8 +1,4 @@
 ﻿using Promact.Erp.DomainModel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.BotQuestionRepository
@@ -13,7 +9,7 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// Method to add Question
         /// </summary>
         /// <param name="question"></param>
-        void AddQuestion(Question question);
+        Task AddQuestionAsync(Question question);
 
         /// <summary>
         /// Method to find question by it's id

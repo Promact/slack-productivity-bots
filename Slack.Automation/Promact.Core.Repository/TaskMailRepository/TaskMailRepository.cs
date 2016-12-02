@@ -46,7 +46,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> StartTaskMail(string userName,string userId)
+        public async Task<string> StartTaskMail(string userName, string userId)
         {
             // getting user name from user's slack name
             var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
@@ -88,7 +88,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         taskMail.CreatedOn = DateTime.UtcNow;
                         taskMail.EmployeeId = oAuthUser.Id;
                         _taskMail.Insert(taskMail);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                         // getting first question of type 2
                         var firstQuestion = _botQuestionRepository.FindByQuestionType(2);
                         TaskMailDetails taskDetails = new TaskMailDetails();
@@ -96,13 +96,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                         taskDetails.TaskId = taskMail.Id;
                         questionText = firstQuestion.QuestionStatement;
                         _taskMailDetail.Insert(taskDetails);
-                        _taskMailDetail.Save();
+                        await _taskMailDetail.SaveChangesAsync();
                     }
                 }
                 else
                 {
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswer(userName, null,userId);
+                    var questionText = await QuestionAndAnswer(userName, null, userId);
                 }
             }
             else
@@ -118,7 +118,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="answer"></param>
         /// 
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> QuestionAndAnswer(string userName, string answer,string userId)
+        public async Task<string> QuestionAndAnswer(string userName, string answer, string userId)
         {
             // getting user name from user's slack name
             var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
@@ -338,7 +338,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 break;
                         }
                         _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                     }
                 }
                 catch (SmtpException ex)
@@ -914,7 +914,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             taskMailAc.Add(taskMailUserAc);
                         }
                     }
-                   
+
 
                 }
             }

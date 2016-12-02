@@ -4,6 +4,7 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
 {
@@ -19,10 +20,10 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to apply Leave
         /// </summary>
         /// <param name="leave"></param>
-        public void ApplyLeave(LeaveRequest leave)
+        public async Task ApplyLeaveAsync(LeaveRequest leave)
         {
             _leaveRequestRepository.Insert(leave);
-            _leaveRequestRepository.Save();
+            await _leaveRequestRepository.SaveChangesAsync();
         }
 
         /// <summary>
@@ -39,12 +40,12 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <returns>leave which has been cancelled</returns>
-        public LeaveRequest CancelLeave(int leaveId)
+        public async Task<LeaveRequest> CancelLeaveAsync(int leaveId)
         {
             var leave = _leaveRequestRepository.GetById(leaveId);
             leave.Status = Condition.Cancel;
             _leaveRequestRepository.Update(leave);
-            _leaveRequestRepository.Save();
+            await _leaveRequestRepository.SaveChangesAsync();
             return leave;
         }
 
@@ -84,10 +85,10 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to update leave request
         /// </summary>
         /// <param name="leave"></param>
-        public void UpdateLeave(LeaveRequest leave)
+        public async Task UpdateLeaveAsync(LeaveRequest leave)
         {
             _leaveRequestRepository.Update(leave);
-            _leaveRequestRepository.Save();
+            await _leaveRequestRepository.SaveChangesAsync();
         }
 
         /// <summary>
