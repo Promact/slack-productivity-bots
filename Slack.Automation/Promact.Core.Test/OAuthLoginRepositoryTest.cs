@@ -72,7 +72,7 @@ namespace Promact.Core.Test
         ///// Test case to check AddSlackUserInformation of OAuth Login Repository
         ///// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddSlackUserInformation()
+        public async Task AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
             var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
@@ -151,7 +151,7 @@ namespace Promact.Core.Test
             channel.CreatedOn = DateTime.UtcNow;
             channel.Deleted = false;
             channel.Name = _stringConstant.Employee;
-                        
+
         }
         #endregion
     }

@@ -96,7 +96,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         taskMail.CreatedOn = DateTime.UtcNow;
                         taskMail.EmployeeId = oAuthUser.Id;
                         _taskMail.Insert(taskMail);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                         // getting first question of type 2
                         var firstQuestion = await _botQuestionRepository.FindByQuestionTypeAsync(2);
                         TaskMailDetails taskDetails = new TaskMailDetails();
@@ -104,7 +104,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         taskDetails.TaskId = taskMail.Id;
                         questionText = firstQuestion.QuestionStatement;
                         _taskMailDetail.Insert(taskDetails);
-                        _taskMailDetail.Save();
+                        await _taskMailDetail.SaveChangesAsync();
                     }
                 }
                 else
@@ -360,7 +360,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 break;
                         }
                         _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                     }
                 }
                 catch (SmtpException ex)
@@ -918,7 +918,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             taskMailAc.Add(taskMailUserAc);
                         }
                     }
-                   
+
 
                 }
             }

@@ -44,7 +44,7 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Insert(T entity)
         {
             dbSet.Add(entity);
-            db.SaveChanges();
+          //  db.SaveChanges();
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Delete(int? id)
         {
             dbSet.Remove(dbSet.Find(id));
-            db.SaveChanges();
+         //   db.SaveChanges();
         }
 
         /// <summary>
@@ -64,16 +64,34 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Update(T entity)
         {
             db.Entry(entity).State = EntityState.Modified;
-            db.SaveChanges();
+        //    db.SaveChanges();
         }
 
+        ///// <summary>
+        ///// Method use to save changes in database
+        ///// </summary>
+        //public void Save()
+        //{
+        //    db.SaveChanges();
+        //}
+
+
         /// <summary>
-        /// Method use to save changes in database
+        /// Saves the changes of the database using Async
         /// </summary>
-        public void Save()
+        /// <returns></returns>
+        public async Task<int> SaveChangesAsync()
         {
-            db.SaveChanges();
+            try
+            {
+                return await db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
 
         /// <summary>
         /// Method to search database using Linq Expression and get FirstOrDefault Value corresponding to expression

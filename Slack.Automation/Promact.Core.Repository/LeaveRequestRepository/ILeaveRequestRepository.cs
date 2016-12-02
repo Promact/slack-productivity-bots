@@ -11,7 +11,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to apply Leave
         /// </summary>
         /// <param name="leave"></param>
-        void ApplyLeave(LeaveRequest leave);
+        Task ApplyLeaveAsync(LeaveRequest leave);
 
         /// <summary>
         /// Method to get All List of leave
@@ -24,7 +24,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <returns>leave which has been cancelled</returns>
-        LeaveRequest CancelLeave(int leaveId);
+        Task<LeaveRequest> CancelLeaveAsync(int leaveId);
 
         /// <summary>
         /// Method to get leave list corresponding each user
@@ -51,7 +51,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// Method to update leave request
         /// </summary>
         /// <param name="leave"></param>
-        void UpdateLeave(LeaveRequest leave);
+        Task UpdateLeaveAsync(LeaveRequest leave);
 
         /// <summary>
         /// Method to get number of leave taken by a user
