@@ -34,9 +34,9 @@ namespace Promact.Core.Test
         /// Test cases to check add method of bot question repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddQuestion()
+        public async void AddQuestion()
         {
-            _botQuestionRepository.AddQuestion(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
             Assert.Equal(1, question.Id);
         }
 
@@ -68,8 +68,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task FindByTypeAndOrderNumberAsync()
         {
-            _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(1, 2);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1, 2);
             Assert.Equal(responseQuestion.QuestionStatement, question.QuestionStatement);
         }
 
@@ -77,11 +77,11 @@ namespace Promact.Core.Test
         /// Test cases to check add method of bot question repository for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddQuestionFalse()
+        public async void AddQuestionFalse()
         {
-            _botQuestionRepository.AddQuestion(question);
-            _botQuestionRepository.AddQuestion(question);
-            _botQuestionRepository.AddQuestion(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
             Assert.NotEqual(20, question.Id);
         }
 
@@ -91,11 +91,11 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task FindByIdFalseAsync()
         {
-            _botQuestionRepository.AddQuestion(question);
-            _botQuestionRepository.AddQuestion(question);
-            _botQuestionRepository.AddQuestion(question);
-            _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = await _botQuestionRepository.FindByIdAsync(3);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            var responseQuestion = _botQuestionRepository.FindById(3);
             Assert.NotEqual(_stringConstant.TaskMailBotStatusErrorMessage, responseQuestion.QuestionStatement);
         }
 
@@ -118,8 +118,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task FindByTypeAndOrderNumberFalseAsync()
         {
-            _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(1, 2);
+            await _botQuestionRepository.AddQuestionAsync(question);
+            var responseQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(1, 2);
             Assert.NotEqual(responseQuestion.QuestionStatement, _stringConstant.TaskMailBotStatusErrorMessage);
         }
 

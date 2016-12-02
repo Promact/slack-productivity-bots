@@ -93,7 +93,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(firstQuestion);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -112,6 +112,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.QuestionId = firstQuestion.Id;
             taskMailDetails.TaskId = taskMail.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -129,7 +130,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -148,6 +149,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.QuestionId = SeventhQuestion.Id;
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
@@ -187,7 +189,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(firstQuestion);
             _botQuestionRepository.AddQuestion(secondQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -206,7 +208,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(secondQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -227,7 +229,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(secondQuestion);
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -248,11 +250,11 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(secondQuestion);
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThirdQuestionForTest);
         }
@@ -267,7 +269,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -288,7 +290,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(thirdQuestion);
             _botQuestionRepository.AddQuestion(forthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -307,7 +309,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(forthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -327,7 +329,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(forthQuestion);
             _botQuestionRepository.AddQuestion(fifthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -346,7 +348,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(fifthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -367,7 +369,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(fifthQuestion);
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -388,7 +390,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -407,7 +409,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -429,7 +431,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -449,7 +451,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -469,7 +471,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(SixthQuestion);
             _botQuestionRepository.AddQuestion(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = SeventhQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -520,7 +522,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -551,7 +553,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -616,11 +618,11 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = "1";
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, user.Id, _stringConstant.TeamMembersUrl);
@@ -686,7 +688,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -780,7 +782,7 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
@@ -811,19 +813,19 @@ namespace Promact.Core.Test
             await _userManager.AddLoginAsync(user.Id, info);
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMailPrvious.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
@@ -895,11 +897,11 @@ namespace Promact.Core.Test
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMailPrvious.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id,DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
@@ -912,25 +914,25 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task QuestionAndAnswerAfterSecondAnswerExceedHoursAsync()
         {
-            await mockAndUserCreateAsync();
+            await mockAndUserCreate();
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SixthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
             TaskMail newTaskMail = new TaskMail()
             {
                 CreatedOn = DateTime.UtcNow,
                 EmployeeId = _stringConstant.StringIdForTest
             };
             _taskMailDataRepository.Insert(newTaskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             TaskMailDetails newTaskMailDetails = new TaskMailDetails();
             newTaskMailDetails.TaskId = newTaskMail.Id;
             newTaskMailDetails.QuestionId = secondQuestion.Id;
@@ -948,12 +950,12 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task QuestionAndAnswerAfterSecondAnswerForLimitExceedAnswerAsync()
         {
-            await mockAndUserCreateAsync();
+            await mockAndUserCreate();
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            _botQuestionRepository.AddQuestion(secondQuestion);
-            _botQuestionRepository.AddQuestion(thirdQuestion);
+            await _botQuestionRepository.AddQuestionAsync(secondQuestion);
+            await _botQuestionRepository.AddQuestionAsync(thirdQuestion);
             _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
+            await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);

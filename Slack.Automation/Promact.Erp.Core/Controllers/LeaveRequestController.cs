@@ -17,7 +17,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
-        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository,  ILogger logger, IStringConstantRepository stringConstant)
+        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, ILogger logger, IStringConstantRepository stringConstant)
         {
             _slackRepository = slackRepository;
             _attachmentRepository = attachmentRepository;

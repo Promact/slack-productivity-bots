@@ -42,6 +42,7 @@ namespace Promact.Core.Repository.Client
         {
             _stringConstant = stringConstant;
             _chatUpdateMessage = new HttpClient();
+            _stringConstant = stringConstant;
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _oauthCallRepository = oauthCallRepository;
             _emailService = emailService;

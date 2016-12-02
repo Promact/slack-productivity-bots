@@ -96,11 +96,19 @@ namespace Promact.Erp.Core.Controllers
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
-        public void ScrumMain()
+        /// <param name="container"></param>
+        public static void ScrumMain(IComponentContext container)
         {
+            _logger = container.Resolve<ILogger>();
+            _stringConstant = container.Resolve<IStringConstantRepository>();
+            //try
+            //{
+            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
             string botToken = _environmentVariableRepository.ScrumBotToken;
-            SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot      
-                                                                       // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+            SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
+
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
             messageReceive.ok = true;
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
@@ -114,25 +122,46 @@ namespace Promact.Erp.Core.Controllers
                 try
                 {
                     _logger.Info("Scrum bot got message, inside try");
-                    string replyText = string.Empty;
-                    replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
-                    
+                    string replyText = "";
+                    Task.Run(async () =>
+                    {
+                        await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                    }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Info("Scrum bot got reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
-                catch (AggregateException ex)
+                catch (HttpRequestException ex)
                 {
-                    foreach (var exception in ex.InnerExceptions)
-                    {
-                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + exception.InnerException + "\n" + exception.StackTrace);
-                    }
+                    client.SendMessage(showMethod, message.channel, "OAuth Server closed");
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
+                //catch (TaskCanceledException ex)
+                //{
+                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                //    client.CloseSocket();
+                //    throw ex;
+                //}
+                //catch (NullReferenceException ex)
+                //{
+                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                //    client.CloseSocket();
+                //    throw ex;
+                //}
             };
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
+            //    throw ex;
+            //}
         }
 
     }

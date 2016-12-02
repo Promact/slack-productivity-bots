@@ -25,7 +25,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <returns>user</returns>
         Task<SlackUserDetails> GetByIdAsync(string slackId);
 
-      
+
         /// <summary>
         /// Method to get slack user information by their slack user name
         /// </summary>
@@ -33,6 +33,6 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <returns>user</returns>
         Task<SlackUserDetailAc> GetBySlackNameAsync(string slackName);
 
-              
+
     }
 }

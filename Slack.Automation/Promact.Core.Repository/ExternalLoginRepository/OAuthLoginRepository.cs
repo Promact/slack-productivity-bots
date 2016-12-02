@@ -110,9 +110,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var user in slackUsers.Members)
                 {
-                    var checkUserExist = _slackUserDetails.Any(x => x.UserId == user.UserId);
-                    if (!user.Deleted && !checkUserExist)
-                        await _slackUserRepository.AddSlackUserAsync(user);
+                    if (!user.Deleted)
+                       await _slackUserRepository.AddSlackUserAsync(user);
                 }
             }
             else
@@ -130,12 +129,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         {
                             channel.CreatedOn = DateTime.UtcNow;
                             _slackChannelDetails.Insert(channel);
+                            await _slackChannelDetails.SaveChangesAsync();
                         }
                     }
                     else
                     {
                         slackChannel.Name = channel.Name;
                         _slackChannelDetails.Update(slackChannel);
+                        await _slackChannelDetails.SaveChangesAsync();
                     }
                 }
             }
@@ -155,12 +156,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         {
                             channel.CreatedOn = DateTime.UtcNow;
                             _slackChannelDetails.Insert(channel);
+                            await _slackChannelDetails.SaveChangesAsync();
                         }
                     }
                     else
                     {
                         slackChannel.Name = channel.Name;
                         _slackChannelDetails.Update(slackChannel);
+                        await _slackChannelDetails.SaveChangesAsync();
                     }
                 }
             }
@@ -192,11 +195,13 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(slackEvent.Event.Channel);
+                await _slackChannelDetails.SaveChangesAsync();
             }
             else
             {
                 channel.Name = slackEvent.Event.Channel.Name;
                 _slackChannelDetails.Update(channel);
+                await _slackChannelDetails.SaveChangesAsync();
             }
         }
         #endregion

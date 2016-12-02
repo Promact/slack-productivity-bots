@@ -7,10 +7,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <summary>
         /// This will process the messages from slack and use appropriate methods to give a suitable response through Bot
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="ChannelId"></param>
+        /// <param name="userId"></param>
+        /// <param name="channelId"></param>
         /// <param name="message"></param>
-        /// <returns></returns>
-        Task<string> ProcessMessages(string UserId, string ChannelId, string message);
+        /// <returns>reply message</returns>
+        Task<string> ProcessMessagesAsync(string userId, string channelId, string message);
     }
 }

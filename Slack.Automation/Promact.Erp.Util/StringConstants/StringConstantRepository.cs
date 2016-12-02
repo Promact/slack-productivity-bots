@@ -314,7 +314,14 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum is in progress";
             }
         }
-              public string TaskMailDescription
+        public string SlackUserNotFound
+        {
+            get
+            {
+                return "Slack details of {0} have not been found.";
+            }
+        }
+        public string TaskMailDescription
         {
             get
             {
@@ -360,7 +367,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Channel details has been added";
+                return "Channel details have been added";
             }
         }
         public string Add
@@ -2291,7 +2298,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5";
             }
         }
-
         public string HourSpentExceeded
         {
             get

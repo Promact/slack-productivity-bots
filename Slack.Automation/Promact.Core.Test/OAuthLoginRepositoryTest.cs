@@ -72,7 +72,7 @@ namespace Promact.Core.Test
         ///// Test case to check AddSlackUserInformation of OAuth Login Repository
         ///// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AddSlackUserInformation()
+        public async Task AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
             var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
@@ -84,7 +84,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null)).Returns(channelDetailsResponse);
             var groupDetailsResponse = Task.FromResult(_stringConstant.GroupDetailsResponseText);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null)).Returns(groupDetailsResponse);
-            _oAuthLoginRepository.AddSlackUserInformationAsync(_stringConstant.MessageTsForTest);
+            await _oAuthLoginRepository.AddSlackUserInformationAsync(_stringConstant.MessageTsForTest);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null), Times.Once);
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null), Times.Once);
@@ -151,7 +151,7 @@ namespace Promact.Core.Test
             channel.CreatedOn = DateTime.UtcNow;
             channel.Deleted = false;
             channel.Name = _stringConstant.Employee;
-                        
+
         }
         #endregion
     }

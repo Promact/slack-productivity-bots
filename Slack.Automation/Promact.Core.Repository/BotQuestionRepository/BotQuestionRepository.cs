@@ -22,11 +22,11 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <summary>
         /// Method to add Question
         /// </summary>
-        /// <param name="question">Question object</param>
-        public void AddQuestion(Question question)
+        /// <param name="question"></param>
+        public async Task AddQuestionAsync(Question question)
         {
             _questionRepository.Insert(question);
-            _questionRepository.Save();
+            await _questionRepository.SaveChangesAsync();
         }
 
         /// <summary>

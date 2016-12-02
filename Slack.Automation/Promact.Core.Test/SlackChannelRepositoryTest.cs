@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
 using System.Threading.Tasks;
 using Xunit;
@@ -40,9 +39,9 @@ namespace Promact.Core.Test
         /// Method to check the functionality of Slack Channel add method
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackChannelAdd()
+        public async Task SlackChannelAdd()
         {
-            _slackChannelRepository.AddSlackChannel(slackChannelDetails);
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
             Assert.Equal(slackChannelDetails.ChannelId, _stringConstant.ChannelIdForTest);
         }
 
@@ -52,8 +51,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task GetByIdAsync()
         {
-            _slackChannelRepository.AddSlackChannel(slackChannelDetails);
-            var slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            var slackChannel = _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest).Result;
             Assert.Equal(slackChannel.ChannelId, _stringConstant.ChannelIdForTest);
         }
 
@@ -64,8 +63,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task GetByIdFalseAsync()
         {
-            _slackChannelRepository.AddSlackChannel(slackChannelDetails);
-            var slackUser = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            var slackUser = _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest).Result;
             Assert.NotEqual(slackUser.ChannelId, _stringConstant.TeamLeaderIdForTest);
         }
 

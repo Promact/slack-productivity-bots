@@ -337,7 +337,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 #endregion
                         }
                         _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                     }
                 }
                 else
