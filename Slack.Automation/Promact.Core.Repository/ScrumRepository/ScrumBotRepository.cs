@@ -1,4 +1,5 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+﻿using Autofac.Extras.NLog;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -39,10 +40,11 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository,
-            IOauthCallsRepository oauthCallsRepository, ISlackUserRepository slackUserDetails,
-            IRepository<Question> questionRepository, IAttachmentRepository attachmentRepository,
+            IOauthCallsRepository oauthCallsRepository,
+            IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository,
+            IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
             IRepository<ApplicationUser> applicationUser, ISlackChannelRepository slackChannelRepository,
-            IRepository<Scrum> scrumRepository, IStringConstantRepository stringConstant,
+            ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant,
             IRepository<SlackBotUserDetail> slackBotUserDetail)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
