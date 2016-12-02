@@ -206,6 +206,10 @@ namespace Promact.Core.Repository.SlackUserRepository
         }
 
 
+        /// <summary>
+        /// Update details of SlackBotUser
+        /// </summary>
+        /// <param name="slackUserDetails"></param>
         private async Task UpdateSlackBotUserAsync(SlackUserDetails slackUserDetails)
         {
             SlackBotUserDetail botUser = await _slackUserBotDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId);

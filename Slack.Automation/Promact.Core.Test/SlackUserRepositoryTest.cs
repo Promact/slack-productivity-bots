@@ -50,10 +50,11 @@ namespace Promact.Core.Test
         /// Method to check the functionality of Slack User add method for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task AddSlackUserFalseAsync()
+        public async Task AddSlackBotUser()
         {
+            slackUserDetails.IsBot = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, 3);
+            Assert.NotEqual(slackUserDetails.Id, 1);
         }
 
 
