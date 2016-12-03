@@ -49,11 +49,11 @@ namespace Promact.Erp.Core.Controllers
        */
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> LeaveReport()
+        public async Task<IHttpActionResult> LeaveReportAsync()
         {
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _leaveReport.LeaveReport(accessToken, loginUser.UserName));
+            return Ok(await _leaveReport.LeaveReportAsync(accessToken, loginUser.UserName));
         }
 
 
@@ -79,7 +79,7 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("{id}")]
-        public async Task<IHttpActionResult> LeaveReportDetails(string id)
+        public async Task<IHttpActionResult> LeaveReportDetailsAsync(string id)
         {
             if (id != null)
             {

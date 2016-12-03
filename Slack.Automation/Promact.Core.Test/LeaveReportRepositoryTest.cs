@@ -50,7 +50,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -67,7 +67,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             leave.EmployeeId = _stringConstant.StringIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -87,7 +87,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             leave.EmployeeId = _stringConstant.StringIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -101,7 +101,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = _leaveReportRepository.LeaveReportDetails(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
+            var leaveReport = _leaveReportRepository.LeaveReportDetailsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(leaveReport);
         }
 
@@ -118,7 +118,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
             Assert.NotEqual(2, leaveReports.Count());
         }
 
@@ -134,7 +134,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest,_stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = _leaveReportRepository.LeaveReportDetails(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
+            var leaveReport = _leaveReportRepository.LeaveReportDetailsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotEqual(2, leaveReport.Count());
         }
 
