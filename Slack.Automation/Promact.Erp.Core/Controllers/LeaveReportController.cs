@@ -84,7 +84,7 @@ namespace Promact.Erp.Core.Controllers
             if (id != null)
             {
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReportDetails(id, accessToken));
+                return Ok(await _leaveReport.LeaveReportDetailsAsync(id, accessToken));
             }
             else
             {
