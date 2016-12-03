@@ -39,7 +39,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="loginUser"></param>
         /// <param name="scrumDate"></param>
         /// <returns>Object with list of employees in project with answers to scrum questions</returns>
-        private IList<EmployeeScrumDetails> GetEmployeeScrumDetails(ProjectAc project, Scrum scrum, User loginUser, DateTime scrumDate)
+        private async Task<IList<EmployeeScrumDetails>> GetEmployeeScrumDetailsAsync(ProjectAc project, Scrum scrum, User loginUser, DateTime scrumDate)
         {
             List<EmployeeScrumDetails> employeeScrumDetails = new List<EmployeeScrumDetails>();
             //Assigning answers of scrum to employees in the project based on their role
@@ -50,7 +50,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
                 {
                     if (user.Id.Equals(loginUser.Id))
                     {
-                        EmployeeScrumDetails employeeScrumDetail = AssignAnswers(scrum, scrumDate, user);
+                        EmployeeScrumDetails employeeScrumDetail = await AssignAnswersAsync(scrum, scrumDate, user);
                         employeeScrumDetails.Add(employeeScrumDetail);
                     }
                 }
@@ -60,7 +60,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             {
                 foreach (var user in project.ApplicationUsers)
                 {
-                    EmployeeScrumDetails employeeScrumDetail = AssignAnswers(scrum, scrumDate, user);
+                    EmployeeScrumDetails employeeScrumDetail = await AssignAnswersAsync(scrum, scrumDate, user);
                     employeeScrumDetails.Add(employeeScrumDetail);
                 }
             }
@@ -75,11 +75,11 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="scrumDate"></param>
         /// <param name="user"></param>
         /// <returns>object with scrum answers for an employee</returns>
-        private EmployeeScrumDetails AssignAnswers(Scrum scrum, DateTime scrumDate, User user)
+        private async Task<EmployeeScrumDetails> AssignAnswersAsync(Scrum scrum, DateTime scrumDate, User user)
         {
             EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
             //Fetch all the scrum answers for a particular employee
-            List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.Fetch(x => x.EmployeeId == user.Id).ToList();
+            List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id)).ToList();
             //Find scrum answers for a particular employee of a particular project on a specific date 
             List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate == scrumDate && x.ScrumId == scrum.Id).ToList();
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
@@ -172,12 +172,12 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Getting details of the specific project from Oauth server
             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
             //Getting scrum for a specific project
-            Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id);
+            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(_stringConstant.FormatForDate);
             scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
             //getting scrum answers of employees in a specific project
-            scrumProjectDetail.EmployeeScrumAnswers = GetEmployeeScrumDetails(project, scrum, loginUser, scrumDate);
+            scrumProjectDetail.EmployeeScrumAnswers = await GetEmployeeScrumDetailsAsync(project, scrum, loginUser, scrumDate);
             return scrumProjectDetail;
         }
 
