@@ -342,7 +342,7 @@ namespace Promact.Erp.Util.StringConstants
 
         string NotAvailable { get; }
         string NextPage { get; }
-        string PriviousPage { get; }
+        string Previouspage { get; }
         string HourLimitExceed { get; }
         string StartWorking { get; }
         string HourSpentForTesting { get; }
