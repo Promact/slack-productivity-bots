@@ -18,6 +18,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Xunit;
@@ -90,10 +91,13 @@ namespace Promact.Core.Test
             PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
             var textTransform = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var textJsonTransform = JsonConvert.SerializeObject(textTransform);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, textJsonTransform, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             MockingUserDetialFromSlackUserId();
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.AtLeastOnce());
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -313,6 +317,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusFalse()
         {
             await AddUser();
+            AddSlackThreeUsers();
             _slackUserRepository.AddSlackUser(slackUser);
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
@@ -743,6 +748,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListSick()
         {
             await AddUser();
+            AddSlackThreeUsers();
             _slackUserRepository.AddSlackUser(slackUser);
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -762,6 +768,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusSick()
         {
             await AddUser();
+            AddSlackThreeUsers();
             _slackUserRepository.AddSlackUser(slackUser);
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -946,7 +953,7 @@ namespace Promact.Core.Test
             user.SlackUserId = _stringConstant.FirstNameForTest;
 
             slackUser.UserId = _stringConstant.FirstNameForTest;
-            slackUser.Name = _stringConstant.FirstNameForTest;
+            slackUser.Name = _stringConstant.ManagementFirstForTest;
             slackUser.FirstName = _stringConstant.FirstNameForTest;
             slackUser.IsBot = false;
 
@@ -962,11 +969,11 @@ namespace Promact.Core.Test
                 Id = _stringConstant.StringIdForTest,
                 Name = _stringConstant.FirstNameForTest
             };
-
-            leave.FromDate = DateTime.UtcNow;
-            leave.EndDate = DateTime.UtcNow;
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            leave.FromDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), dateFormat, CultureInfo.InvariantCulture);
+            leave.EndDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), dateFormat, CultureInfo.InvariantCulture);
             leave.Reason = _stringConstant.LeaveReasonForTest;
-            leave.RejoinDate = DateTime.UtcNow;
+            leave.RejoinDate = DateTime.ParseExact(DateTime.UtcNow.AddDays(1).ToShortDateString(), dateFormat, CultureInfo.InvariantCulture);
             leave.Status = Condition.Pending;
             leave.Type = LeaveType.cl;
             leave.CreatedOn = DateTime.UtcNow;
