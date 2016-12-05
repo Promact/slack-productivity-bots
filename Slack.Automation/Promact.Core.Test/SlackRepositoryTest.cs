@@ -963,10 +963,10 @@ namespace Promact.Core.Test
                 Name = _stringConstant.FirstNameForTest
             };
 
-            leave.FromDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
-            leave.EndDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leave.FromDate = DateTime.UtcNow;
+            leave.EndDate = DateTime.UtcNow;
             leave.Reason = _stringConstant.LeaveReasonForTest;
-            leave.RejoinDate = DateTime.ParseExact(DateTime.UtcNow.AddDays(1).ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
+            leave.RejoinDate = DateTime.UtcNow;
             leave.Status = Condition.Pending;
             leave.Type = LeaveType.cl;
             leave.CreatedOn = DateTime.UtcNow;
