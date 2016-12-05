@@ -719,7 +719,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsForSelectedDateForAdminAsync()
+        public async Task TaskMailDetailsForSelectedDateForAdminAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -750,7 +750,7 @@ namespace Promact.Core.Test
         /// get the user information.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void GetAllEmployeeAsync()
+        public async Task GetAllEmployeeAsync()
         {
 
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -832,7 +832,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the selected date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportSelectedDateAsync()
+        public async Task TaskMailDetailsReportSelectedDateAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -867,7 +867,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportNextPreviousDateAsync()
+        public async Task TaskMailDetailsReportNextPreviousDateAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
