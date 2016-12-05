@@ -545,6 +545,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Scrum Bot : ";
             }
         }
+        public string LoggerTaskMailBot
+        {
+            get
+            {
+                return "Error in Tasl Mail Bot : ";
+            }
+        }
         public string ScrumLaterDone
         {
             get
