@@ -2162,11 +2162,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Next";
             }
         }
-        public string PriviousPage
+        public string Previouspage
         {
             get
             {
-                return "Privious";
+                return "Previous";
             }
         }
 
