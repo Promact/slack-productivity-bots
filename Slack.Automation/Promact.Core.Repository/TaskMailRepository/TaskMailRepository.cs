@@ -471,7 +471,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="name"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string UserId, string UserRole, string UserName, string LoginId)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id, string role, string name, string loginId)
         {
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
             {
@@ -637,7 +637,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="CreatedOn"></param>
         /// <param name="LoginId"></param>
         /// <returns></returns>
-        private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string UserId, string UserName, string UserRole, DateTime CreatedOn, string LoginId)
+        private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string id, string name, string role, DateTime createdOn, string loginId)
         {
             var taskMailList = await _taskMail.FetchAsync(y => y.EmployeeId == id);
             if (taskMailList != null)
@@ -687,7 +687,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="LoginId"></param>
         /// <param name="Type"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string Type)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string name, string role, string createdOn, string loginId, string type)
         {
             DateTime? createdDate = null;
             if (type == _stringConstant.NextPage)
