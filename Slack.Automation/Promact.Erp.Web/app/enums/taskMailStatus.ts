@@ -1,6 +1,6 @@
 ﻿export enum TaskMailStatus {
-    inprogress,
-    completed,
-    roadblock,
+    InProgress,
+    Completed,
+    RoadBlock,
     NotAvailable
 }
