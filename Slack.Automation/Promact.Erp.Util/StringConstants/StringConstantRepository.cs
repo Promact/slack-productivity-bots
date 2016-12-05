@@ -1697,14 +1697,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply sl Testing 05/04/2016 siddhartha";
+                return "apply sl Testing 05/2016/12 siddhartha";
             }
         }
         public string SlashCommandTextErrorDateFormatCasual
         {
             get
             {
-                return string.Format("apply cl Testing {0} 2016/04/05 2016/04/05", DateTime.UtcNow.ToShortDateString());
+                return string.Format("apply cl Testing {0} 05/2016/12 05/2016/12", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextCasual
