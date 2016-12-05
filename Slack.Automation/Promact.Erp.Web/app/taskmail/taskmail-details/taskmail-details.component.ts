@@ -58,11 +58,7 @@ export class TaskMailDetailsComponent {
                     var datePipe = new DatePipe("medium");
                     taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
                     taskmailuser.TaskMails.forEach(taskMail => {
-                        if (taskMail.Comment == this.stringConstant.notAvailableComment)
-                        { taskMail.StatusName = this.stringConstant.notAvailableComment }
-                        else {
-                            taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                        }
+                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                 });
                 this.loader.loader = false;
@@ -84,11 +80,7 @@ export class TaskMailDetailsComponent {
                     var datePipe = new DatePipe("medium");
                     taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
                     taskmailuser.TaskMails.forEach(taskMail => {
-                        if (taskMail.Comment == this.stringConstant.notAvailableComment)
-                        { taskMail.StatusName = this.stringConstant.notAvailableComment }
-                        else {
-                            taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                        }
+                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                 });
         });
@@ -106,11 +98,7 @@ export class TaskMailDetailsComponent {
                 var datePipe = new DatePipe("medium");
                 taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
                 taskmailuser.TaskMails.forEach(taskMail => {
-                    if (taskMail.Comment == this.stringConstant.notAvailableComment)
-                    { taskMail.StatusName = this.stringConstant.notAvailableComment}
-                    else {
-                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                    }
+                    taskMail.StatusName = TaskMailStatus[taskMail.Status];
                 });
             });
             
@@ -131,11 +119,7 @@ export class TaskMailDetailsComponent {
                 var datePipe = new DatePipe("medium");
                 taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
                 taskmailuser.TaskMails.forEach(taskMail => {
-                    if (taskMail.Comment === this.stringConstant.notAvailableComment)
-                    { taskMail.StatusName = this.stringConstant.notAvailableComment }
-                    else {
-                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                    }
+                    taskMail.StatusName = TaskMailStatus[taskMail.Status];
                 });
             });
 
