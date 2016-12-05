@@ -431,10 +431,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            List<UserRoleAc> userRoleAc = await _oauthCallsRepository.GetUserRole(user.Id, accessToken);
-            var role = userRoleAc.FirstOrDefault(x => x.UserName == user.UserName).Role;
-            List<TaskMailReportAc> taskMailReportListAc = new List<TaskMailReportAc>();
-            if (role == _stringConstant.RoleAdmin)
+            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
+            if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
             {
                 foreach (var userRole in userRoleAcList)
                 {
@@ -812,7 +810,6 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         private DateTime GetMaxDate(IEnumerable<TaskMail> taskMails)
         {
-            DateTime? maxDate = null;
             var taskMail = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
             if (taskMail != null)
             {
