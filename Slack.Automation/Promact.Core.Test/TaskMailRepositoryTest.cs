@@ -999,11 +999,11 @@ namespace Promact.Core.Test
 
         #endregion
 
-        #region Initialisation
-        /// <summary>
-        /// A method is used to initialize variables which are repetitively used
-        /// </summary>
-        public void Initialize()
+    #region Initialisation
+    /// <summary>
+    /// A method is used to initialize variables which are repetitively used
+    /// </summary>
+    public void Initialize()
         {
 
             profile.Skype = _stringConstant.TestUserId;
