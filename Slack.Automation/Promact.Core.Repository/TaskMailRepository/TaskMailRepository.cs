@@ -538,6 +538,8 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             DateTime pickDate = Convert.ToDateTime(selectedDate).Date;
             var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(pickDate));
+            DateTime slectedDateForAdmin = Convert.ToDateTime(selectedDate).Date;
+            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(slectedDateForAdmin));
             if (taskMails.Count() != 0)
             {
                 maxDate = (await _taskMail.FetchAsync(x => x.EmployeeId == id)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;

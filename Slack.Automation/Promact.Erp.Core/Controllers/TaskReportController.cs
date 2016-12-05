@@ -60,7 +60,6 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id,string role, string name)
         {
            return await _taskMailReport.TaskMailDetailsReportAsync(id, role, name, User.Identity.GetUserId());
-           return await _taskMailReport.TaskMailDetailsReportAsync(UserId,UserRole,UserName, User.Identity.GetUserId());
         }
 
         /**
