@@ -45,5 +45,10 @@ export class StringConstant {
     createdOns = "CreatedOns";
     taskDetailsUrl = "/details";
     selectedDate = "SelectedDate";
-    taskMaiUrl = "api/TaskReport"
+    taskMaiUrl = "api/taskreport";
+    next = "Next";
+    previous = "Previous";
+    pageType = "PageType";
+    createdOns = "createdOns";
+    taskDetailsUrl = "/user/";
 }
