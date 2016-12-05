@@ -1086,6 +1086,20 @@ namespace Promact.Erp.Util.StringConstants
                 return string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
             }
         }
+        public string Forbidden
+        {
+            get
+            {
+                return "Forbidden";
+            }
+        }
+        public string UnAuthorized
+        {
+            get
+            {
+                return "Server responded with Forbidden response. User is not Authorized";
+            }
+        }
         public string ClientReturnUrl
         {
             get

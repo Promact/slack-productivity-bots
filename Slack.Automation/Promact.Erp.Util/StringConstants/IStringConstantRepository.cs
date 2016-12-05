@@ -170,6 +170,8 @@ namespace Promact.Erp.Util.StringConstants
         string ProjectUrl { get; }
         string UserUrl { get; }
         string OAuthUrl { get; }
+        string Forbidden { get; }
+        string UnAuthorized { get; }
         string ClientReturnUrl { get; }
         string LeaveManagementAuthorizationUrl { get; }
         string ChatPostUrl { get; }

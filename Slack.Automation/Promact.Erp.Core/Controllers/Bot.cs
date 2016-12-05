@@ -125,6 +125,7 @@ namespace Promact.Erp.Core.Controllers
                 }
                 catch (AggregateException ex)
                 {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
                     foreach (var exception in ex.InnerExceptions)
                     {
                         _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + exception.InnerException + "\n" + exception.StackTrace);
