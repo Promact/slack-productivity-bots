@@ -811,7 +811,7 @@ namespace Promact.Core.Test
         /// get the employee information for user role is Employee.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void GetEmployeeInfromationAsync()
+        public async Task GetEmployeeInfromationAsync()
         {
 
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -1056,11 +1056,11 @@ namespace Promact.Core.Test
 
         #endregion
 
-        #region Initialisation
-        /// <summary>
-        /// A method is used to initialize variables which are repetitively used
-        /// </summary>
-        public void Initialize()
+    #region Initialisation
+    /// <summary>
+    /// A method is used to initialize variables which are repetitively used
+    /// </summary>
+    public void Initialize()
         {
 
             profile.Skype = _stringConstant.TestUserId;
