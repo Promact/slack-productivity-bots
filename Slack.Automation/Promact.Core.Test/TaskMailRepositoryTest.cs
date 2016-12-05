@@ -788,7 +788,7 @@ namespace Promact.Core.Test
         /// get the employee information for user role is Employee.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void GetEmployeeInfromationAsync()
+        public async Task GetEmployeeInfromationAsync()
         {
 
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
