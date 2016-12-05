@@ -9,7 +9,7 @@ using Promact.Erp.Util.StringConstants;
 namespace Promact.Erp.Core.Controllers
 {
 
-    [RoutePrefix("api/TaskReport")]
+    [RoutePrefix("api/taskreport")]
     [Authorize]
     public class TaskReportController: ApiController
     {
@@ -23,9 +23,9 @@ namespace Promact.Erp.Core.Controllers
 
 
         /**
-         * @api {get}  api/TaskReport/:UserId
+         * @api {get}  api/TaskReport/user/:id
          * @apiVersion 1.0.0
-         * @apiName TaskMailDetailsReport
+         * @apiName TaskMailDetailsReportAsync
          * @apiGroup TaskReport
          * @apiParam {string} UserId  user Id
          * @apiParam {string} UserRole  user Role
@@ -56,56 +56,16 @@ namespace Promact.Erp.Core.Controllers
          * }
          */
         [HttpGet]
-        [Route("{UserId}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string UserId,string UserRole, string UserName)
+        [Route("user/{id}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id,string role, string name)
         {
-           return await _taskMailReport.TaskMailDetailsReportAsync(UserId,UserRole,UserName, User.Identity.GetUserId());
+           return await _taskMailReport.TaskMailDetailsReportAsync(id, role, name, User.Identity.GetUserId());
         }
 
         /**
-         * @api {get} api/TaskReport/:UserId/details  
-         * @apiVersion 1.0.0
-         * @apiName TaskMailDetailsReportPreviousDate
-         * @apiGroup TaskReport
-         * @apiParam {string} UserId  user Id
-         * @apiParam {string} UserRole  user Role
-         * @apiParam {string} UserName  user Name
-         * @apiParam {string} CreatedOn user Task Mail CreatedOn
-         * @apiParamExample {json} Request-Example:
-         *      
-         *        {
-         *             "UserId": "1",
-         *             "UserRole": "Admin",
-         *             "UserName" : "test",
-         *             "CreatedOn": "01-01-0001"
-         *        }      
-         * @apiSuccessExample {json} Success-Response:
-         * HTTP/1.1 200 OK 
-         * {
-         *      "UserId": "1",
-         *      "UserRole": "Admin",
-         *      "UserName" : "test",
-         *      "CreatedOn": "01-01-0001",
-         *      "TaskMails" : 
-         *      {
-         *          Description : "Worked on Issue #123".
-         *          Comment : "Worked comment",
-         *          Hours : 1.5, 
-         *          Status : Completed  
-         *      }
-         * }
-         */
-        [HttpGet]
-        [Route("{UserId}/details")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportPreviousDateAsync(string UserId,string UserRole, string UserName ,string CreatedOns)
-        {
-            return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole, CreatedOns, User.Identity.GetUserId(), _stringConstant.PriviousPage);
-        }
-
-        /**
-        * @api {get} api/TaskReport/details :UserId 
+        * @api {get} api/TaskReport/user :id 
         * @apiVersion 1.0.0
-        * @apiName TaskMailDetailsReportNextDate
+        * @apiName TaskMailDetailsReportNextPreviousDateAsync
         * @apiGroup TaskReport
         * @apiParam {string} UserId  user Id
         * @apiParam {string} UserRole  user Role
@@ -137,14 +97,21 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("details/{UserId}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextDateAsync(string UserId, string UserRole, string UserName, string CreatedOns)
+        [Route("user/{id}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string role, string name, string createdOns,string pageType)
         {
-            return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole, CreatedOns, User.Identity.GetUserId(), _stringConstant.NextPage);
+            if (pageType == _stringConstant.NextPage)
+            {
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), _stringConstant.NextPage);
+            }
+            else 
+            {
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), _stringConstant.Previouspage);
+            }
         }
 
         /**
-        * @api {get} api/TaskReport :UserId 
+        * @api {get} api/TaskReport/user :id 
         * @apiVersion 1.0.0
         * @apiName TaskMailDetailsReportSelectedDateAsync
         * @apiGroup TaskReport
@@ -179,17 +146,17 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("{UserId}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string UserId, string UserRole, string UserName, string CreatedOns, string SelectedDate)
+        [Route("user/{id}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string role, string name, string createdOns, string selectedDate)
         {
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(UserId, UserName, UserRole, CreatedOns, User.Identity.GetUserId(), SelectedDate);
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), selectedDate);
         }
 
 
         /**
        * @api {get} api/TaskReport 
        * @apiVersion 1.0.0
-       * @apiName getAllEmployee
+       * @apiName GetAllEmployeeAsync
        * @apiGroup TaskReport
        * @apiParam {null} no parameter
        * @apiSuccessExample {json} Success-Response:
@@ -205,7 +172,7 @@ namespace Promact.Erp.Core.Controllers
        */
         [HttpGet]
         [Route("")]
-        public async Task<List<TaskMailReportAc>> getAllEmployeeAsync()
+        public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync()
         {
             return await _taskMailReport.GetAllEmployeeAsync(User.Identity.GetUserId());
         }

@@ -31,10 +31,13 @@ export class StringConstant {
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";
     noProjectToDisplay = "No projects to display";
-    userRole= "UserRole";
-    userName= "UserName";
-    createdOns = "CreatedOns";
-    taskDetailsUrl = "/details";
+    userRole= "role";
+    userName= "name";
+    createdOns = "createdOns";
+    taskDetailsUrl = "/user/";
     selectedDate = "SelectedDate";
-    taskMaiUrl = "api/TaskReport"
+    taskMaiUrl = "api/taskreport";
+    next = "Next";
+    previous = "Previous";
+    pageType = "PageType";
 }
