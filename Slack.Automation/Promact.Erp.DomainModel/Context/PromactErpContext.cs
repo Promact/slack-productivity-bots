@@ -32,6 +32,7 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<IncomingWebHook> IncomingWebHook { get; set; }
 
         public static PromactErpContext Create()
+
         {
             return new PromactErpContext();
         }
