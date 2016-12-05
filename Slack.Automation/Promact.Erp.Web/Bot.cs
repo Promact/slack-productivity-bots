@@ -52,7 +52,7 @@ namespace Promact.Erp.Web
                         string replyText = "";
                         var text = message.text;
                         if (user != null)
-                        {  
+                        {
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                             { 
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
@@ -91,49 +91,44 @@ namespace Promact.Erp.Web
         {
             _logger = container.Resolve<ILogger>();
             _stringConstant = container.Resolve<IStringConstantRepository>();
-            try
+
+            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
+            string botToken = _environmentVariableRepository.ScrumBotToken;
+            SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
+
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            //Connecting the bot of the given token 
+            client.Connect((connected) => { });
+
+            // Method will be called when someone sends message
+            client.OnMessageReceived += (message) =>
             {
-                _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
-                string botToken = _environmentVariableRepository.ScrumBotToken;
-                SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-                _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
-                MessageReceived messageReceive = new MessageReceived();
-                messageReceive.ok = true;
-                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                //Connecting the bot of the given token 
-                client.Connect((connected) => { });
-
-                // Method will be called when someone sends message
-                client.OnMessageReceived += (message) =>
+                _logger.Info("Scrum bot got message :" + message);
+                try
                 {
-                    _logger.Info("Scrum bot got message :" + message);
-                    try
+                    _logger.Info("Scrum bot got message, inside try");
+                    string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+                    if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Info("Scrum bot got message, inside try");
-                        string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
-                        if (!String.IsNullOrEmpty(replyText))
-                        {
-                            _logger.Info("Scrum bot got reply");
-                            client.SendMessage(showMethod, message.channel, replyText);
-                        }
+                        _logger.Info("Scrum bot got reply");
+                        client.SendMessage(showMethod, message.channel, replyText);
                     }
-                    catch (Exception ex)
+                }
+                catch (AggregateException exception)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    foreach (var innerException in exception.Flatten().InnerExceptions)
                     {
-                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
-                        client.CloseSocket();
-                        throw ex;
+                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + innerException.Message + "\n" + innerException.StackTrace);
                     }
-                };
-                //ChannelCreated channel = new ChannelCreated();
-                //client.HandleChannelCreated(channel);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
-                throw ex;
-            }
+                    client.CloseSocket();
+                }
+            };
+
         }
 
     }
