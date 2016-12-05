@@ -63,7 +63,7 @@ namespace Promact.Core.Test
         /// Test case for task mail start and ask first question for true result, First question of task mail
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void StartTaskMail()
+        public async Task StartTaskMail()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -76,7 +76,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for true result, Request to task mail
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswer()
+        public async Task QuestionAndAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -96,7 +96,7 @@ namespace Promact.Core.Test
         /// Test case for task mail start and ask first question for already start task mail scenario
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void StartTaskMailAlreadyStart()
+        public async Task StartTaskMailAlreadyStart()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -113,7 +113,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not answered first question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerFirstNotAnswered()
+        public async Task QuestionAndAnswerFirstNotAnswered()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -132,7 +132,7 @@ namespace Promact.Core.Test
         /// Test case for task mail start for already mail send for task mail scenario
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void StartTaskMailAlreadyMailSend()
+        public async Task StartTaskMailAlreadyMailSend()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -150,7 +150,7 @@ namespace Promact.Core.Test
         /// Test case for task mail start for User Does Not Exist for task mail
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void StartTaskMailUserDoesNotExist()
+        public async Task StartTaskMailUserDoesNotExist()
         {
             var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.YouAreNotInExistInOAuthServer);
@@ -160,7 +160,7 @@ namespace Promact.Core.Test
         /// Test case for Question And Answer for User Does Not Exist for task mail
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerUserDoesNotExist()
+        public async Task QuestionAndAnswerUserDoesNotExist()
         {
             var responses = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.YouAreNotInExistInOAuthServer);
@@ -170,7 +170,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after first question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterFirstAnswer()
+        public async Task QuestionAndAnswerAfterFirstAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -190,7 +190,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not or wrong answered second question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerSecondNotAnsweredOrWrongAnswer()
+        public async Task QuestionAndAnswerSecondNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -210,7 +210,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after second question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterSecondAnswerForStringAnswer()
+        public async Task QuestionAndAnswerAfterSecondAnswerForStringAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -231,7 +231,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after second question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterSecondAnswer()
+        public async Task QuestionAndAnswerAfterSecondAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -251,7 +251,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not or wrong answered third question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerThirdNotAnsweredOrWrongAnswer()
+        public async Task QuestionAndAnswerThirdNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -271,7 +271,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after third question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterThirdAnswer()
+        public async Task QuestionAndAnswerAfterThirdAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -291,7 +291,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not or wrong answered forth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerForthNotAnsweredOrWrongAnswer()
+        public async Task QuestionAndAnswerForthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -310,7 +310,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after forth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterForthAnswer()
+        public async Task QuestionAndAnswerAfterForthAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -330,7 +330,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not or wrong answered fifth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerFifthNotAnsweredOrWrongAnswer()
+        public async Task QuestionAndAnswerFifthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -350,7 +350,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after fifth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterFifthAnswerForYes()
+        public async Task QuestionAndAnswerAfterFifthAnswerForYes()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -370,7 +370,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after fifth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterFifthAnswerForNo()
+        public async Task QuestionAndAnswerAfterFifthAnswerForNo()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -391,7 +391,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started but not or wrong answered sixth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerSixthNotAnsweredOrWrongAnswer()
+        public async Task QuestionAndAnswerSixthNotAnsweredOrWrongAnswer()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -411,7 +411,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after sixth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterSixthAnswerForYes()
+        public async Task QuestionAndAnswerAfterSixthAnswerForYes()
         {
             await mockAndUserCreate();
             _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>()));
@@ -432,7 +432,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after sixth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterSixthAnswerForNo()
+        public async Task QuestionAndAnswerAfterSixthAnswerForNo()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -452,7 +452,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after sixth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerAfterSendingMail()
+        public async Task QuestionAndAnswerAfterSendingMail()
         {
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
@@ -492,7 +492,7 @@ namespace Promact.Core.Test
         /// Test case for conduct task mail after started for task mail started after sixth question
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void QuestionAndAnswerForEmailServiceError()
+        public async Task QuestionAndAnswerForEmailServiceError()
         {
             SmtpException ex = new SmtpException();
             await mockAndUserCreate();
@@ -515,7 +515,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportAsync()
+        public async Task TaskMailDetailsReportAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -546,7 +546,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportForEmployeeAsync()
+        public async Task TaskMailDetailsReportForEmployeeAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -577,7 +577,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsReportForTeamLeader()
+        public async Task TaskMailDetailsReportForTeamLeader()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
