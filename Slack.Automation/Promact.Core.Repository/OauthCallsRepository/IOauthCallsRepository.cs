@@ -29,7 +29,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>management details</returns>
         Task<List<User>> GetManagementUserName(string accessToken);
 
-        Task<List<UserRoleAc>> GetUserRole(string userId, string accessToken);
+        Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
@@ -40,7 +40,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<ProjectAc> GetProjectDetails(string groupName, string accessToken);
 
 
-        Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken);
+        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken);
 
       
 

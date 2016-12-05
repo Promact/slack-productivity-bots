@@ -31,6 +31,7 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<SlackChannelDetails> SlackChannelDetails { get; set; }
 
         public static PromactErpContext Create()
+
         {
             return new PromactErpContext();
         }

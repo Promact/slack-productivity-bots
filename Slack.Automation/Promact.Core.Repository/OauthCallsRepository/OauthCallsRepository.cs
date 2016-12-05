@@ -203,7 +203,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return result;
         }
 
-        public async Task<List<UserRoleAc>> GetUserRole(string userId, string accessToken)
+        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken)
         {
             var requestUrl = string.Format("{0}{1}", userId, _stringConstant.UserRoleUrl);
             var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
@@ -211,7 +211,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return Json;
         }
 
-        public async Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken)
+        public async Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken)
         {
             var requestUrl = string.Format("{0}{1}", userId,_stringConstant.TeamMembersUrl);
             var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
