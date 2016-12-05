@@ -2,16 +2,34 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Core.Repository.HttpClientRepository
 {
     public class HttpClientRepository : IHttpClientRepository
     {
-        private HttpClient _client;
-        public HttpClientRepository()
-        {
 
+
+        #region Private Variable
+
+        private HttpClient _client;
+        private readonly IStringConstantRepository _stringConstant;
+
+        #endregion
+
+
+        #region Constructor
+
+        public HttpClientRepository(IStringConstantRepository stringConstant)
+        {
+            _stringConstant = stringConstant;
         }
+
+        #endregion
+
+
+        #region Public Method
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's GetAsync method
@@ -22,25 +40,26 @@ namespace Promact.Core.Repository.HttpClientRepository
         /// <returns>responseContent</returns>
         public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
-            try
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri(baseUrl);
+            // Added access token to request header if provided by user
+            if (!String.IsNullOrEmpty(accessToken))
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+
+            HttpResponseMessage response = await _client.GetAsync(contentUrl);
+            _client.Dispose();
+            if (response.IsSuccessStatusCode)
             {
-                _client = new HttpClient();
-                _client.BaseAddress = new Uri(baseUrl);
-                // Added access token to request header if provided by user
-                if (!String.IsNullOrEmpty(accessToken))
-                {
-                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
-                }
-                var response = await _client.GetAsync(contentUrl);
-                _client.Dispose();
-                var responseContent = response.Content.ReadAsStringAsync().Result;
+                string responseContent = response.Content.ReadAsStringAsync().Result;
                 return responseContent;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            else if (response.ReasonPhrase.Equals(_stringConstant.Forbidden))
+                throw new ForbiddenUserException(_stringConstant.UnAuthorized);
+            else
+                return null;
         }
+
+        #endregion
 
 
     }

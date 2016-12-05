@@ -61,8 +61,8 @@ namespace Promact.Erp.Core.Controllers
                         var text = message.text.ToLower();
                         if (user != null)
                         {
-                            if (text == _stringConstant.TaskMailSubject)
-                            {
+                            if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
+                            { 
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
@@ -96,20 +96,23 @@ namespace Promact.Erp.Core.Controllers
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting. - JJ 
         /// </summary>
-        public void Scrum()
+        /// <param name="container"></param>
+        public static void ScrumMain(IComponentContext container)
         {
+            _logger = container.Resolve<ILogger>();
+            _stringConstant = container.Resolve<IStringConstantRepository>();
+
+            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
             string botToken = _environmentVariableRepository.ScrumBotToken;
             SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
 
             // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
             messageReceive.ok = true;
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             //Connecting the bot of the given token 
-            client.Connect((connected) =>
-            {
-
-            });
+            client.Connect((connected) => { });
 
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
@@ -118,32 +121,24 @@ namespace Promact.Erp.Core.Controllers
                 try
                 {
                     _logger.Info("Scrum bot got message, inside try");
-                    string replyText = string.Empty;
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
-                    }).GetAwaiter().GetResult();
+                    string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Info("Scrum bot got reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
-                catch (TaskCanceledException ex)
+                catch (AggregateException exception)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
+                    foreach (var innerException in exception.Flatten().InnerExceptions)
+                    {
+                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + innerException.Message + "\n" + innerException.StackTrace);
+                    }
                     client.CloseSocket();
-                    throw ex;
-                }
-                catch (HttpRequestException ex)
-                {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
-                    client.CloseSocket();
-                    throw ex;
                 }
             };
+
         }
     }
 }
