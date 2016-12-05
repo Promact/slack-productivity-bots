@@ -7,16 +7,21 @@ using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Promact.Core.Test
 {
     public class AttachmentRepositoryTest
     {
+        #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
+        #endregion
+
+        #region Constructor
         public AttachmentRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -24,7 +29,9 @@ namespace Promact.Core.Test
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Test case to check creating attchment of slack used generically for true value
         /// </summary>
@@ -89,13 +96,13 @@ namespace Promact.Core.Test
         /// Test case to check Method AccessToken of Attachment Repository 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AccessToken()
+        public async Task AccessTokenAsync()
         {
             var user = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.FirstNameForTest };
-            var result = _userManager.CreateAsync(user).Result;
+            var result = await _userManager.CreateAsync(user);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            var secondResult = _userManager.AddLoginAsync(user.Id, info).Result;
-            var accessToken = _attachmentRepository.AccessToken(user.Email).Result;
+            var secondResult = await _userManager.AddLoginAsync(user.Id, info);
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.Email);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
         }
 
@@ -152,17 +159,17 @@ namespace Promact.Core.Test
         /// Test case to check Method AccessToken of Attachment Repository for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void AccessTokenFalse()
+        public async Task AccessTokenFalseAsync()
         {
             var firstUser = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.FirstNameForTest };
             var secondUser = new ApplicationUser() { Email = _stringConstant.TeamLeaderEmailForTest, UserName = _stringConstant.TeamLeaderEmailForTest, SlackUserId = _stringConstant.LastNameForTest };
-            var result = _userManager.CreateAsync(firstUser).Result;
-            result = _userManager.CreateAsync(secondUser).Result;
+            var result = await _userManager.CreateAsync(firstUser);
+            result = await _userManager.CreateAsync(secondUser);
             UserLoginInfo firstInfo = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             UserLoginInfo secondInfo = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.SlackChannelIdForTest);
-            result = _userManager.AddLoginAsync(firstUser.Id, firstInfo).Result;
-            result = _userManager.AddLoginAsync(secondUser.Id, secondInfo).Result;
-            var accessToken = _attachmentRepository.AccessToken(secondUser.Email).Result;
+            result = await _userManager.AddLoginAsync(firstUser.Id, firstInfo);
+            result = await _userManager.AddLoginAsync(secondUser.Id, secondInfo);
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(secondUser.Email);
             Assert.NotEqual(accessToken, _stringConstant.AccessTokenForTest);
         }
 
@@ -176,5 +183,6 @@ namespace Promact.Core.Test
             Assert.Equal(response.Title, _stringConstant.Hello);
             Assert.Equal(response.Color, _stringConstant.Color);
         }
+        #endregion
     }
 }

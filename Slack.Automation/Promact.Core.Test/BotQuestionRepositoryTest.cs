@@ -11,10 +11,14 @@ namespace Promact.Core.Test
 {
     public class BotQuestionRepositoryTest
     {
+        #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IStringConstantRepository _stringConstant;
         private Question question = new Question();
+        #endregion
+
+        #region Constructor
         public BotQuestionRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -22,7 +26,9 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Test cases to check add method of bot question repository for true value
         /// </summary>
@@ -126,5 +132,6 @@ namespace Promact.Core.Test
             question.QuestionStatement = _stringConstant.FirstQuestionForTest;
             question.Type = 2;
         }
+        #endregion
     }
 }

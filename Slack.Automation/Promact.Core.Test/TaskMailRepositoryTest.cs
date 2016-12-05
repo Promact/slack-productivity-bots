@@ -2,8 +2,6 @@
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
-using Promact.Core.Repository.HttpClientRepository;
-//using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -11,6 +9,7 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Net.Mail;
@@ -21,17 +20,17 @@ namespace Promact.Core.Test
 {
     public class TaskMailRepositoryTest
     {
+        #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
-        private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly ApplicationUserManager _userManager;
         private readonly IRepository<TaskMail> _taskMailDataRepository;
         private readonly IRepository<TaskMailDetails> _taskMailDetailsDataRepository;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly IStringConstantRepository _stringConstant;
-        //     private readonly IOauthCallsRepository _oauthCallsRepository;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         private Question firstQuestion = new Question();
@@ -46,22 +45,26 @@ namespace Promact.Core.Test
         private Question SixthQuestion = new Question();
         private Question SeventhQuestion = new Question();
         private EmailApplication email = new EmailApplication();
+        #endregion
+
+        #region Constructor
         public TaskMailRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _taskMailRepository = _componentContext.Resolve<ITaskMailRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
-            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _taskMailDataRepository = _componentContext.Resolve<IRepository<TaskMail>>();
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
-            //  _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Test case for task mail start and ask first question for true result, First question of task mail
         /// </summary>
@@ -71,7 +74,7 @@ namespace Promact.Core.Test
             await mockAndUserCreate();
             _slackUserRepository.AddSlackUser(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
-            var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
+            var responses = await _taskMailRepository.StartTaskMailAsync(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, firstQuestion.QuestionStatement);
         }
 
@@ -91,7 +94,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.RequestToStartTaskMail);
         }
 
@@ -108,7 +111,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             taskMailDetails.TaskId = taskMail.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
+            var responses = await _taskMailRepository.StartTaskMailAsync(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, firstQuestion.QuestionStatement);
         }
 
@@ -127,7 +130,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.FirstQuestionForTest);
         }
 
@@ -145,7 +148,7 @@ namespace Promact.Core.Test
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
+            var responses = await _taskMailRepository.StartTaskMailAsync(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.AlreadyMailSend);
         }
 
@@ -155,7 +158,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void StartTaskMailUserDoesNotExist()
         {
-            var responses = await _taskMailRepository.StartTaskMail(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
+            var responses = await _taskMailRepository.StartTaskMailAsync(_stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.YouAreNotInExistInOAuthServer);
         }
 
@@ -165,7 +168,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async void QuestionAndAnswerUserDoesNotExist()
         {
-            var responses = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var responses = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(responses, _stringConstant.YouAreNotInExistInOAuthServer);
         }
 
@@ -185,7 +188,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.SecondQuestionForTest);
         }
 
@@ -204,7 +207,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
         }
@@ -225,7 +228,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.TaskMailDescription, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
         }
@@ -246,7 +249,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThirdQuestionForTest);
         }
 
@@ -265,7 +268,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, _stringConstant.ThirdQuestionForTest);
             Assert.Equal(response, text);
         }
@@ -286,7 +289,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = thirdQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ForthQuestionForTest);
         }
 
@@ -305,7 +308,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             Assert.Equal(response, forthQuestion.QuestionStatement);
         }
 
@@ -325,7 +328,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = forthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.FifthQuestionForTest);
         }
 
@@ -344,7 +347,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, fifthQuestion.QuestionStatement);
             Assert.Equal(response, text);
         }
@@ -365,7 +368,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.SixthQuestionForTest);
         }
 
@@ -386,7 +389,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
 
@@ -405,7 +408,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, null, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, SixthQuestion.QuestionStatement);
             Assert.Equal(response, text);
         }
@@ -427,7 +430,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
 
@@ -447,7 +450,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.ThankYou);
         }
 
@@ -467,7 +470,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = SeventhQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
             Assert.Equal(response, _stringConstant.RequestToStartTaskMail);
         }
 
@@ -509,7 +512,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = SixthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
             var expectReply = string.Format("{0}. {1}", _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
             Assert.Equal(response, expectReply);
         }
@@ -542,7 +545,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleAdmin, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -580,7 +583,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReport(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(0, taskMailDetail.Count);
 
         }
@@ -613,7 +616,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -630,7 +633,7 @@ namespace Promact.Core.Test
             var role = _stringConstant.RoleAdmin;
 
 
-            var result = await _taskMailRepository.GetAllEmployee(user.Id);
+            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
             Assert.Equal(0, result.Count);
         }
 
@@ -666,7 +669,7 @@ namespace Promact.Core.Test
 
 
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -706,7 +709,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -742,7 +745,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDate(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -777,7 +780,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
             _taskMailDetailsDataRepository.Save();
             var expectedResponse = string.Format("{0}{1}{2}", _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
             Assert.Equal(response, expectedResponse);
         }
 
@@ -797,17 +800,13 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswer(_stringConstant.FirstNameForTest, _stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.FirstNameForTest, _stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
             var text = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
         }
+        #endregion
 
-
-
-        /// <summary>
-        /// this test case for the task mail details for the selected date.
-        /// </summary>
-
+        #region Initialisation
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
@@ -884,5 +883,6 @@ namespace Promact.Core.Test
             email.From = _stringConstant.ManagementEmailForTest;
             email.Subject = _stringConstant.TaskMailSubject;
         }
+        #endregion
     }
 }

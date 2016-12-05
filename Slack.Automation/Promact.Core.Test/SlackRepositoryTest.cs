@@ -1,33 +1,36 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
 using Moq;
+using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.Client;
-using Promact.Core.Repository.HttpClientRepository;
+using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Web;
 using Xunit;
 
 namespace Promact.Core.Test
 {
     public class SlackRepositoryTest
     {
+        #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly ISlackRepository _slackRepository;
         private readonly ISlackUserRepository _slackUserRepository;
-        private readonly Mock<IHttpClientRepository> _mockHttpClient;
-        private readonly Mock<IClient> _mockClient;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ApplicationUserManager _userManager;
@@ -40,60 +43,70 @@ namespace Promact.Core.Test
         private SlashCommand slackLeave = new SlashCommand();
         private ApplicationUser newUser = new ApplicationUser();
         private SlashChatUpdateResponse leaveResponse = new SlashChatUpdateResponse();
+        private SlackUserDetails firstUser = new SlackUserDetails();
+        private SlackUserDetails secondUser = new SlackUserDetails();
+        private SlackUserDetails thirdUser = new SlackUserDetails();
+        private EmailApplication email = new EmailApplication();
+        private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
+        private readonly Mock<IEmailService> _mockEmail;
+        #endregion
+
+        #region Constructor
         public SlackRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _slackRepository = _componentContext.Resolve<ISlackRepository>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
-            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
-            _mockClient = _componentContext.Resolve<Mock<IClient>>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             incomingWebhookURL = _envVariableRepository.IncomingWebHookUrl;
+            _emailTemplateRepository = _componentContext.Resolve<IEmailServiceTemplateRepository>();
+            _mockEmail = _componentContext.Resolve<Mock<IEmailService>>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCL()
+        public async Task LeaveApplyForCLAsync()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                  .Select((element, index) => index % 2 == 0 ? element
-                  .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                  .SelectMany(element => element).ToList();
+            AddSlackThreeUsers();
+            MockingOfUserDetails();
+            MockingOfTeamLeaderDetails();
+            MockingOfManagementDetails();
             var replyText = _attachmentRepository.ReplyText(_stringConstant.FirstNameForTest, leave);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(1), replyText);
+            PostAsyncMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var textJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
+            var textTransform = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
+            var textJsonTransform = JsonConvert.SerializeObject(textTransform);
+            MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
+            MockingUserDetialFromSlackUserId();
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with False value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForNoUser()
+        public async Task LeaveApplyForNoUserAsync()
         {
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(Task.FromResult(""));
-            var slackText = slackLeave.Text.Split('"')
-     .Select((element, index) => index % 2 == 0 ? element
-     .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-     .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), _stringConstant.SorryYouCannotApplyLeave));
-            var replyText = _stringConstant.EmptyString;
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), _stringConstant.SorryYouCannotApplyLeave), Times.Once);
+            var replyText = _stringConstant.SorryYouCannotApplyLeave;
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -111,7 +124,8 @@ namespace Promact.Core.Test
                 leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
                 leave.RejoinDate.Value.ToShortDateString());
-            _mockClient.Setup(x => x.UpdateMessage(It.IsAny<SlashChatUpdateResponse>(), replyText));
+            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
+            GetAsyncMethodMocking(_stringConstant.Ok, _stringConstant.SlackChatUpdateUrl, responseUrl, leaveResponse.Token);
             _slackRepository.UpdateLeave(leaveResponse);
             var leaveUpdated = _leaveRequestRepository.LeaveById(leave.Id);
             Assert.Equal(Condition.Approved, leaveUpdated.Status);
@@ -132,7 +146,8 @@ namespace Promact.Core.Test
                 leave.EndDate.Value.ToShortDateString(),
                 leave.Reason,
                 leave.RejoinDate.Value.ToShortDateString());
-            _mockClient.Setup(x => x.UpdateMessage(It.IsAny<SlashChatUpdateResponse>(), replyText));
+            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
+            GetAsyncMethodMocking(_stringConstant.Ok, _stringConstant.SlackChatUpdateUrl, responseUrl, leaveResponse.Token);
             leaveResponse.Actions.Name = _stringConstant.Rejected;
             leaveResponse.Actions.Value = _stringConstant.Rejected;
             _slackRepository.UpdateLeave(leaveResponse);
@@ -144,84 +159,65 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveList from Slack respository with True value for casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveList()
+        public async Task SlackLeaveListAsync()
         {
             await AddUser();
-            _slackUserRepository.AddSlackUser(slackUser);
+            AddSlackThreeUsers();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Casual leave {0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method SlackLeaveList from Slack respository with False value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListFalse()
+        public async Task SlackLeaveListFalseAsync()
         {
             await AddUser();
-            _slackUserRepository.AddSlackUser(slackUser);
+            AddSlackThreeUsers();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method SlackLeaveList from Slack respository for Own with true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListForOwn()
+        public async Task SlackLeaveListForOwnAsync()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Casual leave {0} {1} {2} {3} {4} {5}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
             slackLeave.Text = _stringConstant.LeaveListTestForOwn;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            MockingUserDetialFromSlackUserId();
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method SlackLeaveList from Slack respository for Own with false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListForOwnFalse()
+        public async Task SlackLeaveListForOwnFalseAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             slackLeave.Text = _stringConstant.LeaveListTestForOwn;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -235,16 +231,11 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Your leave Id no: {0} From {1} To {2} has been {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), _stringConstant.Cancel);
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingUserDetialFromSlackUserId();
             slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
-            var slackText = slackLeave.Text.Split('"')
-                .Select((element, index) => index % 2 == 0 ? element
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -266,13 +257,9 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
             slackLeave.Username = _stringConstant.FalseStringNameForTest;
             slackLeave.UserId = _stringConstant.FalseStringNameForTest;
-            var slackText = slackLeave.Text.Split('"')
-                .Select((element, index) => index % 2 == 0 ? element
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -295,9 +282,9 @@ namespace Promact.Core.Test
                 .Select((element, index) => index % 2 == 0 ? element
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                 .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -307,21 +294,16 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatus()
         {
             await AddUser();
-            _slackUserRepository.AddSlackUser(slackUser);
+            AddSlackThreeUsers();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Casual leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
             slackLeave.Text = _stringConstant.LeaveStatusCommandForTest;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                .Select((element, index) => index % 2 == 0 ? element
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -340,9 +322,9 @@ namespace Promact.Core.Test
                 .Select((element, index) => index % 2 == 0 ? element
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
                 .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -356,12 +338,11 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Casual leave Id no: {0} From {1} To {2} for {3} is {4}", leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
             slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -375,9 +356,9 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -394,12 +375,13 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
             var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var allowedLeaveRequestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, _stringConstant.UserSlackId);
+            GetAsyncMethodMocking(_stringConstant.LeaveAllowed, _stringConstant.ProjectUserUrl, allowedLeaveRequestUrl, _stringConstant.AccessTokenForTest);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -411,175 +393,143 @@ namespace Promact.Core.Test
             await AddUser();
             slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
             var replyText = _stringConstant.SlackHelpMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
-        }
-
-        /// <summary>
-        /// Test cases for checking method SlackLeaveHelp from Slack respository for false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveHelpFalse()
-        {
-            slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
-            await AddUser();
-            var replyText = _stringConstant.InternalError;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Never);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSL()
+        public async Task LeaveApplyForSL()
         {
             await AddUser();
+            AddSlackThreeUsers();
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            MockingOfTeamLeaderDetails();
+            MockingOfManagementDetails();
             slackLeave.Text = _stringConstant.SlashCommandTextSick;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
             var replyText = _attachmentRepository.ReplyTextSick(_stringConstant.FirstNameForTest, leave);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var userTextJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+            var text = new SlashIncomingWebhook() { Channel = "@" + _stringConstant.ManagementFirstForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var textJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString);
+            MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave, not user error
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSLForNoUser()
+        public async Task LeaveApplyForSLForNoUser()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextSick;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value sick leave for other user
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSLForUser()
-        {
-            _slackUserRepository.AddSlackUser(slackUser);
+        public async Task LeaveApplyForSLForUser()
+         {
             await AddUser();
+            AddSlackThreeUsers();
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            MockingOfTeamLeaderDetails();
+            MockingOfManagementDetails();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
+            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.UserSlackId);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
             var replyText = _attachmentRepository.ReplyTextSick(_stringConstant.FirstNameForTest, leave);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var userTextJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+            var text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var teamLeaderTextJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
+            attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+            text = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var managementTextJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString);
+            MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, managementTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value
+        /// Test cases for checking method LeaveApply from Slack respository with leave type error value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForErrorLeaveType()
+        public async Task LeaveApplyForErrorLeaveType()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorLeaveType;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.NotTypeOfLeave;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value
+        /// Test cases for checking method LeaveApply from Slack respository with date type error value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForErrorDateFormat()
+        public async Task LeaveApplyForErrorDateFormat()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatSick;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
+            MockingOfUserDetails();
             var replyText = _stringConstant.DateFormatErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
+        /// Test cases for checking method LeaveApply from Slack respository with date type error value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForErrorDateFormatForCasual()
+        public async Task LeaveApplyForErrorDateFormatForCasual()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatCasual;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
+            MockingOfUserDetails();
             var replyText = _stringConstant.DateFormatErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
-        /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
+        /// Test cases for checking method LeaveApply from Slack respository with True value casual leave, for no user error
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLForNoUser()
+        public async Task LeaveApplyForCLForNoUser()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextCasual;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -589,162 +539,137 @@ namespace Promact.Core.Test
         public void Error()
         {
             var replyText = string.Format("{0}{1}{2}{1}{3}", _stringConstant.LeaveNoUserErrorMessage, Environment.NewLine, _stringConstant.OrElseString, _stringConstant.SlackErrorMessage);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             _slackRepository.Error(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdate()
+        public async Task LeaveUpdate()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = string.Format("Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}"
                             , user.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                             leave.Reason, leave.RejoinDate.Value.ToShortDateString());
             slackLeave.Text = _stringConstant.SlashCommandUpdate;
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            MockingOfTeamLeaderDetails();
+            MockingOfManagementDetails();
+            AddSlackThreeUsers();
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+            var teamLeaderText = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var teamLeaderTextJson = JsonConvert.SerializeObject(teamLeaderText);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
+            attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+            var userText = new SlashIncomingWebhook() { Channel = "@" + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var userTextJson = JsonConvert.SerializeObject(userText);
+            PostAsyncMethodMocking(_envVariableRepository.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString);
+            MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
+            MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateDateFormatError()
+        public async Task LeaveUpdateDateFormatError()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.DateFormatErrorMessage;
             slackLeave.Text = _stringConstant.SlashCommandUpdateDateError;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateWrongId()
+        public async Task LeaveUpdateWrongId()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.SickLeaveDoesnotExist;
             slackLeave.Text = _stringConstant.SlashCommandUpdateWrongId;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateTryToUpdateCL()
+        public async Task LeaveUpdateTryToUpdateCL()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.cl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.SickLeaveDoesnotExist;
             slackLeave.Text = _stringConstant.SlashCommandUpdate;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateInValidID()
+        public async Task LeaveUpdateInValidID()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.cl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.UpdateEnterAValidLeaveId;
             slackLeave.Text = _stringConstant.SlashCommandUpdateInValidId;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateNotAdmin()
+        public async Task LeaveUpdateNotAdmin()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -752,17 +677,11 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
             slackLeave.Text = _stringConstant.SlashCommandUpdate;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -775,51 +694,46 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
             var replyText = _stringConstant.LeaveNoUserErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLForEmailError()
+        public async Task LeaveApplyForCLForEmailError()
         {
             SmtpException ex = new SmtpException();
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            AddSlackThreeUsers();
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            MockingOfTeamLeaderDetails();
+            MockingOfManagementDetails();
             slackLeave.Text = _stringConstant.SlashCommandTextCasual;
-            var slackText = slackLeave.Text.Split('"')
-                  .Select((element, index) => index % 2 == 0 ? element
-                  .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                  .SelectMany(element => element).ToList();
             var replyText = string.Format("{0}. {1}", _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             var replyTextSecond = _attachmentRepository.ReplyText(_stringConstant.FirstNameForTest, leave);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyTextSecond, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Throws<SmtpException>();
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            email.Body = _emailTemplateRepository.EmailServiceTemplate(leave);
+            _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws(ex);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSLOtherUserNotAdmin()
+        public async Task LeaveApplyForSLOtherUserNotAdmin()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
-            var slackText = slackLeave.Text.Split('"')
-                   .Select((element, index) => index % 2 == 0 ? element
-                   .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                   .SelectMany(element => element).ToList();
             var replyText = _stringConstant.AdminErrorMessageApplySickLeave + _stringConstant.SorryYouCannotApplyLeave;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -833,17 +747,12 @@ namespace Promact.Core.Test
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Sick leave {0} {1} {2} {3} {4}", leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.Status, System.Environment.NewLine);
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -859,16 +768,11 @@ namespace Promact.Core.Test
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format("Sick leave Id no: {0} From {1} for {2} is {3}", leave.Id, leave.FromDate.ToShortDateString(), leave.Reason, leave.Status);
             slackLeave.Text = _stringConstant.LeaveStatusCommandForTest;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                .Select((element, index) => index % 2 == 0 ? element
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                .SelectMany(element => element).ToList();
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
@@ -881,149 +785,153 @@ namespace Promact.Core.Test
             _slackUserRepository.AddSlackUser(slackUser);
             var replyText = _stringConstant.RequestToEnterProperAction;
             slackLeave.Text = _stringConstant.WrongActionSlashCommand;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with back date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLWithBackDate()
+        public async Task LeaveApplyForCLWithBackDate()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.BackDateErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateCL;
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with end date beyond start date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLWithWrongDateFirstTest()
+        public async Task LeaveApplyForCLWithWrongDateFirstTest()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.InValidDateErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateFirstExample;
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForCLWithWrongDateSecondTest()
+        public async Task LeaveApplyForCLWithWrongDateSecondTest()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.InValidDateErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateSecondExample;
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with back date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveApplyForSLWithBackDate()
+        public async Task LeaveApplyForSLWithBackDate()
         {
             await AddUser();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.BackDateErrorMessage;
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateSL;
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository with end date beyond start date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateForBeyondStartDate()
+        public async Task LeaveUpdateForBeyondStartDate()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.InValidDateErrorMessage;
             slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateFirstExample;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository with rejoin date beyond end date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void LeaveUpdateForBeyondEndDate()
+        public async Task LeaveUpdateForBeyondEndDate()
         {
             await AddUser();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
-            var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            MockingUserIsAdminBySlackId();
             var replyText = _stringConstant.InValidDateErrorMessage;
             slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateSecondExample;
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var slackText = slackLeave.Text.Split('"')
-                            .Select((element, index) => index % 2 == 0 ? element
-                            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : new string[] { element })
-                            .SelectMany(element => element).ToList();
-            var employeeResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var employeeRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, employeeRequestUrl, _stringConstant.AccessTokenForTest)).Returns(employeeResponse);
-            _mockClient.Setup(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText));
-            _mockClient.Setup(x => x.SendMessageWithoutButtonAttachmentIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.AccessTokenForTest, replyText, _stringConstant.FirstNameForTest, _stringConstant.FirstNameForTest)).Returns(Task.FromResult(_stringConstant.EmptyString));
-            _mockClient.Setup(x => x.SendSickLeaveMessageToUserIncomingWebhook(It.IsAny<LeaveRequest>(), _stringConstant.ManagementEmailForTest, replyText, user));
-            await _slackRepository.LeaveRequest(slackLeave);
-            _mockClient.Verify(x => x.SendMessage(It.IsAny<SlashCommand>(), replyText), Times.Once);
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LeaveApplyForCLWithAlreadyExistDate()
+        {
+            await AddUser();
+            _leaveRequestRepository.ApplyLeave(leave);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var replyText = _stringConstant.LeaveAlreadyExistOnSameDate;
+            slackLeave.Text = _stringConstant.SlashCommandText;
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value sick leave
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LeaveApplyForSLWithAlreadyExistDate()
+        {
+            await AddUser();
+            _leaveRequestRepository.ApplyLeave(leave);
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var replyText = _stringConstant.LeaveAlreadyExistOnSameDate;
+            slackLeave.Text = _stringConstant.SlashCommandTextSick;
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        }
+        #endregion
+
+        #region Initialisation
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
@@ -1054,7 +962,7 @@ namespace Promact.Core.Test
                 Id = _stringConstant.StringIdForTest,
                 Name = _stringConstant.FirstNameForTest
             };
-            
+
             leave.FromDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leave.EndDate = DateTime.ParseExact(DateTime.UtcNow.ToShortDateString(), "dd-MM-yyyy", CultureInfo.CreateSpecificCulture("hi-IN"));
             leave.Reason = _stringConstant.LeaveReasonForTest;
@@ -1067,15 +975,44 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.SlashCommandText;
             slackLeave.Username = _stringConstant.FirstNameForTest;
             slackLeave.ResponseUrl = incomingWebhookURL;
-            slackLeave.UserId = _stringConstant.FirstNameForTest;
+            slackLeave.UserId = _stringConstant.UserSlackId;
+            slackLeave.ChannelId = _stringConstant.ChannelId;
+            slackLeave.ChannelName = _stringConstant.ChannelName;
+            slackLeave.Command = _stringConstant.Command;
+            slackLeave.TeamDomain = _stringConstant.TeamDomain;
+            slackLeave.TeamId = _stringConstant.TeamId;
+            slackLeave.Token = _stringConstant.Token;
 
             newUser.UserName = _stringConstant.EmailForTest;
             newUser.Email = _stringConstant.EmailForTest;
-            newUser.SlackUserId = _stringConstant.FirstNameForTest;
-
+            newUser.SlackUserId = _stringConstant.UserSlackId;
+            firstUser.CreatedOn = DateTime.UtcNow;
+            firstUser.Deleted = false;
+            firstUser.Email = _stringConstant.EmailForTest;
+            firstUser.FirstName = _stringConstant.UserName;
+            firstUser.UserId = _stringConstant.UserSlackId;
+            firstUser.Name = _stringConstant.FirstNameForTest;
+            secondUser.CreatedOn = DateTime.UtcNow;
+            secondUser.Deleted = false;
+            secondUser.Email = _stringConstant.TeamLeaderEmailForTest;
+            secondUser.FirstName = _stringConstant.TeamLeader;
+            secondUser.UserId = _stringConstant.TeamLeaderSlackId;
+            secondUser.Name = _stringConstant.TeamLeader;
+            thirdUser.CreatedOn = DateTime.UtcNow;
+            thirdUser.Deleted = false;
+            thirdUser.Email = _stringConstant.ManagementEmailForTest;
+            thirdUser.FirstName = _stringConstant.ManagementFirstForTest;
+            thirdUser.UserId = _stringConstant.ManagementSlackId;
+            thirdUser.Name = _stringConstant.ManagementFirstForTest;
+            email.From = _stringConstant.EmailForTest;
+            leaveResponse.Channel = new SlashChatUpdateResponseChannelUser() { Id = _stringConstant.ChannelId };
         }
+        #endregion
 
-
+        #region Private Methods
+        /// <summary>
+        /// Common method used to get user details from user name using moq
+        /// </summary>
         private void UserMock()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
@@ -1083,12 +1020,126 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
         }
 
-
+        /// <summary>
+        /// Method to add user in database
+        /// </summary>
         private async Task AddUser()
         {
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(newUser);
             await _userManager.AddLoginAsync(newUser.Id, info);
         }
+
+        /// <summary>
+        /// Mocking of Slack message sending common method
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="contentString"></param>
+        /// <param name="contentHeader"></param>
+        /// <returns>Json text</returns>
+        private string SlackReplyMethodMocking(string baseUrl, string contentString, string contentHeader)
+        {
+            var text = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = contentString };
+            var textJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(baseUrl, textJson, contentHeader);
+            return textJson;
+        }
+
+        /// <summary>
+        /// Mocking of PostAsync method of HttpClientRepository
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="contentString"></param>
+        /// <param name="contentHeader"></param>
+        private void PostAsyncMethodMocking(string baseUrl, string contentString, string contentHeader)
+        {
+            var responseString = Task.FromResult(_stringConstant.Ok);
+            _mockHttpClient.Setup(x => x.PostAsync(baseUrl, contentString, contentHeader)).Returns(responseString);
+        }
+
+        /// <summary>
+        /// Mocking of GetAsync method of HttpClientRepository
+        /// </summary>
+        /// <param name="toReturn"></param>
+        /// <param name="baseUrl"></param>
+        /// <param name="contentUrl"></param>
+        /// <param name="accessToken"></param>
+        private void GetAsyncMethodMocking(string toReturn, string baseUrl, string contentUrl, string accessToken)
+        {
+            var responseString = Task.FromResult(toReturn);
+            _mockHttpClient.Setup(x => x.GetAsync(baseUrl, contentUrl, accessToken)).Returns(responseString);
+        }
+
+        /// <summary>
+        /// Common method used to get user details from user name using moq
+        /// </summary>
+        private void MockingOfUserDetails()
+        {
+            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        }
+
+        /// <summary>
+        /// Common method used to get teamLeader details from user name using moq
+        /// </summary>
+        private void MockingOfTeamLeaderDetails()
+        {
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+        }
+
+        /// <summary>
+        /// Common method used to get management details from user name using moq
+        /// </summary>
+        private void MockingOfManagementDetails()
+        {
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+        }
+
+        /// <summary>
+        /// Common method used to add user details in slack table
+        /// </summary>
+        private void AddSlackThreeUsers()
+        {
+            _slackUserRepository.AddSlackUser(firstUser);
+            _slackUserRepository.AddSlackUser(secondUser);
+            _slackUserRepository.AddSlackUser(thirdUser);
+        }
+
+        /// <summary>
+        /// Common method used to moq email service
+        /// </summary>
+        /// <param name="body"></param>
+        private void MockingEmailService(string body)
+        {
+            email.Body = body;
+            email.Subject = _stringConstant.EmailSubject;
+            email.To = _stringConstant.TeamLeaderEmailForTest;
+            _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>()));
+        }
+
+        /// <summary>
+        /// Common method used to get user details from user slackId using moq
+        /// </summary>
+        private void MockingUserDetialFromSlackUserId()
+        {
+            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.UserSlackId);
+            GetAsyncMethodMocking(_stringConstant.UserDetailsFromOauthServer, _stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest);
+        }
+
+        /// <summary>
+        /// Common method used to get user is Admin or not from user slackId using moq
+        /// </summary>
+        private void MockingUserIsAdminBySlackId()
+        {
+            var adminResponse = Task.FromResult(_stringConstant.True);
+            var adminrequestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, _stringConstant.UserSlackId);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+        }
+        #endregion
     }
 }

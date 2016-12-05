@@ -346,5 +346,12 @@ namespace Promact.Erp.Util.StringConstants
         string HourSpentExceeded { get; }
         string BackDateErrorMessage { get; }
         string InValidDateErrorMessage { get; }
+        string JsonContentString { get; }
+        string UserSlackId { get; }
+        string TeamLeaderSlackId { get; }
+        string ManagementSlackId { get; }
+        string Ok { get; }
+        string LeaveAllowed { get; }
+        string LeaveAlreadyExistOnSameDate { get; }
     }
 }

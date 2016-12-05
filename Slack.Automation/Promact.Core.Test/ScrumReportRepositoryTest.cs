@@ -1,18 +1,14 @@
 ﻿using Autofac;
 using Moq;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ScrumReportRepository;
-using Promact.Core.Repository.ScrumRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
-using Promact.Erp.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Promact.Erp.Util.HttpClient;
 
 namespace Promact.Core.Test
 {
@@ -21,7 +17,7 @@ namespace Promact.Core.Test
         #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly IScrumReportRepository _scrumReportRepository;
-        private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IRepository<Scrum> _scrumDataRepository;
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
         private readonly IRepository<Question> _questionDataRepository;
@@ -39,7 +35,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _scrumReportRepository = _componentContext.Resolve<IScrumReportRepository>();
-            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _scrumDataRepository = _componentContext.Resolve<IRepository<Scrum>>();
             _scrumAnswerDataRepository = _componentContext.Resolve<IRepository<ScrumAnswer>>();
             _questionDataRepository = _componentContext.Resolve<IRepository<Question>>();

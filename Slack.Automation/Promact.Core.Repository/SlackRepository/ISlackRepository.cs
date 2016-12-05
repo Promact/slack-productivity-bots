@@ -19,7 +19,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="leave"></param>
         /// <returns>Task</returns>
-        Task LeaveRequest(SlashCommand leave);
+        Task LeaveRequestAsync(SlashCommand leave);
 
         /// <summary>
         /// Method to send error message

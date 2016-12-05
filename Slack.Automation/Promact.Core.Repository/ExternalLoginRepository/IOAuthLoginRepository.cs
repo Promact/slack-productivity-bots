@@ -14,21 +14,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="accessToken"></param>
         /// <param name="slackUserId"></param>
         /// <returns>user information</returns>
-        Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserId, string userId);
+        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string userId);
 
         /// <summary>
         /// Method to get OAuth Server's app information
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns>Oauth</returns>
-        OAuthApplication ExternalLoginInformation(string refreshToken);
+        OAuthApplication ExternalLoginInformationAsync(string refreshToken);
 
         /// <summary>
         /// Method to add Slack Users,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        Task AddSlackUserInformation(string code);
+        Task AddSlackUserInformationAsync(string code);
 
         /// <summary>
         /// Method to update slack user table when there is any changes in slack

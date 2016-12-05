@@ -5,12 +5,18 @@ namespace Promact.Core.Repository.BotQuestionRepository
 {
     public class BotQuestionRepository : IBotQuestionRepository
     {
+        #region Private Variable
         private IRepository<Question> _questionRepository;
+        #endregion
+
+        #region Constructor
         public BotQuestionRepository(IRepository<Question> questionRepository)
         {
             _questionRepository = questionRepository;
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Method to add Question
         /// </summary>
@@ -54,5 +60,6 @@ namespace Promact.Core.Repository.BotQuestionRepository
             var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == (orderNumber) && x.Type == type);
             return question;
         }
+        #endregion
     }
 }

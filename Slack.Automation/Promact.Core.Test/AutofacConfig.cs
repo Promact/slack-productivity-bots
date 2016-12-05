@@ -8,7 +8,6 @@ using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
 using System.Net.Http;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
@@ -27,6 +26,8 @@ using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Core.Test.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
+using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Promact.Erp.Util.HttpClient;
 
 namespace Promact.Core.Test
 {
@@ -37,10 +38,10 @@ namespace Promact.Core.Test
             var builder = new ContainerBuilder();
             var dataContext = new PromactErpContext(DbConnectionFactory.CreateTransient());
             builder.RegisterInstance(dataContext).As<DbContext>().SingleInstance();
-            var httpClientMock = new Mock<IHttpClientRepository>();
+            var httpClientMock = new Mock<IHttpClientService>();
             var httpClientMockObject = httpClientMock.Object;
-            builder.RegisterInstance(httpClientMock).As<Mock<IHttpClientRepository>>();
-            builder.RegisterInstance(httpClientMockObject).As<IHttpClientRepository>();
+            builder.RegisterInstance(httpClientMock).As<Mock<IHttpClientService>>();
+            builder.RegisterInstance(httpClientMockObject).As<IHttpClientService>();
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
@@ -51,15 +52,10 @@ namespace Promact.Core.Test
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<ScrumReportRepository>().As<IScrumReportRepository>();
-            var clientMock = new Mock<IClient>();
-            var clientMockObject = clientMock.Object;
-            builder.RegisterInstance(clientMock).As<Mock<IClient>>();
-            builder.RegisterInstance(clientMockObject).As<IClient>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
-            //builder.RegisterType<Client>().As<IClient>();
+            builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
-            builder.RegisterType<Promact.Erp.Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
             builder.RegisterType<HttpClient>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
@@ -71,6 +67,7 @@ namespace Promact.Core.Test
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
             builder.RegisterInstance(emailServiceMockObject).As<IEmailService>();
+            builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
             var container = builder.Build();
             return container;
         }

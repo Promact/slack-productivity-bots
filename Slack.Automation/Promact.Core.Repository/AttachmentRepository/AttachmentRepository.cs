@@ -11,14 +11,21 @@ using System.Threading.Tasks;
 namespace Promact.Core.Repository.AttachmentRepository
 {
     public class AttachmentRepository:IAttachmentRepository
-    { 
+    {
+        #region Private Variables
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
+        #endregion
+
+        #region Constructor
         public AttachmentRepository(ApplicationUserManager userManager,IStringConstantRepository stringConstant)
         {
             _userManager = userManager;
             _stringConstant = stringConstant;
         }
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// Method to create attchment of slack with a text as reply, can be used generically
         /// </summary>
@@ -121,7 +128,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// </summary>
         /// <param name="username"></param>
         /// <returns>access token from AspNetUserLogin table</returns>
-        public async Task<string> AccessToken(string username)
+        public async Task<string> UserAccessTokenAsync(string username)
         {
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
             var accessToken = "";
@@ -173,5 +180,6 @@ namespace Promact.Core.Repository.AttachmentRepository
             attachment.Add(attachmentList);
             return attachment;
         }
+        #endregion
     }
 }

@@ -9,12 +9,18 @@ namespace Promact.Core.Repository.LeaveRequestRepository
 {
     public class LeaveRequestRepository : ILeaveRequestRepository
     {
+        #region Private Variable
         private readonly IRepository<LeaveRequest> _leaveRequestRepository;
+        #endregion
+
+        #region Constructor
         public LeaveRequestRepository(IRepository<LeaveRequest> leaveRequestRepository)
         {
             _leaveRequestRepository = leaveRequestRepository;
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Method to apply Leave
         /// </summary>
@@ -117,5 +123,6 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             leaveAllowed.SickLeave = sickLeaveTaken;
             return leaveAllowed;
         }
+        #endregion
     }
 }

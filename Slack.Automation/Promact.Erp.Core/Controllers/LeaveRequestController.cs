@@ -53,7 +53,7 @@ namespace Promact.Erp.Core.Controllers
             var leave = _attachmentRepository.SlashCommandTransfrom(request);
             try
             {
-                await _slackRepository.LeaveRequest(leave);
+                await _slackRepository.LeaveRequestAsync(leave);
                 return Ok();
             }
             // If throws any type of error it will give same message in slack by response_url

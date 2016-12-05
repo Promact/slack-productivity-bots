@@ -1,10 +1,10 @@
 ﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Promact.Erp.Core.Controllers
     public class OAuthController : WebApiBaseController
     {
         private static Queue<SlackEventApiAC> eventQueue;
-        private readonly IHttpClientRepository _httpClientRepository;
+        private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
@@ -26,9 +26,9 @@ namespace Promact.Erp.Core.Controllers
         {
             eventQueue = new Queue<SlackEventApiAC>();
         }
-        public OAuthController(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
-            _httpClientRepository = httpClientRepository;
+            _httpClientService = httpClientService;
             _logger = logger;
             _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
@@ -57,7 +57,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("oAuth/RefreshToken")]
         public IHttpActionResult RefreshToken(string refreshToken, string slackUserName)
         {
-            var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
+            var oAuth = _oAuthLoginRepository.ExternalLoginInformationAsync(refreshToken);
             SlackUserDetailAc user = _slackUserRepository.GetBySlackName(slackUserName);
             if (user != null)
                 oAuth.UserId = user.UserId;
@@ -84,7 +84,7 @@ namespace Promact.Erp.Core.Controllers
             var errorMessage = string.Empty;
             try
             {
-                await _oAuthLoginRepository.AddSlackUserInformation(code);
+                await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
                 message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)

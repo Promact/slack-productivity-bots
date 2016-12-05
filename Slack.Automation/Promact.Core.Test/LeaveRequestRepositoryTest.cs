@@ -16,11 +16,14 @@ namespace Promact.Core.Test
     /// </summary>
     public class LeaveRequestRepositoryTest
     {
+        #region Private Varaibles
         private readonly IComponentContext _componentContext;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly IStringConstantRepository _stringConstant;
         private LeaveRequest leave = new LeaveRequest();
-        
+        #endregion
+
+        #region Constructor
         public LeaveRequestRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
@@ -28,7 +31,9 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Method LeaveApply Testing with True Value
         /// </summary>
@@ -251,7 +256,9 @@ namespace Promact.Core.Test
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(_stringConstant.SlackChannelIdForTest);
             Assert.Equal(0.0, casualLeave.CasualLeave);
         }
+        #endregion
 
+        #region Initialisation
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
@@ -266,7 +273,6 @@ namespace Promact.Core.Test
             leave.CreatedOn = DateTime.UtcNow;
             leave.EmployeeId = _stringConstant.StringIdForTest;
         }
-
-     
+        #endregion
     }
 }

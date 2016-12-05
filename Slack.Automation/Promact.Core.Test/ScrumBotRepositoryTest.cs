@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
@@ -13,14 +12,16 @@ using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.HttpClient;
 
 namespace Promact.Core.Test
 {
     public class ScrumBotRepositoryTest
     {
+        #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly IBotQuestionRepository _botQuestionRepository;
-        private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly ApplicationUserManager _userManager;
         private readonly IRepository<Scrum> _scrumDataRepository;
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
@@ -39,13 +40,15 @@ namespace Promact.Core.Test
         private ApplicationUser user = new ApplicationUser();
         private Question question1 = new Question();
         private ScrumAnswer scrumAnswer = new ScrumAnswer();
+        #endregion
 
+        #region Constructor
         public ScrumBotRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _scrumBotRepository = _componentContext.Resolve<IScrumBotRepository>();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
-            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _scrumDataRepository = _componentContext.Resolve<IRepository<Scrum>>();
             _scrumAnswerDataRepository = _componentContext.Resolve<IRepository<ScrumAnswer>>();
@@ -55,7 +58,9 @@ namespace Promact.Core.Test
 
             Initialization();
         }
+        #endregion
 
+        #region Initialisation
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
@@ -128,6 +133,7 @@ namespace Promact.Core.Test
             slackChannelDetails.Name = _stringConstant.GroupName;
 
         }
+        #endregion
 
 
         #region Test Cases
@@ -902,6 +908,7 @@ namespace Promact.Core.Test
 
         #endregion
 
+        #region Private Methods
         private void AddChannelUser()
         {
             _slackChannelReposiroty.AddSlackChannel(slackChannelDetails);
@@ -924,7 +931,6 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
         }
-
-
+        #endregion
     }
 }

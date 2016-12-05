@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Moq;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Linq;
@@ -15,22 +15,28 @@ namespace Promact.Core.Test
 {
     public class LeaveReportRepositoryTest
     {
+        #region Private Variables
         private IComponentContext _componentContext;
         private ILeaveReportRepository _leaveReportRepository;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
-        private readonly Mock<IHttpClientRepository> _mockHttpClient;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IStringConstantRepository _stringConstant;
         private LeaveRequest leave = new LeaveRequest();
+        #endregion
+
+        #region Constructor
         public LeaveReportRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _leaveReportRepository = _componentContext.Resolve<ILeaveReportRepository>();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
-            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientRepository>>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             Initialize();
         }
+        #endregion
 
+        #region Test Cases
         /// <summary>
         /// Method to test LeaveReport when the logged in person is admin
         /// </summary>
@@ -146,5 +152,6 @@ namespace Promact.Core.Test
             leave.Type = LeaveType.cl;
             leave.CreatedOn = DateTime.UtcNow;
         }
+        #endregion
     }
 }
