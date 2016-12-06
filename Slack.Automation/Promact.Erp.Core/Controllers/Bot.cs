@@ -101,8 +101,7 @@ namespace Promact.Erp.Core.Controllers
         {
             _logger = container.Resolve<ILogger>();
             _stringConstant = container.Resolve<IStringConstantRepository>();
-            //try
-            //{
+
             _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
             string botToken = _environmentVariableRepository.ScrumBotToken;
             SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
@@ -140,28 +139,7 @@ namespace Promact.Erp.Core.Controllers
                     client.CloseSocket();
                     throw ex;
                 }
-                //catch (TaskCanceledException ex)
-                //{
-                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
-                //    client.CloseSocket();
-                //    throw ex;
-                //}
-                //catch (NullReferenceException ex)
-                //{
-                //    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
-                //    client.CloseSocket();
-                //    throw ex;
-                //}
             };
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.Message + "\n" + ex.StackTrace);
-            //    throw ex;
-            //}
         }
 
     }
