@@ -34,13 +34,14 @@ namespace Promact.Erp.Util.StringConstants
        
         string UsersDetailByGroupUrl { get; }
         string UserDetailsByIdUrl { get; }
-        string UserDetailByUserNameUrl { get; }
         string UrlRtmStart { get; }
         string OAuthAuthorizationScopeAndClientId { get; }
         string UserDetailsUrl { get; }
         string TeamLeaderDetailsUrl { get; }
         string ManagementDetailsUrl { get; }
         string OAuthAcessUrl { get; }
+        string SlackAuthorize { get; }
+        string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
         string ProjectUsersByTeamLeaderId { get; }
         string ProjectUserDetailsUrl { get; }
@@ -195,6 +196,7 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageLeaveRequestControllerSlackRequest { get; }
         string LoggerErrorMessageLeaveRequestControllerSlackButtonRequest { get; }
         string LoggerErrorMessageHomeControllerExtrenalLogin { get; }
+        string LoggerErrorMessageHomeControllerSlackOAuthAuthorization { get; }
         string LoggerErrorMessageHomeControllerExtrenalLoginCallBack { get; }
         string LoggerErrorMessageHomeControllerLogoff { get; }
         string LoggerErrorMessageOAuthControllerRefreshToken { get; }

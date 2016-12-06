@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Promact.Erp.Util.StringConstants;
+using System.Net.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -49,7 +50,7 @@ namespace Promact.Erp.Core.Controllers
                 return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
             return View();
-            
+
         }
 
         /**
@@ -110,23 +111,14 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult ExtrenalLogin()
         {
-            try
+            if (User.Identity.IsAuthenticated)
             {
-                if (User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                }
-                //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format(_stringConstant.ExternalLoginUrl, _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
-                //make call to the OAuth Server
-                return Redirect(url);
+                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            //BaseUrl of OAuth and clientId of App to be set 
+            string url = string.Format("{0}?clientId={1}", _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
+            //make call to the OAuth Server
+            return Redirect(url);
         }
 
         /**
@@ -143,11 +135,11 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
         * }
         */
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId,string userId)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId, string userId)
         {
             try
             {
-                var user = _userManager.FindByEmail(email);
+                ApplicationUser user = _userManager.FindByEmail(email);
                 if (user != null)
                 {
                     await _signInManager.SignInAsync(user, false, false);
@@ -160,9 +152,13 @@ namespace Promact.Erp.Core.Controllers
                 if (user == null)
                 {
                     user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
-                    //Signing user with username or email only
-                    await _signInManager.SignInAsync(user, false, false);
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                    if (user != null)
+                    {
+                        //Signing user with username or email only
+                        await _signInManager.SignInAsync(user, false, false);
+                        return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                    }
+                    return RedirectToAction(_stringConstant.SlackAuthorize, _stringConstant.Home, new { message = _stringConstant.UserCouldNotBeAdded });
                 }
                 return View();
             }
@@ -221,7 +217,16 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult SlackOAuthAuthorization()
         {
-            return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+            try
+            {
+                return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+            }
+            catch (HttpRequestException ex)
+            {
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerSlackOAuthAuthorization, ex.ToString());
+                _logger.Error(errorMessage, ex);
+                throw;
+            }
         }
     }
 }

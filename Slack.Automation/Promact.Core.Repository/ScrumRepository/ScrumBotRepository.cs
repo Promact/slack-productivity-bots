@@ -413,13 +413,13 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <summary>
         /// This method is used to add Scrum answer to the database
         /// </summary>
-        /// <param name="scrumID"></param>
+        /// <param name="scrumId"></param>
         /// <param name="questionId"></param>
         /// <param name="employeeId"></param>
         /// <param name="message"></param>
         /// <param name="status"></param>
         /// <returns>true if scrum answer is added successfully</returns>
-        private async Task<bool> AddAnswerAsync(int scrumID, int questionId, string employeeId, string message)
+        private async Task<bool> AddAnswerAsync(int scrumId, int questionId, string employeeId, string message)
         {
             ScrumAnswer answer = new ScrumAnswer();
             answer.Answer = message;
@@ -427,7 +427,7 @@ namespace Promact.Core.Repository.ScrumRepository
             answer.CreatedOn = DateTime.UtcNow;
             answer.EmployeeId = employeeId;
             answer.QuestionId = questionId;
-            answer.ScrumId = scrumID;
+            answer.ScrumId = scrumId;
             _scrumAnswerRepository.Insert(answer);
             await _scrumAnswerRepository.SaveChangesAsync();
             return true;
