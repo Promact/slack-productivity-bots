@@ -162,7 +162,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <param name="slackUserDetails"></param>
         private async Task UpdateSlackUserDetailAsync(SlackUserDetails slackUserDetails)
         {
-            SlackUserDetails user = _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId).Result;
+            SlackUserDetails user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId);
             if (user != null)
             {
                 Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
@@ -212,7 +212,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// <param name="slackUserDetails"></param>
         private async Task UpdateSlackBotUserAsync(SlackUserDetails slackUserDetails)
         {
-            SlackBotUserDetail botUser = _slackUserBotDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId).Result;
+            SlackBotUserDetail botUser = await _slackUserBotDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId);
             if (botUser != null)
             {
                 Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackBotUserDetail>()
