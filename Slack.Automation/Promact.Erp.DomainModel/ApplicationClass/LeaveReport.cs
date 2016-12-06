@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
    public class LeaveReport
@@ -26,22 +21,22 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Total number of sick leaves alloted
         /// </summary>
-        public double TotalSickLeave { get; set; }
+        public double? TotalSickLeave { get; set; }
 
         /// <summary>
         /// Total number of casual leaves alloted
         /// </summary>
-        public double TotalCasualLeave { get; set; }
+        public double? TotalCasualLeave { get; set; }
 
         /// <summary>
         /// Number of casusal leaves used
         /// </summary>
-        public double UtilisedCasualLeave { get; set; }
+        public double? UtilisedCasualLeave { get; set; }
 
         /// <summary>
         /// Number of casual leaves left
         /// </summary>
-        public double BalanceCasualLeave { get; set; }
+        public double? BalanceCasualLeave { get; set; }
 
 
         /// <summary>
