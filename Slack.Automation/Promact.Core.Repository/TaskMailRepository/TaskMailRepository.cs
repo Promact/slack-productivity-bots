@@ -58,7 +58,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<string> StartTaskMailAsync(string userName,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
+            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
             // getting access token for that user
             if (user != null)
             {
@@ -79,8 +79,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                 if (taskMail != null)
                 {
                     // if exist then check the whether the task mail was completed or not
-                    taskMailDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
-                    previousQuestion = _botQuestionRepository.FindById(taskMailDetail.QuestionId);
+                    taskMailDetail = await _taskMailDetail.FirstOrDefaultAsync(x => x.TaskId == taskMail.Id);
+                    previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
                     question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
                 }
                 // if previous task mail completed then it will start a new one
@@ -99,7 +99,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         _taskMail.Insert(taskMail);
                         _taskMail.Save();
                         // getting first question of type 2
-                        var firstQuestion = _botQuestionRepository.FindByQuestionType(2);
+                        var firstQuestion = await _botQuestionRepository.FindByQuestionTypeAsync(2);
                         TaskMailDetails taskDetails = new TaskMailDetails();
                         taskDetails.QuestionId = firstQuestion.Id;
                         taskDetails.TaskId = taskMail.Id;
@@ -130,7 +130,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<string> QuestionAndAnswerAsync(string userName, string answer,string userId)
         {
             // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserId == userId);
+            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
             if (user != null)
             {
                 // getting access token for that user
@@ -144,16 +144,17 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // checking for previous task mail exist or not for today
                     taskMail = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
                     // getting task mail details for pervious started task mail
-                    var taskDetails = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
+                    var taskDetails = await _taskMailDetail.FirstOrDefaultAsync(x => x.TaskId == taskMail.Id);
                     // getting inform of previous question asked to user
-                    var previousQuestion = _botQuestionRepository.FindById(taskDetails.QuestionId);
+                    var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
                     // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
                     if (previousQuestion.OrderNumber <= 7)
                     {
                         // getting next question to be asked to user
-                        var nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber((previousQuestion.OrderNumber + 1), 2);
+                        var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync((previousQuestion.OrderNumber + 1), 2);
                         // Converting question Ordr to enum
-                        var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
+                        var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), 
+                            previousQuestion.OrderNumber.ToString());
                         switch (question)
                         {
                             case TaskMailQuestion.YourTask:
@@ -185,10 +186,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // checking range of hours
                                         if (hour > 0 && hour <= 8)
                                         {
-                                            var todayTaskMail = _taskMail.Fetch(x => x.EmployeeId == taskMail.EmployeeId && x.CreatedOn.Date == DateTime.UtcNow.Date);
+                                            var todayTaskMail = _taskMail.Fetch(x => x.EmployeeId == taskMail.EmployeeId 
+                                            && x.CreatedOn.Date == DateTime.UtcNow.Date);
                                             foreach (var item in todayTaskMail)
                                             {
-                                                var recentTask = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
+                                                var recentTask = await _taskMailDetail.FirstOrDefaultAsync(x => x.TaskId == item.Id);
                                                 totalHourSpented += recentTask.Hours;
                                             }
                                             totalHourSpented += hour;
@@ -200,19 +202,24 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             }
                                             else
                                             {
-                                                nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(6, 2);
+                                                nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(6, 2);
                                                 taskDetails.QuestionId = nextQuestion.Id;
-                                                questionText = string.Format("{0}{1}{2}", _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.HourLimitExceed, Environment.NewLine, 
+                                                    nextQuestion.QuestionStatement);
                                                 taskDetails.Comment = _stringConstant.StartWorking;
                                             }
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                            questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage,
+                                                Environment.NewLine, previousQuestion.QuestionStatement);
                                     }
                                     else
                                         // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine,
+                                            previousQuestion.QuestionStatement);
                                 }
                                 break;
                             case TaskMailQuestion.Status:
@@ -230,7 +237,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, 
+                                            _stringConstant.TaskMailBotStatusErrorMessage, 
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             case TaskMailQuestion.Comment:
@@ -257,7 +266,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     if (sendEmailConfirmationConvertResult)
                                     {
                                         // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), answer.ToLower().ToString());
+                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), 
+                                            answer.ToLower().ToString());
                                         switch (confirmation)
                                         {
                                             case SendEmailConfirmation.yes:
@@ -272,7 +282,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 {
                                                     // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
                                                     taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                    nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(7, 2);
+                                                    nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(7, 2);
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     questionText = _stringConstant.ThankYou;
                                                 }
@@ -281,7 +291,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, 
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage, 
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                     break;
                                 }
                             case TaskMailQuestion.ConfirmSendEmail:
@@ -292,7 +304,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     if (sendEmailConfirmationConvertResult)
                                     {
                                         // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), answer.ToLower().ToString());
+                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
+                                            answer.ToLower().ToString());
                                         questionText = _stringConstant.ThankYou;
                                         switch (confirmation)
                                         {
@@ -302,10 +315,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     // get list of task done and register for today for that user
-                                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date);
+                                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id 
+                                                    && x.CreatedOn.Date == DateTime.UtcNow.Date);
                                                     foreach (var item in taskMailList)
                                                     {
-                                                        var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
+                                                        var taskDetail = await _taskMailDetail.FirstOrDefaultAsync(x => x.TaskId == item.Id);
                                                         taskList.Add(taskDetail);
                                                     }
                                                     var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
@@ -339,7 +353,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, 
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage, 
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             default:
@@ -353,7 +369,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 catch (SmtpException ex)
                 {
                     // error message will be send to email. But leave will be applied
-                    questionText = string.Format("{0}. {1}", _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
+                    questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
                 }
                 catch (Exception)
                 {
@@ -374,7 +390,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         public async Task<List<TaskMailUserAc>> GetAllEmployeeAsync(string userId)
         {
-            var user = _user.FirstOrDefault(x => x.Id == userId);
+            var user = await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             var jsonResult = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
             var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
@@ -555,7 +571,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (UserRole == _stringConstant.RoleTeamLeader)
             {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
+                var user = await _user.FirstOrDefaultAsync(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 var json = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 DateTime? maxDate = null;
@@ -792,7 +808,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             { taskMailAc = await TaskMailDetailsReportInformationForSelectedDateAsync(UserId, UserName, UserRole, CreatedOn, LoginId, SelectedDate); }
             else if (UserRole == _stringConstant.RoleTeamLeader)
             {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
+                var user = await _user.FirstOrDefaultAsync(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 var json = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 DateTime? maxDate = null;
@@ -1030,7 +1046,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (UserRole == _stringConstant.RoleTeamLeader)
             {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
+                var user = await _user.FirstOrDefaultAsync(x => x.Id == LoginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 var json = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 DateTime? minDate = null;

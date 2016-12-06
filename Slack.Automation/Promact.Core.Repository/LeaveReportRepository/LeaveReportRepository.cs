@@ -80,7 +80,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
                         Role = user.Role,
                         EmployeeId = user.Id,
                         EmployeeUserName = user.Email,
-                        EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName),
+                        EmployeeName = string.Format(_stringConstant.EmployeeFirstLastNameFormat, user.FirstName, user.LastName),
                         TotalCasualLeave = user.NumberOfCasualLeave,
                         TotalSickLeave = user.NumberOfSickLeave,
                         UtilisedCasualLeave = GetUtilisedCasualLeavesByEmployee(leaveRequest.EmployeeId),
@@ -133,7 +133,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
                     if (leave.Status == Condition.Approved)
                     {
                         leaveReportDetail.EmployeeUserName = user.Email;
-                        leaveReportDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
+                        leaveReportDetail.EmployeeName = string.Format(_stringConstant.EmployeeFirstLastNameFormat, user.FirstName, user.LastName);
                         leaveReportDetail.LeaveFrom = leave.FromDate.ToShortDateString();
                         leaveReportDetail.StartDay = leave.FromDate.DayOfWeek.ToString();
                         leaveReportDetail.LeaveUpto = leave.EndDate.Value.ToShortDateString();

@@ -69,8 +69,8 @@ namespace Promact.Core.Repository.ScrumRepository
         public async Task<string> ProcessMessages(string userId, string channelId, string message)
         {
             string replyText = string.Empty;
-            SlackUserDetails user = _slackUserDetails.GetById(userId);
-            SlackChannelDetails channel = _slackChannelRepository.GetById(channelId);
+            SlackUserDetails user = await _slackUserDetails.GetByIdAsync(userId);
+            SlackChannelDetails channel = await _slackChannelRepository.GetByIdAsync(channelId);
             //the command is split to individual words
             //commnads ex: "scrum time", "later @userId"
             var messageArray = message.Split(null);
@@ -94,7 +94,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             //the userId is fetched
                             string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
                             //fetch the user of the given userId
-                            SlackUserDetails applicant = _slackUserDetails.GetById(applicantId);
+                            SlackUserDetails applicant = await _slackUserDetails.GetByIdAsync(applicantId);
                             if (applicant != null)
                             {
                                 string applicantName = applicant.Name;
@@ -176,7 +176,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         //scrum answer of that day's scrum
                         List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
                         //status would be empty if the interacting user is same as the expected user.
-                        string status = ExpectedUser(scrum.Id, questions, employees, userName,userId);
+                        string status = await ExpectedUser(scrum.Id, questions, employees, userName,userId);
                         if (status == string.Empty)
                         {
                             #region Normal Scrum
@@ -320,7 +320,7 @@ namespace Promact.Core.Repository.ScrumRepository
                                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrum.Id).ToList();
 
                                 //keyword "leave @username" 
-                                returnMsg = LeaveLater(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken,userId,applicantId);
+                                returnMsg = await LeaveLater(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken,userId,applicantId);
                             }
                             else
                                 returnMsg = ReplyToClient(scrumStatus);
@@ -455,7 +455,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 User firstEmployee = employees.FirstOrDefault();
                 //first employee is asked questions along with the previous day status (if any)
-                SlackUserDetails slackUser = _slackUserDetails.GetById(firstEmployee.SlackUserId);
+                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(firstEmployee.SlackUserId);
                 replyMessage = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatus(firstEmployee.Id, project.Id) + question.QuestionStatement;
             }
 
@@ -484,10 +484,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        private string LeaveLater(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId,  string userName, string accessToken, string userId, string applicantId)
+        private async Task<string> LeaveLater(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId,  string userName, string accessToken, string userId, string applicantId)
         {
             string returnMsg = string.Empty;
-            string status = ExpectedUser(scrumId, questions, employees, applicant,applicantId);//checks whether the applicant is the expected user
+            string status = await ExpectedUser(scrumId, questions, employees, applicant,applicantId);//checks whether the applicant is the expected user
             if (status == string.Empty)//if the interacting user is the expected user
             {
                 string EmployeeId = employees.FirstOrDefault(x => x.SlackUserId == applicantId).Id;
@@ -557,7 +557,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         //now fetch the first question to the next employee
                         User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
-                        SlackUserDetails slackUser = _slackUserDetails.GetById(user.SlackUserId);
+                        SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
                         returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatus(user.Id, projectId) + FetchQuestion(null, true);
                     }
                     else
@@ -571,7 +571,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     //as not all questions have been answered by the last employee,the next question to that employee will be asked
                     User user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
-                    SlackUserDetails slackUser = _slackUserDetails.GetById(user.SlackUserId);
+                    SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
                     returnMsg = "<@" + slackUser.Name + "> " + FetchQuestion(lastScrumAnswer.QuestionId, false);
                 }
                 #endregion
@@ -579,7 +579,7 @@ namespace Promact.Core.Repository.ScrumRepository
             else
             {
                 //no scrum answer has been recorded yet. So first question to the first employee
-                SlackUserDetails slackUser = _slackUserDetails.GetById(employees.FirstOrDefault().SlackUserId);
+                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(employees.FirstOrDefault().SlackUserId);
                 returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatus(employees.FirstOrDefault().Id, projectId) + questions.FirstOrDefault().QuestionStatement;
             }
             return returnMsg;
@@ -607,7 +607,7 @@ namespace Promact.Core.Repository.ScrumRepository
         ///<param name="projectId"></param>
         ///<param name="applicantId"></param>
         /// <returns>empty string if the expected user is same as the applicant</returns>
-        private string ExpectedUser(int scrumId, List<Question> questions, List<User> employees, string applicant,string applicantId)
+        private async Task<string> ExpectedUser(int scrumId, List<Question> questions, List<User> employees, string applicant,string applicantId)
         {
             //List of scrum answer of the given scrumId.
             List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrumId).ToList();
@@ -646,7 +646,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 return string.Format(_stringConstant.NotExpected, applicant);
             else
             {
-                SlackUserDetails slackUser = _slackUserDetails.GetById(user.SlackUserId);
+                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
                 return string.Format(_stringConstant.PleaseAnswer, slackUser.Name);
             }
         }

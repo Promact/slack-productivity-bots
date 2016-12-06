@@ -64,7 +64,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void ExternalLoginInformation()
         {
-            var oAuth = _oAuthLoginRepository.ExternalLoginInformationAsync(_stringConstant.AccessTokenForTest);
+            var oAuth = _oAuthLoginRepository.ExternalLoginInformation(_stringConstant.AccessTokenForTest);
             Assert.Equal(oAuth.ReturnUrl, _stringConstant.ClientReturnUrl);
         }
 
@@ -75,10 +75,10 @@ namespace Promact.Core.Test
         public void AddSlackUserInformation()
         {
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(_stringConstant.UserDetailsResponseText);
-            var userDetailsRequest = string.Format("?token={0}&pretty=1", _stringConstant.AccessTokenSlack);
+            var userDetailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, _stringConstant.AccessTokenSlack);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null)).Returns(userDetailsResponse);
             var channelDetailsResponse = Task.FromResult(_stringConstant.ChannelDetailsResponseText);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null)).Returns(channelDetailsResponse);
@@ -95,10 +95,10 @@ namespace Promact.Core.Test
         /// Test case to check SlackEventUpdate of OAuth Login Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackEventUpdate()
+        public async Task SlackEventUpdateAsync()
         {
-            _oAuthLoginRepository.SlackEventUpdate(slackEvent);
-            var user = _slackUserRepository.GetById(slackEvent.Event.User.UserId);
+            await _oAuthLoginRepository.SlackEventUpdateAsync(slackEvent);
+            var user = await _slackUserRepository.GetByIdAsync(slackEvent.Event.User.UserId);
             Assert.Equal(user.Name, slackEvent.Event.User.Name);
         }
 
@@ -106,11 +106,11 @@ namespace Promact.Core.Test
         /// Test case to check SlackEventUpdate of OAuth Login Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackAddChannel()
+        public async Task SlackAddChannelAsync()
         {
             slackEvent.Event.Channel = channel;
-            _oAuthLoginRepository.SlackChannelAdd(slackEvent);
-            var channelAdded = _slackChannelRepository.GetById(slackEvent.Event.Channel.ChannelId);
+            await _oAuthLoginRepository.SlackChannelAddAsync(slackEvent);
+            var channelAdded = await _slackChannelRepository.GetByIdAsync(slackEvent.Event.Channel.ChannelId);
             Assert.Equal(channelAdded.Name, slackEvent.Event.Channel.Name);
         }
         #endregion
@@ -147,7 +147,7 @@ namespace Promact.Core.Test
                 }
             };
 
-            channel.ChannelId = "ChannelIdForTest";
+            channel.ChannelId = _stringConstant.ChannelIdForTest;
             channel.CreatedOn = DateTime.UtcNow;
             channel.Deleted = false;
             channel.Name = _stringConstant.Employee;

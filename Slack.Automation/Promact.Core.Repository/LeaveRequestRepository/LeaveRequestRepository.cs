@@ -4,6 +4,7 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
 {
@@ -80,9 +81,9 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <returns>leave</returns>
-        public LeaveRequest LeaveById(int leaveId)
+        public async Task<LeaveRequest> LeaveByIdAsync(int leaveId)
         {
-            var leave = _leaveRequestRepository.FirstOrDefault(x => x.Id == leaveId);
+            var leave = await _leaveRequestRepository.FirstOrDefaultAsync(x => x.Id == leaveId);
             return leave;
         }
 

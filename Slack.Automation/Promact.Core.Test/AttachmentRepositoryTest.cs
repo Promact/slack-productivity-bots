@@ -38,7 +38,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachment()
         {
-            var response = _attachmentRepository.SlackResponseAttachment("1", _stringConstant.Hello).Last();
+            var response = _attachmentRepository.SlackResponseAttachment(_stringConstant.StringValueOneForTest, _stringConstant.Hello).Last();
             Assert.Equal(response.Title, _stringConstant.Hello);
             Assert.Equal(response.Color, _stringConstant.Color);
         }
@@ -61,7 +61,7 @@ namespace Promact.Core.Test
                 Type = LeaveType.cl,
                 Id = 1
             };
-            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
+            var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveApplied,
                 _stringConstant.FirstNameForTest,
                 leave.FromDate.ToShortDateString(),
                 leave.EndDate.Value.ToShortDateString(),
@@ -112,7 +112,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachmentFalse()
         {
-            var response = _attachmentRepository.SlackResponseAttachment("55", _stringConstant.Hello).Last();
+            var response = _attachmentRepository.SlackResponseAttachment(_stringConstant.StringValueFiftyFiveForTest, _stringConstant.Hello).Last();
             Assert.NotEqual(response.Title, _stringConstant.FirstNameForTest);
         }
 
@@ -134,7 +134,7 @@ namespace Promact.Core.Test
                 Type = LeaveType.cl,
                 Id = 1
             };
-            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
+            var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveApplied,
                 _stringConstant.FirstNameForTest,
                 leave.FromDate.ToShortDateString(),
                 leave.EndDate.Value.ToShortDateString(),
@@ -179,7 +179,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public void SlackResponseAttachmentWithoutButton()
         {
-            var response = _attachmentRepository.SlackResponseAttachmentWithoutButton("1", _stringConstant.Hello).Last();
+            var response = _attachmentRepository.SlackResponseAttachmentWithoutButton(_stringConstant.StringValueOneForTest, _stringConstant.Hello).Last();
             Assert.Equal(response.Title, _stringConstant.Hello);
             Assert.Equal(response.Color, _stringConstant.Color);
         }

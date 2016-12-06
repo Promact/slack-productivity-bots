@@ -30,7 +30,7 @@ namespace Promact.Erp.Util.HttpClient
                 _client = new System.Net.Http.HttpClient();
                 _client.BaseAddress = new Uri(baseUrl);
                 // Added access token to request header if provided by user
-                if (accessToken != null && !String.IsNullOrEmpty(accessToken))
+                if (!String.IsNullOrEmpty(accessToken))
                 {
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
                 }

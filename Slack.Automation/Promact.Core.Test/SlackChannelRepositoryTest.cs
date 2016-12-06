@@ -3,6 +3,7 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -49,10 +50,10 @@ namespace Promact.Core.Test
         /// Test case to check the functionality of GetbyId method of Slack Channel Repository - true case
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetById()
+        public async Task GetByIdAsync()
         {
             _slackChannelRepository.AddSlackChannel(slackChannelDetails);
-            var slackChannel = _slackChannelRepository.GetById(_stringConstant.ChannelIdForTest);
+            var slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
             Assert.Equal(slackChannel.ChannelId, _stringConstant.ChannelIdForTest);
         }
 
@@ -61,10 +62,10 @@ namespace Promact.Core.Test
         /// Test case to check the functionality of GetbyId method of Slack Channel Repository - false case
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetByIdFalse()
+        public async Task GetByIdFalseAsync()
         {
             _slackChannelRepository.AddSlackChannel(slackChannelDetails);
-            var slackUser = _slackChannelRepository.GetById(_stringConstant.ChannelIdForTest);
+            var slackUser = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
             Assert.NotEqual(slackUser.ChannelId, _stringConstant.TeamLeaderIdForTest);
         }
 

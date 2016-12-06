@@ -20,14 +20,14 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns>question</returns>
-        Question FindById(int questionId);
+        Task<Question> FindByIdAsync(int questionId);
 
         /// <summary>
         /// Method to find question by it's type
         /// </summary>
         /// <param name="type"></param>
         /// <returns>question</returns>
-        Question FindByQuestionType(int type);
+        Task<Question> FindByQuestionTypeAsync(int type);
 
         /// <summary>
         /// Method to find question by it's type and order number
@@ -35,6 +35,6 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <param name="orderNumber"></param>
         /// <param name="type"></param>
         /// <returns>question</returns>
-        Question FindByTypeAndOrderNumber(int orderNumber, int type);
+        Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type);
     }
 }

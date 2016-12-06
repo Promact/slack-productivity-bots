@@ -21,7 +21,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns>Oauth</returns>
-        OAuthApplication ExternalLoginInformationAsync(string refreshToken);
+        OAuthApplication ExternalLoginInformation(string refreshToken);
 
         /// <summary>
         /// Method to add Slack Users,channels and groups information 
@@ -34,12 +34,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to update slack user table when there is any changes in slack
         /// </summary>
         /// <param name="slackEvent"></param>
-        void SlackEventUpdate(SlackEventApiAC slackEvent);
+        Task SlackEventUpdateAsync(SlackEventApiAC slackEvent);
 
         /// <summary>
         /// Method to update slack channel table when a channel is added or updated in team.
         /// </summary>
         /// <param name="slackEvent"></param>
-        void SlackChannelAdd(SlackEventApiAC slackEvent);
+        Task SlackChannelAddAsync(SlackEventApiAC slackEvent);
     }
 }

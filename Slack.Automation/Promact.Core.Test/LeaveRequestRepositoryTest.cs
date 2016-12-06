@@ -6,6 +6,7 @@ using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 
@@ -100,10 +101,10 @@ namespace Promact.Core.Test
         /// Method LeaveById Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveById()
+        public async Task LeaveByIdAsync()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveById(1);
+            var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             Assert.Equal(Condition.Pending, leaves.Status);
         }
 
@@ -111,10 +112,10 @@ namespace Promact.Core.Test
         /// Method UpdateLeave Testing with True Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void UpdateLeave()
+        public async Task UpdateLeaveAsync()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveById(1);
+            var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             leaves.Status = Condition.Rejected;
             _leaveRequestRepository.UpdateLeave(leaves);
             Assert.Equal(Condition.Rejected, leaves.Status);
@@ -185,10 +186,10 @@ namespace Promact.Core.Test
         /// Method LeaveById Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void LeaveByIdFalse()
+        public async Task LeaveByIdFalseAsync()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveById(1);
+            var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
 
@@ -196,10 +197,10 @@ namespace Promact.Core.Test
         /// Method UpdateLeave Testing with False Value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void UpdateLeaveFalse()
+        public async Task UpdateLeaveFalseAsync()
         {
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaves = _leaveRequestRepository.LeaveById(1);
+            var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             leaves.Status = Condition.Rejected;
             _leaveRequestRepository.UpdateLeave(leaves);
             Assert.NotEqual(Condition.Approved, leaves.Status);

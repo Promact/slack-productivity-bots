@@ -47,7 +47,7 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackcall")]
-        public async Task<IHttpActionResult> SlackRequest()
+        public async Task<IHttpActionResult> SlackRequestAsync()
         {
             var request = HttpContext.Current.Request.Form;
             var leave = _attachmentRepository.SlashCommandTransfrom(request);
@@ -60,7 +60,7 @@ namespace Promact.Erp.Core.Controllers
             catch (Exception ex)
             {
                 _slackRepository.Error(leave);
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 return BadRequest();
             }
@@ -80,16 +80,16 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
+        public async Task<IHttpActionResult> SlackButtonRequestAsync(SlashChatUpdateResponse leaveResponse)
         {
             try
             {
-                _slackRepository.UpdateLeave(leaveResponse);
+                await _slackRepository.UpdateLeaveAsync(leaveResponse);
                 return Ok();
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw;
             }

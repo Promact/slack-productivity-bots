@@ -1,5 +1,6 @@
 ﻿using Promact.Erp.DomainModel.Models;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
@@ -32,9 +33,9 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns>question</returns>
-        public Question FindById(int questionId)
+        public async Task<Question> FindByIdAsync(int questionId)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.Id == questionId);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.Id == questionId);
             return question;
         }
 
@@ -43,9 +44,9 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// </summary>
         /// <param name="type"></param>
         /// <returns>question</returns>
-        public Question FindByQuestionType(int type)
+        public async Task<Question> FindByQuestionTypeAsync(int type)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.Type == type);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.Type == type);
             return question;
         }
 
@@ -55,9 +56,9 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <param name="orderNumber"></param>
         /// <param name="type"></param>
         /// <returns>question</returns>
-        public Question FindByTypeAndOrderNumber(int orderNumber, int type)
+        public async Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == (orderNumber) && x.Type == type);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == (orderNumber) && x.Type == type);
             return question;
         }
         #endregion

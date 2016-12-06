@@ -48,7 +48,7 @@ namespace Promact.Erp.Web
                     // Method will hit when someone send some text in task mail bot
                     client.OnMessageReceived += (message) =>
                     {
-                        var user = _slackUserDetails.GetById(message.user);
+                        var user = _slackUserDetails.GetByIdAsync(message.user).Result;
                         string replyText = "";
                         var text = message.text;
                         if (user != null)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -353,5 +354,32 @@ namespace Promact.Erp.Util.StringConstants
         string Ok { get; }
         string LeaveAllowed { get; }
         string LeaveAlreadyExistOnSameDate { get; }
+        string ReplyTextForUpdateLeave { get; }
+        string ReplyTextForCasualLeaveList { get; }
+        string ReplyTextForSickLeaveList { get; }
+        string ReplyTextForCancelLeave { get; }
+        string ReplyTextForErrorInCancelLeave { get; }
+        string ReplyTextForCasualLeaveStatus { get; }
+        string ReplyTextForSickLeaveStatus { get; }
+        string ReplyTextForCasualLeaveBalance { get; }
+        string ReplyTextForSickLeaveBalance { get; }
+        string ReplyTextForSickLeaveUpdate { get; }
+        string ReplyTextForSMTPExceptionErrorMessage { get; }
+        string SlashCommandErrorMessage { get; }
+        string ReplyTextForCasualLeaveApplied { get; }
+        string ReplyTextForSickLeaveApplied { get; }
+        string UpdateMessageUrl { get; }
+        string AtTheRate { get; }
+        string SlackOauthRequestUrl { get; }
+        string SlackUserDetailsUrl { get; }
+        string EmployeeFirstLastNameFormat { get; }
+        string FirstAndSecondIndexStringFormat { get; }
+        string FirstSecondAndThirdIndexStringFormat { get; }
+        string StringValueOneForTest { get; }
+        string StringValueFiftyFiveForTest { get; }
+        string ControllerErrorMessageStringFormat { get; }
+        string ExternalLoginUrl { get; }
+        string SlackAuthorizeAction { get; }
+        string Default { get; }
     }
 }

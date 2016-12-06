@@ -90,7 +90,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }
@@ -117,13 +117,13 @@ namespace Promact.Erp.Core.Controllers
                     return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
                 }
                 //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format("{0}?clientId={1}", _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
+                var url = string.Format(_stringConstant.ExternalLoginUrl, _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
                 //make call to the OAuth Server
                 return Redirect(url);
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }
@@ -168,7 +168,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }
@@ -194,7 +194,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerLogoff, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerLogoff, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw ex;
             }

@@ -77,7 +77,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <returns>string replyText</returns>
         public string ReplyText(string username, LeaveRequest leave)
         {
-            var replyText = string.Format("Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}",
+            var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveApplied,
                 username,
                 leave.FromDate.ToShortDateString(),
                 leave.EndDate.Value.ToShortDateString(),
@@ -131,7 +131,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         public async Task<string> UserAccessTokenAsync(string username)
         {
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
-            var accessToken = "";
+            var accessToken = _stringConstant.EmptyString;
             foreach (var provider in providerInfo)
             {
                 if(provider.LoginProvider == _stringConstant.PromactStringName)
@@ -150,7 +150,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <returns>string replyText</returns>
         public string ReplyTextSick(string username, LeaveRequest leave)
         {
-            var replyText = string.Format("Sick leave has been applied for {0} from {1} for reason {2}",
+            var replyText = string.Format(_stringConstant.ReplyTextForSickLeaveApplied,
                 username,
                 leave.FromDate.ToShortDateString(),
                 leave.Reason);

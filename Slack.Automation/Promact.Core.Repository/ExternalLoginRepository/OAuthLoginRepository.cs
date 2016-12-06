@@ -66,7 +66,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns>Oauth</returns>
-        public OAuthApplication ExternalLoginInformationAsync(string refreshToken)
+        public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
             var clientId = _envVariableRepository.PromactOAuthClientId;
             var clientSecret = _envVariableRepository.PromactOAuthClientSecret;
@@ -85,10 +85,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformationAsync(string code)
         {
-            var slackOAuthRequest = string.Format("?client_id={0}&client_secret={1}&code={2}&pretty=1", _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
+            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
-            var detailsRequest = string.Format("?token={0}&pretty=1", slackOAuth.AccessToken);
+            var detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
             var userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             if (slackUsers.Ok)
@@ -96,7 +96,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 foreach (var user in slackUsers.Members)
                 {
                     if (!user.Deleted)
-                        _slackUserRepository.AddSlackUser(user);
+                        await _slackUserRepository.AddSlackUserAsync(user);
                 }
             }
             else
@@ -107,7 +107,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in channels.Channels)
                 {
-                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    SlackChannelDetails slackChannel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == channel.ChannelId);
                     if (slackChannel == null)
                     {
                         if (!channel.Deleted)
@@ -132,7 +132,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var channel in groups.Groups)
                 {
-                    SlackChannelDetails slackChannel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == channel.ChannelId);
+                    SlackChannelDetails slackChannel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == channel.ChannelId);
                     if (slackChannel == null)
                     {
                         if (!channel.Deleted)
@@ -156,11 +156,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to update slack user table when there is any changes in slack
         /// </summary>
         /// <param name="slackEvent"></param>
-        public void SlackEventUpdate(SlackEventApiAC slackEvent)
+        public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
         {
-            var user = _slackUserDetails.FirstOrDefault(x => x.UserId == slackEvent.Event.User.UserId);
+            var user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
             if (user == null)
-                _slackUserRepository.AddSlackUser(slackEvent.Event.User);
+                await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
         }
 
 
@@ -168,10 +168,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to update slack channel table when a channel is added or updated in team.
         /// </summary>
         /// <param name="slackEvent"></param>
-        public void SlackChannelAdd(SlackEventApiAC slackEvent)
+        public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
         {
 
-            var channel = _slackChannelDetails.FirstOrDefault(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            var channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
