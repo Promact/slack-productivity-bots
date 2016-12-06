@@ -3,6 +3,7 @@ import { LeaveReport } from './leaveReport-List.model';
 import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
+import { LoaderService } from '../../shared/loader.service';
 
 declare let jsPDF;
 
@@ -18,32 +19,31 @@ export class LeaveReportListComponent implements OnInit {
     private Role: string;
     noLeaves: string;
 
-    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant) { }
+    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant,private loader: LoaderService) { }
 
-    ngOnInit() {
-        this.getLeaveReports();
+    ngOnInit() {      
+        this.getLeaveReports();        
     }
 
     getLeaveReports() {
+        this.loader.loader = true;
         this.leaveReportService.getLeaveReports()
             .subscribe(
             leaveReports => {
                 this.leaveReports = leaveReports;
                 if (leaveReports.length !== 0) {
+                    this.loader.loader = false;
                     return leaveReports;
                 }
                 else {
                     this.noLeaves = this.stringConstant.noLeaves;
+                    this.loader.loader = false;
                     return this.noLeaves;
-                }                    
+                } 
+                                   
             },
             error => this.errorMessage = <string>error
-        );
-    }
-
-    leaveDetails(employeeId: string) {
-        let link = [this.stringConstant.detail, employeeId];
-        this.router.navigate(link);
+        );        
     }
 
     exportDataToPdf() {

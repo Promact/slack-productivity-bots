@@ -9,12 +9,14 @@ import { LeaveReportService } from '../leaveReport.service';
 import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportListComponent } from './leaveReport-List.component';
+import { LoaderService } from '../../shared/loader.service';
 
 let promise: TestBed;
 
 
 describe('LeaveReport List Tests', () => {
     class MockRouter { }
+    class MockLoaderService { }
 
     const routes: Routes = [];
 
@@ -27,6 +29,7 @@ describe('LeaveReport List Tests', () => {
                 { provide: Router, useClass: MockRouter },
                 { provide: LeaveReportService, useClass: MockLeaveReportService },
                 { provide: StringConstant, useClass: StringConstant },
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));
