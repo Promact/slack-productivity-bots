@@ -1,6 +1,5 @@
 ﻿
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
