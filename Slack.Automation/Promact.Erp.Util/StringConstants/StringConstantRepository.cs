@@ -165,13 +165,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "fetchUserById/";
             }
         }
-        public string UserDetailByUserNameUrl
-        {
-            get
-            {
-                return "fetchbyusername/";
-            }
-        }
         public string UrlRtmStart
         {
             get
@@ -179,11 +172,25 @@ namespace Promact.Erp.Util.StringConstants
                 return "https://slack.com/api/rtm.start";
             }
         }
+        public string UserCouldNotBeAdded
+        {
+            get
+            {
+                return "User could not be added";
+            }
+        }
         public string OAuthAuthorizationScopeAndClientId
         {
             get
             {
                 return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read&client_id=";
+            }
+        }
+        public string SlackAuthorize
+        {
+            get
+            {
+                return "SlackAuthorize";
             }
         }
         public string UserDetailsUrl
@@ -607,7 +614,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "No project found for this channel.";
+                return "No active project found for this channel.";
             }
         }
         public string ScrumComplete
@@ -1285,6 +1292,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Error in Home Controller-Extrenal Login CallBack ";
+            }
+        }
+        public string LoggerErrorMessageHomeControllerSlackOAuthAuthorization
+        {
+            get
+            {
+                return "Error in Home Controller-Slack OAuth Authorization ";
             }
         }
         public string LoggerErrorMessageHomeControllerLogoff

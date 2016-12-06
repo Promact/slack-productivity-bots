@@ -46,13 +46,17 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string uerId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id=uerId };
+            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
             //Creating a user with email only. Password not required
             var result = await _userManager.CreateAsync(user);
-            //Adding external Oauth details
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
-            result = await _userManager.AddLoginAsync(user.Id, info);
-            return user;
+            if (result.Succeeded)
+            {
+                //Adding external Oauth details
+                UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
+                result = await _userManager.AddLoginAsync(user.Id, info);
+                return user;
+            }
+            return null;
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 foreach (var user in slackUsers.Members)
                 {
                     if (!user.Deleted)
-                       await _slackUserRepository.AddSlackUserAsync(user);
+                        await _slackUserRepository.AddSlackUserAsync(user);
                 }
             }
             else
