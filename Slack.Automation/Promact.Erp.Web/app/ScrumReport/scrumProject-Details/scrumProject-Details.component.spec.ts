@@ -10,12 +10,14 @@ import { TestConnection } from "../../shared/mock/test.connection";
 import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.service';
 import { Observable } from 'rxjs/Observable';
 import { StringConstant } from '../../shared/stringConstant';
+import { LoaderService } from '../../shared/loader.service';
 
 let promise: TestBed;
 
 
 describe('ScrumReport Tests', () => {
     const routes: Routes = [];
+    class MockLoaderService { }
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
@@ -31,6 +33,7 @@ describe('ScrumReport Tests', () => {
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 { provide: ScrumReportService, useClass: MockScrumReportService },
                 { provide: StringConstant, useClass: StringConstant },
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));
