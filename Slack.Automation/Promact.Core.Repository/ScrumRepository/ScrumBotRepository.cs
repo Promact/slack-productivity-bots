@@ -435,7 +435,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="message"></param>
         /// <param name="scrumAnswerStatus"></param>
         /// <returns>true if scrum answer is added successfully</returns>
-        private async Task<bool> AddAnswerAsync(int scrumID, int questionId, string employeeId, string message)
+        private async Task<bool> AddAnswerAsync(int scrumId, int questionId, string employeeId, string message)
         {
             ScrumAnswer answer = new ScrumAnswer();
             answer.Answer = message;
