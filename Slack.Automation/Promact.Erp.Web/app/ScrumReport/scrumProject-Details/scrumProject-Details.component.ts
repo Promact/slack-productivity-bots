@@ -4,6 +4,7 @@ import { ScrumDetails } from './scrumProject-Details.model';
 import { ScrumReportService } from '../scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { EmployeeScrumAnswers } from './scrumProject-EmployeeScrumDetails.model';
+import { LoaderService } from '../../shared/loader.service';
 
 @Component({
     templateUrl: './app/ScrumReport/scrumProject-Details/scrumProject-Details.html',
@@ -20,7 +21,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     maxDate = new Date().toISOString().slice(0, 10);
     minDate: string;
 
-    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant ) { }
+    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService ) { }
 
     ngOnInit() {
         this.getScrumDetailsToday();
@@ -43,6 +44,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetails(date: string) {
+        this.loader.loader = true;
         this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]); 
         this.scrumReportService.getScrumDetails(this.Id, date)
             .subscribe(
@@ -51,9 +53,10 @@ export class ScrumProjectDetailComponent implements OnInit {
                 this.projectCreationDate = scrumDetails.ProjectCreationDate;
                 this.employeeScrumAnswers = scrumDetails.EmployeeScrumAnswers;
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
+                this.loader.loader = false;
             },
             error => this.errorMessage = <string>error
-            );
+            );        
     }
 
     goBack() {

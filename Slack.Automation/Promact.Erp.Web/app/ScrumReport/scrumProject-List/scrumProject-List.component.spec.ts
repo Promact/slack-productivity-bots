@@ -1,5 +1,4 @@
-﻿
-declare var describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -9,11 +8,12 @@ import { ScrumProjectListComponent } from './scrumProject-List.component';
 import { ScrumReportService } from '../scrumReport.service';
 import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
+import { LoaderService } from '../../shared/loader.service';
 
 let promise: TestBed;   
 
 describe('ScrumReport Tests', () => {
-
+    class MockLoaderService { }
     class MockRouter { }
     const routes: Routes = [];
 
@@ -25,6 +25,7 @@ describe('ScrumReport Tests', () => {
                 { provide: Router, useClass: MockRouter },
                 { provide: ScrumReportService, useClass: MockScrumReportService },
                 { provide: StringConstant, useClass: StringConstant },
+                { provide: LoaderService, useClass: MockLoaderService }
             ]
         }).compileComponents();
     }));
