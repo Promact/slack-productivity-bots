@@ -42,7 +42,7 @@ namespace Promact.Erp.Core.Controllers
         public void Main()
         {
             // assigning bot token on Slack Socket Client
-            string botToken = _environmentVariableRepository.ScrumBotToken;
+            string botToken = _environmentVariableRepository.TaskmailAccessToken;
             SlackSocketClient client = new SlackSocketClient(botToken);
             // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
             MessageReceived messageReceive = new MessageReceived();
