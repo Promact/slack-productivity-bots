@@ -126,8 +126,8 @@ namespace Promact.Erp.Web
                 }
                 catch (HttpRequestException ex)
                 {
-                    client.SendMessage(showMethod, message.channel, "OAuth Server closed");
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + ex.InnerException + "\n" + ex.StackTrace);
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
