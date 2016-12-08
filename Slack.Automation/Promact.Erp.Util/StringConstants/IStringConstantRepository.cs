@@ -381,5 +381,9 @@ namespace Promact.Erp.Util.StringConstants
         string ExternalLoginUrl { get; }
         string SlackAuthorizeAction { get; }
         string Default { get; }
+        string CasualLeaveUpdateMessageForUser { get; }
+        string AlreadyUpdatedMessage { get; }
+        string LeaveUpdateResponseJsonString { get; }
+        string Payload { get; }
     }
 }

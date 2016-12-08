@@ -1,4 +1,5 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+﻿using Newtonsoft.Json;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Promact.Core.Repository.AttachmentRepository
 {
@@ -179,6 +181,18 @@ namespace Promact.Core.Repository.AttachmentRepository
             attachmentList.AttachmentType = _stringConstant.AttachmentType;
             attachment.Add(attachmentList);
             return attachment;
+        }
+
+        /// <summary>
+        /// Method to convert slash response to SlashChatUpdateResponse
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>SlashChatUpdateResponse</returns>
+        public SlashChatUpdateResponse SlashChatUpdateResponseTransfrom(NameValueCollection value)
+        {
+            var decodeResponse = HttpUtility.UrlDecode(value[_stringConstant.Payload]);
+            var response = JsonConvert.DeserializeObject<SlashChatUpdateResponse>(decodeResponse);
+            return response;
         }
         #endregion
     }

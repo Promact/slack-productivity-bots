@@ -183,6 +183,18 @@ namespace Promact.Core.Test
             Assert.Equal(response.Title, _stringConstant.Hello);
             Assert.Equal(response.Color, _stringConstant.Color);
         }
+
+        /// <summary>
+        /// Test case to check method SlashChatUpdateResponseTransfrom of Attachment Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void SlashChatUpdateResponseTransfrom()
+        {
+            NameValueCollection value = new NameValueCollection();
+            value[_stringConstant.Payload] = _stringConstant.LeaveUpdateResponseJsonString;
+            var response = _attachmentRepository.SlashChatUpdateResponseTransfrom(value);
+            Assert.Equal(response.User.Id, _stringConstant.UserSlackId);
+        }
         #endregion
     }
 }

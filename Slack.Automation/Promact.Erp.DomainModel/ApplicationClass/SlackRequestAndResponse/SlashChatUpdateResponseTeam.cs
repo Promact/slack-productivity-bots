@@ -8,7 +8,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// Id field in Slash ChatUpdate Team
         /// </summary>
         [JsonProperty("Id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// domain field in Slash ChatUpdate Team

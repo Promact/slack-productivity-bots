@@ -13,14 +13,14 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
-        Task UpdateMessageAsync(SlashChatUpdateResponse leaveResponse, string replyText);
+        Task UpdateMessageAsync(string responseUrl, string replyText, string slackUserId);
 
         /// <summary>
         /// The below method used for sending resposne back to slack for a slash command in ephemeral mood. Required field response_url.
         /// </summary>
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
-        Task SendMessageAsync(SlashCommand leave, string replyText);
+        Task SendMessageAsync(string responseUrl, string replyText);
 
         /// <summary>
         /// The below method is used for sending meassage to all the TL and management people using Incoming 

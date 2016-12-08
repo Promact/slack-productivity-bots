@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
+using Promact.Erp.DomainModel.DataRepository;
 
 namespace Promact.Core.Repository.Client
 {
@@ -30,13 +31,14 @@ namespace Promact.Core.Repository.Client
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
+        private readonly IRepository<IncomingWebHook> _incomingWebHook;
         #endregion
 
         #region Constructor
         public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant,
             IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
-            IEmailServiceTemplateRepository emailTemplateRepository)
+            IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook)
         {
             _stringConstant = stringConstant;
             _chatUpdateMessage = new HttpClient();
@@ -48,6 +50,7 @@ namespace Promact.Core.Repository.Client
             _envVariableRepository = envVariableRepository;
             _slackUserRepository = slackUserRepository;
             _emailTemplateRepository = emailTemplateRepository;
+            _incomingWebHook = incomingWebHook;
         }
         #endregion
 
@@ -58,11 +61,11 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
-        public async Task UpdateMessageAsync(SlashChatUpdateResponse leaveResponse, string replyText)
+        public async Task UpdateMessageAsync(string responseUrl, string replyText, string slackUserName)
         {
-            // Call to an url using HttpClient.
-            var responseUrl = string.Format(_stringConstant.UpdateMessageUrl, HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientService.GetAsync(_stringConstant.SlackChatUpdateUrl, responseUrl, leaveResponse.Token);
+            var text = new SlashResponse() { Text = replyText };
+            var textJson = JsonConvert.SerializeObject(text);
+            await _httpClientService.PostAsync(responseUrl, textJson, _stringConstant.JsonContentString);
         }
 
         /// <summary>
@@ -70,11 +73,11 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
-        public async Task SendMessageAsync(SlashCommand slackLeave, string replyText)
+        public async Task SendMessageAsync(string responseUrl, string replyText)
         {
             var text = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var textJson = JsonConvert.SerializeObject(text);
-            await _httpClientService.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString);
+            await _httpClientService.PostAsync(responseUrl, textJson, _stringConstant.JsonContentString);
         }
 
         /// <summary>
@@ -119,10 +122,11 @@ namespace Promact.Core.Repository.Client
         {
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
             SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+            var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
             var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
-            await _httpClientService.PostAsync(_envVariableRepository.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
-            //WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
+            if (incomingWebHook != null)
+                await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
             EmailApplication email = new EmailApplication();
             // creating email templates corresponding to leave applied
             email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
@@ -154,11 +158,12 @@ namespace Promact.Core.Repository.Client
             foreach (var teamLeader in teamLeaders)
             {
                 SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(teamLeader.SlackUserId);
+                var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var textJson = JsonConvert.SerializeObject(text);
-                await _httpClientService.PostAsync(_envVariableRepository.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
-                //WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
+                if (incomingWebHook != null)
+                    await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
                 EmailApplication email = new EmailApplication();
                 if (leaveRequest.EndDate != null)
                 {

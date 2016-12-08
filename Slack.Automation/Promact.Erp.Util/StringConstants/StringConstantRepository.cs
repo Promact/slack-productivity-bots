@@ -184,7 +184,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read&client_id=";
+                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
             }
         }
         public string UserDetailsUrl
@@ -2408,7 +2408,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You had {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}";
+                return "You have {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}";
             }
         }
 
@@ -2520,7 +2520,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1";
+                return "?token={0}&ts={1}&channel={2}&text={3}&pretty=1";
             }
         }
 
@@ -2617,6 +2617,38 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Default";
+            }
+        }
+
+        public string CasualLeaveUpdateMessageForUser
+        {
+            get
+            {
+                return "Your leave Id {0} from {1} to {2} for reason {3} has been {4} by {5}";
+            }
+        }
+
+        public string AlreadyUpdatedMessage
+        {
+            get
+            {
+                return "Leave has already been {0}";
+            }
+        }
+
+        public string LeaveUpdateResponseJsonString
+        {
+            get
+            {
+                return "{\"actions\":[{\"name\":\"Approved\",\"value\":\"Approved\"}],\"callback_id\":\"3\",\"team\":{\"id\":\"T04K6NL66\",\"domain\":\"promact\"},\"channel\":{\"id\":\"D0HHZPADB\",\"name\":\"directmessage\"},\"user\":{\"id\":\"U0HJ49KJ4\",\"name\":\"siddhartha\"},\"action_ts\":\"1481194632.880940\",\"message_ts\":\"1481194612.000007\",\"attachment_id\":\"1\",\"token\":\"oQ7HPOZziax3MR4pzuImuQBR\",\"original_message\":{\"text\":\"\",\"bot_id\":\"B3C8ARBV2\",\"attachments\":[{\"callback_id\":\"3\",\"fallback\":\"Leave Applied\",\"title\":\"Leave has been applied by prince From 16-12-2016 To 16-12-2016 for Reason hgkjiuyyuiyuiyui will re-join by 17-12-2016\",\"id\":1,\"color\":\"3AA3E3\",\"actions\":[{\"id\":\"1\",\"name\":\"Approved\",\"text\":\"Approved\",\"type\":\"button\",\"value\":\"Approved\",\"style\":\"\"},{\"id\":\"2\",\"name\":\"Rejected\",\"text\":\"Rejected\",\"type\":\"button\",\"value\":\"Rejected\",\"style\":\"\"}]}],\"type\":\"message\",\"subtype\":\"bot_message\",\"ts\":\"1481194612.000007\"},\"response_url\":\"https:\\/\\/hooks.slack.com\\/actions\\/T04K6NL66\\/114318064436\\/QoOBNI8kW8w3prmwxe7ONgA7\"}";
+            }
+        }
+
+        public string Payload
+        {
+            get
+            {
+                return "payload";
             }
         }
     }

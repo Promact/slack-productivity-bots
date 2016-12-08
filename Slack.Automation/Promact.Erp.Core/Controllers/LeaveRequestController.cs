@@ -1,4 +1,5 @@
 ﻿using Autofac.Extras.NLog;
+using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -80,10 +81,12 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public async Task<IHttpActionResult> SlackButtonRequestAsync(SlashChatUpdateResponse leaveResponse)
+        public async Task<IHttpActionResult> SlackButtonRequestAsync()
         {
             try
             {
+                var request = HttpContext.Current.Request.Form;
+                var leaveResponse = _attachmentRepository.SlashChatUpdateResponseTransfrom(request);
                 await _slackRepository.UpdateLeaveAsync(leaveResponse);
                 return Ok();
             }

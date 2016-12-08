@@ -24,13 +24,15 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+        private readonly IRepository<IncomingWebHook> _incomingWebHook;
         #endregion
 
         #region Constructor
         public OAuthLoginRepository(ApplicationUserManager userManager,
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetails,
             IRepository<SlackChannelDetails> slackChannelDetails, IStringConstantRepository stringConstant,
-            ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository)
+            ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
+            IRepository<IncomingWebHook> incomingWebHook)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -39,6 +41,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _slackUserRepository = slackUserRepository;
             _slackChannelDetails = slackChannelDetails;
             _envVariableRepository = envVariableRepository;
+            _incomingWebHook = incomingWebHook;
         }
         #endregion
 
@@ -88,6 +91,17 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             var slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
+            var checkUserIncomingWebHookExist = _incomingWebHook.Any(x => x.UserId == slackOAuth.UserId);
+            if (!checkUserIncomingWebHookExist)
+            {
+                IncomingWebHook slackItem = new IncomingWebHook()
+                {
+                    UserId = slackOAuth.UserId,
+                    IncomingWebHookUrl = slackOAuth.IncomingWebhook.Url
+                };
+                _incomingWebHook.Insert(slackItem);
+                _incomingWebHook.Save();
+            }
             var detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
             var userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
             var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
@@ -95,7 +109,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 foreach (var user in slackUsers.Members)
                 {
-                    if (!user.Deleted)
+                    var checkUserExist = _slackUserDetails.Any(x => x.UserId == user.UserId);
+                    if (!user.Deleted && !checkUserExist)
                         await _slackUserRepository.AddSlackUserAsync(user);
                 }
             }

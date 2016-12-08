@@ -61,5 +61,12 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <param name="replyText"></param>
         /// <returns></returns>
         List<SlashAttachment> SlackResponseAttachmentWithoutButton(string leaveRequestId, string replyText);
+
+        /// <summary>
+        /// Method to convert slash response to SlashChatUpdateResponse
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>SlashChatUpdateResponse</returns>
+        SlashChatUpdateResponse SlashChatUpdateResponseTransfrom(NameValueCollection value);
     }
 }
