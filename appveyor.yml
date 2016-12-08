@@ -7,8 +7,7 @@ environment:
  nodejs_version: "0.12"
  COVERALLS_REPO_TOKEN:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
-cache:
-- Slack.Automation\packages -> **\packages.config 
+cache: 
 - Slack.Automation\Promact.Erp.Web\node_modules
 - Slack.Automation\Promact.Erp.Web\yarn.lock
 build_script:
