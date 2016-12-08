@@ -33,7 +33,7 @@ tr:nth-child(even){background-color: #9FA3A5}
 </style>
 </head>
 <body>
-    LEAVE APPLICATION
+    LEAVE <#= Status #>
     <table>
 		<tr>
             <td><b>From :</b></td>

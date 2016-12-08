@@ -15,6 +15,8 @@ using System.Net.Mail;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.SlackUserRepository;
 using System.Threading;
+using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Promact.Erp.Util.Email;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -30,13 +32,16 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IRepository<ApplicationUser> _userManager;
         string replyText = null;
         private readonly IRepository<IncomingWebHook> _slackItems;
+        private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
+        private readonly IEmailService _emailService;
         #endregion
 
         #region Constructor
         public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository,
             ISlackUserRepository slackUserRepository, IClient client, IStringConstantRepository stringConstant,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager,
-            IRepository<IncomingWebHook> slackItems)
+            IRepository<IncomingWebHook> slackItems, IEmailServiceTemplateRepository emailTemplateRepository,
+            IEmailService emailService)
         {
             _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
@@ -46,6 +51,8 @@ namespace Promact.Core.Repository.SlackRepository
             _userManager = userManager;
             _slackUserRepository = slackUserRepository;
             _slackItems = slackItems;
+            _emailTemplateRepository = emailTemplateRepository;
+            _emailService = emailService;
         }
         #endregion
 
@@ -62,6 +69,7 @@ namespace Promact.Core.Repository.SlackRepository
             var leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
             var user = await _userManager.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
             var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+            var updaterUser = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
             // only pending status can be modified
             if (leave.Status == Condition.Pending)
             {
@@ -78,7 +86,15 @@ namespace Promact.Core.Repository.SlackRepository
                             leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                             leave.Reason, leave.Status, leaveResponse.User.Name);
                 var incomingWebHook = await _slackItems.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                // Used to send slack message to the user about leave updation
                 await _client.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText, slackUser.Name);
+                // Used to send email to the user about leave updation
+                EmailApplication email = new EmailApplication();
+                email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+                email.From = updaterUser.Email;
+                email.To = user.Email;
+                email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+                _emailService.Send(email);
                 replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
                 leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
                 leave.RejoinDate.Value.ToShortDateString());
@@ -87,6 +103,7 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 replyText = string.Format(_stringConstant.AlreadyUpdatedMessage, leave.Status);
             }
+            // updating leave applied text of slack
             await _client.SendMessageAsync(leaveResponse.ResponseUrl, replyText);
         }
 

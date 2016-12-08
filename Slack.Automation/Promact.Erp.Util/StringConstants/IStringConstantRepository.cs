@@ -385,5 +385,6 @@ namespace Promact.Erp.Util.StringConstants
         string AlreadyUpdatedMessage { get; }
         string LeaveUpdateResponseJsonString { get; }
         string Payload { get; }
+        string LeaveUpdateEmailStringFormat { get; }
     }
 }

@@ -29,5 +29,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <param name="leaveRequest">TaskMail template object</param>
         /// <returns>template emailBody as string</returns>
         string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail);
+
+        string EmailServiceTemplateLeaveUpdate(LeaveRequest leave);
     }
 }

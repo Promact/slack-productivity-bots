@@ -90,6 +90,25 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
             var emailBody = leaveTemplate.TransformText();
             return emailBody;
         }
+
+        public string EmailServiceTemplateLeaveUpdate(LeaveRequest leave)
+        {
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            LeaveApproveAndRejected leaveTemplate = new LeaveApproveAndRejected();
+            leaveTemplate.Session = new Dictionary<string, object>
+            {
+                {_stringConstant.FromDate,leave.FromDate.ToString(dateFormat) },
+                {_stringConstant.EndDate,leave.EndDate.Value.ToString(dateFormat) },
+                {_stringConstant.Reason,leave.Reason },
+                {_stringConstant.Type,leave.Type.ToString() },
+                {_stringConstant.Status,leave.Status.ToString() },
+                {_stringConstant.ReJoinDate,leave.RejoinDate.Value.ToString(dateFormat) },
+                {_stringConstant.CreatedOn,leave.CreatedOn.ToString(dateFormat) },
+            };
+            leaveTemplate.Initialize();
+            var emailBody = leaveTemplate.TransformText();
+            return emailBody;
+        }
         #endregion
     }
 }

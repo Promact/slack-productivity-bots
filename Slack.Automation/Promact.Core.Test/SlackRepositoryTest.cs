@@ -56,6 +56,7 @@ namespace Promact.Core.Test
         private IncomingWebHook secondUserIncomingWebHook = new IncomingWebHook();
         private IncomingWebHook thirdUserIncomingWebHook = new IncomingWebHook();
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
+        private ApplicationUser updaterUser = new ApplicationUser();
         #endregion
 
         #region Constructor
@@ -129,6 +130,7 @@ namespace Promact.Core.Test
             await AddUser();
             AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
+            await _userManager.CreateAsync(updaterUser);
             _leaveRequestRepository.ApplyLeave(leave);
             leaveResponse.CallbackId = Convert.ToString(leave.Id);
             var replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
@@ -149,11 +151,18 @@ namespace Promact.Core.Test
             List<SlashChatUpdateResponseAction> actions = new List<SlashChatUpdateResponseAction>();
             actions.Add(action);
             leaveResponse.Actions = actions;
+            EmailApplication email = new EmailApplication();
+            email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+            email.From = _stringConstant.TeamLeaderEmailForTest;
+            email.To = _stringConstant.EmailForTest;
+            email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+            _mockEmail.Setup(x => x.Send(email));
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             Assert.Equal(Condition.Approved, leaveUpdated.Status);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
 
         /// <summary>
@@ -165,6 +174,7 @@ namespace Promact.Core.Test
             await AddUser();
             AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
+            await _userManager.CreateAsync(updaterUser);
             _leaveRequestRepository.ApplyLeave(leave);
             leaveResponse.CallbackId = Convert.ToString(leave.Id);
             var replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
@@ -184,12 +194,19 @@ namespace Promact.Core.Test
             };
             List<SlashChatUpdateResponseAction> actions = new List<SlashChatUpdateResponseAction>();
             actions.Add(action);
-            leaveResponse.Actions = actions; 
+            leaveResponse.Actions = actions;
+            EmailApplication email = new EmailApplication();
+            email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+            email.From = _stringConstant.TeamLeaderEmailForTest;
+            email.To = _stringConstant.EmailForTest;
+            email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+            _mockEmail.Setup(x => x.Send(email));
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             Assert.Equal(Condition.Rejected, leaveUpdated.Status);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
 
         /// <summary>
@@ -261,7 +278,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveCancel from Slack respository with True value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveCancel()
+        public async Task SlackLeaveCancelAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -279,7 +296,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveCancel from Slack respository with False value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveCancelFalse()
+        public async Task SlackLeaveCancelFalseAsync()
         {
             newUser.SlackUserId = _stringConstant.FalseStringNameForTest;
             var result = await _userManager.CreateAsync(newUser);
@@ -303,7 +320,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveCancel from Slack respository with wrong value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveCancelWrong()
+        public async Task SlackLeaveCancelWrongAsync()
         {
             newUser.SlackUserId = _stringConstant.FalseStringNameForTest;
             var result = await _userManager.CreateAsync(newUser);
@@ -324,7 +341,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveStatus from Slack respository with True value for casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatus()
+        public async Task SlackLeaveStatusAsync()
         {
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -343,7 +360,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveStatus from Slack respository with False value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusFalse()
+        public async Task SlackLeaveStatusFalseAsync()
         {
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -361,7 +378,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveStatus from Slack respository for Own with true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusForOwn()
+        public async Task SlackLeaveStatusForOwnAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -379,7 +396,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveStatus from Slack respository for Own with false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusOwnFalse()
+        public async Task SlackLeaveStatusOwnFalseAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -395,7 +412,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveBalance from Slack respository with True value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveBalance()
+        public async Task SlackLeaveBalanceAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -418,7 +435,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveHelp from Slack respository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveHelp()
+        public async Task SlackLeaveHelpAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
@@ -432,7 +449,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSL()
+        public async Task LeaveApplyForSLAsync()
         {
             AddThreeUserIncomingWebHook();
             await AddUser();
@@ -459,7 +476,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave, not user error
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSLForNoUser()
+        public async Task LeaveApplyForSLForNoUserAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextSick;
@@ -473,7 +490,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave for other user
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSLForUser()
+        public async Task LeaveApplyForSLForUserAsync()
          {
             AddThreeUserIncomingWebHook();
             await AddUser();
@@ -508,7 +525,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with leave type error value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForErrorLeaveType()
+        public async Task LeaveApplyForErrorLeaveTypeAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorLeaveType;
@@ -524,7 +541,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with date type error value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForErrorDateFormat()
+        public async Task LeaveApplyForErrorDateFormatAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatSick;
@@ -539,7 +556,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with date type error value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForErrorDateFormatForCasual()
+        public async Task LeaveApplyForErrorDateFormatForCasualAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatCasual;
@@ -554,7 +571,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave, for no user error
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLForNoUser()
+        public async Task LeaveApplyForCLForNoUserAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextCasual;
@@ -622,7 +639,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateDateFormatError()
+        public async Task LeaveUpdateDateFormatErrorAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -642,7 +659,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateWrongId()
+        public async Task LeaveUpdateWrongIdAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -662,7 +679,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateTryToUpdateCL()
+        public async Task LeaveUpdateTryToUpdateCLAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -682,7 +699,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateInValidID()
+        public async Task LeaveUpdateInValidIDAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -702,7 +719,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateNotAdmin()
+        public async Task LeaveUpdateNotAdminAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -721,7 +738,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveBalance from Slack respository with false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveBalanceWrong()
+        public async Task SlackLeaveBalanceWrongAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -736,7 +753,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLForEmailError()
+        public async Task LeaveApplyForCLForEmailErrorAsync()
         {
             AddThreeUserIncomingWebHook();
             SmtpException ex = new SmtpException();
@@ -760,7 +777,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with True value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSLOtherUserNotAdmin()
+        public async Task LeaveApplyForSLOtherUserNotAdminAsync()
         {
             await AddUser();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
@@ -774,7 +791,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveList from Slack respository with True value for sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveListSick()
+        public async Task SlackLeaveListSickAsync()
         {
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -794,7 +811,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method SlackLeaveStatus from Slack respository with True value for sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveStatusSick()
+        public async Task SlackLeaveStatusSickAsync()
         {
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -815,7 +832,7 @@ namespace Promact.Core.Test
         /// Test case for invalid action of leave slash command
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task SlackLeaveProperActionError()
+        public async Task SlackLeaveProperActionErrorAsync()
         {
             await AddUser();
             await _slackUserRepository.AddSlackUserAsync(slackUser);
@@ -832,7 +849,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with back date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLWithBackDate()
+        public async Task LeaveApplyForCLWithBackDateAsync()
         {
             await AddUser();
             MockingOfUserDetails();
@@ -848,7 +865,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with end date beyond start date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLWithWrongDateFirstTest()
+        public async Task LeaveApplyForCLWithWrongDateFirstTestAsync()
         {
             await AddUser();
             MockingOfUserDetails();
@@ -864,7 +881,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLWithWrongDateSecondTest()
+        public async Task LeaveApplyForCLWithWrongDateSecondTestAsync()
         {
             await AddUser();
             MockingOfUserDetails();
@@ -880,7 +897,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with back date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSLWithBackDate()
+        public async Task LeaveApplyForSLWithBackDateAsync()
         {
             await AddUser();
             MockingOfUserDetails();
@@ -896,7 +913,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository with end date beyond start date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateForBeyondStartDate()
+        public async Task LeaveUpdateForBeyondStartDateAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -916,7 +933,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveUpdate from Slack respository with rejoin date beyond end date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateForBeyondEndDate()
+        public async Task LeaveUpdateForBeyondEndDateAsync()
         {
             await AddUser();
             leave.Status = Condition.Approved;
@@ -936,7 +953,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForCLWithAlreadyExistDate()
+        public async Task LeaveApplyForCLWithAlreadyExistDateAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -953,7 +970,7 @@ namespace Promact.Core.Test
         /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value sick leave
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplyForSLWithAlreadyExistDate()
+        public async Task LeaveApplyForSLWithAlreadyExistDateAsync()
         {
             await AddUser();
             _leaveRequestRepository.ApplyLeave(leave);
@@ -971,7 +988,7 @@ namespace Promact.Core.Test
         /// </summary>
         /// <returns></returns>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveAlreadyUpdate()
+        public async Task LeaveAlreadyUpdateAsync()
         {
             await AddUser();
             AddThreeUserIncomingWebHook();
@@ -1007,7 +1024,7 @@ namespace Promact.Core.Test
             user.IsActive = true;
             user.LastName = _stringConstant.LastNameForTest;
             user.UserName = _stringConstant.EmailForTest;
-            user.SlackUserId = _stringConstant.FirstNameForTest;
+            user.SlackUserId = _stringConstant.TeamLeaderSlackId;
 
             slackUser.UserId = _stringConstant.FirstNameForTest;
             slackUser.Name = _stringConstant.ManagementFirstForTest;
@@ -1016,14 +1033,9 @@ namespace Promact.Core.Test
 
             leaveResponse.MessageTs = _stringConstant.MessageTsForTest;
             leaveResponse.Token = _stringConstant.AccessTokenForTest;
-            //leaveResponse.Actions = new SlashChatUpdateResponseAction()
-            //{
-                //Name = _stringConstant.Approved,
-                //Value = _stringConstant.Approved
-            //};
             leaveResponse.User = new SlashChatUpdateResponseChannelUser()
             {
-                Id = _stringConstant.StringIdForTest,
+                Id = _stringConstant.TeamLeaderSlackId,
                 Name = _stringConstant.FirstNameForTest
             };
             var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
@@ -1078,6 +1090,10 @@ namespace Promact.Core.Test
             thirdUserIncomingWebHook.IncomingWebHookUrl = _stringConstant.IncomingWebHookUrl;
             thirdUserIncomingWebHook.UserId = _stringConstant.ManagementSlackId;
             leaveResponse.ResponseUrl = _stringConstant.IncomingWebHookUrl;
+            updaterUser.Email = _stringConstant.TeamLeaderEmailForTest;
+            updaterUser.UserName = _stringConstant.TeamLeaderEmailForTest;
+            updaterUser.SlackUserId = _stringConstant.TeamLeaderSlackId;
+            updaterUser.Id = _stringConstant.TeamLeaderIdForTest;
         }
         #endregion
 

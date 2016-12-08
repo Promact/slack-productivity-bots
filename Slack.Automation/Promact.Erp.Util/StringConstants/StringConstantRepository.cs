@@ -2651,5 +2651,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "payload";
             }
         }
+
+        public string LeaveUpdateEmailStringFormat
+        {
+            get
+            {
+                return "{0} {1}";
+            }
+        }
     }
 }
