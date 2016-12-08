@@ -32,3 +32,4 @@ test_script:
 - cd ./Slack.Automation/Promact.Erp.Web
 - npm test  
 
+
