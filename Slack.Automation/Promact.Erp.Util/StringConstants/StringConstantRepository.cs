@@ -257,13 +257,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "/detail";
             }
         }
-        //public string LoginUserDetail
-        //{
-        //    get
-        //    {
-        //        return "/details";
-        //    }
-        //}
+
         public string ThankYou
         {
             get
