@@ -46,7 +46,6 @@ namespace Promact.Erp.Util.StringConstants
         string ProjectTeamLeaderDetailsUrl { get; }
         string ProjectManagementDetailsUrl { get; }
         string UserDetailUrl { get; }
-        string LoginUserDetail { get; }
         string ThankYou { get; }
         string InternalError { get; }
         string SlackUserListUrl { get; }

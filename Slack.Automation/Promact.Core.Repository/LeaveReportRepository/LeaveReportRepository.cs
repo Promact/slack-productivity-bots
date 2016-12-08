@@ -123,16 +123,16 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method that returns leave report based on the role of logged in user
         /// </summary>
         /// <param name="accessToken"></param>
-        /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns>Leave report</returns>       
-        public async Task<IEnumerable<LeaveReport>> LeaveReportAsync(string accessToken,string userName )
+        public async Task<IEnumerable<LeaveReport>> LeaveReportAsync(string accessToken,string userId )
         {
             //Get all approved leave requests
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList().FindAll(x => x.Status.Equals(Condition.Approved));
             List<LeaveReport> leaveReports = new List<LeaveReport>();
            
             //Get details of logged in user
-            User loginUser = await _oauthCallsRepository.GetUserByUserNameAsync(userName, accessToken);
+            User loginUser = await GetEmployeeByIdAsync(userId, accessToken);
 
             //Check if there exists any approved leave request 
             if(leaveRequests.Count != 0)

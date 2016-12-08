@@ -176,32 +176,6 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Method to test GetUserByUserName with correct values 
-        /// </summary>
-        [Fact, Trait("Category","Required")]
-        public void GetUserByUserName()
-        {
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.TestUserName,_stringConstant.LoginUserDetail);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var userDetails = _oauthCallsRepository.GetUserByUserNameAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
-            Assert.Equal(userDetails.UserName, _stringConstant.TestUserName);
-        }
-
-        /// <summary>
-        /// Method to test GetUserByUserName with incorrect values 
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void GetUserByUserNameFalse()
-        {
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.TestUserName, _stringConstant.LoginUserDetail);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var userDetails = _oauthCallsRepository.GetUserByUserNameAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
-            Assert.NotEqual(userDetails.UserName, _stringConstant.TestUserNameFalse);
-        }
-
-        /// <summary>
         /// Method to test GetProjectUsersByTeamLeaderId with correct values
         /// </summary>
         [Fact, Trait("Category", "Required")]

@@ -89,7 +89,7 @@ namespace Promact.Erp.Core.Controllers
         {
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.Id, accessToken));
         }
 
         /**
@@ -128,7 +128,7 @@ namespace Promact.Erp.Core.Controllers
             DateTime date = Convert.ToDateTime(queryString); 
             var accessToken = await _attachmentRepository.AccessToken(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date,loginUser.UserName, accessToken));
+            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date,loginUser.Id, accessToken));
         }
         #endregion
     }
