@@ -10,9 +10,9 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method that returns the list of employees with their leave status based on their roles
         /// </summary>
         /// <param name="accessToken"></param>
-        /// <param name="userName"></param>
+        /// <param name="userId"></param>
         /// <returns>List of employees with leave status based on roles</returns> 
-        Task<IEnumerable<LeaveReport>> LeaveReportAsync(string accessToken,string userName);
+        Task<IEnumerable<LeaveReport>> LeaveReportAsync(string accessToken,string userId);
 
         /// <summary>
         /// Method that returns the details of leave for an employee
