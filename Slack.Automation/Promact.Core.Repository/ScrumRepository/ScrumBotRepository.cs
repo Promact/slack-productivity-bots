@@ -822,8 +822,13 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
                 else
+                {
                     //as not all questions have been answered by the last employee,so to that employee itself
                     user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                    //if(user == null)
+                    //{
+                    //}
+                }
             }
             else
             {
@@ -950,7 +955,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 if (project.IsActive)
                 {
                     if (employees == null || employees.Count == 0)
-                        employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
+                        employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
+                    // employees = employees.Where(x => x.IsActive).ToList();
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count() == 0)
