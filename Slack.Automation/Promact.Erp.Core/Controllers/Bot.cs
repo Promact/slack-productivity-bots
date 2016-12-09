@@ -121,10 +121,10 @@ namespace Promact.Erp.Core.Controllers
                 try
                 {
                     _logger.Info("Scrum bot got message, inside try");
-                    string replyText = "";
+                    string replyText = string.Empty;
                     Task.Run(async () =>
                     {
-                        await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
                     }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
@@ -141,6 +141,5 @@ namespace Promact.Erp.Core.Controllers
                 }
             };
         }
-
     }
 }
