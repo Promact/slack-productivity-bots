@@ -341,7 +341,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             {
                                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id).Result.ToList();
                                 //keyword "leave @username" 
-                                returnMsg = await AsyncLeave(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken, userId, applicantId);
+                                returnMsg = await MarkLeaveAsync(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken, userId, applicantId);
                             }
                             else
                                 returnMsg = ReplyToClient(scrumStatus);
@@ -388,13 +388,18 @@ namespace Promact.Core.Repository.ScrumRepository
                     //add channel details only if the channel has been registered as project in OAuth server
                     if (project != null && project.Id > 0)
                     {
-                        SlackChannelDetails channel = new SlackChannelDetails();
-                        channel.ChannelId = channelId;
-                        channel.CreatedOn = DateTime.UtcNow;
-                        channel.Deleted = false;
-                        channel.Name = channelName;
-                        await _slackChannelRepository.AddSlackChannelAsync(channel);
-                        returnMsg = _stringConstant.ChannelAddSuccess;
+                        if (project.IsActive)
+                        {
+                            SlackChannelDetails channel = new SlackChannelDetails();
+                            channel.ChannelId = channelId;
+                            channel.CreatedOn = DateTime.UtcNow;
+                            channel.Deleted = false;
+                            channel.Name = channelName;
+                            await _slackChannelRepository.AddSlackChannelAsync(channel);
+                            returnMsg = _stringConstant.ChannelAddSuccess;
+                        }
+                        else
+                            returnMsg = _stringConstant.ProjectInActive;
                     }
                     else
                         returnMsg = _stringConstant.ProjectNotInOAuth;
@@ -478,7 +483,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 await _scrumRepository.SaveChangesAsync();
                 User firstEmployee = employees.FirstOrDefault();
                 //first employee is asked questions along with the previous day status (if any)
-                replyMessage = _stringConstant.GoodDay + "<@" + userName + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id).Result + question.QuestionStatement;
+                replyMessage = _stringConstant.GoodDay + "<@" + firstEmployee.UserName + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id).Result + question.QuestionStatement;
             }
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
@@ -784,8 +789,13 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
                 else
+                {
                     //as not all questions have been answered by the last employee,so to that employee itself
                     user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                    //if(user == null)
+                    //{
+                    //}
+                }
             }
             else
             {
