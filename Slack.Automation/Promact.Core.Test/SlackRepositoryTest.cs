@@ -216,6 +216,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
@@ -233,6 +234,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListFalseAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
@@ -249,6 +251,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListForOwnAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             MockingOfUserDetails();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
@@ -266,6 +269,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListForOwnFalseAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
             slackLeave.Text = _stringConstant.LeaveListTestForOwn;
@@ -281,6 +285,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveCancelAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format(_stringConstant.ReplyTextForCancelLeave, leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), _stringConstant.Cancel);
@@ -298,10 +303,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task SlackLeaveCancelFalseAsync()
         {
-            newUser.SlackUserId = _stringConstant.FalseStringNameForTest;
-            var result = await _userManager.CreateAsync(newUser);
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            result = await _userManager.AddLoginAsync(newUser.Id, info);
+            await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.LeaveDoesnotExist, _stringConstant.OrElseString, _stringConstant.CancelLeaveError);
@@ -309,8 +312,6 @@ namespace Promact.Core.Test
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
-            slackLeave.Username = _stringConstant.FalseStringNameForTest;
-            slackLeave.UserId = _stringConstant.FalseStringNameForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
@@ -322,16 +323,12 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task SlackLeaveCancelWrongAsync()
         {
-            newUser.SlackUserId = _stringConstant.FalseStringNameForTest;
-            var result = await _userManager.CreateAsync(newUser);
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            result = await _userManager.AddLoginAsync(newUser.Id, info);
+            await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveCancelErrorMessage;
             slackLeave.Text = _stringConstant.WrongLeaveCancelCommandForTest;
-            slackLeave.Username = _stringConstant.FalseStringNameForTest;
-            slackLeave.UserId = _stringConstant.FalseStringNameForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
@@ -344,6 +341,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
@@ -363,6 +361,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusFalseAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             await _slackUserRepository.AddSlackUserAsync(slackUser);
             _leaveRequestRepository.ApplyLeave(leave);
@@ -381,6 +380,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusForOwnAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveStatus, leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.Status);
@@ -399,6 +399,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusOwnFalseAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             _leaveRequestRepository.ApplyLeave(leave);
             var replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;
@@ -415,6 +416,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveBalanceAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
             var replyText = _stringConstant.LeaveBalanceReplyTextForTest;
@@ -437,6 +439,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task SlackLeaveHelpAsync()
         {
+            AddThreeUserIncomingWebHook();
             await AddUser();
             slackLeave.Text = _stringConstant.LeaveHelpTestForOwn;
             var replyText = _stringConstant.SlackHelpMessage;
@@ -479,6 +482,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForSLForNoUserAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextSick;
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
@@ -491,7 +495,7 @@ namespace Promact.Core.Test
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForSLForUserAsync()
-         {
+        {
             AddThreeUserIncomingWebHook();
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -528,6 +532,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForErrorLeaveTypeAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorLeaveType;
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
@@ -544,6 +549,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForErrorDateFormatAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatSick;
             MockingOfUserDetails();
             var replyText = _stringConstant.DateFormatErrorMessage;
@@ -559,6 +565,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForErrorDateFormatForCasualAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatCasual;
             MockingOfUserDetails();
             var replyText = _stringConstant.DateFormatErrorMessage;
@@ -573,7 +580,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForCLForNoUserAsync()
         {
+            AddThreeUserIncomingWebHook();
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextCasual;
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
@@ -642,6 +651,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateDateFormatErrorAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -662,6 +672,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateWrongIdAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -682,6 +693,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateTryToUpdateCLAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.cl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -702,6 +714,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateInValidIDAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.cl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -722,6 +735,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateNotAdminAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -741,6 +755,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveBalanceWrongAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             slackLeave.Text = _stringConstant.LeaveBalanceTestForOwn;
             var replyText = _stringConstant.LeaveNoUserErrorMessage;
@@ -780,6 +795,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForSLOtherUserNotAdminAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
             var replyText = _stringConstant.AdminErrorMessageApplySickLeave + _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
@@ -794,6 +810,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveListSickAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             await _slackUserRepository.AddSlackUserAsync(slackUser);
             leave.Type = LeaveType.sl;
@@ -814,6 +831,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveStatusSickAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await AddSlackThreeUsersAsync();
             await _slackUserRepository.AddSlackUserAsync(slackUser);
             leave.Type = LeaveType.sl;
@@ -835,6 +853,7 @@ namespace Promact.Core.Test
         public async Task SlackLeaveProperActionErrorAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             await _slackUserRepository.AddSlackUserAsync(slackUser);
             var replyText = _stringConstant.RequestToEnterProperAction;
             slackLeave.Text = _stringConstant.WrongActionSlashCommand;
@@ -851,6 +870,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForCLWithBackDateAsync()
         {
+            AddThreeUserIncomingWebHook();
             await AddUser();
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
@@ -868,6 +888,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForCLWithWrongDateFirstTestAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.InValidDateErrorMessage;
@@ -884,6 +905,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForCLWithWrongDateSecondTestAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.InValidDateErrorMessage;
@@ -900,6 +922,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForSLWithBackDateAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
             var replyText = _stringConstant.BackDateErrorMessage;
@@ -916,6 +939,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateForBeyondStartDateAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -936,6 +960,7 @@ namespace Promact.Core.Test
         public async Task LeaveUpdateForBeyondEndDateAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             _leaveRequestRepository.ApplyLeave(leave);
@@ -956,6 +981,8 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForCLWithAlreadyExistDateAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
@@ -973,6 +1000,7 @@ namespace Promact.Core.Test
         public async Task LeaveApplyForSLWithAlreadyExistDateAsync()
         {
             await AddUser();
+            AddThreeUserIncomingWebHook();
             _leaveRequestRepository.ApplyLeave(leave);
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
@@ -1009,6 +1037,67 @@ namespace Promact.Core.Test
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+        }
+
+        /// <summary>
+        /// Test case to check if user is added slack app or not
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task AddToSlackErrorMessage()
+        {
+            await AddUser();
+            var replyText = _stringConstant.RequestToAddSlackApp;
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        }
+
+        /// <summary>
+        /// Test case for checking method UpdateLeave casual SMTP Exception
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateLeaveSMTPExceptionAsync()
+        {
+            SmtpException ex = new SmtpException();
+            await AddUser();
+            AddThreeUserIncomingWebHook();
+            await AddSlackThreeUsersAsync();
+            await _userManager.CreateAsync(updaterUser);
+            _leaveRequestRepository.ApplyLeave(leave);
+            leaveResponse.CallbackId = Convert.ToString(leave.Id);
+            var replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
+                            leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+                            leave.Reason, Condition.Approved, leaveResponse.User.Name);
+            var text = new SlashResponse() { Text = replyText };
+            var textJson = JsonConvert.SerializeObject(text);
+            PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
+            replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, Condition.Approved, leaveResponse.User.Name,
+                        leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
+                        leave.RejoinDate.Value.ToShortDateString());
+            replyText += string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
+                        _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
+            var updateText = SlackReplyMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, replyText, _stringConstant.JsonContentString);
+            SlashChatUpdateResponseAction action = new SlashChatUpdateResponseAction()
+            {
+                Name = _stringConstant.Approved,
+                Value = _stringConstant.Approved
+            };
+            List<SlashChatUpdateResponseAction> actions = new List<SlashChatUpdateResponseAction>();
+            actions.Add(action);
+            leaveResponse.Actions = actions;
+            EmailApplication email = new EmailApplication();
+            email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+            email.From = _stringConstant.TeamLeaderEmailForTest;
+            email.To = _stringConstant.EmailForTest;
+            email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+            _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws(ex);
+            await _slackRepository.UpdateLeaveAsync(leaveResponse);
+            var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
+            Assert.Equal(Condition.Approved, leaveUpdated.Status);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
         #endregion
 

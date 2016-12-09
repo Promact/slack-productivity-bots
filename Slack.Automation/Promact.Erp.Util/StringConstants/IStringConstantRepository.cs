@@ -386,5 +386,6 @@ namespace Promact.Erp.Util.StringConstants
         string LeaveUpdateResponseJsonString { get; }
         string Payload { get; }
         string LeaveUpdateEmailStringFormat { get; }
+        string RequestToAddSlackApp { get; }
     }
 }

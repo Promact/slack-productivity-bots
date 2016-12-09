@@ -2659,5 +2659,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "{0} {1}";
             }
         }
+
+        public string RequestToAddSlackApp
+        {
+            get
+            {
+                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}", AppSettingUtil.PromactErpUrl);
+            }
+        }
     }
 }
