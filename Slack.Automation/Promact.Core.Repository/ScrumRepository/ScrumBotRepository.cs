@@ -326,7 +326,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             {
                                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id).Result.ToList();
                                 //keyword "leave @username" 
-                                returnMsg = await AsyncLeave(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken, userId, applicantId);
+                                returnMsg = await MarkLeaveAsync(scrumAnswer, employees, scrum.Id, applicant, questions, groupName, scrum.ProjectId, userName, accessToken, userId, applicantId);
                             }
                             else
                                 returnMsg = ReplyToClient(scrumStatus);
@@ -373,13 +373,18 @@ namespace Promact.Core.Repository.ScrumRepository
                     //add channel details only if the channel has been registered as project in OAuth server
                     if (project != null && project.Id > 0)
                     {
-                        SlackChannelDetails channel = new SlackChannelDetails();
-                        channel.ChannelId = channelId;
-                        channel.CreatedOn = DateTime.UtcNow;
-                        channel.Deleted = false;
-                        channel.Name = channelName;
-                        await _slackChannelRepository.AddSlackChannelAsync(channel);
-                        returnMsg = _stringConstant.ChannelAddSuccess;
+                        if (project.IsActive)
+                        {
+                            SlackChannelDetails channel = new SlackChannelDetails();
+                            channel.ChannelId = channelId;
+                            channel.CreatedOn = DateTime.UtcNow;
+                            channel.Deleted = false;
+                            channel.Name = channelName;
+                            await _slackChannelRepository.AddSlackChannelAsync(channel);
+                            returnMsg = _stringConstant.ChannelAddSuccess;
+                        }
+                        else
+                            returnMsg = _stringConstant.ProjectInActive;
                     }
                     else
                         returnMsg = _stringConstant.ProjectNotInOAuth;
@@ -463,9 +468,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 await _scrumRepository.SaveChangesAsync();
                 User firstEmployee = employees.FirstOrDefault();
                 //first employee is asked questions along with the previous day status (if any)
-                replyMessage = _stringConstant.GoodDay + "<@" + userName + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id).Result + question.QuestionStatement;
+                replyMessage = _stringConstant.GoodDay + "<@" + firstEmployee.UserName + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id).Result + question.QuestionStatement;
             }
-
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
                 //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
@@ -491,7 +495,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        private async Task<string> AsyncLeave(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId, string userName, string accessToken, string userId, string applicantId)
+        private async Task<string> MarkLeaveAsync(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId, string userName, string accessToken, string userId, string applicantId)
         {
             string returnMsg = string.Empty;
             string status = await ExpectedUserAsync(scrumId, questions, employees, applicant, applicantId);//checks whether the applicant is the expected user
@@ -639,6 +643,9 @@ namespace Promact.Core.Repository.ScrumRepository
                     //all questions have been asked to the previous employee 
                     //list of Employee ids who have not answer yet                       
                     List<string> idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+
+                    //isactive bit checked
+                    // List<string> idList = employees.Where(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                     if (idList != null && idList.Count > 0)
                         //now the next employee
                         user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
@@ -646,8 +653,13 @@ namespace Promact.Core.Repository.ScrumRepository
                         return _stringConstant.ScrumComplete;
                 }
                 else
+                {
                     //as not all questions have been answered by the last employee,so to that employee itself
                     user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                    //if(user == null)
+                    //{
+                    //}
+                }
             }
             else
                 //no scrum answer has been recorded yet. So first employee
@@ -760,7 +772,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 if (project.IsActive)
                 {
                     if (employees == null || employees.Count == 0)
-                        employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
+                        employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
+                    // employees = employees.Where(x => x.IsActive).ToList();
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count() == 0)
