@@ -683,7 +683,7 @@ namespace Promact.Core.Repository.SlackRepository
                     valid = leave.EndDate.Value.CompareTo(startDate);
                 else
                     valid = leave.FromDate.CompareTo(startDate);
-                if (valid == 0)
+                if (valid >= 0)
                 {
                     validIndicator = true;
                     break;
