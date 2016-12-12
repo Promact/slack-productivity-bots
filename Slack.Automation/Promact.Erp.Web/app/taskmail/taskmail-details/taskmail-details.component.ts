@@ -49,12 +49,7 @@ export class TaskMailDetailsComponent implements OnInit {
                     let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                     taskmails.TaskMails.forEach(taskMail => {
-                        if (taskMail.Comment === this.stringConstant.notAvailableComment) {
-                            taskMail.StatusName = this.stringConstant.notAvailableComment;
-                        }
-                        else {
-                            taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                        }
+                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                 });
                 this.loader.loader = false;
