@@ -12,24 +12,29 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest template object</param>
+        /// <param name="leaveRequest">LeaveRequest object</param>
         /// <returns>template emailBody as string</returns>
         string EmailServiceTemplate(LeaveRequest leaveRequest);
 
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest template object</param>
+        /// <param name="leaveRequest">LeaveRequest object</param>
         /// <returns>template emailBody as string</returns>
         string EmailServiceTemplateSickLeave(LeaveRequest leaveRequest);
 
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">TaskMail template object</param>
+        /// <param name="taskMail">List of TaskMail</param>
         /// <returns>template emailBody as string</returns>
         string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail);
 
+        /// <summary>
+        /// Method to generate template body 
+        /// </summary>
+        /// <param name="leave">LeaveRequest object</param>
+        /// <returns>template emailBody as string</returns>
         string EmailServiceTemplateLeaveUpdate(LeaveRequest leave);
     }
 }

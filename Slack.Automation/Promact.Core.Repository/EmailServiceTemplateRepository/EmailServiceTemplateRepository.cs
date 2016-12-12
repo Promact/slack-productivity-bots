@@ -27,7 +27,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest template object</param>
+        /// <param name="leaveRequest">LeaveRequest object</param>
         /// <returns>template emailBody as string</returns>
         public string EmailServiceTemplate(LeaveRequest leaveRequest)
         {
@@ -53,7 +53,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">LeaveRequest template object</param>
+        /// <param name="leaveRequest">LeaveRequest object</param>
         /// <returns>template emailBody as string</returns>
         public string EmailServiceTemplateSickLeave(LeaveRequest leaveRequest)
         {
@@ -76,7 +76,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <summary>
         /// Method to generate template body
         /// </summary>
-        /// <param name="leaveRequest">TaskMail template object</param>
+        /// <param name="taskMail">List of TaskMail</param>
         /// <returns>template emailBody as string</returns>
         public string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
         {
@@ -91,6 +91,11 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
             return emailBody;
         }
 
+        /// <summary>
+        /// Method to generate template body 
+        /// </summary>
+        /// <param name="leave">LeaveRequest object</param>
+        /// <returns>template emailBody as string</returns>
         public string EmailServiceTemplateLeaveUpdate(LeaveRequest leave)
         {
             var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
