@@ -631,11 +631,11 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
         /// <returns></returns>
         private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string id, string name, string role, DateTime createdOn, string loginId)
         {
@@ -680,12 +680,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="Type"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string name, string role, string createdOn, string loginId, string type)
         {
