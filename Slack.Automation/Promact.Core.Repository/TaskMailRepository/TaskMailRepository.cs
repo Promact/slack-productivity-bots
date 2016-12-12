@@ -382,9 +382,9 @@ namespace Promact.Core.Repository.TaskMailRepository
             return emailBody;
         }
 
-       
+
         /// <summary>
-        ///Method geting list of Employee 
+        ///Method geting Employee or list of Employees 
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -418,10 +418,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// Task Mail Details Report Information For the User Role Admin and Employee
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="UserName"></param>
-        /// <param name="LoginId"></param>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <param name="name"></param>
+        /// <param name="loginId"></param>
         /// <returns></returns>
         private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string id, string role, string name, string loginId)
         {
@@ -467,10 +467,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail detils.
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="UserName"></param>
-        /// <param name="LoginId"></param>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <param name="name"></param>
+        /// <param name="loginId"></param>
         /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id, string role, string name, string loginId)
         {
@@ -525,17 +525,17 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// TaskMailDetails Information For the selected date
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="SelectedDate"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
+        /// <param name="selectedDate"></param>
         /// <returns></returns>
         private async Task<List<TaskMailReportAc>> TaskMailDetailsForSelectedDateAsync(string id, string name, string role, string createdOn, string loginId, string selectedDate)
         {
-            DateTime slectedDateForAdmin = Convert.ToDateTime(selectedDate).Date;
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(slectedDateForAdmin));
+            DateTime pickDate = Convert.ToDateTime(selectedDate).Date;
+            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(pickDate));
             if (taskMails.Count() != 0)
             {
                 maxDate = (await _taskMail.FetchAsync(x => x.EmployeeId == id)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;
@@ -575,12 +575,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// this Method use to fetch the task mail details for the selected date.
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="SelectedDate"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="rple"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
+        /// <param name="selectedDate"></param>
         /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string name, string role, string createdOn, string loginId, string selectedDate)
         {
@@ -632,11 +632,11 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
         /// <returns></returns>
         private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string id, string name, string role, DateTime createdOn, string loginId)
         {
@@ -681,12 +681,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="Type"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="role"></param>
+        /// <param name="createdOn"></param>
+        /// <param name="loginId"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string name, string role, string createdOn, string loginId, string type)
         {

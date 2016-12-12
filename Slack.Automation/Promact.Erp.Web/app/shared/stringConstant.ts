@@ -33,7 +33,7 @@ export class StringConstant {
     noProjectToDisplay = "No projects to display";
     userRole= "role";
     userName= "name";
-    createdOns = "createdOns";
+    createdOns = "createdOn";
     taskDetailsUrl = "/user/";
     selectedDate = "SelectedDate";
     taskMaiUrl = "api/taskreport";
