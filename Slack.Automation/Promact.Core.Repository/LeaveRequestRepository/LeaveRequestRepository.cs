@@ -131,6 +131,16 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             leaveAllowed.SickLeave = sickLeaveTaken;
             return leaveAllowed;
         }
+
+        /// <summary>
+        /// Method to get leave list corresponding each user, only approved and pending status
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of leave of a particular user</returns>
+        public IEnumerable<LeaveRequest> LeaveListByUserIdOnlyApprovedAndPending(string userId)
+        {
+            return _leaveRequestRepository.Fetch(x => x.EmployeeId == userId && x.Status == Condition.Approved || x.Status == Condition.Pending);
+        }
         #endregion
     }
 }

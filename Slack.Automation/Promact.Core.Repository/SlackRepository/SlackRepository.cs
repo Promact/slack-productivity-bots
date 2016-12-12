@@ -679,7 +679,7 @@ namespace Promact.Core.Repository.SlackRepository
             int valid = -1;
             bool validIndicator = false;
             LeaveRequest lastLeave = new LeaveRequest();
-            var allLeave = _leaveRepository.LeaveListByUserId(userId);
+            var allLeave = _leaveRepository.LeaveListByUserIdOnlyApprovedAndPending(userId);
             foreach (var leave in allLeave)
             {
                 if (leave.EndDate.HasValue)
