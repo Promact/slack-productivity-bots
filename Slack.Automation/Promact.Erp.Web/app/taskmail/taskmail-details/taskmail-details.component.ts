@@ -73,7 +73,7 @@ export class TaskMailDetailsComponent implements OnInit {
                     taskmails.TaskMails.forEach(taskMail => {
                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
-                    });
+                    
                 });
         });
        this.IsMaxDate = false;
