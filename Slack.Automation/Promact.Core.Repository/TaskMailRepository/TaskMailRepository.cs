@@ -417,6 +417,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             return questionText;
         }
 
+
         /// <summary>
         ///Method geting Employee or list of Employees 
         /// </summary>
