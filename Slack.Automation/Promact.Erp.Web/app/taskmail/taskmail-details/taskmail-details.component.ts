@@ -50,7 +50,8 @@ export class TaskMailDetailsComponent {
                 this.taskMailUser = taskMailUser;
                 var datePipeMinDate = new DatePipe("medium");
                 this.isMinDate = datePipeMinDate.transform(this.taskMailUser[0].MinDate, this.stringConstant.dateDefaultFormat);
-                if (this.isMinDate == this.stringConstant.defaultDate)
+                this.taskMailUser[0].CreatedOns = datePipeMinDate.transform(taskMailUser[0].CreatedOn, this.stringConstant.dateDefaultFormat);
+                if (this.isMinDate == this.stringConstant.defaultDate || this.isMinDate == this.taskMailUser[0].CreatedOns)
                 { this.isMin = true; }
                 var datePipeMaxDate = new DatePipe("medium");
                 this.isMaxDate = datePipeMaxDate.transform(this.taskMailUser[0].MaxDate, this.stringConstant.dateDefaultFormat);
