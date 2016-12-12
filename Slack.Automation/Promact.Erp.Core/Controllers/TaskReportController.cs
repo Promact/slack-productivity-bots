@@ -104,11 +104,11 @@ namespace Promact.Erp.Core.Controllers
         {
             if (pageType == _stringConstant.NextPage)
             {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), _stringConstant.NextPage);
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), _stringConstant.NextPage);
             }
             else 
             {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), _stringConstant.Previouspage);
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), _stringConstant.Previouspage);
             }
         }
 
@@ -149,9 +149,9 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("user/{id}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string role, string name, string createdOns, string selectedDate)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string role, string name, string createdOn, string selectedDate)
         {
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(id, name, role, createdOns, User.Identity.GetUserId(), selectedDate);
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), selectedDate);
         }
 
 
