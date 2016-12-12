@@ -48,13 +48,8 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
-                    taskmails.TaskMails.forEach(taskMail => {
-                        if (taskMail.Comment === this.stringConstant.notAvailableComment) {
-                            taskMail.StatusName = this.stringConstant.notAvailableComment;
-                        }
-                        else {
-                            taskMail.StatusName = TaskMailStatus[taskMail.Status];
-                        }
+                    taskmailuser.TaskMails.forEach(taskMail => {
+                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                 });
                 this.loader.loader = false;
@@ -78,7 +73,7 @@ export class TaskMailDetailsComponent implements OnInit {
                     taskmailuser.TaskMails.forEach(taskMail => {
                         taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
-                    });
+                    
                 });
         });
        this.IsMaxDate = false;
