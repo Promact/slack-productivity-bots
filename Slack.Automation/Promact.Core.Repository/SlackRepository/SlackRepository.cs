@@ -18,6 +18,7 @@ using System.Threading;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util;
+using Promact.Erp.Util.ExceptionHandler;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -344,10 +345,6 @@ namespace Promact.Core.Repository.SlackRepository
                 replyText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
                     _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             }
-            catch (Exception ex)
-            {
-                replyText = ex.Message;
-            }
             return replyText;
         }
 
@@ -446,7 +443,7 @@ namespace Promact.Core.Repository.SlackRepository
                         leave.FromDate.ToShortDateString(), leave.Reason, leave.Status);
                 }
             }
-            catch (Exception)
+            catch (LeaveNotFoundForUser)
             {
                 // if leave doesn't exist 
                 replyText = _stringConstant.SlashCommandLeaveStatusErrorMessage;

@@ -1,6 +1,7 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.ExceptionHandler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,8 +73,14 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <returns>latest leave details of a particular user</returns>
         public LeaveRequest LeaveListStatusByUserId(string userId)
         {
-            var leave = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId).Last();
-            return leave;
+            var leaves = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
+            if (leaves.Count() != 0)
+            {
+                var leave = leaves.Last();
+                return leave;
+            }
+            else
+                throw new LeaveNotFoundForUser();
         }
 
         /// <summary>
