@@ -13,7 +13,7 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
         /// <param name="replyText">Text to be send to slack</param>
-        Task UpdateMessageAsync(string responseUrl, string replyText, string slackUserId);
+        Task UpdateMessageAsync(string responseUrl, string replyText);
 
         /// <summary>
         /// The below method used for sending resposne back to slack for a slash command in ephemeral mood. Required field response_url.
@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
         /// <param name="slackUserId"></param>
-        Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest,string accessToken, string replyText, string username,string slackUserId);
+        Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest,string accessToken, string replyText, string slackUserId);
 
         /// <summary>
         /// Method used to send slack message and email to team leader and management without interactive button
@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText"></param>
         /// <param name="slackUserId"></param>
         /// <returns></returns>
-        Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string username,string slackUserId);
+        Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string slackUserId);
 
         /// <summary>
         /// Method to send slack message to user whom leave has been applied by admin

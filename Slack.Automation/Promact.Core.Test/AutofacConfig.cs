@@ -57,7 +57,6 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
-            builder.RegisterType<HttpClient>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();

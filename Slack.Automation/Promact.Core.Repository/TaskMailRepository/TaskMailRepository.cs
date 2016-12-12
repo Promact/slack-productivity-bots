@@ -52,10 +52,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// Method to start task mail
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="userId"></param>
+        /// <param name="userId">User's slack user Id</param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> StartTaskMailAsync(string userName,string userId)
+        public async Task<string> StartTaskMailAsync(string userId)
         {
             // getting user name from user's slack name
             var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
@@ -111,7 +110,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 else
                 {
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswerAsync(userName, null,userId);
+                    var questionText = await QuestionAndAnswerAsync(null, userId);
                 }
             }
             else
@@ -123,11 +122,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// Method to conduct task mail after started
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="answer"></param>
-        /// 
+        /// <param name="answer">User's slack user Id</param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> QuestionAndAnswerAsync(string userName, string answer,string userId)
+        public async Task<string> QuestionAndAnswerAsync(string answer,string userId)
         {
             // getting user name from user's slack name
             var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);

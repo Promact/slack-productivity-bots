@@ -31,9 +31,9 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method to create attchment of slack with a text as reply, can be used generically
         /// </summary>
-        /// <param name="leaveRequestId"></param>
-        /// <param name="replyText"></param>
-        /// <returns>string attachment</returns>
+        /// <param name="leaveRequestId">leave request Id</param>
+        /// <param name="replyText">reply text to be send</param>
+        /// <returns>attachment to be send on slack</returns>
         public List<SlashAttachment> SlackResponseAttachment(string leaveRequestId, string replyText)
         {
             List<SlashAttachmentAction> ActionList = new List<SlashAttachmentAction>();
@@ -74,8 +74,8 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method will create text corresponding to leave details and user, which will to be send on slack as reply
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="leave"></param>
+        /// <param name="username">User's slack name</param>
+        /// <param name="leave">leave details of user</param>
         /// <returns>string replyText</returns>
         public string ReplyText(string username, LeaveRequest leave)
         {
@@ -91,7 +91,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Way to break string by spaces only if spaces are not between quotes
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">slash command text</param>
         /// <returns>List of string slackText</returns>
         public List<string> SlackText(string text)
         {
@@ -105,8 +105,8 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method to transform NameValueCollection to SlashCommand class
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns>leave of class SlashCommand</returns>
+        /// <param name="value">current context value</param>
+        /// <returns>SlashCommand object with value</returns>
         public SlashCommand SlashCommandTransfrom(NameValueCollection value)
         {
             SlashCommand leave = new SlashCommand()
@@ -128,7 +128,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method to get accessToken for Promact OAuth corresponding to username
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="username">User's email or username</param>
         /// <returns>access token from AspNetUserLogin table</returns>
         public async Task<string> UserAccessTokenAsync(string username)
         {
@@ -147,8 +147,8 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method will create text corresponding to sick leave details and user, which will to be send on slack as reply
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="leave"></param>
+        /// <param name="username">User's slack username</param>
+        /// <param name="leave">leave details of user</param>
         /// <returns>string replyText</returns>
         public string ReplyTextSick(string username, LeaveRequest leave)
         {
@@ -162,9 +162,9 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Attachment created to be send in slack without any interactive button
         /// </summary>
-        /// <param name="leaveRequestId"></param>
-        /// <param name="replyText"></param>
-        /// <returns></returns>
+        /// <param name="leaveRequestId">leave request Id</param>
+        /// <param name="replyText">reply text of leave to be send on slack</param>
+        /// <returns>attachment to be send on slack</returns>
         public List<SlashAttachment> SlackResponseAttachmentWithoutButton(string leaveRequestId, string replyText)
         {
             List<SlashAttachment> attachment = new List<SlashAttachment>();
@@ -186,7 +186,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <summary>
         /// Method to convert slash response to SlashChatUpdateResponse
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">current context value</param>
         /// <returns>SlashChatUpdateResponse</returns>
         public SlashChatUpdateResponse SlashChatUpdateResponseTransfrom(NameValueCollection value)
         {

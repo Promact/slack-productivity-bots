@@ -55,11 +55,11 @@ namespace Promact.Erp.Web
                         {  
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                             { 
-                                replyText = _taskMailRepository.StartTaskMailAsync(user.Name, user.UserId).Result;
+                                replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
                             {
-                                replyText = _taskMailRepository.QuestionAndAnswerAsync(user.Name, text, user.UserId).Result;
+                                replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
                             }
                         }
                         else

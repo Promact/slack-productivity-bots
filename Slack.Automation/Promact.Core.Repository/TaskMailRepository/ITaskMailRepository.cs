@@ -16,7 +16,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="userName"></param>
         /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        Task<string> StartTaskMailAsync(string userName,string userId);
+        Task<string> StartTaskMailAsync(string userId);
 
         /// <summary>
         /// Method to conduct task mail after started
@@ -25,7 +25,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="answer"></param>
         /// <param name="userId"></param>
         /// <returns>questionText in string format containing question statement</returns>
-        Task<string> QuestionAndAnswerAsync(string userName, string answer,string userId);
+        Task<string> QuestionAndAnswerAsync(string answer,string userId);
         
         /// <summary>
         /// This method use to fetch the task mail details.

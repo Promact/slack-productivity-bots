@@ -61,9 +61,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get leave Updated from slack button response
         /// </summary>
-        /// <param name="leaveId"></param>
-        /// <param name="status"></param>
-        /// <returns>replyText</returns>
+        /// <param name="leaveResponse">leave update response from slack</param>
         public async Task UpdateLeaveAsync(SlashChatUpdateResponse leaveResponse)
         {
             try
@@ -90,7 +88,7 @@ namespace Promact.Core.Repository.SlackRepository
                                 leave.Reason, leave.Status, leaveResponse.User.Name);
                     var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                     // Used to send slack message to the user about leave updation
-                    await _client.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText, slackUser.Name);
+                    await _client.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
                     // Used to send email to the user about leave updation
                     EmailApplication email = new EmailApplication();
                     email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
@@ -119,7 +117,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to operate leave slack command
         /// </summary>
-        /// <param name="leave"></param>
+        /// <param name="leave">slash command object</param>
         public async Task LeaveRequestAsync(SlashCommand leave)
         {
             SlackAction actionType;
@@ -180,7 +178,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to send error message to user od slack
         /// </summary>
-        /// <param name="leave"></param>
+        /// <param name="leave">slash command object</param>
         public void Error(SlashCommand leave)
         {
             // if something error will happen user will get this message
@@ -193,9 +191,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to apply leave
         /// </summary>
-        /// <param name="slackRequest"></param>
-        /// <param name="userName"></param>
-        /// <returns>leaveRequest</returns>
+        /// <param name="slackRequest">list of string contain leave slash command parameters</param>
+        /// <param name="leave">leave slash command</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> LeaveApplyAsync(List<string> slackRequest, SlashCommand leave, string accessToken)
         {
             try
@@ -255,7 +254,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                         replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
                                                         // method to send slack notification and email to team leaders and management
                                                         await _client.SendMessageWithAttachmentIncomingWebhookAsync(leaveRequest,
-                                                            accessToken, replyText, leave.Username, leave.UserId);
+                                                            accessToken, replyText, leave.UserId);
                                                     }
                                                     else
                                                         replyText = _stringConstant.LeaveAlreadyExistOnSameDate;
@@ -311,7 +310,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                 _leaveRepository.ApplyLeave(leaveRequest);
                                                 replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
                                                 await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leaveRequest,
-                                                    accessToken, replyText, newUser.FirstName, newUser.SlackUserId);
+                                                    accessToken, replyText, newUser.SlackUserId);
                                                 if (IsAdmin)
                                                 {
                                                     await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leaveRequest,
@@ -355,8 +354,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get Employee Id from its slackUserId and from its employeeId, to get list of leave
         /// </summary>
-        /// <param name="slackUserId"></param>
-        /// <returns>replyText as string</returns>
+        /// <param name="slackUserId">User's slack used Id</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> LeavesListBySlackUserIdAsync(string slackUserId, string accessToken)
         {
             // get user details from oAuth server
@@ -394,9 +394,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to Cancel leave, only allowed to the applier of the leave to cancel the leave
         /// </summary>
-        /// <param name="leaveId"></param>
-        /// <param name="slackUserId"></param>
-        /// <returns>replyText as string</returns>
+        /// <param name="leaveId">leave request Id</param>
+        /// <param name="slackUserId">User's slack user Id</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> LeaveCancelByIdAsync(int leaveId, string slackUserId, string accessToken)
         {
             // get user details from oAuth server
@@ -422,8 +423,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get Employee Id from its userName and from its employeeId, to get last leave status
         /// </summary>
-        /// <param name="slackUserId"></param>
-        /// <returns>replyText as string</returns>
+        /// <param name="slackUserId">User's slack user Id</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> LeaveStatusBySlackUserIdAsync(string slackUserId, string accessToken)
         {
             // get user details from oAuth server
@@ -455,9 +457,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to Get Leave List on slack
         /// </summary>
-        /// <param name="slackText"></param>
-        /// <param name="leave"></param>
-        /// <returns>replyText</returns>
+        /// <param name="slackText">list of string contain leave slash command parameter</param>
+        /// <param name="leave">leave slash command</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> SlackLeaveListAsync(List<string> slackText, SlashCommand leave, string accessToken)
         {
             // if slackText count is more then 1 then its means that user want to get leave list of someone else
@@ -479,9 +482,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to cancel leave by its Id from slack
         /// </summary>
-        /// <param name="slackText"></param>
-        /// <param name="leave"></param>
-        /// <returns>replyText</returns>
+        /// <param name="slackText">list of string contain leave slash command parameter</param>
+        /// <param name="leave">leave slash command</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> SlackLeaveCancelAsync(List<string> slackText, SlashCommand leave, string accessToken)
         {
             int leaveId;
@@ -501,9 +505,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get last leave status and details on slack
         /// </summary>
-        /// <param name="slackText"></param>
-        /// <param name="leave"></param>
-        /// <returns>replyText</returns>
+        /// <param name="slackText">list of string contain leave slash command parameter</param>
+        /// <param name="leave">leave slash command</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> SlackLeaveStatusAsync(List<string> slackText, SlashCommand leave, string accessToken)
         {
             // if slackText count is more then 1 then its means that user want to get leave list of someone else
@@ -526,9 +531,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to check leave Balance from slack
         /// </summary>
-        /// <param name="leave"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>replyText</returns>
+        /// <param name="leave">leave slash command</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> SlackLeaveBalanceAsync(SlashCommand leave, string accessToken)
         {
             // get user details from oAuth server
@@ -559,7 +564,8 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method for gettin help on slack regards Leave slash command
         /// </summary>
-        /// <param name="leave"></param>
+        /// <param name="leave">list of string contain leave slash command parameter</param>
+        /// <returns>Reply text to be send</returns>
         private string SlackLeaveHelp(SlashCommand leave)
         {
             var replyText = _stringConstant.SlackHelpMessage;
@@ -569,10 +575,10 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to update sick leave, only admin allowed
         /// </summary>
-        /// <param name="slackText"></param>
-        /// <param name="user"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>replyText</returns>
+        /// <param name="slackText">list of string contain leave slash command parameter</param>
+        /// <param name="user">User details</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <returns>Reply text to be send</returns>
         private async Task<string> UpdateSickLeaveAsync(List<string> slackText, ApplicationUser user, string accessToken)
         {
             // checking from oAuth whether user is Admin or not
@@ -605,7 +611,7 @@ namespace Promact.Core.Repository.SlackRepository
                                 replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
                                     , newUser.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                     leave.Reason, leave.RejoinDate.Value.ToShortDateString());
-                                await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leave, accessToken, replyText, newUser.FirstName, newUser.SlackUserId);
+                                await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leave, accessToken, replyText, newUser.SlackUserId);
                                 await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leave, user.Email, replyText, newUser);
                             }
                             else
@@ -632,9 +638,9 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to check leave's end date is not beyond start date and re-join date is not beyond end date
         /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <param name="rejoinDate"></param>
+        /// <param name="startDate">leave start date</param>
+        /// <param name="endDate">leave end date</param>
+        /// <param name="rejoinDate">leave rejoin date</param>
         /// <returns>true or false</returns>
         private bool ValidDateTimeForLeave(DateTime startDate, DateTime endDate, DateTime rejoinDate)
         {
@@ -654,7 +660,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to check leave's start date is not beyond today. Back date checking
         /// </summary>
-        /// <param name="startDate"></param>
+        /// <param name="startDate">leave start date</param>
         /// <returns>true or false</returns>
         private bool LeaveStartDateValid(DateTime startDate)
         {
@@ -668,8 +674,8 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to check more than one leave cannot be applied on that date
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="startDate"></param>
+        /// <param name="userId">User's Id</param>
+        /// <param name="startDate">leave start date</param>
         /// <returns>true or false</returns>
         private bool LeaveDateDuplicate(string userId, DateTime startDate)
         {
