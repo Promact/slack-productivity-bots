@@ -15,7 +15,6 @@ import { LoaderService } from '../../shared/loader.service';
 })
 export class TaskMailDetailsComponent implements OnInit {
     taskMail: Array<TaskMailModel>;
-    taskMailDetails: Array<TaskMailDetailsModel>;
     public IsMaxDate: boolean;
     public IsMinDate: boolean;
     public SelectedDate: string;
@@ -23,13 +22,9 @@ export class TaskMailDetailsComponent implements OnInit {
     public MinDate: string;
     public IsHide: boolean;
     constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
-        this.taskMailDetails = new Array<TaskMailDetailsModel>();
-
     }
     ngOnInit() {
-        
         this.getTaskMailDetails();
-        
     }
     getTaskMailDetails() {
         this.loader.loader = true;
@@ -41,8 +36,8 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.IsHide = true;
             }
             this.IsMaxDate = true;
-            this.taskService.getTaskMailDetailsReport(params['UserId'], params['UserRole'], params['UserName']).subscribe(taskMailUser => {
-                this.taskMail = taskMailUser;
+            this.taskService.getTaskMailDetailsReport(params['UserId'], params['UserRole'], params['UserName']).subscribe(taskMails => {
+                this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe("medium");
                 this.MinDate = datePipeMinDate.transform(this.taskMail[0].IsMin, this.stringConstant.dateDefaultFormat);
                 if (this.MinDate === this.stringConstant.defaultDate) {
@@ -50,10 +45,10 @@ export class TaskMailDetailsComponent implements OnInit {
                 }
                 let datePipeMaxDate = new DatePipe("medium");
                 this.MaxDate = datePipeMaxDate.transform(this.taskMail[0].IsMax, this.stringConstant.dateDefaultFormat);
-                this.taskMail.forEach(taskmailuser => {
+                this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe("medium");
-                    taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
-                    taskmailuser.TaskMails.forEach(taskMail => {
+                    taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
+                    taskmails.TaskMails.forEach(taskMail => {
                         if (taskMail.Comment === this.stringConstant.notAvailableComment) {
                             taskMail.StatusName = this.stringConstant.notAvailableComment;
                         }
@@ -72,15 +67,15 @@ export class TaskMailDetailsComponent implements OnInit {
     }
     getTaskMailPrevious(UserName, UserId, UserRole, CreatedOn) {
         this.SelectedDate = "";
-       this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMailUser => {
-           this.taskMail = taskMailUser;
+       this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMails => {
+           this.taskMail = taskMails;
            if (this.taskMail[0].IsMin === this.taskMail[0].CreatedOn) {
                this.IsMinDate = true;
                 }
-           this.taskMail.forEach(taskmailuser => {
+           this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe("medium");
-                    taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
-                    taskmailuser.TaskMails.forEach(taskMail => {
+                    taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
+                    taskmails.TaskMails.forEach(taskMail => {
                         if (taskMail.Comment === this.stringConstant.notAvailableComment) {
                             taskMail.StatusName = this.stringConstant.notAvailableComment;
                         }
@@ -94,16 +89,16 @@ export class TaskMailDetailsComponent implements OnInit {
     }
     getTaskMailNext(UserName, UserId, UserRole, CreatedOn) {
         this.SelectedDate = "";
-        this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMailUser => {
-            this.taskMail = taskMailUser;
+        this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
+            this.taskMail = taskMails;
             if (this.taskMail[0].IsMax === this.taskMail[0].CreatedOn) {
                 this.IsMaxDate = true;
             }
             this.IsMinDate = false;
-            this.taskMail.forEach(taskmailuser => {
+            this.taskMail.forEach(taskmails => {
                 let datePipe = new DatePipe("medium");
-                taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
-                taskmailuser.TaskMails.forEach(taskMail => {
+                taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
+                taskmails.TaskMails.forEach(taskMail => {
                     if (taskMail.Comment === this.stringConstant.notAvailableComment) {
                         taskMail.StatusName = this.stringConstant.notAvailableComment;
                     }
@@ -116,8 +111,8 @@ export class TaskMailDetailsComponent implements OnInit {
         });
     }
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
-        this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMailUser => {
-            this.taskMail = taskMailUser;
+        this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMails => {
+            this.taskMail = taskMails;
             if (this.taskMail[0].IsMax === this.taskMail[0].CreatedOn) {
                 this.IsMaxDate = true;
                 this.IsMinDate = false;
@@ -126,10 +121,10 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.IsMaxDate = false;
                 this.IsMinDate = true;
             }
-            this.taskMail.forEach(taskmailuser => {
+            this.taskMail.forEach(taskmails => {
                 let datePipe = new DatePipe("medium");
-                taskmailuser.CreatedOns = datePipe.transform(taskmailuser.CreatedOn, this.stringConstant.dateFormat);
-                taskmailuser.TaskMails.forEach(taskMail => {
+                taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
+                taskmails.TaskMails.forEach(taskMail => {
                     if (taskMail.Comment === this.stringConstant.notAvailableComment) {
                         taskMail.StatusName = this.stringConstant.notAvailableComment;
                     }

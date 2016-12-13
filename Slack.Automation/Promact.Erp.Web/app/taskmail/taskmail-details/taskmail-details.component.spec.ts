@@ -11,20 +11,13 @@ import { DatePipe } from '@angular/common';
 import { LoaderService } from '../../shared/loader.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
+import { MockRouter } from '../../shared/mock/mock.router';
+import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 
 let promise: TestBed;
 
 describe('TaskMail Detials Tests', () => {
-    class MockRouter { }
-    class MockDatePipe { }
-    class MockLoaderService { }
     const routes: Routes = [];
-    class MockActivatedRoute extends ActivatedRoute {
-        constructor() {
-            super();
-            this.params = Observable.of({ UserId: "1", UserRole: "Admin", UserName: "test" });
-        }
-    }
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
@@ -32,12 +25,12 @@ describe('TaskMail Detials Tests', () => {
             imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
-                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: ActivatedRoute, useClass: ActivatedRouteStub },
                 { provide: TaskService, useClass: MockTaskMailService },
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
-                { provide: DatePipe, useClass: MockDatePipe },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: DatePipe, useClass: DatePipe },
+                { provide: LoaderService, useClass: LoaderService }
             ]
         }).compileComponents();
     }));
@@ -49,7 +42,9 @@ describe('TaskMail Detials Tests', () => {
     });
 
     it('Shows details of task mail report for an employee on initialization', () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
+        let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+        activatedRoute.testParams = { UserId: "1", UserRole: "Admin", UserName: "test" };
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
