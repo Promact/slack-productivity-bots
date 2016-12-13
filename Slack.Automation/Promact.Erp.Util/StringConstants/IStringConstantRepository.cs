@@ -265,6 +265,9 @@ namespace Promact.Erp.Util.StringConstants
         string BotNotFound { get; }
         string PersonNotAvailable { get; }
         string FormatForDate { get; }
+        string ScrumFirstQuestion { get; }
+        string ScrumSecondQuestion { get; }
+        string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
 
