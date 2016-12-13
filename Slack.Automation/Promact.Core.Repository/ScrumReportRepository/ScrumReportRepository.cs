@@ -81,7 +81,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Fetch all the scrum answers for a particular employee
             List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id)).ToList();
             //Find scrum answers for a particular employee of a particular project on a specific date 
-            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate.Date == scrumDate.Date && x.ScrumId == scrum.Id).ToList();
+            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate == scrumDate && x.ScrumId == scrum.Id).ToList();
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             //Assigning answers to specific scrum questions
             if (todayScrumAnswers.Count() == 0)
@@ -90,15 +90,15 @@ namespace Promact.Core.Repository.ScrumReportRepository
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
-                if(todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 1)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumFirstQuestion))
                 {
                     employeeScrumDetail.Answer1 = todayScrumAnswer.Answer.Split('\n');
                 }
-                if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 2)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumSecondQuestion))
                 {
                     employeeScrumDetail.Answer2 = todayScrumAnswer.Answer.Split('\n');
                 }
-                if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 3)
+                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumThirdQuestion))
                 {
                     employeeScrumDetail.Answer3 = todayScrumAnswer.Answer.Split('\n');
                 }
