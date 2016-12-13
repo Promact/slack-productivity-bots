@@ -2104,31 +2104,6 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-        public string ScrumFirstQuestion
-        {
-            get
-            {
-                return "What did you do to change the world yesterday?";
-            }
-        }
-
-        public string ScrumSecondQuestion
-        {
-            get
-            {
-                return "How you are going to rock it today?";
-            }
-        }
-
-        public string ScrumThirdQuestion
-        {
-            get
-            {
-                return "Are there any obstacles unfortunate enough to be standing in your way?";
-            }
-        }
-
-
         public string NotAvailable
         {
             get
