@@ -34,15 +34,10 @@ tr:nth-child(even){background-color: #9FA3A5}
 </head>
 <body>
     LEAVE APPLICATION
-	<br/>
     <table>
 		<tr>
             <td><b>From :</b></td>
             <td><#= FromDate #></td>
-        </tr>
-        <tr>
-            <td><b>To :</b></td>
-            <td><#= EndDate #></td>
         </tr>
 		<tr>
             <td><b>Reason :</b></td>
@@ -55,10 +50,6 @@ tr:nth-child(even){background-color: #9FA3A5}
 		<tr>
             <td><b>Status :</b></td>
             <td><#= Status #></td>
-        </tr>
-		<tr>
-            <td><b>Re-Join Date :</b></td>
-            <td><#= ReJoinDate #></td>
         </tr>
         <tr>
             <td><b>Applied On :</b></td>

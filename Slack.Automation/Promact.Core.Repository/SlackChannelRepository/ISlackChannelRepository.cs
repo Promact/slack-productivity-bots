@@ -1,4 +1,5 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
@@ -15,6 +16,6 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// </summary>
         /// <param name="slackId"></param>
         /// <returns>object of SlackChannelDetails</returns>
-        SlackChannelDetails GetById(string slackId);
+        Task<SlackChannelDetails> GetByIdAsync(string slackId);
     }
 }

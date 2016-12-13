@@ -1,20 +1,27 @@
 ﻿using Promact.Erp.DomainModel.Models;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
     public class BotQuestionRepository : IBotQuestionRepository
     {
+        #region Private Variable
         private IRepository<Question> _questionRepository;
+        #endregion
+
+        #region Constructor
         public BotQuestionRepository(IRepository<Question> questionRepository)
         {
             _questionRepository = questionRepository;
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Method to add Question
         /// </summary>
-        /// <param name="question"></param>
+        /// <param name="question">Question object</param>
         public void AddQuestion(Question question)
         {
             _questionRepository.Insert(question);
@@ -24,35 +31,36 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <summary>
         /// Method to find question by it's id
         /// </summary>
-        /// <param name="questionId"></param>
+        /// <param name="questionId">question Id</param>
         /// <returns>question</returns>
-        public Question FindById(int questionId)
+        public async Task<Question> FindByIdAsync(int questionId)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.Id == questionId);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.Id == questionId);
             return question;
         }
 
         /// <summary>
         /// Method to find question by it's type
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">question's type</param>
         /// <returns>question</returns>
-        public Question FindByQuestionType(int type)
+        public async Task<Question> FindByQuestionTypeAsync(int type)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.Type == type);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.Type == type);
             return question;
         }
 
         /// <summary>
         /// Method to find question by it's type and order number
         /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <param name="type"></param>
+        /// <param name="orderNumber">question's order number</param>
+        /// <param name="type">question's type</param>
         /// <returns>question</returns>
-        public Question FindByTypeAndOrderNumber(int orderNumber, int type)
+        public async Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type)
         {
-            var question = _questionRepository.FirstOrDefault(x => x.OrderNumber == (orderNumber) && x.Type == type);
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == (orderNumber) && x.Type == type);
             return question;
         }
+        #endregion
     }
 }

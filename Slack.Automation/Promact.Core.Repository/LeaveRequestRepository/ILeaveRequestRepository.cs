@@ -1,6 +1,7 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
 {
@@ -44,7 +45,7 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <returns>leave</returns>
-        LeaveRequest LeaveById(int leaveId);
+        Task<LeaveRequest> LeaveByIdAsync(int leaveId);
 
         /// <summary>
         /// Method to update leave request
@@ -58,5 +59,12 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <param name="employeeId"></param>
         /// <returns>number of leave taken</returns>
         LeaveAllowed NumberOfLeaveTaken(string employeeId);
+
+        /// <summary>
+        /// Method to get leave list corresponding each user only approved
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of leave of a particular user</returns>
+        IEnumerable<LeaveRequest> LeaveListByUserIdOnlyApprovedAndPending(string userId);
     }
 }

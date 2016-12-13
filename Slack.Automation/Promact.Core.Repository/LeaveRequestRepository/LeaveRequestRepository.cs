@@ -1,20 +1,28 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.ExceptionHandler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.LeaveRequestRepository
 {
     public class LeaveRequestRepository : ILeaveRequestRepository
     {
+        #region Private Variable
         private readonly IRepository<LeaveRequest> _leaveRequestRepository;
+        #endregion
+
+        #region Constructor
         public LeaveRequestRepository(IRepository<LeaveRequest> leaveRequestRepository)
         {
             _leaveRequestRepository = leaveRequestRepository;
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Method to apply Leave
         /// </summary>
@@ -65,8 +73,14 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// <returns>latest leave details of a particular user</returns>
         public LeaveRequest LeaveListStatusByUserId(string userId)
         {
-            var leave = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId).Last();
-            return leave;
+            var leaves = _leaveRequestRepository.Fetch(x => x.EmployeeId == userId);
+            if (leaves.Count() != 0)
+            {
+                var leave = leaves.Last();
+                return leave;
+            }
+            else
+                throw new LeaveNotFoundForUser();
         }
 
         /// <summary>
@@ -74,9 +88,9 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="leaveId"></param>
         /// <returns>leave</returns>
-        public LeaveRequest LeaveById(int leaveId)
+        public async Task<LeaveRequest> LeaveByIdAsync(int leaveId)
         {
-            var leave = _leaveRequestRepository.FirstOrDefault(x => x.Id == leaveId);
+            var leave = await _leaveRequestRepository.FirstOrDefaultAsync(x => x.Id == leaveId);
             return leave;
         }
 
@@ -117,5 +131,16 @@ namespace Promact.Core.Repository.LeaveRequestRepository
             leaveAllowed.SickLeave = sickLeaveTaken;
             return leaveAllowed;
         }
+
+        /// <summary>
+        /// Method to get leave list corresponding each user, only approved and pending status
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of leave of a particular user</returns>
+        public IEnumerable<LeaveRequest> LeaveListByUserIdOnlyApprovedAndPending(string userId)
+        {
+            return _leaveRequestRepository.Fetch(x => x.EmployeeId == userId && x.Status == Condition.Approved || x.Status == Condition.Pending);
+        }
+        #endregion
     }
 }

@@ -116,10 +116,10 @@
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
+    <Compile Include="EmailServiceTemplateRepository\EmailServiceTemplateRepository.cs" />
+    <Compile Include="EmailServiceTemplateRepository\IEmailServiceTemplateRepository.cs" />
     <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />
     <Compile Include="ExternalLoginRepository\IOAuthLoginRepository.cs" />
-    <Compile Include="HttpClientRepository\HttpClientRepository.cs" />
-    <Compile Include="HttpClientRepository\IHttpClientRepository.cs" />
     <Compile Include="LeaveReportRepository\ILeaveReportRepository.cs" />
     <Compile Include="LeaveReportRepository\LeaveReportRepository.cs" />
     <Compile Include="LeaveRequestRepository\ILeaveRequestRepository.cs" />

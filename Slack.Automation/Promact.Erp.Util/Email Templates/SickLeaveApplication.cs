@@ -18,9 +18,9 @@ namespace Promact.Erp.Util.Email_Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+    #line 1 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "14.0.0.0")]
-    public partial class LeaveApplication : LeaveApplicationBase
+    public partial class SickLeaveApplication : SickLeaveApplicationBase
     {
 #line hidden
         /// <summary>
@@ -28,19 +28,8 @@ namespace Promact.Erp.Util.Email_Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n\n\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
-            this.Write("\n");
+            this.Write("\r\n\r\n");
             this.Write(@"
-
 <!DOCTYPE> 
 <html xmlns=""http://www.w3.org/1999/xhtml"">
 <head>
@@ -62,67 +51,53 @@ tr:nth-child(even){background-color: #9FA3A5}
 </head>
 <body>
     LEAVE APPLICATION
-	<br/>
     <table>
 		<tr>
             <td><b>From :</b></td>
             <td>");
             
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 40 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(FromDate));
             
             #line default
             #line hidden
-            this.Write("</td>\n        </tr>\n        <tr>\n            <td><b>To :</b></td>\n            <td" +
-                    ">");
+            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Reason :</b></td>\r\n            <" +
+                    "td>");
             
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(EndDate));
-            
-            #line default
-            #line hidden
-            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Reason :</b></td>\n            <td>");
-            
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 44 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Reason));
             
             #line default
             #line hidden
-            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Type :</b></td>\n            <td>");
+            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Type :</b></td>\r\n            <td" +
+                    ">");
             
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 48 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             
             #line default
             #line hidden
-            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Status :</b></td>\n            <td>");
+            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Status :</b></td>\r\n            <" +
+                    "td>");
             
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 52 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Status));
             
             #line default
             #line hidden
-            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Re-Join Date :</b></td>\n           " +
-                    " <td>");
+            this.Write("</td>\r\n        </tr>\r\n        <tr>\r\n            <td><b>Applied On :</b></td>\r\n   " +
+                    "         <td>");
             
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(ReJoinDate));
-            
-            #line default
-            #line hidden
-            this.Write("</td>\n        </tr>\n        <tr>\n            <td><b>Applied On :</b></td>\n       " +
-                    "     <td>");
-            
-            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 56 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreatedOn));
             
             #line default
             #line hidden
-            this.Write("</td>\n        </tr>\n    </table>\n</body>");
+            this.Write("</td>\r\n        </tr>\r\n    </table>\r\n</body>");
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 1 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+        #line 1 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\SickLeaveApplication.tt"
 
 private string _FromDateField;
 
@@ -339,7 +314,7 @@ if ((CreatedOnValueAcquired == false))
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "14.0.0.0")]
-    public class LeaveApplicationBase
+    public class SickLeaveApplicationBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

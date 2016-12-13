@@ -166,6 +166,7 @@
     <Compile Include="Models\ApplicationUserStore.cs" />
     <Compile Include="Models\IdentityConfig.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IncomingWebHook.cs" />
     <Compile Include="Models\LeaveRequest.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ModelBase.cs" />

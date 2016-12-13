@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.Models;
+using System;
 
 namespace Promact.Erp.Util.StringConstants
 {
@@ -77,7 +78,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "dd,MM,yyyy";
+                return "dd-MM-yyyy";
             }
         }
         public string ResponseTypeEphemeral
@@ -140,7 +141,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
+                return string.Format("For leave apply: /leaves apply [LeaveType: sl/cl] [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance{0}For sick leave update: /leaves update [leave id] [EndDate: dd-MM-yyyy] [RejoinDate: dd-MM-yyyy]", Environment.NewLine);
             }
         }
         public string SlackErrorMessage
@@ -183,7 +184,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read&client_id=";
+                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
             }
         }
         public string UserDetailsUrl
@@ -640,8 +641,8 @@ namespace Promact.Erp.Util.StringConstants
             {
                 return "Project is marked as Inactive in Promact OAuth";
             }
-        }             
-        
+        }
+
         public string ScrumAlreadyConducted
         {
             get
@@ -814,7 +815,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "{\"firstName\":\"siddhartha\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"siddhartha\",\"slackUserId\":\"siddhartha\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
+                return "{\"firstName\":\"siddhartha\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":10.0,\"numberOfSickLeave\":5.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ49KJ4\",\"slackUserName\":\"siddhartha\",\"slackUserId\":\"U0HJ49KJ4\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
             }
         }
 
@@ -822,7 +823,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string PromactStringName
@@ -843,7 +844,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+                return "[{ \"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ34YU9\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"21c9f0d3-4eaa-48b1-9f75-e2a9d7b9ae0e\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"be27bae7-b292-4c57-917e-abb88793b8c1\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
             }
         }
         public string CommentAndDescriptionForTest
@@ -857,7 +858,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0525LCJR\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
             }
         }
         public string TaskMailReport
@@ -1592,7 +1593,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Date format should be dd-MM-yyyy";
+                return "Date Format Error. Date format should be of your culture.";
             }
         }
         public string ErrorWhileSendingEmail
@@ -1662,14 +1663,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply sl Testing 14-09-2016";
+                return string.Format("apply sl Testing {0}", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextSickForUser
         {
             get
             {
-                return "apply sl Testing 14-09-2016 siddhartha";
+                return string.Format("apply sl Testing {0} siddhartha", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string NameForTest
@@ -1690,49 +1691,49 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply kl Testing 14-09-2016 siddhartha";
+                return string.Format("apply kl Testing {0} siddhartha", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextErrorDateFormatSick
         {
             get
             {
-                return "apply sl Testing 05/04/2016 siddhartha";
+                return "apply sl Testing 05/2016/12 siddhartha";
             }
         }
         public string SlashCommandTextErrorDateFormatCasual
         {
             get
             {
-                return string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+                return string.Format("apply cl Testing {0} 05/2016/12 05/2016/12", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextCasual
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdate
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 1);
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateDateError
         {
             get
             {
-                return string.Format("update {0} 30/09/2016 14-09-2016", 1);
+                return string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateWrongId
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 10);
+                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SickLeaveDoesnotExist
@@ -1753,7 +1754,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "update abc 14-09-2016";
+                return string.Format("update abc {0}", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string ErrorOfEmailServiceFailureTaskMail
@@ -2035,7 +2036,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
             }
         }
-    
+
         #endregion
 
         public string RoleAdmin
@@ -2273,6 +2274,397 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "9";
+            }
+        }
+        public string WrongActionSlashCommand
+        {
+            get
+            {
+                return "applied cl Testing 14-09-2016 14-09-2016 14-09-2016";
+            }
+        }
+
+        public string BackDateErrorMessage
+        {
+            get
+            {
+                return "Sorry! You cannot apply leave on back date.";
+            }
+        }
+
+        public string InValidDateErrorMessage
+        {
+            get
+            {
+                return "Please check end date and re-join date. End date cannot beyond start date and rejoin date cannot beyond and same as end date";
+            }
+        }
+
+        public string LeaveWrongCommandForBackDateCL
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {0} {0}", DateTime.UtcNow.AddDays(-5).ToShortDateString());
+            }
+        }
+
+        public string LeaveWrongCommandForBeyondDateFirstExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {1} {2}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(-3).ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+
+        public string LeaveWrongCommandForBeyondDateSecondExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(-3).ToShortDateString());
+            }
+        }
+
+        public string LeaveWrongCommandForBackDateSL
+        {
+            get
+            {
+                return string.Format("apply sl Testing {0}", DateTime.UtcNow.AddDays(-2).ToShortDateString());
+            }
+        }
+
+        public string SlashCommandUpdateForBeyondStartDateFirstExample
+        {
+            get
+            {
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.AddDays(-5).ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+
+        public string SlashCommandUpdateForBeyondStartDateSecondExample
+        {
+            get
+            {
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(-3).ToShortDateString());
+            }
+        }
+
+        public string JsonContentString
+        {
+            get
+            {
+                return "application/json";
+            }
+        }
+
+        public string UserSlackId
+        {
+            get
+            {
+                return "U0HJ49KJ4";
+            }
+        }
+
+        public string TeamLeaderSlackId
+        {
+            get
+            {
+                return "U0HJ34YU9";
+            }
+        }
+
+        public string ManagementSlackId
+        {
+            get
+            {
+                return "U0525LCJR";
+            }
+        }
+
+        public string Ok
+        {
+            get
+            {
+                return "ok";
+            }
+        }
+
+        public string LeaveAllowed
+        {
+            get
+            {
+                return "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
+            }
+        }
+
+        public string LeaveAlreadyExistOnSameDate
+        {
+            get
+            {
+                return "Leave Already exist on the date you have entered for new leave.";
+            }
+        }
+
+        public string ReplyTextForUpdateLeave
+        {
+            get
+            {
+                return "You have {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}";
+            }
+        }
+
+        public string ReplyTextForCasualLeaveList
+        {
+            get
+            {
+                return "Casual leave {0} {1} {2} {3} {4} {5}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveList
+        {
+            get
+            {
+                return "Sick leave {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string ReplyTextForCancelLeave
+        {
+            get
+            {
+                return "Your leave Id no: {0} From {1} To {2} has been {3}";
+            }
+        }
+
+        public string ReplyTextForErrorInCancelLeave
+        {
+            get
+            {
+                return string.Format("{0}{1}{2}", LeaveDoesnotExist, OrElseString, CancelLeaveError);
+            }
+        }
+
+        public string ReplyTextForCasualLeaveStatus
+        {
+            get
+            {
+                return "Casual leave Id no: {0} From {1} To {2} for {3} is {4}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveStatus
+        {
+            get
+            {
+                return "Sick leave Id no: {0} From {1} for {2} is {3}";
+            }
+        }
+
+        public string ReplyTextForCasualLeaveBalance
+        {
+            get
+            {
+                return "You have taken {0} casual leave out of {1}{2}You have casual leave left {3}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveBalance
+        {
+            get
+            {
+                return "{2}You have taken {0} sick leave out of {1}{2}You have sick leave left {3}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveUpdate
+        {
+            get
+            {
+                return "Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}";
+            }
+        }
+
+        public string ReplyTextForSMTPExceptionErrorMessage
+        {
+            get
+            {
+                return "{0}. {1}";
+            }
+        }
+
+        public string SlashCommandErrorMessage
+        {
+            get
+            {
+                return string.Format("{0}{1}{2}{1}{3}", LeaveNoUserErrorMessage, Environment.NewLine, OrElseString, SlackErrorMessage);
+            }
+        }
+
+        public string ReplyTextForCasualLeaveApplied
+        {
+            get
+            {
+                return "Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveApplied
+        {
+            get
+            {
+                return "Sick leave has been applied for {0} from {1} for reason {2}";
+            }
+        }
+
+        public string UpdateMessageUrl
+        {
+            get
+            {
+                return "?token={0}&ts={1}&channel={2}&text={3}&pretty=1";
+            }
+        }
+
+        public string AtTheRate
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
+        public string SlackOauthRequestUrl
+        {
+            get
+            {
+                return "?client_id={0}&client_secret={1}&code={2}&pretty=1";
+            }
+        }
+
+        public string SlackUserDetailsUrl
+        {
+            get
+            {
+                return "?token={0}&pretty=1";
+            }
+        }
+
+        public string EmployeeFirstLastNameFormat
+        {
+            get
+            {
+                return "{0} {1}";
+            }
+        }
+
+        public string FirstAndSecondIndexStringFormat
+        {
+            get
+            {
+                return "{0}{1}";
+            }
+        }
+
+        public string FirstSecondAndThirdIndexStringFormat
+        {
+            get
+            {
+                return "{0}{1}{2}";
+            }
+        }
+
+        public string StringValueOneForTest
+        {
+            get
+            {
+                return "1";
+            }
+        }
+
+        public string StringValueFiftyFiveForTest
+        {
+            get
+            {
+                return "55";
+            }
+        }
+
+        public string ControllerErrorMessageStringFormat
+        {
+            get
+            {
+                return "{0}. Error -> {1}";
+            }
+        }
+
+        public string ExternalLoginUrl
+        {
+            get
+            {
+                return "{0}?clientId={1}";
+            }
+        }
+
+        public string SlackAuthorizeAction
+        {
+            get
+            {
+                return "SlackAuthorize";
+            }
+        }
+
+        public string Default
+        {
+            get
+            {
+                return "Default";
+            }
+        }
+
+        public string CasualLeaveUpdateMessageForUser
+        {
+            get
+            {
+                return "Your leave Id {0} from {1} to {2} for reason {3} has been {4} by {5}";
+            }
+        }
+
+        public string AlreadyUpdatedMessage
+        {
+            get
+            {
+                return "Leave has already been {0}";
+            }
+        }
+
+        public string LeaveUpdateResponseJsonString
+        {
+            get
+            {
+                return "{\"actions\":[{\"name\":\"Approved\",\"value\":\"Approved\"}],\"callback_id\":\"3\",\"team\":{\"id\":\"T04K6NL66\",\"domain\":\"promact\"},\"channel\":{\"id\":\"D0HHZPADB\",\"name\":\"directmessage\"},\"user\":{\"id\":\"U0HJ49KJ4\",\"name\":\"siddhartha\"},\"action_ts\":\"1481194632.880940\",\"message_ts\":\"1481194612.000007\",\"attachment_id\":\"1\",\"token\":\"oQ7HPOZziax3MR4pzuImuQBR\",\"original_message\":{\"text\":\"\",\"bot_id\":\"B3C8ARBV2\",\"attachments\":[{\"callback_id\":\"3\",\"fallback\":\"Leave Applied\",\"title\":\"Leave has been applied by prince From 16-12-2016 To 16-12-2016 for Reason hgkjiuyyuiyuiyui will re-join by 17-12-2016\",\"id\":1,\"color\":\"3AA3E3\",\"actions\":[{\"id\":\"1\",\"name\":\"Approved\",\"text\":\"Approved\",\"type\":\"button\",\"value\":\"Approved\",\"style\":\"\"},{\"id\":\"2\",\"name\":\"Rejected\",\"text\":\"Rejected\",\"type\":\"button\",\"value\":\"Rejected\",\"style\":\"\"}]}],\"type\":\"message\",\"subtype\":\"bot_message\",\"ts\":\"1481194612.000007\"},\"response_url\":\"https:\\/\\/hooks.slack.com\\/actions\\/T04K6NL66\\/114318064436\\/QoOBNI8kW8w3prmwxe7ONgA7\"}";
+            }
+        }
+
+        public string Payload
+        {
+            get
+            {
+                return "payload";
+            }
+        }
+
+        public string LeaveUpdateEmailStringFormat
+        {
+            get
+            {
+                return "{0} {1}";
+            }
+        }
+
+        public string RequestToAddSlackApp
+        {
+            get
+            {
+                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
     }

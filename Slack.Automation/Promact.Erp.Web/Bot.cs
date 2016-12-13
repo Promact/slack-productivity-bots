@@ -48,18 +48,18 @@ namespace Promact.Erp.Web
                     // Method will hit when someone send some text in task mail bot
                     client.OnMessageReceived += (message) =>
                     {
-                        var user = _slackUserDetails.GetById(message.user);
+                        var user = _slackUserDetails.GetByIdAsync(message.user).Result;
                         string replyText = "";
                         var text = message.text;
                         if (user != null)
                         {  
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                             { 
-                                replyText = _taskMailRepository.StartTaskMail(user.Name, user.UserId).Result;
+                                replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
                             {
-                                replyText = _taskMailRepository.QuestionAndAnswer(user.Name, text, user.UserId).Result;
+                                replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
                             }
                         }
                         else

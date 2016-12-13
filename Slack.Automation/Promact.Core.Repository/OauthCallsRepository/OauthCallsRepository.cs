@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Promact.Core.Repository.HttpClientRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,14 +10,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
     public class OauthCallsRepository : IOauthCallsRepository
     {
         #region Private Variables
-        private readonly IHttpClientRepository _httpClientRepository;
+        private readonly IHttpClientService _httpClientService;
         private readonly IStringConstantRepository _stringConstant;
         #endregion
 
         #region Constructor
-        public OauthCallsRepository(IHttpClientRepository httpClientRepository, IStringConstantRepository stringConstant)
+        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant)
         {
-            _httpClientRepository = httpClientRepository;
+            _httpClientService = httpClientService;
             _stringConstant = stringConstant;
         }
         #endregion
@@ -29,11 +29,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>user Details</returns>
-        public async Task<User> GetUserByUserId(string slackUserId, string accessToken)
+        public async Task<User> GetUserByUserIdAsync(string slackUserId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, slackUserId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, slackUserId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 userDetails = JsonConvert.DeserializeObject<User>(response);
@@ -47,11 +47,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>teamLeader details</returns>
-        public async Task<List<User>> GetTeamLeaderUserId(string slackUserId, string accessToken)
+        public async Task<List<User>> GetTeamLeaderUserIdAsync(string slackUserId, string accessToken)
         {
             List<User> teamLeader = new List<User>();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, slackUserId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, slackUserId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 teamLeader = JsonConvert.DeserializeObject<List<User>>(response);
@@ -64,10 +64,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <param name="accessToken"></param>
         /// <returns>management details</returns>
-        public async Task<List<User>> GetManagementUserName(string accessToken)
+        public async Task<List<User>> GetManagementUserNameAsync(string accessToken)
         {
             List<User> management = new List<User>();
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.ManagementDetailsUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.ManagementDetailsUrl, accessToken);
             if (response != null)
             {
                 management = JsonConvert.DeserializeObject<List<User>>(response);
@@ -82,10 +82,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
         /// <returns>object of ProjectAc</returns>
-        public async Task<ProjectAc> GetProjectDetails(string groupName, string accessToken)
+        public async Task<ProjectAc> GetProjectDetailsAsync(string groupName, string accessToken)
         {
-            var requestUrl = string.Format("{0}", groupName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = groupName;
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             ProjectAc project = new ProjectAc();
             if (response != null)
             {
@@ -101,10 +101,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
         /// <returns>list of object of User</returns>
-        public async Task<List<User>> GetUsersByGroupName(string groupName, string accessToken)
+        public async Task<List<User>> GetUsersByGroupNameAsync(string groupName, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByGroupUrl, groupName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByGroupUrl, groupName);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             List<User> users = new List<User>();
             if (response != null)
             {
@@ -122,8 +122,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, employeeId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailUrl, employeeId);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 userDetails = JsonConvert.DeserializeObject<User>(response);
@@ -137,11 +137,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        public async Task<LeaveAllowed> CasualLeave(string slackUserId, string accessToken)
+        public async Task<LeaveAllowed> CasualLeaveAsync(string slackUserId, string accessToken)
         {
             LeaveAllowed casualLeave = new LeaveAllowed();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.CasualLeaveUrl, slackUserId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, slackUserId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 casualLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
@@ -158,8 +158,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<User> GetUserByUserNameAsync(string userName, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, userName);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.LoginUserDetail, userName);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 userDetails = JsonConvert.DeserializeObject<User>(response);
@@ -176,8 +176,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId, string accessToken)
         {
             List<User> projectUsers = new List<User>();
-            var requestUrl = string.Format("{0}{1}", _stringConstant.ProjectUsersByTeamLeaderId, teamLeaderId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectUsersByTeamLeaderId, teamLeaderId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {
                 projectUsers = JsonConvert.DeserializeObject<List<User>>(response);
@@ -191,11 +191,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>true or false</returns>
-        public async Task<bool> UserIsAdmin(string slackUserId, string accessToken)
+        public async Task<bool> UserIsAdminAsync(string slackUserId, string accessToken)
         {
             bool result = false;
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserIsAdmin, slackUserId);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, slackUserId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 result = JsonConvert.DeserializeObject<bool>(response);
@@ -203,18 +203,30 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return result;
         }
 
-        public async Task<List<UserRoleAc>> GetUserRole(string userId, string accessToken)
+        /// <summary>
+        /// Used to get user role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>user details</returns>
+        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", userId, _stringConstant.UserRoleUrl);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return Json;
         }
 
-        public async Task<List<UserRoleAc>> GetListOfEmployee(string userId, string accessToken)
+        /// <summary>
+        /// List of employee under this employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>List of user</returns>
+        public async Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken)
         {
-            var requestUrl = string.Format("{0}{1}", userId,_stringConstant.TeamMembersUrl);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId,_stringConstant.TeamMembersUrl);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             //var responseContent = response.Content.ReadAsStringAsync().Result;
             var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return Json;
@@ -231,7 +243,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = _stringConstant.AllProjectUrl;
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
@@ -248,8 +260,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
             ProjectAc project = new ProjectAc();
-            var requestUrl = string.Format("{0}{1}", projectId,_stringConstant.GetProjectDetails);
-            var response = await _httpClientRepository.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, projectId,_stringConstant.GetProjectDetails);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if(response != null)
             {
                 project = JsonConvert.DeserializeObject<ProjectAc>(response);

@@ -1,4 +1,5 @@
 ﻿using Autofac.Extras.NLog;
+using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -47,20 +48,20 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackcall")]
-        public async Task<IHttpActionResult> SlackRequest()
+        public async Task<IHttpActionResult> SlackRequestAsync()
         {
             var request = HttpContext.Current.Request.Form;
             var leave = _attachmentRepository.SlashCommandTransfrom(request);
             try
             {
-                await _slackRepository.LeaveRequest(leave);
+                await _slackRepository.LeaveRequestAsync(leave);
                 return Ok();
             }
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
                 _slackRepository.Error(leave);
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 return BadRequest();
             }
@@ -80,16 +81,18 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("leaves/slackbuttoncall")]
-        public IHttpActionResult SlackButtonRequest(SlashChatUpdateResponse leaveResponse)
+        public async Task<IHttpActionResult> SlackButtonRequestAsync()
         {
             try
             {
-                _slackRepository.UpdateLeave(leaveResponse);
+                var request = HttpContext.Current.Request.Form;
+                var leaveResponse = _attachmentRepository.SlashChatUpdateResponseTransfrom(request);
+                await _slackRepository.UpdateLeaveAsync(leaveResponse);
                 return Ok();
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
+                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw;
             }

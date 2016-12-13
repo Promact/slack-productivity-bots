@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
@@ -8,13 +9,13 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// Action details of Slash ChatUpdateMethod
         /// </summary>
         [JsonProperty("actions")]
-        public SlashChatUpdateResponseAction Actions { get; set; }
+        public List<SlashChatUpdateResponseAction> Actions { get; set; }
 
         /// <summary>
         /// Callback_id details of Slash ChatUpdateMethod
         /// </summary>
         [JsonProperty("callback_id")]
-        public int CallbackId { get; set; }
+        public string CallbackId { get; set; }
 
         /// <summary>
         /// Team details of Slash ChatUpdateMethod
@@ -51,5 +52,8 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// </summary>
         [JsonProperty("token")]
         public string Token { get; set; }
+
+        [JsonProperty("response_url")]
+        public string ResponseUrl { get; set; }
     }
 }

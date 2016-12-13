@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Promact.Erp.DomainModel.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -320,6 +321,13 @@ namespace Promact.Erp.Util.StringConstants
         string TestAnswer { get; }
         string TestId { get; }
         string TestGroupName { get; }
+        string WrongActionSlashCommand { get; }
+        string LeaveWrongCommandForBackDateCL { get; }
+        string LeaveWrongCommandForBeyondDateFirstExample { get; }
+        string LeaveWrongCommandForBeyondDateSecondExample { get; }
+        string LeaveWrongCommandForBackDateSL { get; }
+        string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
+        string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
 
         #endregion
 
@@ -337,5 +345,47 @@ namespace Promact.Erp.Util.StringConstants
         string StartWorking { get; }
         string HourSpentForTesting { get; }
         string HourSpentExceeded { get; }
+        string BackDateErrorMessage { get; }
+        string InValidDateErrorMessage { get; }
+        string JsonContentString { get; }
+        string UserSlackId { get; }
+        string TeamLeaderSlackId { get; }
+        string ManagementSlackId { get; }
+        string Ok { get; }
+        string LeaveAllowed { get; }
+        string LeaveAlreadyExistOnSameDate { get; }
+        string ReplyTextForUpdateLeave { get; }
+        string ReplyTextForCasualLeaveList { get; }
+        string ReplyTextForSickLeaveList { get; }
+        string ReplyTextForCancelLeave { get; }
+        string ReplyTextForErrorInCancelLeave { get; }
+        string ReplyTextForCasualLeaveStatus { get; }
+        string ReplyTextForSickLeaveStatus { get; }
+        string ReplyTextForCasualLeaveBalance { get; }
+        string ReplyTextForSickLeaveBalance { get; }
+        string ReplyTextForSickLeaveUpdate { get; }
+        string ReplyTextForSMTPExceptionErrorMessage { get; }
+        string SlashCommandErrorMessage { get; }
+        string ReplyTextForCasualLeaveApplied { get; }
+        string ReplyTextForSickLeaveApplied { get; }
+        string UpdateMessageUrl { get; }
+        string AtTheRate { get; }
+        string SlackOauthRequestUrl { get; }
+        string SlackUserDetailsUrl { get; }
+        string EmployeeFirstLastNameFormat { get; }
+        string FirstAndSecondIndexStringFormat { get; }
+        string FirstSecondAndThirdIndexStringFormat { get; }
+        string StringValueOneForTest { get; }
+        string StringValueFiftyFiveForTest { get; }
+        string ControllerErrorMessageStringFormat { get; }
+        string ExternalLoginUrl { get; }
+        string SlackAuthorizeAction { get; }
+        string Default { get; }
+        string CasualLeaveUpdateMessageForUser { get; }
+        string AlreadyUpdatedMessage { get; }
+        string LeaveUpdateResponseJsonString { get; }
+        string Payload { get; }
+        string LeaveUpdateEmailStringFormat { get; }
+        string RequestToAddSlackApp { get; }
     }
 }
