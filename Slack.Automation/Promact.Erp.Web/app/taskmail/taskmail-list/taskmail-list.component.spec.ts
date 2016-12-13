@@ -10,32 +10,25 @@ import { MockTaskMailService } from '../../shared/mock/mock.taskmailReport.servi
 import { LoaderService } from '../../shared/loader.service';
 import { TaskMailListComponent } from './taskmail-list.component';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
+import { MockRouter } from '../../shared/mock/mock.router';
+import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 
 let promise: TestBed;
 
 
 describe('Task Mail Report List Tests', () => {
-    class MockRouter { }
-    class MockDatePipe { }
-    class MockLoaderService { }
-    const routes: Routes = [];
-    class MockActivatedRoute extends ActivatedRoute {
-        constructor() {
-            super();
-            this.params = Observable.of({ id: "1" });
-        }
-    }
-    beforeEach(async(() => {
+   const routes: Routes = [];
+   beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], 
             imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true })  
             ],
             providers: [
-                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: ActivatedRoute, useClass: ActivatedRouteStub },
                 { provide: TaskService, useClass: MockTaskMailService },
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: LoaderService, useClass: LoaderService }
             ]
         }).compileComponents();
     }));
