@@ -14,6 +14,7 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Core.Test
 {
@@ -199,7 +200,7 @@ namespace Promact.Core.Test
             string msg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
             Assert.Equal(msg, _stringConstant.YouAreNotInExistInOAuthServer);
         }
-        
+
 
         /// <summary>
         /// Method StartScrum Testing with No Question
