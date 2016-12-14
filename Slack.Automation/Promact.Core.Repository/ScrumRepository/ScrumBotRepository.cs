@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.NLog;
-using Promact.Core.Repository.AttachmentRepository;
+﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -40,11 +39,10 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository,
-            IOauthCallsRepository oauthCallsRepository,
-            IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository,
-            IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
+            IOauthCallsRepository oauthCallsRepository, ISlackUserRepository slackUserDetails,
+            IRepository<Question> questionRepository, IAttachmentRepository attachmentRepository,
             IRepository<ApplicationUser> applicationUser, ISlackChannelRepository slackChannelRepository,
-            ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant,
+            IRepository<Scrum> scrumRepository, IStringConstantRepository stringConstant,
             IRepository<SlackBotUserDetail> slackBotUserDetail)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
@@ -822,13 +820,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
                 else
-                {
                     //as not all questions have been answered by the last employee,so to that employee itself
                     user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
-                    //if(user == null)
-                    //{
-                    //}
-                }
             }
             else
             {
@@ -956,7 +949,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     if (employees == null || employees.Count == 0)
                         employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
-                    // employees = employees.Where(x => x.IsActive).ToList();
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count() == 0)
