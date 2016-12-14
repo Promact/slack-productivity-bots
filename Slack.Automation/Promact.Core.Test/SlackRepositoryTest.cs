@@ -624,7 +624,7 @@ namespace Promact.Core.Test
             MockingOfManagementDetails();
             await AddSlackThreeUsersAsync();
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
