@@ -88,8 +88,20 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         cl,
         sl
     }
-    
-        
+
+
+    /// <summary>
+    /// Scrum Answer Statuses
+    /// </summary>
+    public enum ScrumAnswerStatus
+    {
+        Answered,
+        InActive,
+        AnswerNow,
+        Leave
+    }
+
+
     /// <summary>
     /// Scrum Actions
     /// </summary>

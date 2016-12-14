@@ -31,7 +31,7 @@ namespace Promact.Erp.Util.StringConstants
         string SlackHelpMessage { get; }
         string SlackErrorMessage { get; }
 
-       
+
         string UsersDetailByGroupUrl { get; }
         string UserDetailsByIdUrl { get; }
         string UrlRtmStart { get; }
@@ -96,11 +96,10 @@ namespace Promact.Erp.Util.StringConstants
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
         string SlackUserNotFound { get; }
-
+        string InActive { get; }
 
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
-        string WrongPerson { get; }
         string Unrecognized { get; }
         string UserChange { get; }
         string ChannelCreated { get; }
@@ -275,6 +274,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
+        string MarkedInActive { get; }
 
         #region String Constants for Test Cases
 
@@ -314,13 +314,13 @@ namespace Promact.Erp.Util.StringConstants
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
         string AdminLogin { get; }
-        string TeamLeaderLogin { get;}
+        string TeamLeaderLogin { get; }
         string EmployeeLogin { get; }
         string TeamLeaderLoginDetails { get; }
         string ProjectDetail { get; }
         string ProjectDetailsForAdminFromOauth { get; }
         string ProjectDetailsForTeamLeaderFromOauth { get; }
-        string ProjectDetailsForEmployeeFromOauth { get;  }
+        string ProjectDetailsForEmployeeFromOauth { get; }
         string TestAnswer { get; }
         string TestId { get; }
         string TestGroupName { get; }
@@ -331,6 +331,13 @@ namespace Promact.Erp.Util.StringConstants
         string LeaveWrongCommandForBackDateSL { get; }
         string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
         string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
+        string TestQuestion { get; }
+        string EmployeesListFromOauthInValid { get; }
+        string UnExpectedInActiveUser { get; }
+        string EmployeesListInValid { get; }
+        string InActiveInOAuth { get; }
+        string OAuthUserDetails { get; }
+        string InValidOAuthUsers { get; }
 
         #endregion
 

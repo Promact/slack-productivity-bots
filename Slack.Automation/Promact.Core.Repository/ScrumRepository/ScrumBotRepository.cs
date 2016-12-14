@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.NLog;
-using Promact.Core.Repository.AttachmentRepository;
+﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -29,7 +28,6 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<Question> _questionRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IHttpClientService _httpClientService;
         private readonly ISlackUserRepository _slackUserDetails;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IRepository<SlackBotUserDetail> _slackBotUserDetail;
@@ -42,11 +40,10 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<ScrumAnswer> scrumAnswerRepository,
-            IOauthCallsRepository oauthCallsRepository,
-            IRepository<Scrum> scrumRepository, IAttachmentRepository attachmentRepository,
-            IRepository<Question> questionRepository, IHttpClientRepository httpClientRepository,
+            IOauthCallsRepository oauthCallsRepository, ISlackUserRepository slackUserDetails,
+            IRepository<Question> questionRepository, IAttachmentRepository attachmentRepository,
             IRepository<ApplicationUser> applicationUser, ISlackChannelRepository slackChannelRepository,
-            ISlackUserRepository slackUserDetails, IStringConstantRepository stringConstant,
+            IRepository<Scrum> scrumRepository, IStringConstantRepository stringConstant,
             IRepository<SlackBotUserDetail> slackBotUserDetail)
         {
             _scrumAnswerRepository = scrumAnswerRepository;
@@ -56,7 +53,6 @@ namespace Promact.Core.Repository.ScrumRepository
             _slackChannelRepository = slackChannelRepository;
             _applicationUser = applicationUser;
             _attachmentRepository = attachmentRepository;
-            _httpClientService = httpClientService;
             _slackUserDetails = slackUserDetails;
             _slackBotUserDetail = slackBotUserDetail;
             _stringConstant = stringConstant;
@@ -145,6 +141,24 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
+        /// Used to update the scrum answer
+        /// </summary>
+        /// <param name="scrumAnswers"></param>
+        /// <param name="Message"></param>
+        /// <param name="UserName"></param>
+        /// <returns></returns>
+        private async Task UpdateAnswerAsync(ScrumAnswer scrumAnswer, string message, string userName)
+        {
+            scrumAnswer.CreatedOn = DateTime.UtcNow;
+            scrumAnswer.AnswerDate = DateTime.UtcNow;
+            scrumAnswer.Answer = message;
+            scrumAnswer.ScrumAnswerStatus = ScrumAnswerStatus.Answered;
+            _scrumAnswerRepository.Update(scrumAnswer);
+            await _scrumAnswerRepository.SaveChangesAsync();
+        }
+
+
+        /// <summary>
         ///  This method is called whenever a message other than the default keywords is written in the group. - JJ
         /// </summary>
         /// <param name="userName"></param>
@@ -180,60 +194,85 @@ namespace Promact.Core.Repository.ScrumRepository
                             //scrum answer of that day's scrum
                             List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id).Result.ToList();
                             //status would be empty if the interacting user is same as the expected user.
-                            string status = await ExpectedUserAsync(scrum.Id, questions, employees, userName, userId);
+                            string status = await ExpectedUserAsync(scrum.Id, questions, employees, userName, userId, groupName, scrum.ProjectId, accessToken);
                             if (status == string.Empty)
                             {
-
-                                #region Normal Scrum
-
-                                if ((employees.Count() * questionCount) > scrumAnswers.Count())
+                                User currentUser = employees.FirstOrDefault(x => x.SlackUserId == userId && x.IsActive);
+                                if (currentUser != null)
                                 {
-                                    Question firstQuestion = questions.FirstOrDefault();
-                                    ScrumAnswer lastScrumAnswer = scrumAnswers.OrderByDescending(x => x.Id).FirstOrDefault();
-                                    //scrum answers of the given employee
-                                    int answerListCount = scrumAnswers.Count(x => x.EmployeeId == lastScrumAnswer.EmployeeId);
-
-                                    if (scrumAnswers.Any())
+                                    List<ScrumAnswer> nowReadyScrumsAnswers = scrumAnswers.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).OrderBy(x => x.Id).ToList();
+                                    //scrum answers which were marked as later, are now to be answered
+                                    if (nowReadyScrumsAnswers.Any())
                                     {
-                                        if (answerListCount < questionCount)
-                                        {
-                                            //not all questions have been answered
-                                            Question prevQuestion = questions.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
-                                            Question question = questions.FirstOrDefault(x => x.OrderNumber == prevQuestion.OrderNumber + 1);
-                                            await AddAnswerAsync(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, message);
-                                        }
-                                        else
-                                        {
-                                            //A particular employee's first answer
-                                            //list of Employee ids who have not answered yet                       
-                                            List<string> idList = employees.Where(x => !scrumAnswers.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
-                                            if (idList != null && idList.Count > 0)
-                                            {
-                                                //now fetch the first question to the next employee
-                                                User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
-                                                await AddAnswerAsync(lastScrumAnswer.ScrumId, firstQuestion.Id, user.Id, message);
-                                            }
-                                        }
-                                        //get the next question 
-                                        //donot shift message                                         
+                                        await UpdateAnswerAsync(nowReadyScrumsAnswers.FirstOrDefault(), message, userName);
                                         reply = await GetQuestionAsync(scrum.Id, groupName, questions, employees, scrum.ProjectId, accessToken);
                                     }
                                     else
                                     {
-                                        //First Employee's first answer
-                                        User user = employees.FirstOrDefault();
-                                        await AddAnswerAsync(scrum.Id, firstQuestion.Id, user.Id, message);
-                                        //get the next question . donot shift message 
-                                        reply = await GetQuestionAsync(scrum.Id, groupName, questions, employees, scrum.ProjectId, accessToken);
+                                        #region Normal Scrum
+
+                                        if ((employees.Count() * questionCount) > scrumAnswers.Count())
+                                        {
+                                            Question firstQuestion = questions.FirstOrDefault();
+                                            // ScrumAnswer lastScrumAnswer = scrumAnswers.OrderByDescending(x => x.Id).FirstOrDefault(y => y.EmployeeId == currentUser.Id);
+                                            ScrumAnswer lastScrumAnswer = scrumAnswers.OrderByDescending(x => x.Id).FirstOrDefault();
+                                            //scrum answers of the given employee
+                                            int answerListCount = scrumAnswers.Count(x => x.EmployeeId == lastScrumAnswer.EmployeeId);
+                                            if (scrumAnswers.Any())
+                                            {
+                                                if (answerListCount < questionCount)
+                                                {
+                                                    //not all questions have been answered
+                                                    Question prevQuestion = questions.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
+                                                    Question question = questions.FirstOrDefault(x => x.OrderNumber == prevQuestion.OrderNumber + 1);
+                                                    await AddAnswerAsync(scrum.Id, question.Id, lastScrumAnswer.EmployeeId, message, ScrumAnswerStatus.Answered);
+                                                }
+                                                else
+                                                {
+                                                    //A particular employee's first answer
+                                                    //list of Employee ids who have not answered yet                       
+                                                    List<string> idList = employees.Where(x => x.IsActive && !scrumAnswers.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                                                    if (idList != null && idList.Count > 0)
+                                                    {
+                                                        //now fetch the first question to the next employee
+                                                        User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                                                        await AddAnswerAsync(scrum.Id, firstQuestion.Id, user.Id, message, ScrumAnswerStatus.Answered);
+                                                    }
+                                                }
+                                                //get the next question 
+                                                //donot shift message                                         
+                                                reply = await GetQuestionAsync(scrum.Id, groupName, questions, employees, scrum.ProjectId, accessToken);
+                                            }
+                                            else
+                                            {
+                                                //First Employee's first answer
+                                                User user = employees.FirstOrDefault(x => x.IsActive);
+                                                await AddAnswerAsync(scrum.Id, firstQuestion.Id, user.Id, message, ScrumAnswerStatus.Answered);
+                                                //get the next question . donot shift message 
+                                                reply = await GetQuestionAsync(scrum.Id, groupName, questions, employees, scrum.ProjectId, accessToken);
+                                            }
+                                        }
+
+
+                                        #endregion
                                     }
                                 }
-
-
-                                #endregion
-
+                                else
+                                {
+                                    //Scenario - 3 questions in all
+                                    // user answers 1 question becomes inactive. Then becomes active and answers a question. Is switched back to in-active again 
+                                    List<ScrumAnswer> scrumAnswerNow = scrumAnswers.Where(x => x.EmployeeId == applicationUser.Id && x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).ToList();
+                                    foreach (var scrumAns in scrumAnswerNow)
+                                    {
+                                        scrumAns.ScrumAnswerStatus = ScrumAnswerStatus.InActive;
+                                        _scrumAnswerRepository.Update(scrumAns);
+                                        await _scrumAnswerRepository.SaveChangesAsync();
+                                    }
+                                    return string.Format(_stringConstant.InActiveInOAuth, userName) + await MarkAsInActiveAsync(scrumAnswers, employees, scrum.Id, questions, groupName, scrum.ProjectId, accessToken, userId);
+                                }
                             }
                             //the user interacting is not the expected user
-                            else if ((status != _stringConstant.ScrumConcludedButLater) && (status != _stringConstant.ScrumComplete))
+                            else
                                 return status;
                         }
                         else
@@ -271,9 +310,11 @@ namespace Promact.Core.Repository.ScrumRepository
                 switch (scrumStage)
                 {
                     case ScrumActions.halt:
+                        //keyword encountered is "scrum halt"
                         return await ScrumHaltAsync(scrum, groupName, accessToken);
 
                     case ScrumActions.resume:
+                        //keyword encountered is "scrum resume"
                         return await ScrumResumeAsync(scrum, groupName, accessToken);
 
                     case ScrumActions.time:
@@ -298,7 +339,6 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userId"></param>
         /// <param name="applicant"></param>
         /// <param name="applicantId"></param>
-        /// <param name="parameter"></param>
         /// <returns>Question to the next person or other scrum status</returns>
         private async Task<string> LeaveAsync(string groupName, string userName, string userId, string applicant, string applicantId)
         {
@@ -323,7 +363,6 @@ namespace Promact.Core.Repository.ScrumRepository
                             List<User> employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
 
                             ScrumStatus scrumStatus = await FetchScrumStatusAsync(groupName, accessToken, null, employees, questions);
-
                             if (scrumStatus == ScrumStatus.OnGoing)
                             {
                                 List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id).Result.ToList();
@@ -353,8 +392,8 @@ namespace Promact.Core.Repository.ScrumRepository
         /// Used to add channel manually by command "add channel channelname"
         /// </summary>
         /// <param name="channelName"></param>
-        /// <param name="channelId"></param>
         /// <param name="username"></param>
+        /// <param name="channelId"></param>
         /// <param name="userId"></param>
         /// <returns>status message</returns>
         private async Task<string> AddChannelManuallyAsync(string channelName, string username, string channelId, string userId)
@@ -423,9 +462,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="questionId"></param>
         /// <param name="employeeId"></param>
         /// <param name="message"></param>
-        /// <param name="status"></param>
+        /// <param name="scrumAnswerStatus"></param>
         /// <returns>true if scrum answer is added successfully</returns>
-        private async Task<bool> AddAnswerAsync(int scrumId, int questionId, string employeeId, string message)
+        private async Task<bool> AddAnswerAsync(int scrumId, int questionId, string employeeId, string message, ScrumAnswerStatus scrumAnswerStatus)
         {
             ScrumAnswer answer = new ScrumAnswer();
             answer.Answer = message;
@@ -434,6 +473,7 @@ namespace Promact.Core.Repository.ScrumRepository
             answer.EmployeeId = employeeId;
             answer.QuestionId = questionId;
             answer.ScrumId = scrumId;
+            answer.ScrumAnswerStatus = scrumAnswerStatus;
             _scrumAnswerRepository.Insert(answer);
             await _scrumAnswerRepository.SaveChangesAsync();
             return true;
@@ -458,19 +498,26 @@ namespace Promact.Core.Repository.ScrumRepository
             if (scrumStatus == ScrumStatus.NotStarted)
             {
                 Question question = questionList.FirstOrDefault();
-                Scrum scrum = new Scrum();
-                scrum.CreatedOn = DateTime.UtcNow;
-                scrum.GroupName = groupName;
-                scrum.ScrumDate = DateTime.UtcNow.Date;
-                scrum.ProjectId = project.Id;
-                scrum.TeamLeaderId = project.TeamLeaderId;
-                scrum.IsHalted = false;
-                scrum.IsOngoing = true;
-                _scrumRepository.Insert(scrum);
-                await _scrumRepository.SaveChangesAsync();
-                User firstEmployee = employees.FirstOrDefault();
-                //first employee is asked questions along with the previous day status (if any)
-                replyMessage = _stringConstant.GoodDay + "<@" + firstEmployee.UserName + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id).Result + question.QuestionStatement;
+                User firstEmployee = employees.FirstOrDefault(x => x.IsActive);
+                if (firstEmployee != null)
+                {
+                    Scrum scrum = new Scrum();
+                    scrum.CreatedOn = DateTime.UtcNow;
+                    scrum.GroupName = groupName;
+                    scrum.ScrumDate = DateTime.UtcNow.Date;
+                    scrum.ProjectId = project.Id;
+                    scrum.TeamLeaderId = project.TeamLeaderId;
+                    scrum.IsHalted = false;
+                    scrum.IsOngoing = true;
+                    _scrumRepository.Insert(scrum);
+                    await _scrumRepository.SaveChangesAsync();
+                    SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(firstEmployee.SlackUserId);
+                    //first employee is asked questions along with the previous day status (if any)
+                    replyMessage = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + await FetchPreviousDayStatusAsync(firstEmployee.Id, project.Id) + question.QuestionStatement;
+                }
+                else
+                    //no active employees are found
+                    replyMessage = _stringConstant.NoEmployeeFound;
             }
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
@@ -496,40 +543,50 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="projectId"></param>
         /// <param name="userName"></param>
         /// <param name="accessToken"></param>
-        /// <returns></returns>
+        /// <param name="userId"></param>
+        /// <param name="applicantId"></param>
+        /// <returns>Question to the next employee or status of the request</returns>
         private async Task<string> MarkLeaveAsync(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, string applicant, List<Question> questions, string groupName, int projectId, string userName, string accessToken, string userId, string applicantId)
         {
             string returnMsg = string.Empty;
-            string status = await ExpectedUserAsync(scrumId, questions, employees, applicant, applicantId);//checks whether the applicant is the expected user
-            if (status == string.Empty)//if the interacting user is the expected user
+            User user = employees.FirstOrDefault(x => x.SlackUserId == applicantId);
+            if (user.IsActive)
             {
-                string EmployeeId = employees.FirstOrDefault(x => x.SlackUserId == applicantId).Id;
-                if (String.Compare(userId, applicantId, true) == 0)
-                    return _stringConstant.LeaveError;
-                else
+                //checks whether the applicant is the expected user
+                string status = await ExpectedUserAsync(scrumId, questions, employees, applicant, applicantId, groupName, projectId, accessToken);
+                //if the interacting user is the expected user
+                if (status == string.Empty)
                 {
-                    if (scrumAnswer.Any())
-                        //fetch the scrum answer of the employee given on that day
-                        scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
-                    //If no anmswer
-                    //from the employee has been obtained yet.
-                    if (scrumAnswer.Count() == 0)
-                    {
-                        //all the scrum questions are answered as "leave"
-                        foreach (var question in questions)
-                        {
-                            await AddAnswerAsync(scrumId, question.Id, EmployeeId, _stringConstant.Leave);
-                        }
-                    }
+                    string EmployeeId = employees.FirstOrDefault(x => x.SlackUserId == applicantId).Id;
+                    //if applying trying to self as on leave
+                    if (String.Compare(userId, applicantId, true) == 0)
+                        return _stringConstant.LeaveError;
                     else
-                        //If the applicant has already answered questions
-                        returnMsg = string.Format(_stringConstant.AlreadyAnswered, applicant);
+                    {
+                        if (scrumAnswer.Any())
+                            //fetch the scrum answer of the employee given on that day
+                            scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == EmployeeId).ToList();
+                        //If no answer from the employee has been obtained yet.
+                        if (scrumAnswer.Count() == 0)
+                        {
+                            //all the scrum questions are answered as "leave"
+                            foreach (var question in questions)
+                            {
+                                await AddAnswerAsync(scrumId, question.Id, EmployeeId, _stringConstant.Leave, ScrumAnswerStatus.Leave);
+                            }
+                        }
+                        else
+                            //If the applicant has already answered questions
+                            returnMsg = string.Format(_stringConstant.AlreadyAnswered, applicant);
+                    }
                 }
+                else
+                    return status;
             }
             else
-                return status;
+                returnMsg = string.Format(_stringConstant.InActiveInOAuth, applicant);
             //fetches the next question or status and returns
-            return returnMsg + Environment.NewLine + GetQuestionAsync(scrumId, groupName, questions, employees, projectId, accessToken).Result;
+            return returnMsg + Environment.NewLine + await GetQuestionAsync(scrumId, groupName, questions, employees, projectId, accessToken);
         }
 
 
@@ -547,60 +604,105 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             string returnMsg = string.Empty;
             List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
-
             if (questions == null)
                 questions = _questionRepository.FetchAsync(x => x.Type == 1).Result.OrderBy(x => x.OrderNumber).ToList();
-
             if (employees == null)
                 employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
 
             if (scrumAnswer.Any())
             {
-                #region Normal Get Question
-
-                int questionCount = questions.Count();
-                //last acrum answer of the given scrum id.
-                ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
-                //no. of answers given by the employee who gave the last scrum answer.
-                int answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
-                if (answerListCount == questionCount)
+                //scrum answers which were marked as later, are now to be answered
+                List<ScrumAnswer> answerNow = scrumAnswer.Where(x => x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).OrderBy(x => x.Id).ToList();
+                if (answerNow.Any())
                 {
-                    //all questions have been asked to the previous employee                        
-                    //list of Employee ids who have not answer yet                       
-                    List<string> idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
-                    if (idList != null && idList.Count > 0)
-                    {
-                        //now fetch the first question to the next employee
-                        User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
-                        SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
-                        returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatusAsync(user.Id, projectId).Result + FetchQuestionAsync(null, true).Result;
-                    }
-                    else
-                    {
-                        if (await MarkScrumCompleteAsync(lastScrumAnswer.ScrumId) == 0)
-                            //answers of all the employees has been recorded
-                            returnMsg = _stringConstant.ScrumComplete;
-                        else
-                            returnMsg = _stringConstant.ErrorMsg;
-                    }
+                    ScrumAnswer answer = answerNow.FirstOrDefault();
+                    SlackUserDetails user = await _slackUserDetails.GetByIdAsync(employees.FirstOrDefault(x => x.Id == answer.EmployeeId).SlackUserId);
+                    //the first question which is to be answered now is asked
+                    return "<@" + user.Name + "> " + questions.FirstOrDefault(x => x.Id == answer.QuestionId).QuestionStatement;
                 }
                 else
                 {
-                    //as not all questions have been answered by the last employee,the next question to that employee will be asked
-                    User user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
-                    SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
-                    returnMsg = "<@" + slackUser.Name + "> " + FetchQuestionAsync(lastScrumAnswer.QuestionId, false).Result;
-                }
+                    #region Normal Get Question
 
-                #endregion
+                    int questionCount = questions.Count();
+                    //last acrum answer of the given scrum id.
+                    ScrumAnswer lastScrumAnswer = scrumAnswer.OrderByDescending(x => x.Id).FirstOrDefault();
+                    //no. of answers given by the employee who gave the last scrum answer.
+                    int answerListCount = scrumAnswer.FindAll(x => x.EmployeeId == lastScrumAnswer.EmployeeId).Count();
+                    if (answerListCount == questionCount)
+                    {
+                        //all questions have been asked to the previous employee                        
+                        //list of Employee ids who have not answer yet                       
+                        List<string> idList = employees.Where(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                        if (idList != null && idList.Count > 0)
+                        {
+                            //now fetch the first question to the next employee
+                            User user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
+                            SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
+                            returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + await FetchPreviousDayStatusAsync(user.Id, projectId) + await FetchQuestionAsync(null, true);
+                        }
+                        else
+                            return await MarkScrumCompleteAsync(lastScrumAnswer.ScrumId, accessToken);
+                    }
+                    else
+                    {
+                        //as not all questions have been answered by the last employee,the next question to that employee will be asked
+                        User user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
+                        if (user != null)
+                        {
+                            if (user.IsActive)
+                            {
+                                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
+                                returnMsg = "<@" + slackUser.Name + "> " + await FetchQuestionAsync(lastScrumAnswer.QuestionId, false);
+                            }
+                            else
+                                return await MarkAsInActiveAsync(scrumAnswer, employees, scrumId, questions, groupName, projectId, accessToken, user.SlackUserId);
+                        }
+                    }
+
+                    #endregion
+                }
             }
             else
             {
                 //no scrum answer has been recorded yet. So first question to the first employee
-                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(employees.FirstOrDefault().SlackUserId);
-                returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatusAsync(employees.FirstOrDefault().Id, projectId).Result + questions.FirstOrDefault().QuestionStatement;
+                User firstEmployee = employees.FirstOrDefault(x => x.IsActive);
+                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(firstEmployee.SlackUserId);
+                returnMsg = _stringConstant.GoodDay + "<@" + slackUser.Name + ">!\n" + FetchPreviousDayStatusAsync(firstEmployee.Id, projectId).Result + questions.FirstOrDefault().QuestionStatement;
             }
             return returnMsg;
+        }
+
+
+        /// <summary>
+        /// Mark a user as inactive during the scrum
+        /// </summary>
+        /// <param name="scrumAnswer"></param>
+        /// <param name="employees"></param>
+        /// <param name="scrumId"></param>
+        /// <param name="questions"></param>
+        /// <param name="groupName"></param>
+        /// <param name="projectId"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="applicantId"></param>
+        /// <returns>next question</returns>
+        private async Task<string> MarkAsInActiveAsync(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, List<Question> questions, string groupName, int projectId, string accessToken, string applicantId)
+        {
+            string returnMsg = string.Empty;
+            //EmployeeId of the inactive person
+            User employee = employees.FirstOrDefault(x => x.SlackUserId == applicantId);
+            //scrum answer of the employee
+            scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == employee.Id).ToList();
+            //id of questions which were not answered by the employee
+            List<int> questionIds = questions.Where(x => x.Type == 1 && !scrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).OrderBy(i => i.OrderNumber).Select(z => z.Id).ToList();
+            foreach (var questionId in questionIds)
+            {
+                //mark all the remaining answers of the employee as inactive
+                await AddAnswerAsync(scrumId, questionId, employee.Id, _stringConstant.InActive, ScrumAnswerStatus.InActive);
+            }
+
+            //fetches the next question or status and returns
+            return returnMsg + Environment.NewLine + await GetQuestionAsync(scrumId, groupName, questions, employees, projectId, accessToken);
         }
 
 
@@ -608,7 +710,60 @@ namespace Promact.Core.Repository.ScrumRepository
         /// Used to mark scrum as completed
         /// </summary>
         /// <param name="scrumId"></param>
-        private async Task<int> MarkScrumCompleteAsync(int scrumId)
+        /// <param name="accessToken"></param>
+        private async Task<string> MarkScrumCompleteAsync(int scrumId, string accessToken)
+        {
+            //list of scrum answers of employees who were in active during scrum meeting
+            List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrumId && x.ScrumAnswerStatus == ScrumAnswerStatus.InActive).OrderBy(x => x.Id).ToList();
+            User user = new User();
+            string nextQuestion = string.Empty;
+            if (scrumAnswers.Any())
+            {
+                //Id of employees who were in active during scrum meeting
+                List<string> employeeIds = scrumAnswers.Select(x => x.EmployeeId).Distinct().ToList();
+                foreach (var employeeId in employeeIds)
+                {
+                    user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId, accessToken);
+                    //check whether those in active before are active now
+                    if (user != null && user.IsActive)
+                    {
+                        scrumAnswers = scrumAnswers.Where(x => x.EmployeeId == employeeId && x.ScrumAnswerStatus == ScrumAnswerStatus.InActive).ToList();
+                        foreach (var scrumAns in scrumAnswers)
+                        {
+                            // the next question is fetched if it has already not been fetched
+                            if (string.IsNullOrEmpty(nextQuestion))
+                            {
+                                nextQuestion = _questionRepository.FirstOrDefaultAsync(x => x.Id == scrumAns.QuestionId).Result.QuestionStatement;
+                            }
+                            //all answers are marked to be answered now
+                            scrumAns.ScrumAnswerStatus = ScrumAnswerStatus.AnswerNow;
+                            _scrumAnswerRepository.Update(scrumAns);
+                            await _scrumAnswerRepository.SaveChangesAsync();
+                        }
+                        break;
+                    }
+                }
+                //if the nextQuestion is fetched then it means that there are questions to be asked to employee
+                if (!string.IsNullOrEmpty(nextQuestion))
+                {
+                    return string.Format(_stringConstant.MarkedInActive, _slackUserDetails.GetByIdAsync(user.SlackUserId).Result.Name) + nextQuestion;
+                }
+            }
+            //if no questions are pending then scrum is marked to be complete
+            if (await UpdateScrumAsync(scrumId) == 0)
+                //answers of all the employees has been recorded
+                return _stringConstant.ScrumComplete;
+            else
+                return _stringConstant.ErrorMsg;
+        }
+
+
+        /// <summary>
+        /// Update scrum status to not in progress scrum
+        /// </summary>
+        /// <param name="scrumId"></param>
+        /// <returns>0 if no error</returns>
+        private async Task<int> UpdateScrumAsync(int scrumId)
         {
             Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => x.Id == scrumId);
             scrum.IsOngoing = false;
@@ -626,13 +781,15 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="questions"></param>
         ///<param name="projectId"></param>
         ///<param name="applicantId"></param>
+        ///<param name="groupName"></param>
+        ///<param name="accessToken"></param>
+        ///<param name="applicant"></param>
         /// <returns>empty string if the expected user is same as the applicant</returns>
-        private async Task<string> ExpectedUserAsync(int scrumId, List<Question> questions, List<User> employees, string applicant, string applicantId)
+        private async Task<string> ExpectedUserAsync(int scrumId, List<Question> questions, List<User> employees, string applicant, string applicantId, string groupName, int projectId, string accessToken)
         {
             //List of scrum answer of the given scrumId.
             List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
             User user = new User();
-
             if (scrumAnswer.Any())
             {
                 int questionCount = questions.Count();
@@ -644,37 +801,56 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     //all questions have been asked to the previous employee 
                     //list of Employee ids who have not answer yet                       
-                    List<string> idList = employees.Where(x => !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
+                    List<string> idList = employees.Where(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
 
-                    //isactive bit checked
-                    // List<string> idList = employees.Where(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id)).Select(x => x.Id).ToList();
                     if (idList != null && idList.Count > 0)
                         //now the next employee
                         user = employees.FirstOrDefault(x => x.Id == idList.FirstOrDefault());
                     else
-                        return _stringConstant.ScrumComplete;
+                    {
+                        //scrum answers of users who were marked as in active during their scrum but now are available for scrum.
+                        List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.ScrumAnswerStatus == ScrumAnswerStatus.AnswerNow).Result.ToList();
+
+                        if (scrumAnswers.Any())
+                            user = employees.FirstOrDefault(x => x.Id == scrumAnswers.FirstOrDefault().EmployeeId);
+                        else
+                        {
+                            if (await UpdateScrumAsync(scrumId) == 0)
+                                //answers of all the employees has been recorded
+                                return _stringConstant.ScrumComplete;
+                            else
+                                return _stringConstant.ErrorMsg;
+                        }
+                    }
                 }
                 else
-                {
                     //as not all questions have been answered by the last employee,so to that employee itself
                     user = employees.FirstOrDefault(x => x.Id == lastScrumAnswer.EmployeeId);
-                    //if(user == null)
-                    //{
-                    //}
-                }
             }
             else
+            {
                 //no scrum answer has been recorded yet. So first employee
-                user = employees.FirstOrDefault();
-
+                user = employees.FirstOrDefault(x => x.IsActive);
+            }
             if (user != null && user.SlackUserId == applicantId)
                 return string.Empty;
             else if (user == null)
                 return string.Format(_stringConstant.NotExpected, applicant);
             else
             {
-                SlackUserDetails slackUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
-                return string.Format(_stringConstant.PleaseAnswer, slackUser.Name);
+                User unexpectedEmployee = employees.FirstOrDefault(x => x.SlackUserId == applicantId);
+                string reply = string.Empty;
+                if (unexpectedEmployee != null && !unexpectedEmployee.IsActive)
+                {
+                    List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == unexpectedEmployee.Id).Result.ToList();
+                    if (scrumAnswers.Any())
+                        reply += await MarkAsInActiveAsync(scrumAnswers, employees, scrumId, questions, groupName, projectId, accessToken, applicantId);
+
+                    reply = string.Format(_stringConstant.InActiveInOAuth, applicant);
+                }
+                SlackUserDetails expectedUser = await _slackUserDetails.GetByIdAsync(user.SlackUserId);
+                reply = reply + Environment.NewLine + string.Format(_stringConstant.PleaseAnswer, expectedUser.Name);
+                return reply;
             }
         }
 
@@ -702,10 +878,10 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             else
             {
-                //order number of the given question 
                 question = await _questionRepository.FirstOrDefaultAsync(x => x.Id == questionId);
                 if (question != null)
                 {
+                    //order number of the given question 
                     int orderNumber = question.OrderNumber;
                     //question with the next order
                     question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == orderNumber + 1 && x.Type == 1);
@@ -729,20 +905,20 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> FetchPreviousDayStatusAsync(string employeeId, int projectId)
         {
             string previousDayStatus = string.Empty;
-            //previous scrums
+            //scrums of this group(project)
             IEnumerable<Scrum> scrumList = await _scrumRepository.FetchAsync(x => x.ProjectId == projectId);
             if (scrumList != null)
             {
-                scrumList = scrumList.OrderByDescending(x => x.ScrumDate).ToList();
-                //previous scrum
-                Scrum previousScrum = scrumList.FirstOrDefault(y => y.ScrumDate < DateTime.UtcNow.Date);
-                if (previousScrum != null)
+                //previous scrums
+                scrumList = scrumList.Where(x => x.ScrumDate < DateTime.UtcNow.Date).OrderByDescending(x => x.ScrumDate).ToList();
+                List<Question> questions = _questionRepository.FetchAsync(x => x.Type == 1).Result.OrderBy(x => x.OrderNumber).ToList();
+                foreach (var scrum in scrumList)
                 {
-                    List<Question> questions = _questionRepository.FetchAsync(x => x.Type == 1).Result.OrderBy(x => x.OrderNumber).ToList();
-                    List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == previousScrum.Id && x.EmployeeId == employeeId).Result.ToList();
+                    //answers in which employee was not on leave.
+                    List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id && x.EmployeeId == employeeId && x.ScrumAnswerStatus != ScrumAnswerStatus.Leave).Result.ToList();
                     if (scrumAnswers.Any() && questions.Any())
                     {
-                        previousDayStatus = Environment.NewLine + _stringConstant.PreviousDayStatus + Environment.NewLine;
+                        previousDayStatus = Environment.NewLine + string.Format(_stringConstant.PreviousDayStatus, scrum.ScrumDate.ToShortDateString()) + Environment.NewLine;
                         foreach (var question in questions)
                         {
                             //Question and the corresponding answer appended
@@ -750,6 +926,8 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                         previousDayStatus += Environment.NewLine + _stringConstant.AnswerToday + Environment.NewLine + Environment.NewLine;
                     }
+                    if (!string.IsNullOrEmpty(previousDayStatus))
+                        return previousDayStatus;
                 }
             }
             return previousDayStatus;
@@ -775,7 +953,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     if (employees == null || employees.Count == 0)
                         employees = await _oauthCallsRepository.GetUsersByGroupName(groupName, accessToken);
-                    // employees = employees.Where(x => x.IsActive).ToList();
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count() == 0)
@@ -790,20 +967,10 @@ namespace Promact.Core.Repository.ScrumRepository
                                 {
                                     if (!scrum.IsHalted)
                                     {
-                                        List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id).Result.ToList();
-                                        int questionCount = questions.Count();
-
-                                        if (scrumAnswers.Any())
-                                        {
-                                            if (scrumAnswers.Count >= questionCount * employees.Count)
-                                            {
-                                                return ScrumStatus.Completed;
-                                            }
-                                            else
-                                                return ScrumStatus.OnGoing;
-                                        }
-                                        else
+                                        if (scrum.IsOngoing)
                                             return ScrumStatus.OnGoing;
+                                        else
+                                            return ScrumStatus.Completed;
                                     }
                                     else
                                         return ScrumStatus.Halted;
@@ -864,7 +1031,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> ScrumResumeAsync(Scrum scrum, string groupName, string accessToken)
         {
             ScrumStatus status = await FetchScrumStatusAsync(groupName, accessToken, null, null, null);
-            var returnMsg = string.Empty;
+            string returnMsg = string.Empty;
             //keyword encountered is "scrum resume"      
             if (status == (ScrumStatus.Halted))
             {
@@ -878,6 +1045,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             else if (status == (ScrumStatus.OnGoing))
             {
+                //scrum is not halted but is in progress 
                 returnMsg += _stringConstant.ScrumNotHalted + GetQuestionAsync(scrum.Id, groupName, null, null, scrum.ProjectId, accessToken).Result;
                 return returnMsg;
             }
@@ -927,7 +1095,6 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         #endregion
-
 
     }
 }
