@@ -797,6 +797,6 @@ namespace Promact.Core.Repository.TaskMailRepository
             return minDate.Value;
         }
 
-        
+        #endregion 
     }
 }
