@@ -816,45 +816,6 @@ namespace Promact.Core.Repository.TaskMailRepository
             return minDate.Value;
         }
 
-        //private TaskMailDetailReportAc TaskMailDetailReport(TaskMailDetails taskMailDetail)
-        //{
-        //    TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc
-        //    {
-        //        Id = taskMailDetail.Id,
-        //        Description = taskMailDetail.Description,
-        //        Comment = taskMailDetail.Comment,
-        //        Status = taskMailDetail.Status,
-        //        Hours = taskMailDetail.Hours
-        //    };
-        //    return taskmailReportAc;
-        //}
-
-        //private TaskMailReportAc TaskMailReport(UserRoleAc userRole)
-        //{
-        //    TaskMailReportAc taskMailReportAc = new TaskMailReportAc
-        //    {
-        //        UserName = userRole.Name,
-        //        UserId = userRole.UserId,
-        //        UserRole = userRole.Role,
-        //        UserEmail = userRole.UserName
-        //    };
-        //    return taskMailReportAc;
-        //}
-
-        //private TaskMailReportAc TaskMailReport(string UserId, string UserRole, string UserName, DateTime CreatedOn, List<TaskMailDetailReportAc> taskMailDetailReportAc, DateTime MaxDate, DateTime MinDate)
-        //{
-        //    TaskMailReportAc taskMailReportAc = new TaskMailReportAc
-        //    {
-        //        UserId = UserId,
-        //        UserName = UserName,
-        //        UserRole = UserRole,
-        //        CreatedOn = CreatedOn,
-        //        TaskMails = taskMailDetailReportAc,
-        //        MaxDate = MaxDate,
-        //        MinDate = MinDate
-        //    };
-        //    return taskMailReportAc;
-        //}
-        #endregion
+        
     }
 }
