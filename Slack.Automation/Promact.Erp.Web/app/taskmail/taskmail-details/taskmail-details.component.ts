@@ -29,14 +29,14 @@ export class TaskMailDetailsComponent implements OnInit {
     getTaskMailDetails() {
         this.loader.loader = true;
         this.route.params.subscribe(params => {
-            if (params['UserRole'] === this.stringConstant.RoleAdmin) {
+            if (params[this.stringConstant.userRole] === this.stringConstant.RoleAdmin) {
                 this.IsHide = false;
             }
             else {
                 this.IsHide = true;
             }
             this.IsMaxDate = true;
-            this.taskService.getTaskMailDetailsReport(params['UserId'], params['UserRole'], params['UserName']).subscribe(taskMails => {
+            this.taskService.getTaskMailDetailsReport(params[this.stringConstant.paramsUserId], params[this.stringConstant.userRole], params[this.stringConstant.paramsUserName]).subscribe(taskMails => {
                 this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe(this.stringConstant.medium);
                 this.MinDate = datePipeMinDate.transform(this.taskMail[0].IsMin, this.stringConstant.dateDefaultFormat);
@@ -66,7 +66,7 @@ export class TaskMailDetailsComponent implements OnInit {
         this.router.navigate([this.stringConstant.taskList]);
     }
     getTaskMailPrevious(UserName, UserId, UserRole, CreatedOn) {
-        this.SelectedDate = "";
+        this.SelectedDate = this.stringConstant.empty;
        this.taskService.getTaskMailDetailsReportPreviousDate(UserName,UserId,UserRole, CreatedOn).subscribe(taskMails => {
            this.taskMail = taskMails;
            if (this.taskMail[0].IsMin === this.taskMail[0].CreatedOn) {
@@ -88,7 +88,7 @@ export class TaskMailDetailsComponent implements OnInit {
        this.IsMaxDate = false;
     }
     getTaskMailNext(UserName, UserId, UserRole, CreatedOn) {
-        this.SelectedDate = "";
+        this.SelectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
             this.taskMail = taskMails;
             if (this.taskMail[0].IsMax === this.taskMail[0].CreatedOn) {

@@ -30,18 +30,10 @@ export class TaskMailListComponent implements OnInit {
                     this.taskMailUsers = result;
                 }
                 else if (result[0].UserRole === this.stringConstant.RoleTeamLeader) {
-                    let UserId = result[0].UserId;
-                    let UserRole = result[0].UserRole;
-                    let UserName = result[0].UserName;
-                    let UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
+                    this.router.navigate([this.stringConstant.taskDetails, result[0].UserId, result[0].UserRole, result[0].UserName]);
                 }
                 else {
-                    let UserId = result[0].UserId;
-                    let UserRole = result[0].UserRole;
-                    let UserName = result[0].UserName;
-                    let UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
+                    this.router.navigate([this.stringConstant.taskDetails, result[0].UserId, result[0].UserRole, result[0].UserName]);
                 }
             this.loader.loader = false;
         }, err => {

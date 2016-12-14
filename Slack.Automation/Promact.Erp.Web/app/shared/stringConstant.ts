@@ -37,4 +37,8 @@ export class StringConstant {
     createdOn = "10-09-2016";
     comment = "test Comment";
     description = "test Description";
+    empty = "";
+    userRole = "UserRole";
+    paramsUserId = "UserId";
+    paramsUserName = "UserName";
 }
