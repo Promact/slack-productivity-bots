@@ -53,7 +53,7 @@ export class TaskService {
         params.set(this.stringConstant.userName, name);
         params.set(this.stringConstant.createdOns, createdOns);
         params.set(this.stringConstant.selectedDate, selectedDate);
-        return this.http.get(this.TaskMailUrl + + this.stringConstant.taskDetailsUrl+ id, { search: params })
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl+ id, { search: params })
             .map(this.extractData)
             .catch(this.handleError);
     }
