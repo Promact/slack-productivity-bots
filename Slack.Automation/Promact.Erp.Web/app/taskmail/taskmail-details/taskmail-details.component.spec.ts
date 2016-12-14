@@ -22,8 +22,8 @@ describe('TaskMail Detials Tests', () => {
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            declarations: [RouterLinkStubDirective], 
+            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: ActivatedRouteStub },
