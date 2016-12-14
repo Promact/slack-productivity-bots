@@ -38,15 +38,15 @@ export class TaskMailDetailsComponent implements OnInit {
             this.IsMaxDate = true;
             this.taskService.getTaskMailDetailsReport(params['UserId'], params['UserRole'], params['UserName']).subscribe(taskMails => {
                 this.taskMail = taskMails;
-                let datePipeMinDate = new DatePipe("medium");
+                let datePipeMinDate = new DatePipe(this.stringConstant.medium);
                 this.MinDate = datePipeMinDate.transform(this.taskMail[0].IsMin, this.stringConstant.dateDefaultFormat);
                 if (this.MinDate === this.stringConstant.defaultDate) {
                     this.IsMinDate = true;
                 }
-                let datePipeMaxDate = new DatePipe("medium");
+                let datePipeMaxDate = new DatePipe(this.stringConstant.medium);
                 this.MaxDate = datePipeMaxDate.transform(this.taskMail[0].IsMax, this.stringConstant.dateDefaultFormat);
                 this.taskMail.forEach(taskmails => {
-                    let datePipe = new DatePipe("medium");
+                    let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                     taskmails.TaskMails.forEach(taskMail => {
                         if (taskMail.Comment === this.stringConstant.notAvailableComment) {
@@ -73,7 +73,7 @@ export class TaskMailDetailsComponent implements OnInit {
                this.IsMinDate = true;
                 }
            this.taskMail.forEach(taskmails => {
-                    let datePipe = new DatePipe("medium");
+               let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                     taskmails.TaskMails.forEach(taskMail => {
                         if (taskMail.Comment === this.stringConstant.notAvailableComment) {
@@ -96,7 +96,7 @@ export class TaskMailDetailsComponent implements OnInit {
             }
             this.IsMinDate = false;
             this.taskMail.forEach(taskmails => {
-                let datePipe = new DatePipe("medium");
+                let datePipe = new DatePipe(this.stringConstant.medium);
                 taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                 taskmails.TaskMails.forEach(taskMail => {
                     if (taskMail.Comment === this.stringConstant.notAvailableComment) {
@@ -122,7 +122,7 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.IsMinDate = true;
             }
             this.taskMail.forEach(taskmails => {
-                let datePipe = new DatePipe("medium");
+                let datePipe = new DatePipe(this.stringConstant.medium);
                 taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                 taskmails.TaskMails.forEach(taskMail => {
                     if (taskMail.Comment === this.stringConstant.notAvailableComment) {

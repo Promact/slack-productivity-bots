@@ -31,4 +31,10 @@ export class StringConstant {
     noLeaves = "No employee has any approved leaves";
     noDetails = "No details to show";
     noProjectToDisplay = "No projects to display";
+    medium = "medium";
+    userId = "1";
+    userName = "test";
+    createdOn = "10-09-2016";
+    comment = "test Comment";
+    description = "test Description";
 }
