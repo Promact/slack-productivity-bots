@@ -579,7 +579,6 @@ namespace Promact.Core.Test
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleEmployee, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(1, taskMailDetail.Count);
         }
-        
         ///<summary>
         /// this test case for the task mail details for user role is team leader
         /// </summary>
