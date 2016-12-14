@@ -122,7 +122,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailUrl, employeeId);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, employeeId, _stringConstant.UserDetailUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
@@ -150,24 +150,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get logged in user details by their username
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>User Details</returns>
-        public async Task<User> GetUserByUserNameAsync(string userName, string accessToken)
-        {
-            User userDetails = new User();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.LoginUserDetail, userName);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
-            if (response != null)
-            {
-                userDetails = JsonConvert.DeserializeObject<User>(response);
-            }
-            return userDetails;
-        }
-
-        /// <summary>
         /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
         /// </summary>
         /// <param name="teamLeaderId"></param>
@@ -176,7 +158,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId, string accessToken)
         {
             List<User> projectUsers = new List<User>();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectUsersByTeamLeaderId, teamLeaderId);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, teamLeaderId, _stringConstant.ProjectUsersByTeamLeaderId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if (response != null)
             {

@@ -79,14 +79,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken);
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get logged in user details by their username
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>User Details</returns>
-        Task<User> GetUserByUserNameAsync(string userName, string accessToken);
-
-        /// <summary>
         /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
         /// </summary>
         /// <param name="teamLeaderId"></param>

@@ -44,13 +44,11 @@ namespace Promact.Core.Test
         public void LeaveReportAdminTest()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest,_stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -61,13 +59,11 @@ namespace Promact.Core.Test
         public void LeaveReportEmployeeTest()
         {
             var response = Task.FromResult(_stringConstant.EmployeeDetailFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
-            leave.EmployeeId = _stringConstant.StringIdForTest;
+            leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -78,16 +74,14 @@ namespace Promact.Core.Test
         public void LeaveReportTeamLeaderTest()
         {
             var response = Task.FromResult(_stringConstant.TeamLeaderDetailFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.StringIdForTest);
+            var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectUsers);
-            var requestProjectUrl = string.Format("{0}{1}", _stringConstant.ProjectUsersByTeamLeaderId, _stringConstant.StringIdForTest);
+            var requestProjectUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.ProjectUsersByTeamLeaderId);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
-            leave.EmployeeId = _stringConstant.StringIdForTest;
+            leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(1, leaveReports.Count());
         }
 
@@ -98,10 +92,10 @@ namespace Promact.Core.Test
         public void LeaveReportDetailTest()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = _leaveReportRepository.LeaveReportDetails(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
+            var leaveReport = _leaveReportRepository.LeaveReportDetailsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(leaveReport);
         }
 
@@ -112,13 +106,11 @@ namespace Promact.Core.Test
         public void LeaveReportTestFalse()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var requestIdUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest,_stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReports = _leaveReportRepository.LeaveReport(_stringConstant.TestAccessToken, _stringConstant.TestUserName).Result;
+            var leaveReports = _leaveReportRepository.LeaveReportAsync(_stringConstant.TestAccessToken, _stringConstant.EmployeeIdForTest).Result;
             Assert.NotEqual(2, leaveReports.Count());
         }
 
@@ -131,10 +123,10 @@ namespace Promact.Core.Test
         public void LeaveReportDetailTestFalse()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format("{0}{1}", _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest,_stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
-            var leaveReport = _leaveReportRepository.LeaveReportDetails(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
+            var leaveReport = _leaveReportRepository.LeaveReportDetailsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotEqual(2, leaveReport.Count());
         }
 

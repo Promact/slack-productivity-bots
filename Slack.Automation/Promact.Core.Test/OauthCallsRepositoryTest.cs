@@ -162,7 +162,7 @@ namespace Promact.Core.Test
         public async Task GetUserByEmployeeIdAsync()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl );
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             var userDetails = await _oauthCallsRepository.GetUserByEmployeeIdAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken);
             Assert.Equal(userDetails.UserName, _stringConstant.TestUserName);
@@ -175,35 +175,9 @@ namespace Promact.Core.Test
         public async Task GetUserByEmployeeIdFalseAsync()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailUrl, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             var userDetails = await _oauthCallsRepository.GetUserByEmployeeIdAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken);
-            Assert.NotEqual(userDetails.UserName, _stringConstant.TestUserNameFalse);
-        }
-
-        /// <summary>
-        /// Method to test GetUserByUserName with correct values 
-        /// </summary>
-        [Fact, Trait("Category","Required")]
-        public async Task GetUserByUserNameAsync()
-        {
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,_stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var userDetails = await _oauthCallsRepository.GetUserByUserNameAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken);
-            Assert.Equal(userDetails.UserName, _stringConstant.TestUserName);
-        }
-
-        /// <summary>
-        /// Method to test GetUserByUserName with incorrect values 
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task GetUserByUserNameFalseAsync()
-        {
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.LoginUserDetail, _stringConstant.TestUserName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
-            var userDetails = await _oauthCallsRepository.GetUserByUserNameAsync(_stringConstant.TestUserName, _stringConstant.TestAccessToken);
             Assert.NotEqual(userDetails.UserName, _stringConstant.TestUserNameFalse);
         }
 
@@ -214,7 +188,7 @@ namespace Promact.Core.Test
         public async Task GetProjectUsersByTeamLeaderIdAsync()
         {
             var response = Task.FromResult(_stringConstant.ProjectUsers);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectUsersByTeamLeaderId, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmployeeIdForTest, _stringConstant.ProjectUsersByTeamLeaderId);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             var userName = _stringConstant.EmptyString;
             var users = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken);
@@ -232,7 +206,7 @@ namespace Promact.Core.Test
         public async Task GetProjectUsersByTeamLeaderIdFalseAsync()
         {
             var response = Task.FromResult(_stringConstant.ProjectUsers);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectUsersByTeamLeaderId, _stringConstant.EmployeeIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmployeeIdForTest, _stringConstant.ProjectUsersByTeamLeaderId);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             var userName = _stringConstant.EmptyString;
             var users = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken);
