@@ -588,7 +588,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             else if (role == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> userRolesAcList = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRoleAc in userRolesAcList)
                 {
