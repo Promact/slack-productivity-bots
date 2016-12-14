@@ -31,6 +31,10 @@ namespace Promact.Core.Repository.TaskMailRepository
 
         string questionText = "";
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        DateTime? maxDate = null;
+        DateTime? minDate = null;
+        List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+        List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
         #endregion
 
         #region Constructor
@@ -408,7 +412,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string userId)
         {
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
             if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
             {
@@ -499,7 +503,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
 
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> userRoles = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRole in userRoles)
                 {
@@ -606,7 +610,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             else if (role == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> userRolesAcList = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRoleAc in userRolesAcList)
                 {
@@ -720,7 +724,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             else if (role == _stringConstant.RoleTeamLeader)
             {
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> usersRole = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRole in usersRole)
                 {
@@ -812,45 +816,45 @@ namespace Promact.Core.Repository.TaskMailRepository
             return minDate.Value;
         }
 
-        private TaskMailDetailReportAc TaskMailDetailReport(TaskMailDetails taskMailDetail)
-        {
-            TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc
-            {
-                Id = taskMailDetail.Id,
-                Description = taskMailDetail.Description,
-                Comment = taskMailDetail.Comment,
-                Status = taskMailDetail.Status,
-                Hours = taskMailDetail.Hours
-            };
-            return taskmailReportAc;
-        }
+        //private TaskMailDetailReportAc TaskMailDetailReport(TaskMailDetails taskMailDetail)
+        //{
+        //    TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc
+        //    {
+        //        Id = taskMailDetail.Id,
+        //        Description = taskMailDetail.Description,
+        //        Comment = taskMailDetail.Comment,
+        //        Status = taskMailDetail.Status,
+        //        Hours = taskMailDetail.Hours
+        //    };
+        //    return taskmailReportAc;
+        //}
 
-        private TaskMailReportAc TaskMailReport(UserRoleAc userRole)
-        {
-            TaskMailReportAc taskMailReportAc = new TaskMailReportAc
-            {
-                UserName = userRole.Name,
-                UserId = userRole.UserId,
-                UserRole = userRole.Role,
-                UserEmail = userRole.UserName
-            };
-            return taskMailReportAc;
-        }
+        //private TaskMailReportAc TaskMailReport(UserRoleAc userRole)
+        //{
+        //    TaskMailReportAc taskMailReportAc = new TaskMailReportAc
+        //    {
+        //        UserName = userRole.Name,
+        //        UserId = userRole.UserId,
+        //        UserRole = userRole.Role,
+        //        UserEmail = userRole.UserName
+        //    };
+        //    return taskMailReportAc;
+        //}
 
-        private TaskMailReportAc TaskMailReport(string UserId, string UserRole, string UserName, DateTime CreatedOn, List<TaskMailDetailReportAc> taskMailDetailReportAc, DateTime MaxDate, DateTime MinDate)
-        {
-            TaskMailReportAc taskMailReportAc = new TaskMailReportAc
-            {
-                UserId = UserId,
-                UserName = UserName,
-                UserRole = UserRole,
-                CreatedOn = CreatedOn,
-                TaskMails = taskMailDetailReportAc,
-                MaxDate = MaxDate,
-                MinDate = MinDate
-            };
-            return taskMailReportAc;
-        }
+        //private TaskMailReportAc TaskMailReport(string UserId, string UserRole, string UserName, DateTime CreatedOn, List<TaskMailDetailReportAc> taskMailDetailReportAc, DateTime MaxDate, DateTime MinDate)
+        //{
+        //    TaskMailReportAc taskMailReportAc = new TaskMailReportAc
+        //    {
+        //        UserId = UserId,
+        //        UserName = UserName,
+        //        UserRole = UserRole,
+        //        CreatedOn = CreatedOn,
+        //        TaskMails = taskMailDetailReportAc,
+        //        MaxDate = MaxDate,
+        //        MinDate = MinDate
+        //    };
+        //    return taskMailReportAc;
+        //}
         #endregion
     }
 }

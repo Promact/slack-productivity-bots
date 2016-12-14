@@ -63,7 +63,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/TaskReport/user :id 
+        * @api {get} api/TaskReport/user/:id 
         * @apiVersion 1.0.0
         * @apiName TaskMailDetailsReportNextPreviousDateAsync
         * @apiGroup TaskReport
@@ -113,7 +113,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/TaskReport/user :id 
+        * @api {get} api/TaskReport/user/:id 
         * @apiVersion 1.0.0
         * @apiName TaskMailDetailsReportSelectedDateAsync
         * @apiGroup TaskReport
@@ -124,11 +124,11 @@ namespace Promact.Erp.Core.Controllers
         * @apiParam {string} selectedDate user Task Mail SelectedDate
         * @apiParamExample {json} Request-Example:
         *        {
-        *             "UserId": "1",
-        *             "UserRole": "Admin",
-        *             "UserName" : "test",
-        *             "CreatedOn": "01-01-0001",
-        *             "SelectedDate":"01-01-0001"
+        *             "id": "1",
+        *             "role": "Admin",
+        *             "name" : "test",
+        *             "createdOn": "01-01-0001",
+        *             "selectedDate":"01-01-0001"
         *        }      
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
