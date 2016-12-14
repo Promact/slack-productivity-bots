@@ -7,6 +7,8 @@ using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -75,7 +77,6 @@ namespace Promact.Erp.Core.Controllers
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
-                    };
                 }
                 catch (Exception)
                 {
@@ -113,7 +114,11 @@ namespace Promact.Erp.Core.Controllers
                 {
                     _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
-                    replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+
+                    Task.Run(async () =>
+                    {
+                        replyText = await _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text);
+                    }).GetAwaiter().GetResult();
 
                     if (!String.IsNullOrEmpty(replyText))
                     {
