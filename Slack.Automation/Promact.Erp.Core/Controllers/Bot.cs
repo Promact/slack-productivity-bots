@@ -77,6 +77,7 @@ namespace Promact.Erp.Core.Controllers
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
+                    };
                 }
                 catch (Exception)
                 {
