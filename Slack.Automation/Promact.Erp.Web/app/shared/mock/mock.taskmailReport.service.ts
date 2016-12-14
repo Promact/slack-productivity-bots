@@ -2,17 +2,19 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { TaskMailModel } from '../../taskmail/taskmail.model';
+import { StringConstant } from '../stringConstant';
 
 @Injectable()
 export class MockTaskMailService {
+    stringConstant: StringConstant = new StringConstant();
     constructor() {
 
     }
     getListOfEmployee() {
         let mockTaskMailModels = new Array<MockTaskmailModel>();
         let mockTaskMailModel = new MockTaskmailModel();
-        mockTaskMailModel.UserName = "test";
-        mockTaskMailModel.UserRole = "Admin";
+        mockTaskMailModel.UserName = this.stringConstant.userName;
+        mockTaskMailModel.UserRole = this.stringConstant.RoleAdmin;
         mockTaskMailModels.push(mockTaskMailModel);
         return new BehaviorSubject(mockTaskMailModels).asObservable();
     }
@@ -21,17 +23,17 @@ export class MockTaskMailService {
         let mockTaskmailModels = new Array<MockTaskmailModel>();
         let mockmailModels = new Array<MockmailModel>();
         let mockmailModel = new MockmailModel();
-        mockmailModel.Comment = "test Comment";
+        mockmailModel.Comment = this.stringConstant.comment;
         mockmailModel.Hours = 1;
-        mockmailModel.Description = "test Description";
+        mockmailModel.Description = this.stringConstant.description;
         mockmailModels.push(mockmailModel);
         let mockTaskmailModel = new MockTaskmailModel();
         mockTaskmailModel.UserName = UserName;
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -40,17 +42,17 @@ export class MockTaskMailService {
         let mockTaskmailModels = new Array<MockTaskmailModel>();
         let mockmailModels = new Array<MockmailModel>();
         let mockmailModel = new MockmailModel();
-        mockmailModel.Comment = "test Comment";
+        mockmailModel.Comment = this.stringConstant.comment;
         mockmailModel.Hours = 1;
-        mockmailModel.Description = "test Description";
+        mockmailModel.Description = this.stringConstant.description;
         mockmailModels.push(mockmailModel);
         let mockTaskmailModel = new MockTaskmailModel();
         mockTaskmailModel.UserName = UserName;
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -59,17 +61,17 @@ export class MockTaskMailService {
         let mockTaskmailModels = new Array<MockTaskmailModel>();
         let mockmailModels = new Array<MockmailModel>();
         let mockmailModel = new MockmailModel();
-        mockmailModel.Comment = "test Comment";
+        mockmailModel.Comment = this.stringConstant.comment;
         mockmailModel.Hours = 1;
-        mockmailModel.Description = "test Description";
+        mockmailModel.Description = this.stringConstant.description;
         mockmailModels.push(mockmailModel);
         let mockTaskmailModel = new MockTaskmailModel();
         mockTaskmailModel.UserName = UserName;
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }
@@ -78,17 +80,17 @@ export class MockTaskMailService {
         let mockTaskmailModels = new Array<MockTaskmailModel>();
         let mockmailModels = new Array<MockmailModel>();
         let mockmailModel = new MockmailModel();
-        mockmailModel.Comment = "test Comment";
+        mockmailModel.Comment = this.stringConstant.comment;
         mockmailModel.Hours = 1;
-        mockmailModel.Description = "test Description";
+        mockmailModel.Description = this.stringConstant.description;
         mockmailModels.push(mockmailModel);
         let mockTaskmailModel = new MockTaskmailModel();
         mockTaskmailModel.UserName = UserName;
         mockTaskmailModel.UserRole = UserRole;
         mockTaskmailModel.UserId = UserId;
         mockTaskmailModel.TaskMails = mockmailModels;
-        mockTaskmailModel.IsMin = new Date("10-09-2016");
-        mockTaskmailModel.IsMax = new Date("10-09-2016");
+        mockTaskmailModel.IsMin = new Date(this.stringConstant.createdOn);
+        mockTaskmailModel.IsMax = new Date(this.stringConstant.createdOn);
         mockTaskmailModels.push(mockTaskmailModel);
         return new BehaviorSubject(mockTaskmailModels).asObservable();
     }

@@ -31,4 +31,10 @@ export class StringConstant {
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";
     noProjectToDisplay = "No projects to display";
+    medium = "medium";
+    userId = "1";
+    userName = "test";
+    createdOn = "10-09-2016";
+    comment = "test Comment";
+    description = "test Description";
 }
