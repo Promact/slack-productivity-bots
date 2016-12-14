@@ -7,8 +7,6 @@ using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -63,7 +61,7 @@ namespace Promact.Erp.Core.Controllers
                         if (user != null)
                         {
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
-                            { 
+                            {
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
@@ -77,17 +75,18 @@ namespace Promact.Erp.Core.Controllers
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
+                    };
                 }
-                catch (AggregateException aggregateException)
+                catch (Exception)
                 {
-                    foreach (var exception in aggregateException.InnerExceptions)
-                    {
-                        _logger.Error("\n" + _stringConstant.LoggerTaskMailBot + " " + exception.InnerException + "\n" + exception.StackTrace);
-                    }
                     client.CloseSocket();
                 }
-
-            };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + " " + ex.Message + "\n" + ex.StackTrace);
+                throw ex;
+            }
 
         }
 
@@ -114,11 +113,7 @@ namespace Promact.Erp.Core.Controllers
                 {
                     _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
-
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text);
-                    }).GetAwaiter().GetResult();
+                    replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
 
                     if (!String.IsNullOrEmpty(replyText))
                     {
