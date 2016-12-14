@@ -326,6 +326,13 @@ namespace Promact.Erp.Util.StringConstants
         string TestAnswer { get; }
         string TestId { get; }
         string TestGroupName { get; }
+        string TestQuestion { get; }
+        string EmployeesListFromOauthInValid { get; }
+        string UnExpectedInActiveUser { get; }
+        string EmployeesListInValid { get; }
+        string InActiveInOAuth { get; }
+        string OAuthUserDetails { get; }
+        string InValidOAuthUsers { get; }
         string WrongActionSlashCommand { get; }
         string LeaveWrongCommandForBackDateCL { get; }
         string LeaveWrongCommandForBeyondDateFirstExample { get; }
