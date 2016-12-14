@@ -530,7 +530,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "*Your previous day's status is :*\n";
+                return "*Your scrum status of {0} is :*\n";
             }
         }
         public string ScrumBotToken
@@ -594,14 +594,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No employees found for this project.";
-            }
-        }
-        public string WrongPerson
-        {
-            get
-            {
-                return "<@{0}> please answer.";
+                return "Sorry. No active employee found for this project.";
             }
         }
         public string Unrecognized
@@ -672,6 +665,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry we do not have your slack details";
             }
         }
+        public string MarkedInActive
+        {
+            get
+            {
+                return "<@{0}>,you were marked as In-active in OAuth before. Now you are marked as an Active User.\n Please answer ";
+            }
+        }
         public string Channel
         {
             get
@@ -693,11 +693,18 @@ namespace Promact.Erp.Util.StringConstants
                 return "time";
             }
         }
+        public string InActive
+        {
+            get
+            {
+                return "In-Active";
+            }
+        }
         public string PleaseAnswer
         {
             get
             {
-                return "<@{0}> please answer.";
+                return "I am expecting <@{0}> to answer.";
             }
         }
         public string ScrumConcludedButLater
@@ -1860,13 +1867,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5845155745451";
             }
         }
-        //public string TitleForTest
-        //{
-        //    get
-        //    {
-        //        return "Software Developer";
-        //    }
-        //}
         public string ScrumQuestionForTest
         {
             get
@@ -1909,6 +1909,41 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListFromOauthInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string InValidOAuthUsers
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string OAuthUserDetails
+        {
+            get
+            {
+                return "{\"firstName\":\"pranali\",\"lastName\":\"Promact\",\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"pranali\",\"slackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"userName\":\"pranali@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"pranali@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
+            }
+        }
+        public string UnExpectedInActiveUser
+        {
+            get
+            {
+                return "<@pranali> is marked as In-active in OAuth server. Please contact your system administrator. \r\nI am expecting <@apoorvapatel> to answer.";
             }
         }
         public string UserBySlackUserName
@@ -2208,7 +2243,20 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Admin\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
             }
         }
-
+        public string TestQuestion
+        {
+            get
+            {
+                return "Good Day <@pranali>!\n\r\n*Your scrum status of {0} is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
+            }
+        }
+        public string InActiveInOAuth
+        {
+            get
+            {
+                return "<@{0}> is marked as In-active in OAuth server. Please contact your system administrator. ";
+            }
+        }
         public string TeamLeaderLogin
         {
             get

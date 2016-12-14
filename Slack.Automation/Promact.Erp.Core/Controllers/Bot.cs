@@ -132,6 +132,13 @@ namespace Promact.Erp.Core.Controllers
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
+                catch (TaskCanceledException ex)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
+                    client.CloseSocket();
+                    throw ex;
+                }
                 catch (HttpRequestException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
