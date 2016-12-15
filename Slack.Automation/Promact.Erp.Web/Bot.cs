@@ -4,10 +4,13 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Promact.Erp.Web
 {
@@ -54,7 +57,7 @@ namespace Promact.Erp.Web
                         if (user != null)
                         {
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
-                            { 
+                            {
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
@@ -111,25 +114,37 @@ namespace Promact.Erp.Web
                 try
                 {
                     _logger.Info("Scrum bot got message, inside try");
-                    string replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+                    string replyText = string.Empty;
+                    Task.Run(async () =>
+                    {
+                        replyText = await _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text);
+                    }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Info("Scrum bot got reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
-                catch (AggregateException exception)
+                catch (ForbiddenUserException ex)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.UnAuthorized);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Forbidden User " + ex.InnerException + "\n" + ex.StackTrace);
+                }
+                catch (TaskCanceledException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    foreach (var innerException in exception.Flatten().InnerExceptions)
-                    {
-                        _logger.Error("\n" + _stringConstant.LoggerScrumBot + " " + innerException.Message + "\n" + innerException.StackTrace);
-                    }
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
                     client.CloseSocket();
+                    throw ex;
+                }
+                catch (HttpRequestException ex)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
+                    client.CloseSocket();
+                    throw ex;
                 }
             };
-
         }
-
     }
 }
