@@ -40,4 +40,7 @@ export class StringConstant {
     next = "Next";
     previous = "Previous";
     pageType = "PageType";
+    taskDetailsUrl = "/user/";
+    role = "role";
+    name = "name";
 }
