@@ -536,7 +536,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
@@ -597,7 +597,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
