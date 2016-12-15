@@ -179,12 +179,13 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to send error message to user od slack
         /// </summary>
-        /// <param name="leave">slash command object</param>
-        public void Error(SlashCommand leave)
+        /// <param name="errorMessage">Message to send</param>
+        /// <param name="responseUrl">Incoming webhook url</param>
+        public async Task ErrorAsync(string responseUrl, string errorMessage)
         {
             // if something error will happen user will get this message
-            var replyText = _stringConstant.SlashCommandErrorMessage;
-            _client.SendMessageAsync(leave.ResponseUrl, replyText);
+            var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.Star, errorMessage, _stringConstant.Star);
+            await _client.SendMessageAsync(responseUrl, replyText);
         }
         #endregion
 

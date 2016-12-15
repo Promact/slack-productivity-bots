@@ -594,11 +594,11 @@ namespace Promact.Core.Test
         /// Test case to check method Error of slack repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void Error()
+        public async Task ErrorAsync()
         {
-            var replyText = _stringConstant.SlashCommandErrorMessage;
+            var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.Star, _stringConstant.ErrorMsg, _stringConstant.Star);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
-            _slackRepository.Error(slackLeave);
+            await _slackRepository.ErrorAsync(slackLeave.ResponseUrl, _stringConstant.ErrorMsg);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 

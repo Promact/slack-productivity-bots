@@ -216,7 +216,7 @@ namespace Promact.Core.Test
             leave.Status = Condition.Approved;
             _leaveRequestRepository.UpdateLeave(leave);
             var casualLeave = _leaveRequestRepository.NumberOfLeaveTaken(leave.EmployeeId);
-            Assert.NotEqual(1,casualLeave.CasualLeave);
+            Assert.NotEqual(2,casualLeave.CasualLeave);
         }
 
 
