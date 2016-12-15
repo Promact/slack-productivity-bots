@@ -16,7 +16,6 @@ namespace Promact.Erp.Util.HttpClient
         public HttpClientService(IStringConstantRepository stringConstant)
         {
             _stringConstant = stringConstant;
-
         }
 
         /// <summary>
