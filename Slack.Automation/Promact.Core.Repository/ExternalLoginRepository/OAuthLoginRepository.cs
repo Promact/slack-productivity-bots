@@ -58,7 +58,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         {
             ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
             //Creating a user with email only. Password not required
-            var result = await _userManager.CreateAsync(user);
+            IdentityResult result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
                 //Adding external Oauth details
@@ -76,8 +76,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>Oauth</returns>
         public OAuthApplication ExternalLoginInformation(string refreshToken)
         {
-            var clientId = _envVariableRepository.PromactOAuthClientId;
-            var clientSecret = _envVariableRepository.PromactOAuthClientSecret;
+            string clientId = _envVariableRepository.PromactOAuthClientId;
+            string clientSecret = _envVariableRepository.PromactOAuthClientSecret;
             OAuthApplication oAuth = new OAuthApplication();
             oAuth.ClientId = clientId;
             oAuth.ClientSecret = clientSecret;
@@ -93,10 +93,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformationAsync(string code)
         {
-            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
-            var slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
-            var slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
-            var checkUserIncomingWebHookExist = _incomingWebHook.Any(x => x.UserId == slackOAuth.UserId);
+            string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
+            string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
+            SlackOAuthResponse slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
+            bool checkUserIncomingWebHookExist = _incomingWebHook.Any(x => x.UserId == slackOAuth.UserId);
             if (!checkUserIncomingWebHookExist)
             {
                 IncomingWebHook slackItem = new IncomingWebHook()
@@ -105,11 +105,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                     IncomingWebHookUrl = slackOAuth.IncomingWebhook.Url
                 };
                 _incomingWebHook.Insert(slackItem);
-                _incomingWebHook.Save();
+                await _incomingWebHook.SaveChangesAsync();
             }
-            var detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
-            var userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
-            var slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
+            string detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
+            string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
+            SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             if (slackUsers.Ok)
             {
                 foreach (var user in slackUsers.Members)
@@ -120,8 +120,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
             else
                 throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
-            var channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
-            var channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
+            string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
+            SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
             if (channels.Ok)
             {
                 foreach (var channel in channels.Channels)
@@ -147,8 +147,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             else
                 throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
 
-            var groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
-            var groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
+            string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
+            SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
             if (groups.Ok)
             {
                 foreach (var channel in groups.Groups)
@@ -181,7 +181,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackEvent"></param>
         public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
         {
-            var user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
+            SlackUserDetails user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
             if (user == null)
                 await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
         }
@@ -194,7 +194,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
         {
 
-            var channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            SlackChannelDetails channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;

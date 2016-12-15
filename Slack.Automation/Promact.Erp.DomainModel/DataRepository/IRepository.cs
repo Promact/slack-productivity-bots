@@ -18,8 +18,6 @@ namespace Promact.Erp.DomainModel.DataRepository
 
         void Update(T entity);
 
-        // void Save();
-
         Task<int> SaveChangesAsync();
 
         T FirstOrDefault(Expression<Func<T, bool>> predicate);

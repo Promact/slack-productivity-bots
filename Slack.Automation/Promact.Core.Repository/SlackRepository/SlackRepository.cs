@@ -68,10 +68,10 @@ namespace Promact.Core.Repository.SlackRepository
             try
             {
                 // method to get leave by its id
-                var leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
-                var user = await _userManager.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
-                var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
-                var updaterUser = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
+                LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
+                ApplicationUser user = await _userManager.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
+                SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                ApplicationUser updaterUser = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
                 // only pending status can be modified
                 if (leave.Status == Condition.Pending)
                 {
@@ -83,11 +83,11 @@ namespace Promact.Core.Repository.SlackRepository
                     {
                         leave.Status = Condition.Rejected;
                     }
-                    _leaveRepository.UpdateLeave(leave);
+                    await _leaveRepository.UpdateLeaveAsync(leave);
                     replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
                                 leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                 leave.Reason, leave.Status, leaveResponse.User.Name);
-                    var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                    IncomingWebHook incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                     // Used to send slack message to the user about leave updation
                     await _client.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
                     // Used to send email to the user about leave updation
@@ -123,19 +123,19 @@ namespace Promact.Core.Repository.SlackRepository
         {
             SlackAction actionType;
             // method to convert slash command to list of string
-            var slackText = _attachmentRepository.SlackText(leave.Text);
+            List<string> slackText = _attachmentRepository.SlackText(leave.Text);
             // to get user details by slack user name
-            var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
+            ApplicationUser user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
             if (user != null)
             {
-                var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
+                IncomingWebHook incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                 if (incomingWebHook != null)
                 {
                     leave.Text.ToLower();
                     // getting access token of user of promact oauth server
-                    var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                    string accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                     // checking whether string ca convert to Slack Action or not, if true then further process will be conduct
-                    var actionConvertorResult = Enum.TryParse(slackText[0], out actionType);
+                    bool actionConvertorResult = Enum.TryParse(slackText[0], out actionType);
                     if (actionConvertorResult)
                     {
                         switch (actionType)
@@ -183,12 +183,14 @@ namespace Promact.Core.Repository.SlackRepository
         public void Error(SlashCommand leave)
         {
             // if something error will happen user will get this message
-            var replyText = _stringConstant.SlashCommandErrorMessage;
+            string replyText = _stringConstant.SlashCommandErrorMessage;
             _client.SendMessageAsync(leave.ResponseUrl, replyText);
         }
         #endregion
 
         #region Private Methods
+
+
         /// <summary>
         /// Method to apply leave
         /// </summary>
@@ -203,20 +205,20 @@ namespace Promact.Core.Repository.SlackRepository
                 LeaveType leaveType;
                 DateTime startDate, endDate, reJoinDate;
                 User user = new User();
-                var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                 // checking whether string can convert to date of independent culture or not, if return true then further process will be conduct
-                var startDateConvertorResult = DateTime.TryParseExact(slackRequest[3], dateFormat, CultureInfo.InvariantCulture,
+                bool startDateConvertorResult = DateTime.TryParseExact(slackRequest[3], dateFormat, CultureInfo.InvariantCulture,
                     DateTimeStyles.None, out startDate);
                 if (startDateConvertorResult)
                 {
                     user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
                     LeaveRequest leaveRequest = new LeaveRequest();
                     // Method to check leave's start date is not beyond today. Back date checking
-                    var validStartDate = LeaveStartDateValid(startDate);
+                    bool validStartDate = LeaveStartDateValid(startDate);
                     if (validStartDate)
                     {
                         // checking whether string can convert to leave type or not, if return true then further process will be conduct
-                        var leaveTypeConvertorResult = Enum.TryParse(slackRequest[1], out leaveType);
+                        bool leaveTypeConvertorResult = Enum.TryParse(slackRequest[1], out leaveType);
                         if (leaveTypeConvertorResult)
                         {
                             // converting string to leave type of indian culture
@@ -225,14 +227,14 @@ namespace Promact.Core.Repository.SlackRepository
                                 case LeaveType.cl:
                                     {
                                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                                        var endDateConvertorResult = DateTime.TryParseExact(slackRequest[4], dateFormat,
+                                        bool endDateConvertorResult = DateTime.TryParseExact(slackRequest[4], dateFormat,
                                             CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
-                                        var reJoinDateConvertorResult = DateTime.TryParseExact(slackRequest[5], dateFormat,
+                                        bool reJoinDateConvertorResult = DateTime.TryParseExact(slackRequest[5], dateFormat,
                                             CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
                                         if (endDateConvertorResult && reJoinDateConvertorResult)
                                         {
                                             // Method to check leave's end date is not beyond start date and re-join date is not beyond end date
-                                            var validDate = ValidDateTimeForLeave(startDate, endDate, reJoinDate);
+                                            bool validDate = ValidDateTimeForLeave(startDate, endDate, reJoinDate);
                                             if (validDate)
                                             {
                                                 // get user details from oAuth server
@@ -251,7 +253,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                     if (!validDate)
                                                     {
                                                         leaveRequest.EmployeeId = user.Id;
-                                                        _leaveRepository.ApplyLeave(leaveRequest);
+                                                        await _leaveRepository.ApplyLeaveAsync(leaveRequest);
                                                         replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
                                                         // method to send slack notification and email to team leaders and management
                                                         await _client.SendMessageWithAttachmentIncomingWebhookAsync(leaveRequest,
@@ -281,7 +283,7 @@ namespace Promact.Core.Repository.SlackRepository
                                             IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(leave.UserId, accessToken);
                                             if (IsAdmin)
                                             {
-                                                var slackUser = await _slackUserRepository.GetBySlackNameAsync(slackRequest[4]);
+                                                SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackRequest[4]);
                                                 // get user details from oAuth server for other user
                                                 newUser = await _oauthCallsRepository.GetUserByUserIdAsync(slackUser.UserId, accessToken);
                                             }
@@ -304,11 +306,11 @@ namespace Promact.Core.Repository.SlackRepository
                                         if (newUser.Id != null)
                                         {
                                             // Method to check more than one leave cannot be applied on that date
-                                            var validDate = LeaveDateDuplicate(newUser.Id, startDate);
+                                            bool validDate = LeaveDateDuplicate(newUser.Id, startDate);
                                             if (!validDate)
                                             {
                                                 leaveRequest.EmployeeId = newUser.Id;
-                                                _leaveRepository.ApplyLeave(leaveRequest);
+                                                await _leaveRepository.ApplyLeaveAsync(leaveRequest);
                                                 replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
                                                 await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leaveRequest,
                                                     accessToken, replyText, newUser.SlackUserId);
@@ -357,9 +359,9 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> LeavesListBySlackUserIdAsync(string slackUserId, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
             // get list of leave from user Id
-            var leaveList = _leaveRepository.LeaveListByUserId(user.Id);
+            IEnumerable<LeaveRequest> leaveList = _leaveRepository.LeaveListByUserId(user.Id);
             // if leave exit then further will get list in string else 
             if (leaveList.Count() != 0)
             {
@@ -398,13 +400,13 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> LeaveCancelByIdAsync(int leaveId, string slackUserId, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
-            var leave = await _leaveRepository.LeaveByIdAsync(leaveId);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(leaveId);
             // only authorize user of leave is allowed to cancel there leave
             if (user.Id == leave.EmployeeId)
             {
                 // method to cancel leave
-                var updateLeave = _leaveRepository.CancelLeave(leaveId);
+                LeaveRequest updateLeave = await _leaveRepository.CancelLeaveAsync(leaveId);
                 replyText = string.Format(_stringConstant.ReplyTextForCancelLeave, updateLeave.Id,
                     updateLeave.FromDate.ToShortDateString(), updateLeave.EndDate.Value.ToShortDateString(),
                     updateLeave.Status);
@@ -426,11 +428,11 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> LeaveStatusBySlackUserIdAsync(string slackUserId, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
             try
             {
                 // get only last leave of the user
-                var leave = _leaveRepository.LeaveListStatusByUserId(user.Id);
+                LeaveRequest leave = _leaveRepository.LeaveListStatusByUserId(user.Id);
                 if (leave.Type == LeaveType.cl)
                 {
                     replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveStatus, leave.Id,
@@ -487,7 +489,7 @@ namespace Promact.Core.Repository.SlackRepository
         {
             int leaveId;
             // checking whether string can be convert to integer or not, true then only further process will be conduct
-            var leaveIdConvertorResult = int.TryParse(slackText[1], out leaveId);
+            bool leaveIdConvertorResult = int.TryParse(slackText[1], out leaveId);
             if (leaveIdConvertorResult)
             {
                 // method to cancel leave by its id
@@ -534,17 +536,17 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> SlackLeaveBalanceAsync(SlashCommand leave, string accessToken)
         {
             // get user details from oAuth server
-            var user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
             if (user.Id != null)
             {
                 // get user leave allowed details from oAuth server
-                var allowedLeave = await _oauthCallsRepository.CasualLeaveAsync(leave.UserId, accessToken);
+                LeaveAllowed allowedLeave = await _oauthCallsRepository.CasualLeaveAsync(leave.UserId, accessToken);
                 // method to get user's number of leave taken
-                var leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
-                var casualLeaveTaken = leaveTaken.CasualLeave;
-                var sickLeaveTaken = leaveTaken.SickLeave;
-                var casualLeaveLeft = allowedLeave.CasualLeave - casualLeaveTaken;
-                var sickLeaveLeft = allowedLeave.SickLeave - sickLeaveTaken;
+                LeaveAllowed leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
+                double casualLeaveTaken = leaveTaken.CasualLeave;
+                double sickLeaveTaken = leaveTaken.SickLeave;
+                double casualLeaveLeft = allowedLeave.CasualLeave - casualLeaveTaken;
+                double sickLeaveLeft = allowedLeave.SickLeave - sickLeaveTaken;
                 replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveBalance, casualLeaveTaken,
                     allowedLeave.CasualLeave, Environment.NewLine, casualLeaveLeft);
                 replyText += string.Format(_stringConstant.ReplyTextForSickLeaveBalance, sickLeaveTaken,
@@ -565,7 +567,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <returns>Reply text to be send</returns>
         private string SlackLeaveHelp(SlashCommand leave)
         {
-            var replyText = _stringConstant.SlackHelpMessage;
+            string replyText = _stringConstant.SlackHelpMessage;
             return replyText;
         }
 
@@ -579,32 +581,32 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> UpdateSickLeaveAsync(List<string> slackText, ApplicationUser user, string accessToken)
         {
             // checking from oAuth whether user is Admin or not
-            var IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(user.SlackUserId, accessToken);
+            bool IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(user.SlackUserId, accessToken);
             if (IsAdmin)
             {
                 int leaveId;
                 DateTime endDate, reJoinDate;
                 // checking whether string can be convert to integer or not, true then only further process will be conduct
-                var leaveIdConvertorResult = int.TryParse(slackText[1], out leaveId);
+                bool leaveIdConvertorResult = int.TryParse(slackText[1], out leaveId);
                 if (leaveIdConvertorResult)
                 {
-                    var leave = await _leaveRepository.LeaveByIdAsync(leaveId);
+                    LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(leaveId);
                     if (leave != null && leave.Type == LeaveType.sl)
                     {
-                        var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                        string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                        var endDateConvertorResult = DateTime.TryParseExact(slackText[2], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
-                        var reJoinDateConvertorResult = DateTime.TryParseExact(slackText[3], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
+                        bool endDateConvertorResult = DateTime.TryParseExact(slackText[2], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
+                        bool reJoinDateConvertorResult = DateTime.TryParseExact(slackText[3], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
                         if (endDateConvertorResult && reJoinDateConvertorResult)
                         {
-                            var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
+                            User newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
                             leave.EndDate = endDate;
                             leave.RejoinDate = reJoinDate;
                             // Method to check leave's end date is not beyond start date and re-join date is not beyond end date
-                            var validDate = ValidDateTimeForLeave(leave.FromDate, leave.EndDate.Value, leave.RejoinDate.Value);
+                            bool validDate = ValidDateTimeForLeave(leave.FromDate, leave.EndDate.Value, leave.RejoinDate.Value);
                             if (validDate)
                             {
-                                _leaveRepository.UpdateLeave(leave);
+                                await _leaveRepository.UpdateLeaveAsync(leave);
                                 replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
                                     , newUser.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                     leave.Reason, leave.RejoinDate.Value.ToShortDateString());
@@ -679,7 +681,7 @@ namespace Promact.Core.Repository.SlackRepository
             int valid = -1;
             bool validIndicator = false;
             LeaveRequest lastLeave = new LeaveRequest();
-            var allLeave = _leaveRepository.LeaveListByUserIdOnlyApprovedAndPending(userId);
+            IEnumerable<LeaveRequest> allLeave = _leaveRepository.LeaveListByUserIdOnlyApprovedAndPending(userId);
             foreach (var leave in allLeave)
             {
                 if (leave.EndDate.HasValue)

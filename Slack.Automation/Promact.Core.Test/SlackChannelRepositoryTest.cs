@@ -52,7 +52,7 @@ namespace Promact.Core.Test
         public async Task GetByIdAsync()
         {
             await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
-            var slackChannel = _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest).Result;
+            SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
             Assert.Equal(slackChannel.ChannelId, _stringConstant.ChannelIdForTest);
         }
 
@@ -64,8 +64,8 @@ namespace Promact.Core.Test
         public async Task GetByIdFalseAsync()
         {
             await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
-            var slackUser = _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest).Result;
-            Assert.NotEqual(slackUser.ChannelId, _stringConstant.TeamLeaderIdForTest);
+            SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
+            Assert.NotEqual(slackChannel.ChannelId, _stringConstant.TeamLeaderIdForTest);
         }
 
 

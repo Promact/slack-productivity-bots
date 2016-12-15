@@ -52,7 +52,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task AddNewUserFromExternalLoginAsync()
         {
-            var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest,_stringConstant.UserIdForTest);
+            var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest, _stringConstant.UserIdForTest);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             Assert.Equal(user.UserName, _stringConstant.EmailForTest);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
