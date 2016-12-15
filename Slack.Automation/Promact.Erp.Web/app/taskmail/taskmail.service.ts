@@ -17,7 +17,7 @@ export class TaskService {
             .catch(this.handleError);
     }
     
-    getTaskMailDetailsReport(id: string, role: string, name: string): Observable<TaskMailDetailsModel[]> {
+    getTaskMailDetailsReport(id: string, role: string, name: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
         params.set(this.stringConstant.name, name);
@@ -26,7 +26,7 @@ export class TaskService {
             .catch(this.handleError);
     }
 
-    getTaskMailDetailsReportPreviousDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailDetailsModel[]> {
+    getTaskMailDetailsReportPreviousDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
         params.set(this.stringConstant.name, name);
@@ -36,7 +36,7 @@ export class TaskService {
             .map(this.extractData)
             .catch(this.handleError);
     }
-    getTaskMailDetailsReportNextDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailDetailsModel[]> {
+    getTaskMailDetailsReportNextDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
         params.set(this.stringConstant.name, name);
@@ -47,7 +47,7 @@ export class TaskService {
             .catch(this.handleError); 
     }
 
-    getTaskMailDetailsReportSelectedDate(name: string, id: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailDetailsModel[]> {
+    getTaskMailDetailsReportSelectedDate(name: string, id: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
         params.set(this.stringConstant.name, name);
