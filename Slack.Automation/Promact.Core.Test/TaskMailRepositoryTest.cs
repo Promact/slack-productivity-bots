@@ -533,7 +533,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
@@ -594,7 +594,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
@@ -652,11 +652,7 @@ namespace Promact.Core.Test
             Assert.Equal(3, taskMailDetail.Count);
         }
 
-            var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleTeamLeader, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
             Assert.Equal(3, taskMailDetail.Count);
         }
 
@@ -714,7 +710,7 @@ namespace Promact.Core.Test
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
@@ -1062,8 +1058,8 @@ namespace Promact.Core.Test
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMailPrvious.Id;
-            taskMailDetails.QuestionId = firstQuestion.Id;
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
         var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
