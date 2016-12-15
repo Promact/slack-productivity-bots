@@ -46,6 +46,11 @@ namespace Promact.Erp.Core.Controllers
         * {
         *     "error":"A message of error will be send user using incoming webhook"
         * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 400 OK 
+        * {
+        *     "error":"A message of error will be send user using incoming webhook"
+        * }
         */
         [HttpPost]
         [Route("leaverequest/leaveslashcommand")]
