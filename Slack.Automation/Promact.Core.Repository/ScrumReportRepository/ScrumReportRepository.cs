@@ -90,21 +90,30 @@ namespace Promact.Core.Repository.ScrumReportRepository
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
-                //if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumFirstQuestion))
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 1)
                 {
-                    employeeScrumDetail.Answer1 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer1 = SplitAnswer(todayScrumAnswer.Answer);
                 }
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 2)
                 {
-                    employeeScrumDetail.Answer2 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer2 = SplitAnswer(todayScrumAnswer.Answer);
                 }
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 3)
                 {
-                    employeeScrumDetail.Answer3 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer3 = SplitAnswer(todayScrumAnswer.Answer);
                 }
             }
             return employeeScrumDetail;
+        }
+
+        /// <summary>
+        /// Method to split the multiple scrum answers into an array
+        /// </summary>
+        /// <param name="Answer"></param>
+        /// <returns>scrum answer</returns>
+        private string[] SplitAnswer(string Answer)
+        {
+            return Answer.Split(new string[] { "\\n" }, StringSplitOptions.None);
         }
 
         #endregion
