@@ -194,6 +194,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "SlackAuthorize";
             }
         }
+
         public string UserDetailsUrl
         {
             get
