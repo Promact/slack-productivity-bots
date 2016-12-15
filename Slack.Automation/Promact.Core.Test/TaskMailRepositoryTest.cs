@@ -941,8 +941,8 @@ namespace Promact.Core.Test
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMailPrvious.Id;
-            taskMailDetails.QuestionId = firstQuestion.Id;
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
@@ -957,7 +957,7 @@ namespace Promact.Core.Test
             var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
         }
-       
+
         #endregion
 
         #region Initialisation
