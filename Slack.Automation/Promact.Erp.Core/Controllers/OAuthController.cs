@@ -170,6 +170,11 @@ namespace Promact.Erp.Core.Controllers
         * {
         *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
         * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
         */
         [HttpPost]
         [Route("slack/eventalert")]
