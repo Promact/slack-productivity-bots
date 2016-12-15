@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Util.HttpClient
 {
     public class HttpClientService : IHttpClientService
     {
         private System.Net.Http.HttpClient _client;
-        public HttpClientService()
+        private readonly IStringConstantRepository _stringConstant;
+        public HttpClientService(IStringConstantRepository stringConstant)
         {
-
+            _stringConstant = stringConstant;
         }
 
         /// <summary>
@@ -37,7 +39,16 @@ namespace Promact.Erp.Util.HttpClient
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 var responseContent = response.Content.ReadAsStringAsync().Result;
-                return responseContent;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return responseContent;
+                }
+                else
+                    throw new Exception(responseContent);
+            }
+            catch(HttpRequestException)
+            {
+                throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
             catch (Exception ex)
             {
@@ -58,14 +69,23 @@ namespace Promact.Erp.Util.HttpClient
             {
                 _client = new System.Net.Http.HttpClient();
                 var response = await _client.PostAsync(baseUrl, new StringContent(contentString, Encoding.UTF8, contentHeader));
+                _client.Dispose();
                 var responseString = response.Content.ReadAsStringAsync().Result;
-                return responseString;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return responseString;
+                }
+                else
+                    throw new Exception(responseString);
+            }
+            catch (HttpRequestException)
+            {
+                throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
         }
     }
 }

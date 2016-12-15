@@ -37,11 +37,12 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} oAuth/RefreshToken
+        * @api {get} oauth/refreshtoken
         * @apiVersion 1.0.0
-        * @apiName RefreshToken
-        * @apiGroup RefreshToken  
+        * @apiName RefreshTokenAsync
+        * @apiGroup OAuth  
         * @apiParam {string} Name    refreshToken
+        * @apiParam {string} Name    slackUserName
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -49,12 +50,13 @@ namespace Promact.Erp.Core.Controllers
         *       "ClientId":"dastvgs3rt2031srtgr54dgrf",
         *       "ClientSecret":"frwhklsjelkjsktjlk656f5dyhddvsfdgv",
         *       "RefreshToken":"acjshrkjajjsdfxo",
-        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack"
+        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack",
+        *       "UserId":"JFF414GSDF"
         *   }
         * }
         */
         [HttpGet]
-        [Route("oAuth/RefreshToken")]
+        [Route("oauth/refreshtoken")]
         public async Task<IHttpActionResult> RefreshTokenAsync(string refreshToken, string slackUserName)
         {
             var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
@@ -65,19 +67,24 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} oAuth/SlackRequest
+        * @api {get} oauth/slackoauthrequest
         * @apiVersion 1.0.0
-        * @apiName SlackOAuth
+        * @apiName SlackOAuthAsync
         * @apiGroup SlackOAuth  
         * @apiParam {string} Name    code
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       "Description":"This will add slack user, channel and group in application"
+        *       "Description":"This will add slack user, channel and group in application and redirect to appropriate page and display proper message"
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "error":"This will redirect to appropriate page and display proper error message"
         * }
         */
         [HttpGet]
-        [Route("oAuth/SlackRequest")]
+        [Route("oauth/slackoauthrequest")]
         public async Task<IHttpActionResult> SlackOAuthAsync(string code)
         {
             string message = string.Empty;
@@ -108,19 +115,47 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {post} slack/eventAlert
+        * @api {post} slack/eventalert
         * @apiVersion 1.0.0
-        * @apiName SlackEvent
-        * @apiGroup SlackEvent  
+        * @apiName SlackEventAsync
+        * @apiGroup SlackOAuth  
         * @apiParam {SlackEventApiAC} Name    slackEvent
+        * @apiParamExample {json} Request-Example:
+        * {
+        *       "token":"Jhj5dZrVaK7ZwHHjRyZWjbDl",
+        *       "challenge":"3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
+        *       "type":"url_verification",
+        *       "team_id":"T061EG9RZ",
+        *       "api_app_id":"A0FFV41KK",
+        *       "event_ts":"1465244570.336841",
+        *       "authed_users":"
+                    ["U061F7AUR"]",
+        *       "event":"
+        *       {
+                "type": "reaction_added",
+                "user": "U061F1EUR",
+                "item": 
+                    {
+                        "type": "message",
+                        "channel": "C061EG9SL",
+                        "ts": "1464196127.000002"
+                    },
+                    "reaction": "slightly_smiling_face"
+                },"
+        * }  
         * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
+        * @apiErrorExample {json} Error-Response:
         * HTTP/1.1 200 OK 
         * {
         *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
         * }
         */
         [HttpPost]
-        [Route("slack/eventAlert")]
+        [Route("slack/eventalert")]
         public async Task<IHttpActionResult> SlackEventAsync(SlackEventApiAC slackEvent)
         {
             try
