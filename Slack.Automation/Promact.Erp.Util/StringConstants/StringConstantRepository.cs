@@ -699,7 +699,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry we do not have your slack details";
+                return string.Format("Sorry we do not have your slack details. Click here {0} to add", AppSettingUtil.PromactErpUrl);
             }
         }
         public string MarkedInActive
@@ -1464,7 +1464,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry user can't apply leave. Either user are not in Promact OAuth or yet u haven't login in promact-slack server";
+                return string.Format("Sorry you cannot use leave slash command. Either user are not in Promact OAuth or yet u haven't login in promact-slack server. Click here {0} to add", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveListCommandForTest
@@ -1674,7 +1674,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Either you are not in Promact OAuth or you haven't logged in with Promact OAuth";
+                return string.Format("Either you are not in Promact OAuth or you haven't logged in with Promact OAuth. Click here {0} to add", AppSettingUtil.PromactErpUrl);
             }
         }
         public string HourSpentForTest
@@ -2829,7 +2829,23 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}", AppSettingUtil.PromactErpUrl);
+                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0} to add", AppSettingUtil.PromactErpUrl);
+            }
+        }
+
+        public string Star
+        {
+            get
+            {
+                return "*";
+            }
+        }
+
+        public string HttpRequestExceptionErrorMessage
+        {
+            get
+            {
+                return "An error occurred while sending the request to other server";
             }
         }
         public string Space
