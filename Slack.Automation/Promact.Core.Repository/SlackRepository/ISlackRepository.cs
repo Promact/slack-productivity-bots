@@ -22,7 +22,8 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to send error message to user od slack
         /// </summary>
-        /// <param name="leave">slash command object</param>
-        void Error(SlashCommand leave);
+        /// <param name="errorMessage">Message to send</param>
+        /// <param name="responseUrl">Incoming webhook url</param>
+        Task ErrorAsync(string responseUrl, string errorMessage);
     }
 }
