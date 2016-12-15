@@ -103,7 +103,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveByIdAsync()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             Assert.Equal(Condition.Pending, leaves.Status);
         }
@@ -114,7 +114,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task UpdateLeaveAsync()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             leaves.Status = Condition.Rejected;
             await _leaveRequestRepository.UpdateLeaveAsync(leaves);
@@ -188,7 +188,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveByIdFalseAsync()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             Assert.NotEqual(Condition.Approved, leaves.Status);
         }
@@ -199,7 +199,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task UpdateLeaveFalseAsync()
         {
-            _leaveRequestRepository.ApplyLeave(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
             var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             leaves.Status = Condition.Rejected;
             await _leaveRequestRepository.UpdateLeaveAsync(leaves);

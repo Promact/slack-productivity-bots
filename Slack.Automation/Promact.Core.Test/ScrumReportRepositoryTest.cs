@@ -112,7 +112,7 @@ namespace Promact.Core.Test
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
+            await _scrumDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
@@ -136,7 +136,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Insert(questionOne);
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
@@ -161,7 +161,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Insert(questionTwo);
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
@@ -185,7 +185,7 @@ namespace Promact.Core.Test
             _questionDataRepository.Insert(questionThree);
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
