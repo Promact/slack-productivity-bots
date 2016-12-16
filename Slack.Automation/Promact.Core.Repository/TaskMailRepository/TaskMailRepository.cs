@@ -430,7 +430,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id);
             if (taskMails.Count() != 0)
             {
-                var taskMailId = taskMails.OrderBy(y => y.CreatedOn).FirstOrDefault().Id;
+                var taskMailId = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault().Id;
                 List<TaskMailDetails> taskMailDetailList = (await _taskMailDetail.FetchAsync(x => x.TaskId == taskMailId)).ToList();
                 if (taskMailDetailList.Count() != 0)
                 {

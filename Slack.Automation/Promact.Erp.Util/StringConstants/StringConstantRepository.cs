@@ -1083,7 +1083,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}/api/Users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl
