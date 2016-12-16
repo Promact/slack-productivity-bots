@@ -170,7 +170,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Getting details of the logged in user from Oauth server
             User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId, accessToken);
             //Getting details of the specific project from Oauth server
-            ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
+            ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId);
             //Getting scrum for a specific project
             Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();

@@ -1,9 +1,13 @@
 ﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.OauthCallsRepository;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -18,6 +22,8 @@ namespace Promact.Core.Test
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<HttpContextBase> _mockHttpContextBase;
+        private readonly ApplicationUserManager _userManager;
         #endregion
 
         #region Constructor
@@ -27,6 +33,8 @@ namespace Promact.Core.Test
             _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
         }
         #endregion
 
@@ -279,13 +287,27 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task GetProjectDetailsTrueAsync()
         {
+            await AccessTokenSetUp();
+            Mocking();
             int testProjectId = 1012;
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, testProjectId, _stringConstant.GetProjectDetails);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
-            var project = await _oauthCallsRepository.GetProjectDetailsAsync(testProjectId, _stringConstant.TestAccessToken);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
+            var project = await _oauthCallsRepository.GetProjectDetailsAsync(testProjectId);
             Assert.Equal(2, project.ApplicationUsers.Count);
         }
         #endregion
+        private void Mocking()
+        {
+            _mockHttpContextBase.Setup(x => x.User.Identity.Name).Returns(_stringConstant.EmailForTest);
+        }
+
+        private async Task AccessTokenSetUp()
+        {
+            var user = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.FirstNameForTest };
+            var result = await _userManager.CreateAsync(user);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            var secondResult = await _userManager.AddLoginAsync(user.Id, info);
+        }
     }
 }

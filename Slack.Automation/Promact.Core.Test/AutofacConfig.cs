@@ -28,6 +28,7 @@ using Promact.Core.Test.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
+using System.Security.Principal;
 
 namespace Promact.Core.Test
 {
@@ -67,6 +68,10 @@ namespace Promact.Core.Test
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
             builder.RegisterInstance(emailServiceMockObject).As<IEmailService>();
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
+            var httpContextMock = new Mock<HttpContextBase>();
+            var httpContextMockObject = httpContextMock.Object;
+            builder.RegisterInstance(httpContextMock);
+            builder.RegisterInstance(httpContextMockObject);
             var container = builder.Build();
             return container;
         }

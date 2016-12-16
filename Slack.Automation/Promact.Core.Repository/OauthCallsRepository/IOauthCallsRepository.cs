@@ -107,6 +107,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="projectId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Details of a project</returns>
-        Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken);
+        Task<ProjectAc> GetProjectDetailsAsync(int projectId);
     }
 }

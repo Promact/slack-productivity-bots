@@ -80,6 +80,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
+            builder.RegisterModule<AutofacWebTypesModule>();
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac
