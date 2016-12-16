@@ -39,12 +39,12 @@ export class TaskMailDetailsComponent implements OnInit {
             this.taskService.getTaskMailDetailsReport(params[this.stringConstant.paramsUserId], params[this.stringConstant.userRole], params[this.stringConstant.paramsUserName]).subscribe(taskMails => {
                 this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe(this.stringConstant.medium);
-                this.MinDate = datePipeMinDate.transform(this.taskMail[0].IsMin, this.stringConstant.dateDefaultFormat);
+                this.MinDate = datePipeMinDate.transform(this.taskMail[0].MinDate, this.stringConstant.dateDefaultFormat);
                 if (this.MinDate === this.stringConstant.defaultDate) {
                     this.IsMinDate = true;
                 }
                 let datePipeMaxDate = new DatePipe(this.stringConstant.medium);
-                this.MaxDate = datePipeMaxDate.transform(this.taskMail[0].IsMax, this.stringConstant.dateDefaultFormat);
+                this.MaxDate = datePipeMaxDate.transform(this.taskMail[0].MaxDate, this.stringConstant.dateDefaultFormat);
                 this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
