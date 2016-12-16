@@ -28,6 +28,7 @@ using Promact.Core.Test.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
+using System.Security.Principal;
 using Autofac.Extras.NLog;
 
 namespace Promact.Core.Test
@@ -72,6 +73,10 @@ namespace Promact.Core.Test
             var iLoggerMockObject = iLoggerMock.Object;
             builder.RegisterInstance(iLoggerMock).As<Mock<ILogger>>();
             builder.RegisterInstance(iLoggerMockObject).As<ILogger>();
+            var httpContextMock = new Mock<HttpContextBase>();
+            var httpContextMockObject = httpContextMock.Object;
+            builder.RegisterInstance(httpContextMock);
+            builder.RegisterInstance(httpContextMockObject);
             var container = builder.Build();
             return container;
         }

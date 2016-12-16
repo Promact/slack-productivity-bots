@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Promact.Core.Repository.OauthCallsRepository
 {
@@ -12,13 +14,18 @@ namespace Promact.Core.Repository.OauthCallsRepository
         #region Private Variables
         private readonly IHttpClientService _httpClientService;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly IAttachmentRepository _attachmentRepository;
+        private readonly HttpContextBase _httpContextBase;
         #endregion
 
         #region Constructor
-        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant)
+        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant, 
+            IAttachmentRepository attachmentRepository, HttpContextBase httpContextBase)
         {
             _httpClientService = httpClientService;
             _stringConstant = stringConstant;
+            _attachmentRepository = attachmentRepository;
+            _httpContextBase = httpContextBase;
         }
         #endregion
 
@@ -238,8 +245,9 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="projectId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Details of a project</returns>
-        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
+        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId)
         {
+            var accessToken = await AccessTokenOfRequestedUser();
             ProjectAc project = new ProjectAc();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, projectId,_stringConstant.GetProjectDetails);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
@@ -250,6 +258,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return project;
         }
 
+        private async Task<string> AccessTokenOfRequestedUser()
+        {
+            var user = _httpContextBase.User.Identity.Name;
+            return await _attachmentRepository.UserAccessTokenAsync(user);
+        }
         #endregion
     }
 }
