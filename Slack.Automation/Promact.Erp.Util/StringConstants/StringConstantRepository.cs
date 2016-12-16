@@ -1093,6 +1093,27 @@ namespace Promact.Erp.Util.StringConstants
                 return "Forbidden";
             }
         }
+        public string ForbiddenUser
+        {
+            get
+            {
+                return " Forbidden User";
+            }
+        }
+        public string OAuthServerClosed
+        {
+            get
+            {
+                return " OAuth Server Closed ";
+            }
+        }
+        public string OAuthNotResponding
+        {
+            get
+            {
+                return " OAuth Server Not Responding ";
+            }
+        }
         public string UnAuthorized
         {
             get
