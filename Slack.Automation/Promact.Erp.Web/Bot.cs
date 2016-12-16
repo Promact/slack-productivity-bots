@@ -110,41 +110,46 @@ namespace Promact.Erp.Web
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
             {
-                _logger.Info("Scrum bot got message :" + message);
                 try
                 {
-                    _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text);
-                    }).GetAwaiter().GetResult();
+                    replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+
                     if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Info("Scrum bot got reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
-                catch (ForbiddenUserException ex)
+                catch (AggregateException ae)
                 {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.UnAuthorized);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Forbidden User " + ex.InnerException + "\n" + ex.StackTrace);
-                }
-                catch (TaskCanceledException ex)
-                {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
-                    client.CloseSocket();
-                    throw ex;
-                }
-                catch (HttpRequestException ex)
-                {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
-                    client.CloseSocket();
-                    throw ex;
+                    foreach (var e in ae.Flatten().InnerExceptions)
+                    {
+                        if (e is ForbiddenUserException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.UnAuthorized);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.ForbiddenUser + ae.InnerException + "\n" + ae.StackTrace);
+                        }
+                        else if (e is TaskCanceledException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.OAuthNotResponding + ae.InnerException + "\n" + ae.StackTrace);
+                            client.CloseSocket();
+                        }
+                        else if (e is HttpRequestException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.OAuthServerClosed + ae.InnerException + "\n" + ae.StackTrace);
+                            client.CloseSocket();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                 }
             };
         }
+
+
     }
 }
