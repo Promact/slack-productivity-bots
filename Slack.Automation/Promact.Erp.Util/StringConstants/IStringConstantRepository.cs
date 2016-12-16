@@ -174,6 +174,9 @@
         string UserUrl { get; }
         string OAuthUrl { get; }
         string Forbidden { get; }
+        string ForbiddenUser { get; }
+        string OAuthNotResponding { get; }
+        string OAuthServerClosed { get; }
         string UnAuthorized { get; }
         string ClientReturnUrl { get; }
         string LeaveManagementAuthorizationUrl { get; }
