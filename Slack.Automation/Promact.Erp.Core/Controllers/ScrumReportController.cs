@@ -1,10 +1,6 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.ScrumReportRepository;
+﻿using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -15,15 +11,13 @@ namespace Promact.Erp.Core.Controllers
     {
         #region Private Variables
         private readonly IScrumReportRepository _scrumReportRepository;
-        private readonly IAttachmentRepository _attachmentRepository;
-        private ApplicationUserManager _userManager;
+        private readonly ApplicationUserManager _userManager;
         #endregion
 
         #region Constructor
-        public ScrumReportController(IScrumReportRepository scrumRepository, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public ScrumReportController(IScrumReportRepository scrumRepository, ApplicationUserManager userManager)
         {
             _scrumReportRepository = scrumRepository;
-            _attachmentRepository = attachmentRepository;
             _userManager = userManager;
         }
         #endregion
@@ -87,9 +81,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<IHttpActionResult> ScrumProjectListAsync()
         {
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.Id, accessToken));
+            return Ok(await _scrumReportRepository.GetProjectsAsync(loginUser.Id));
         }
 
         /**
@@ -126,9 +119,8 @@ namespace Promact.Erp.Core.Controllers
         {
             string queryString = Request.RequestUri.Query.Substring(1,24);
             DateTime date = Convert.ToDateTime(queryString); 
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date,loginUser.Id, accessToken));
+            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date,loginUser.Id));
         }
         #endregion
     }

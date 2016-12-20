@@ -1,6 +1,4 @@
-﻿using Autofac.Extras.NLog;
-using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.LeaveReportRepository;
+﻿using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -12,15 +10,13 @@ namespace Promact.Erp.Core.Controllers
     {
         #region Private Variables 
         private readonly ILeaveReportRepository _leaveReport;
-        private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
         #endregion
 
         #region Constructor
-        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public LeaveReportController(ILeaveReportRepository leaveReport, ApplicationUserManager userManager)
         {
             _leaveReport = leaveReport;
-            _attachmentRepository = attachmentRepository;
             _userManager = userManager;
         }
         #endregion
@@ -51,9 +47,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<IHttpActionResult> LeaveReportAsync()
         {
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
             var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _leaveReport.LeaveReportAsync(accessToken, loginUser.Id));
+            return Ok(await _leaveReport.LeaveReportAsync(loginUser.Id));
         }
 
 
@@ -83,8 +78,7 @@ namespace Promact.Erp.Core.Controllers
         {
             if (id != null)
             {
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReportDetailsAsync(id, accessToken));
+                return Ok(await _leaveReport.LeaveReportDetailsAsync(id));
             }
             else
             {
