@@ -602,47 +602,47 @@ namespace Promact.Core.Test
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method LeaveUpdate from Slack respository, sick leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateSickAsync()
-        {
-            AddThreeUserIncomingWebHook();
-            await AddUser();
-            leave.Status = Condition.Approved;
-            leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
-            MockingUserIsAdminBySlackId();
-            var replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
-                            , user.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
-                            leave.Reason, leave.RejoinDate.Value.ToShortDateString());
-            slackLeave.Text = _stringConstant.SlashCommandUpdate;
-            MockingOfUserDetails();
-            MockingUserDetialFromSlackUserId();
-            MockingOfTeamLeaderDetails();
-            MockingOfManagementDetails();
-            await AddSlackThreeUsersAsync();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
-            var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            var teamLeaderText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
-            var teamLeaderTextJson = JsonConvert.SerializeObject(teamLeaderText);
-            PostAsyncMethodMocking(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
-            attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            var userText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
-            var userTextJson = JsonConvert.SerializeObject(userText);
-            PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString);
-            MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
-            MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
-            await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
-        }
+        ///// <summary>
+        ///// Test cases for checking method LeaveUpdate from Slack respository, sick leave
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task LeaveUpdateSickAsync()
+        //{
+        //    AddThreeUserIncomingWebHook();
+        //    await AddUser();
+        //    leave.Status = Condition.Approved;
+        //    leave.Type = LeaveType.sl;
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    MockingUserIsAdminBySlackId();
+        //    var replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
+        //                    , user.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+        //                    leave.Reason, leave.RejoinDate.Value.ToShortDateString());
+        //    slackLeave.Text = _stringConstant.SlashCommandUpdate;
+        //    MockingOfUserDetails();
+        //    MockingUserDetialFromSlackUserId();
+        //    MockingOfTeamLeaderDetails();
+        //    MockingOfManagementDetails();
+        //    await AddSlackThreeUsersAsync();
+        //    var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+        //    var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
+        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+        //    var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+        //    var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+        //    var teamLeaderText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+        //    var teamLeaderTextJson = JsonConvert.SerializeObject(teamLeaderText);
+        //    PostAsyncMethodMocking(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
+        //    attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
+        //    var userText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+        //    var userTextJson = JsonConvert.SerializeObject(userText);
+        //    PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString);
+        //    MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
+        //    MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
+        //    await _slackRepository.LeaveRequestAsync(slackLeave);
+        //    _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        //    _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
+        //    _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
+        //    _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
+        //}
 
         /// <summary>
         /// Test cases for checking method LeaveUpdate from Slack respository
@@ -932,47 +932,47 @@ namespace Promact.Core.Test
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
         }
 
-        /// <summary>
-        /// Test cases for checking method LeaveUpdate from Slack respository with end date beyond start date value sick leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateForBeyondStartDateAsync()
-        {
-            await AddUser();
-            AddThreeUserIncomingWebHook();
-            leave.Status = Condition.Approved;
-            leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
-            MockingUserIsAdminBySlackId();
-            var replyText = _stringConstant.InValidDateErrorMessage;
-            slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateFirstExample;
-            MockingOfUserDetails();
-            MockingUserDetialFromSlackUserId();
-            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
-            await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method LeaveUpdate from Slack respository with end date beyond start date value sick leave
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task LeaveUpdateForBeyondStartDateAsync()
+        //{
+        //    await AddUser();
+        //    AddThreeUserIncomingWebHook();
+        //    leave.Status = Condition.Approved;
+        //    leave.Type = LeaveType.sl;
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    MockingUserIsAdminBySlackId();
+        //    var replyText = _stringConstant.InValidDateErrorMessage;
+        //    slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateFirstExample;
+        //    MockingOfUserDetails();
+        //    MockingUserDetialFromSlackUserId();
+        //    var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+        //    await _slackRepository.LeaveRequestAsync(slackLeave);
+        //    _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        //}
 
-        /// <summary>
-        /// Test cases for checking method LeaveUpdate from Slack respository with rejoin date beyond end date value sick leave
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task LeaveUpdateForBeyondEndDateAsync()
-        {
-            await AddUser();
-            AddThreeUserIncomingWebHook();
-            leave.Status = Condition.Approved;
-            leave.Type = LeaveType.sl;
-            _leaveRequestRepository.ApplyLeave(leave);
-            MockingOfUserDetails();
-            MockingUserDetialFromSlackUserId();
-            MockingUserIsAdminBySlackId();
-            var replyText = _stringConstant.InValidDateErrorMessage;
-            slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateSecondExample;
-            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
-            await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-        }
+        ///// <summary>
+        ///// Test cases for checking method LeaveUpdate from Slack respository with rejoin date beyond end date value sick leave
+        ///// </summary>
+        //[Fact, Trait("Category", "Required")]
+        //public async Task LeaveUpdateForBeyondEndDateAsync()
+        //{
+        //    await AddUser();
+        //    AddThreeUserIncomingWebHook();
+        //    leave.Status = Condition.Approved;
+        //    leave.Type = LeaveType.sl;
+        //    _leaveRequestRepository.ApplyLeave(leave);
+        //    MockingOfUserDetails();
+        //    MockingUserDetialFromSlackUserId();
+        //    MockingUserIsAdminBySlackId();
+        //    var replyText = _stringConstant.InValidDateErrorMessage;
+        //    slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateSecondExample;
+        //    var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+        //    await _slackRepository.LeaveRequestAsync(slackLeave);
+        //    _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        //}
 
         /// <summary>
         /// Test cases for checking method LeaveApply from Slack respository with rejoin date beyond end date value casual leave
