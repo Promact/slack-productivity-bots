@@ -597,7 +597,8 @@ namespace Promact.Core.Repository.SlackRepository
                         var reJoinDateConvertorResult = DateTime.TryParseExact(slackText[3], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
                         if (endDateConvertorResult && reJoinDateConvertorResult)
                         {
-                            var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
+                            //var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId, accessToken);
+                            var newUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(leave.EmployeeId);
                             leave.EndDate = endDate;
                             leave.RejoinDate = reJoinDate;
                             // Method to check leave's end date is not beyond start date and re-join date is not beyond end date
