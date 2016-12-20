@@ -74,9 +74,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// Method to call an api from project oAuth server and get employee detail by their Id
         /// </summary>
         /// <param name="employeeId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>User Details</returns>
-        Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken);
+        Task<User> GetUserByEmployeeIdAsync(string employeeId);
 
         /// <summary>
         /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
