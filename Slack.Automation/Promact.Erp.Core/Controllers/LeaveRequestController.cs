@@ -13,10 +13,14 @@ namespace Promact.Erp.Core.Controllers
 {
    public class LeaveRequestController : WebApiBaseController
     {
+        #region Private Variables
         private readonly ISlackRepository _slackRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
+        #endregion
+
+        #region Constructor
         public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, ILogger logger, IStringConstantRepository stringConstant)
         {
             _slackRepository = slackRepository;
@@ -24,7 +28,9 @@ namespace Promact.Erp.Core.Controllers
             _logger = logger;
             _stringConstant = stringConstant;
         }
+        #endregion
 
+        #region Public Methods
         /**
         * @api {post} leaverequest/leaveslashcommand
         * @apiVersion 1.0.0
@@ -94,8 +100,9 @@ namespace Promact.Erp.Core.Controllers
                 await _slackRepository.ErrorAsync(leaveResponse.ResponseUrl, ex.Message);
                 var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
-                throw;
+                return BadRequest();
             }
         }
+        #endregion
     }
 }
