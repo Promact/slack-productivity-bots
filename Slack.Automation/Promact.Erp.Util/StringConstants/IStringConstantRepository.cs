@@ -84,6 +84,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumBotToken { get; }
         string ScrumBotName { get; }
         string LoggerScrumBot { get; }
+        string LoggerTaskMailBot { get; }
         string ScrumLaterDone { get; }
         string AlreadyAnswered { get; }
         string NotExpected { get; }
@@ -93,7 +94,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumCannotBeResumed { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
-
+      
 
         string NoQuestion { get; }
         string NoEmployeeFound { get; }

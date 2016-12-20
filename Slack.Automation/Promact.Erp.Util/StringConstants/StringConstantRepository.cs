@@ -314,7 +314,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum is in progress";
             }
         }
-        public string TaskMailDescription
+              public string TaskMailDescription
         {
             get
             {
@@ -538,6 +538,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Error in Scrum Bot : ";
+            }
+        }
+        public string LoggerTaskMailBot
+        {
+            get
+            {
+                return "Error in Tasl Mail Bot : ";
             }
         }
         public string ScrumLaterDone

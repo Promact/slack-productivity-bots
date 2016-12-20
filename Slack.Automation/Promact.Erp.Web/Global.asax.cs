@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Autofac;
+using Promact.Erp.Core.Controllers;
 using Promact.Erp.Web.App_Start;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -18,10 +19,9 @@ namespace Promact.Erp.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-            Bot.ScrumMain(container);
-            Bot.Main(container);
-
+            Bot bot = container.Resolve<Bot>();
+            bot.ScrumMain();
+            bot.Main();
         }
     }
 }
