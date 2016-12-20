@@ -15,6 +15,7 @@ namespace Promact.Erp.Core.Controllers
 {
     public class OAuthController : WebApiBaseController
     {
+        #region Private Variables
         private static Queue<SlackEventApiAC> eventQueue;
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
@@ -26,6 +27,9 @@ namespace Promact.Erp.Core.Controllers
         {
             eventQueue = new Queue<SlackEventApiAC>();
         }
+        #endregion
+
+        #region Constructor
         public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
         {
             _httpClientService = httpClientService;
@@ -35,7 +39,9 @@ namespace Promact.Erp.Core.Controllers
             _oAuthLoginRepository = oAuthLoginRepository;
             _slackUserRepository = slackUserRepository;
         }
+        #endregion
 
+        #region Private Methods
         /**
         * @api {get} oauth/refreshtoken
         * @apiVersion 1.0.0
@@ -209,6 +215,6 @@ namespace Promact.Erp.Core.Controllers
                 throw ex;
             }
         }
-
+        #endregion
     }
 }

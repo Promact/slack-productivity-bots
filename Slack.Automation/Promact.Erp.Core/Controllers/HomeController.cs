@@ -14,13 +14,16 @@ namespace Promact.Erp.Core.Controllers
 {
     public class HomeController : MVCBaseController
     {
+        #region Private Variables
         private readonly ApplicationSignInManager _signInManager;
         private readonly ApplicationUserManager _userManager;
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IStringConstantRepository _stringConstant;
+        #endregion
 
+        #region Constructor
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
         {
             _userManager = userManager;
@@ -30,7 +33,9 @@ namespace Promact.Erp.Core.Controllers
             _envVariableRepository = envVariableRepository;
             _stringConstant = stringConstant;
         }
+        #endregion
 
+        #region Public Methods
         /**
         * @api {get} Home/Index
         * @apiVersion 1.0.0
@@ -223,5 +228,6 @@ namespace Promact.Erp.Core.Controllers
         {
             return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
         }
+        #endregion
     }
 }
