@@ -29,9 +29,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly IRepository<IncomingWebHook> _incomingWebHook;
-
-
+        private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         #endregion
 
         #region Constructor
