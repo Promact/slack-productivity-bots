@@ -1356,7 +1356,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Sorry you cannot use leave slash command. Either user are not in Promact OAuth or yet u haven't login in promact-slack server. Click here {0} to add", AppSettingUtil.PromactErpUrl);
+                return string.Format("Sorry you cannot use leave slash command. Either user is not in Promact OAuth or yet u haven't login in promact-slack server. Click here {0} to add", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveListCommandForTest
