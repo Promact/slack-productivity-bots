@@ -28,8 +28,8 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
-        string questionText = "";
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        string questionText;
         #endregion
 
         #region Constructor
@@ -45,6 +45,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
+            questionText = _stringConstant.EmptyString;
         }
         #endregion
 
@@ -193,13 +194,6 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             {
                                                 totalHourSpented += task.Hours;
                                             }
-                                            //var todayTaskMail = _taskMail.Fetch(x => x.EmployeeId == taskMail.EmployeeId
-                                            //&& x.CreatedOn.Date == DateTime.UtcNow.Date);
-                                            //foreach (var item in todayTaskMail)
-                                            //{
-                                            //    var recentTask = await _taskMailDetail.FirstOrDefaultAsync(x => x.TaskId == item.Id);
-                                            //    totalHourSpented += recentTask.Hours;
-                                            //}
                                             totalHourSpented += hour;
                                             if (totalHourSpented <= 8)
                                             {
