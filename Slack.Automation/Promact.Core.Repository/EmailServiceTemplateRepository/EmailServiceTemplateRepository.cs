@@ -78,7 +78,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// </summary>
         /// <param name="taskMail">List of TaskMail</param>
         /// <returns>template emailBody as string</returns>
-        public string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
+        public string EmailServiceTemplateTaskMail(IEnumerable<TaskMailDetails> taskMail)
         {
             Erp.Util.Email_Templates.TaskMail leaveTemplate = new Erp.Util.Email_Templates.TaskMail();
             // Assigning Value in template page
