@@ -18,12 +18,12 @@ namespace Promact.Core.Repository.TaskMailRepository
     public class TaskMailRepository : ITaskMailRepository
     {
         #region Private Variables
-        private readonly IRepository<TaskMail> _taskMail;
-        private readonly IRepository<TaskMailDetails> _taskMailDetail;
+        private readonly IRepository<TaskMail> _taskMailRepository;
+        private readonly IRepository<TaskMailDetails> _taskMailDetailRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IRepository<ApplicationUser> _user;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
@@ -37,12 +37,12 @@ namespace Promact.Core.Repository.TaskMailRepository
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate)
         {
-            _taskMail = taskMail;
+            _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
             _oauthCallsRepository = oauthCallsRepository;
-            _taskMailDetail = taskMailDetail;
+            _taskMailDetailRepository = taskMailDetailRepository;
             _attachmentRepository = attachmentRepository;
-            _user = user;
+            _userRepository = userRepository;
             _emailService = emailService;
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
@@ -336,8 +336,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 break;
                                 #endregion
                         }
-                        _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        _taskMailDetailRepository.Update(taskDetails);
+                        _taskMailRepository.Save();
                     }
                 }
                 else
