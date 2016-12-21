@@ -14,7 +14,6 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Core.Test
 {

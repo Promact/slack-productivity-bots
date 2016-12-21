@@ -1436,6 +1436,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Or Else";
             }
         }
+        public string UserNotInProject
+        {
+            get
+            {
+                return "<@{0}> is not included in the project(of this group in OAuth)";
+            }
+        }
         public string Admin
         {
             get

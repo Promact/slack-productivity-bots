@@ -97,7 +97,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumInProgress { get; }
         string SlackUserNotFound { get; }
         string InActive { get; }
-
+        string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
         string Unrecognized { get; }
@@ -338,14 +338,7 @@ namespace Promact.Erp.Util.StringConstants
         string LeaveWrongCommandForBackDateSL { get; }
         string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
         string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
-        string TestQuestion { get; }
-        string EmployeesListFromOauthInValid { get; }
-        string UnExpectedInActiveUser { get; }
-        string EmployeesListInValid { get; }
-        string InActiveInOAuth { get; }
-        string OAuthUserDetails { get; }
-        string InValidOAuthUsers { get; }
-
+      
         #endregion
 
         string RoleAdmin { get; }
