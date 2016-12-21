@@ -30,12 +30,6 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IStringConstantRepository _stringConstant;
 
         string questionText = "";
-        DateTime? maxDate = null;
-        DateTime? minDate = null;
-        List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-        List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
-        
-       
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         string questionText;
         #endregion
