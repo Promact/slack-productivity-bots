@@ -131,7 +131,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
             return replyText;
         }
-
+                     
 
         #endregion
 
