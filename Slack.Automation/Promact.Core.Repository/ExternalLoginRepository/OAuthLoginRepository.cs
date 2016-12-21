@@ -23,30 +23,28 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         #region Private Variables
         private readonly ApplicationUserManager _userManager;
         private readonly IHttpClientService _httpClientService;
-        private readonly IRepository<SlackUserDetails> _slackUserDetails;
+        private readonly IRepository<SlackUserDetails> _slackUserDetailsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly IRepository<IncomingWebHook> _incomingWebHook;
-
-
+        private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         #endregion
 
         #region Constructor
         public OAuthLoginRepository(ApplicationUserManager userManager,
-            IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetails,
-            IRepository<SlackChannelDetails> slackChannelDetails, IStringConstantRepository stringConstant,
+            IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
+            IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
-            _slackUserDetails = slackUserDetails;
+            _slackUserDetailsRepository = slackUserDetailsRepository;
             _stringConstant = stringConstant;
             _slackUserRepository = slackUserRepository;
-            _slackChannelDetails = slackChannelDetails;
+            _slackChannelDetailsRepository = slackChannelDetailsRepository;
             _envVariableRepository = envVariableRepository;
             _incomingWebHook = incomingWebHook;
             _slackChannelRepository = slackChannelRepository;

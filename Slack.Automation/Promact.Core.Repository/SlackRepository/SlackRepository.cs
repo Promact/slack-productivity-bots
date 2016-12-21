@@ -27,31 +27,31 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ILeaveRequestRepository _leaveRepository;
-        private readonly IClient _client;
+        private readonly IClient _clientRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IRepository<ApplicationUser> _userManager;
+        private readonly IRepository<ApplicationUser> _userManagerRepository;
         string replyText = null;
-        private readonly IRepository<IncomingWebHook> _incomingWebHook;
+        private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IEmailService _emailService;
         #endregion
 
         #region Constructor
         public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository,
-            ISlackUserRepository slackUserRepository, IClient client, IStringConstantRepository stringConstant,
-            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManager,
-            IRepository<IncomingWebHook> incomingWebHook, IEmailServiceTemplateRepository emailTemplateRepository,
+            ISlackUserRepository slackUserRepository, IClient clientRepository, IStringConstantRepository stringConstant,
+            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManagerRepository,
+            IRepository<IncomingWebHook> incomingWebHookRepository, IEmailServiceTemplateRepository emailTemplateRepository,
             IEmailService emailService)
         {
             _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
-            _client = client;
+            _clientRepository = clientRepository;
             _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
-            _userManager = userManager;
+            _userManagerRepository = userManagerRepository;
             _slackUserRepository = slackUserRepository;
-            _incomingWebHook = incomingWebHook;
+            _incomingWebHookRepository = incomingWebHookRepository;
             _emailTemplateRepository = emailTemplateRepository;
             _emailService = emailService;
         }
@@ -88,7 +88,7 @@ namespace Promact.Core.Repository.SlackRepository
                                 leave.Reason, leave.Status, leaveResponse.User.Name);
                     IncomingWebHook incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                     // Used to send slack message to the user about leave updation
-                    await _client.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
+                    await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
                     // Used to send email to the user about leave updation
                     EmailApplication email = new EmailApplication();
                     email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
@@ -111,7 +111,7 @@ namespace Promact.Core.Repository.SlackRepository
                     _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
             }
             // updating leave applied text of slack
-            await _client.SendMessageAsync(leaveResponse.ResponseUrl, replyText);
+            await _clientRepository.SendMessageAsync(leaveResponse.ResponseUrl, replyText);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Promact.Core.Repository.SlackRepository
             else
                 // if user doesn't exist then will get message of user doesn't exist and ask to externally logic from Oauth server
                 replyText = _stringConstant.SorryYouCannotApplyLeave;
-            await _client.SendMessageAsync(leave.ResponseUrl, replyText);
+            await _clientRepository.SendMessageAsync(leave.ResponseUrl, replyText);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace Promact.Core.Repository.SlackRepository
         {
             // if something error will happen user will get this message
             var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.Star, errorMessage, _stringConstant.Star);
-            await _client.SendMessageAsync(responseUrl, replyText);
+            await _clientRepository.SendMessageAsync(responseUrl, replyText);
         }
         #endregion
 
@@ -317,7 +317,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                     accessToken, replyText, newUser.Id);
                                                 if (IsAdmin)
                                                 {
-                                                    await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leaveRequest,
+                                                    await _clientRepository.SendSickLeaveMessageToUserIncomingWebhookAsync(leaveRequest,
                                                         user.Email, replyText, newUser);
                                                 }
                                             }
