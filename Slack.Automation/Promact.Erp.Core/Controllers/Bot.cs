@@ -97,22 +97,19 @@ namespace Promact.Erp.Core.Controllers
         /// Used for Scrum meeting bot connection and to conduct scrum meeting 
         /// </summary>
         /// <param name="container"></param>
-        public static void ScrumMain(IComponentContext container)
-        {
-            _logger = container.Resolve<ILogger>();
-            _stringConstant = container.Resolve<IStringConstantRepository>();
-
-            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
+        public void ScrumMain()
+        {           
             string botToken = _environmentVariableRepository.ScrumBotToken;
             SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
-
+        
             // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
             messageReceive.ok = true;
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             //Connecting the bot of the given token 
-            client.Connect((connected) => { });
+            client.Connect((connected) => {
+              
+            });
 
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
