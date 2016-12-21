@@ -2,6 +2,9 @@
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.StringConstants;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,14 +17,18 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILeaveReportRepository _leaveReport;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
+        private readonly ILogger _logger;
+        private readonly IStringConstantRepository _stringConstant;
         #endregion
 
         #region Constructor
-        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ILogger logger, ApplicationUserManager userManager, IStringConstantRepository stringConstant)
         {
             _leaveReport = leaveReport;
             _attachmentRepository = attachmentRepository;
             _userManager = userManager;
+            _logger = logger;
+            _stringConstant = stringConstant;
         }
         #endregion
 
@@ -51,9 +58,18 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<IHttpActionResult> LeaveReportAsync()
         {
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            return Ok(await _leaveReport.LeaveReportAsync(accessToken, loginUser.Id));
+            try
+            {
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
+                var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                return Ok(await _leaveReport.LeaveReportAsync(accessToken, loginUser.Id));
+            }
+            catch (ForbiddenUserException)
+            {
+                _logger.Error(_stringConstant.ForbiddenUser);
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
         }
 
 
@@ -81,14 +97,23 @@ namespace Promact.Erp.Core.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> LeaveReportDetailsAsync(string id)
         {
-            if (id != null)
+            try
             {
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-                return Ok(await _leaveReport.LeaveReportDetailsAsync(id, accessToken));
+                if (id != null)
+                {
+                    var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
+                    return Ok(await _leaveReport.LeaveReportDetailsAsync(id, accessToken));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
             }
-            else
+            catch (ForbiddenUserException)
             {
-                return BadRequest();
+                _logger.Error(_stringConstant.ForbiddenUser);
+                return StatusCode(HttpStatusCode.Forbidden);
             }
         }
         #endregion
