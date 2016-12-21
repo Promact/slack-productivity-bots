@@ -22,7 +22,6 @@ namespace Promact.Core.Repository.Client
     public class Client : IClient
     {
         #region Private Variables
-        private HttpClient _chatUpdateMessage;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IOauthCallsRepository _oauthCallRepository;
         private readonly IEmailService _emailService;
@@ -41,8 +40,6 @@ namespace Promact.Core.Repository.Client
             IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook)
         {
             _stringConstant = stringConstant;
-            _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _oauthCallRepository = oauthCallRepository;
             _emailService = emailService;
             _attachmentRepository = attachmentRepository;

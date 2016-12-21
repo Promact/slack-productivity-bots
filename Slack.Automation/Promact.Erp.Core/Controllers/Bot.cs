@@ -15,7 +15,7 @@ namespace Promact.Erp.Core.Controllers
     public class Bot
     {
         private readonly ITaskMailRepository _taskMailRepository;
-        private readonly ISlackUserRepository _slackUserDetails;
+        private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
@@ -23,12 +23,12 @@ namespace Promact.Erp.Core.Controllers
 
 
         public Bot(ITaskMailRepository taskMailRepository,
-           ISlackUserRepository slackUserDetails, ILogger logger,
+           ISlackUserRepository slackUserDetailsRepository, ILogger logger,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
            IEnvironmentVariableRepository environmentVariableRepository)
         {
             _taskMailRepository = taskMailRepository;
-            _slackUserDetails = slackUserDetails;
+            _slackUserDetailsRepository = slackUserDetailsRepository;
             _logger = logger;
             _stringConstant = stringConstant;
             _scrumBotRepository = scrumBotRepository;
@@ -56,7 +56,7 @@ namespace Promact.Erp.Core.Controllers
                     // Method will hit when someone send some text in task mail bot
                     client.OnMessageReceived += (message) =>
                     {
-                        var user = _slackUserDetails.GetByIdAsync(message.user).Result;
+                        var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
                         string replyText = _stringConstant.EmptyString;
                         var text = message.text;
                         if (user != null)
