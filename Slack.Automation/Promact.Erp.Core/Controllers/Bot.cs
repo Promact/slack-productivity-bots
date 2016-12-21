@@ -15,7 +15,7 @@ namespace Promact.Erp.Core.Controllers
     public class Bot
     {
         private readonly ITaskMailRepository _taskMailRepository;
-        private readonly ISlackUserRepository _slackUserDetails;
+        private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
@@ -23,12 +23,12 @@ namespace Promact.Erp.Core.Controllers
         private static string _scrumBotId;
 
         public Bot(ITaskMailRepository taskMailRepository,
-           ISlackUserRepository slackUserDetails, ILogger logger,
+           ISlackUserRepository slackUserDetailsRepository, ILogger logger,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
            IEnvironmentVariableRepository environmentVariableRepository)
         {
             _taskMailRepository = taskMailRepository;
-            _slackUserDetails = slackUserDetails;
+            _slackUserDetailsRepository = slackUserDetailsRepository;
             _logger = logger;
             _stringConstant = stringConstant;
             _scrumBotRepository = scrumBotRepository;
