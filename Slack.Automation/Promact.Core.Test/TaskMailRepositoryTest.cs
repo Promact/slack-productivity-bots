@@ -779,24 +779,7 @@ namespace Promact.Core.Test
             Assert.Equal(3, result.Count);
         }
 
-        /// <summary>
-        /// get the employee information for user role is TeamLeader.
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task GetAllEmployeeForTeamLeaderAsync()
-        {
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.ListOfEmployeeForTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(3, result.Count);
-        }
+        
 
 
 
@@ -1037,11 +1020,11 @@ namespace Promact.Core.Test
 
         #endregion
 
-    #region Initialisation
-    /// <summary>
-    /// A method is used to initialize variables which are repetitively used
-    /// </summary>
-    public void Initialize()
+        #region Initialisation
+        /// <summary>
+        /// A method is used to initialize variables which are repetitively used
+        /// </summary>
+        public void Initialize()
         {
 
             profile.Skype = _stringConstant.TestUserId;
