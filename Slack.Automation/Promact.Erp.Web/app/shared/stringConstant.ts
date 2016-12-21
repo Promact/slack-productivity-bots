@@ -40,11 +40,7 @@ export class StringConstant {
     empty = "";
     paramsUserId = "UserId";
     paramsUserName = "UserName";
-    
-    
-    taskDetailsUrl = "/details";
-    userRole= "role";
-    userName= "name";
+    userRole = "UserRole";
     createdOns = "createdOn";
     taskDetailsUrl = "/user/";
     selectedDate = "SelectedDate";
@@ -52,7 +48,6 @@ export class StringConstant {
     next = "Next";
     previous = "Previous";
     pageType = "PageType";
-    taskDetailsUrl = "/user/";
     role = "role";
     name = "name";
 }

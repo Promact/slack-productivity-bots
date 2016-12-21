@@ -48,7 +48,7 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
-                    taskmailuser.TaskMails.forEach(taskMail => {
+                    taskmails.TaskMails.forEach(taskMail => {
                         taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                 });
@@ -70,7 +70,7 @@ export class TaskMailDetailsComponent implements OnInit {
            this.taskMail.forEach(taskmails => {
                let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
-                    taskmailuser.TaskMails.forEach(taskMail => {
+                    taskmails.TaskMails.forEach(taskMail => {
                         taskMail.StatusName = TaskMailStatus[taskMail.Status];
                     });
                     
@@ -89,7 +89,7 @@ export class TaskMailDetailsComponent implements OnInit {
             this.taskMail.forEach(taskmails => {
                 let datePipe = new DatePipe(this.stringConstant.medium);
                 taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
-                taskmailuser.TaskMails.forEach(taskMail => {
+                taskmails.TaskMails.forEach(taskMail => {
                     taskMail.StatusName = TaskMailStatus[taskMail.Status];
                 });
             });
@@ -110,7 +110,7 @@ export class TaskMailDetailsComponent implements OnInit {
             this.taskMail.forEach(taskmails => {
                 let datePipe = new DatePipe(this.stringConstant.medium);
                 taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
-                taskmailuser.TaskMails.forEach(taskMail => {
+                taskmails.TaskMails.forEach(taskMail => {
                     taskMail.StatusName = TaskMailStatus[taskMail.Status];
                 });
             });

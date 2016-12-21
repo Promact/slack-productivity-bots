@@ -683,13 +683,7 @@ namespace Promact.Core.Test
             Assert.Equal(1, taskMailDetail.Count);
         }
 
-            var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleTeamLeader, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
-            Assert.Equal(3, taskMailDetail.Count);
-        }
+        
 
         ///<summary>
         /// this test case for the task mail details 
@@ -762,24 +756,7 @@ namespace Promact.Core.Test
             Assert.Equal(3, result.Count);
         }
 
-        /// <summary>
-        /// get the employee information for user role is TeamLeader.
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task GetAllEmployeeForTeamLeaderAsync()
-        {
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.ListOfEmployeeForTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(3, result.Count);
-        }
+        
 
         /// <summary>
         /// get the employee information for user role is Employee.
@@ -800,29 +777,7 @@ namespace Promact.Core.Test
             Assert.Equal(1, result.Count);
         }
         
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.EmployeeInformation);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(1, result.Count);
-        }
         
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.EmployeeInformation);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(1, result.Count);
-        }
         
         /// <summary>
         /// this test case for the task mail details for the selected date.
@@ -958,33 +913,6 @@ namespace Promact.Core.Test
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = secondQuestion.Id;
-            _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
-            TaskMail newTaskMail = new TaskMail()
-            {
-                CreatedOn = DateTime.UtcNow,
-                EmployeeId = _stringConstant.StringIdForTest
-            };
-            _taskMailDataRepository.Insert(newTaskMail);
-            _taskMailDataRepository.Save();
-            TaskMailDetails newTaskMailDetails = new TaskMailDetails();
-            newTaskMailDetails.TaskId = newTaskMail.Id;
-            newTaskMailDetails.QuestionId = secondQuestion.Id;
-            _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
-            _taskMailDetailsDataRepository.Save();
-            var expectedResponse = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
-            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, expectedResponse);
-        }
-            taskMailPrvious.EmployeeId = user.Id;
-            _taskMailDataRepository.Insert(taskMailPrvious);
-            _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMailPrvious.Id;
-            taskMailDetails.QuestionId = firstQuestion.Id;
-            _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
@@ -993,14 +921,16 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
-            var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
-            Assert.Equal(response, text);
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
+            Assert.Equal(1, taskMailDetail.Count);
+
         }
-    /// <summary>
-    /// this test case for the task mail details for the next date.
-    /// </summary>
-    [Fact, Trait("Category", "Required")]
+       
+        /// <summary>
+        /// this test case for the task mail details for the next date.
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
     public async Task QuestionAndAnswerAfterSecondAnswerExceedHoursAsync()
     {
         await mockAndUserCreateAsync();
@@ -1031,44 +961,36 @@ namespace Promact.Core.Test
         var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
         Assert.Equal(response, expectedResponse);
     }
-    taskMailPrvious.EmployeeId = user.Id;
-            _taskMailDataRepository.Insert(taskMailPrvious);
+        
+
+        // <summary>
+        /// Test case for conduct task mail after started for task mail started after second question
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task QuestionAndAnswerAfterSecondAnswerForLimitExceedAnswerAsync()
+        {
+            await mockAndUserCreateAsync();
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _botQuestionRepository.AddQuestion(secondQuestion);
+            _botQuestionRepository.AddQuestion(thirdQuestion);
+            _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-        var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
-    Assert.Equal(1, taskMailDetail.Count);
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
+            var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
+            Assert.Equal(response, text);
         }
 
-/// <summary>
-/// Test case for conduct task mail after started for task mail started after second question
-/// </summary>
-[Fact, Trait("Category", "Required")]
-    public async Task QuestionAndAnswerAfterSecondAnswerForLimitExceedAnswerAsync()
-    {
-        await mockAndUserCreateAsync();
-        await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-        _botQuestionRepository.AddQuestion(secondQuestion);
-        _botQuestionRepository.AddQuestion(thirdQuestion);
-        _taskMailDataRepository.Insert(taskMail);
-        _taskMailDataRepository.Save();
-        taskMailDetails.TaskId = taskMailPrvious.Id;
-        taskMailDetails.QuestionId = firstQuestion.Id;
-        _taskMailDetailsDataRepository.Insert(taskMailDetails);
-        _taskMailDetailsDataRepository.Save();
-        var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentExceeded, _stringConstant.FirstNameForTest);
-        var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
-        Assert.Equal(response, text);
-    }
-    #endregion
+        #endregion
 
-    #region Initialisation
-    /// <summary>
-    /// A method is used to initialize variables which are repetitively used
-    /// </summary>
-    public void Initialize()
+        #region Initialisation
+        /// <summary>
+        /// A method is used to initialize variables which are repetitively used
+        /// </summary>
+        public void Initialize()
         {
 
             profile.Skype = _stringConstant.TestUserId;
