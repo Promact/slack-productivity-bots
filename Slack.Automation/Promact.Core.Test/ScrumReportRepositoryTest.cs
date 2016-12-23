@@ -118,7 +118,6 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             var projects = await _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest);
             Assert.Equal(1, projects.Count());
-
         }
 
         /// <summary>
