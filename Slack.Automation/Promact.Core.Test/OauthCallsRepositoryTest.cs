@@ -138,7 +138,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var casualLeave = await _oauthCallsRepository.CasualLeaveAsync(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest);
+            var casualLeave = await _oauthCallsRepository.LeaveAllowedAsync(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest);
             Assert.Equal(10, casualLeave.CasualLeave);
         }
 
@@ -151,7 +151,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var casualLeave = await _oauthCallsRepository.CasualLeaveAsync(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest);
+            var casualLeave = await _oauthCallsRepository.LeaveAllowedAsync(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest);
             Assert.NotEqual(14, casualLeave.CasualLeave);
         }
 

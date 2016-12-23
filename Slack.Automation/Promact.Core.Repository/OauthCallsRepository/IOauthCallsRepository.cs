@@ -68,7 +68,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        Task<LeaveAllowed> CasualLeaveAsync(string slackUserId, string accessToken);
+        Task<LeaveAllowed> LeaveAllowedAsync(string slackUserId, string accessToken);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their Id
