@@ -30,12 +30,15 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IStringConstantRepository _stringConstant;
 
         string questionText = "";
+        private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         DateTime? maxDate = null;
         DateTime? minDate = null;
         List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
         List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
-        
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
+        #endregion
+
+        #region Constructor
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager, IEmailServiceTemplateRepository emailServiceTemplate)
         {
             _taskMail = taskMail;
             _stringConstant = stringConstant;
