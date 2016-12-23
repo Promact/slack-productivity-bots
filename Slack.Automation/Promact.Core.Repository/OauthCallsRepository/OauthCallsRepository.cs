@@ -137,16 +137,16 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="slackUserId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Number of casual leave allowed</returns>
-        public async Task<LeaveAllowed> CasualLeaveAsync(string slackUserId, string accessToken)
+        public async Task<LeaveAllowed> LeaveAllowedAsync(string slackUserId, string accessToken)
         {
-            LeaveAllowed casualLeave = new LeaveAllowed();
+            LeaveAllowed allowedLeave = new LeaveAllowed();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, slackUserId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
-                casualLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
+                allowedLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
             }
-            return casualLeave;
+            return allowedLeave;
         }
 
         /// <summary>

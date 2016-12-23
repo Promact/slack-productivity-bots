@@ -191,21 +191,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userDetails/";
+                return "user/";
             }
         }
         public string TeamLeaderDetailsUrl
         {
             get
             {
-                return "teamLeaderDetails/";
+                return "teamLeaders/";
             }
         }
         public string ManagementDetailsUrl
         {
             get
             {
-                return "managementDetails";
+                return "managements";
             }
         }
         public string OAuthAcessUrl
@@ -1084,7 +1084,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}/api/OAuthResponse/", AppSettingUtil.OAuthUrl);
             }
         }
         public string ProjectUrl
@@ -1350,7 +1350,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "casual/leave/";
+                return "leaveAllowed/";
             }
         }
         public string CasualLeaveResponse
