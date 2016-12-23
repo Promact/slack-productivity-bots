@@ -22,6 +22,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         private static string _scrumBotId;
+        #endregion
 
         #region Constructor
         public Bot(ITaskMailRepository taskMailRepository,
