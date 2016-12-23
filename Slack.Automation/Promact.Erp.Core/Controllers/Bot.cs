@@ -14,14 +14,16 @@ namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+        #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
+        #endregion
 
-
+        #region Constructor
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetailsRepository, ILogger logger,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
@@ -34,62 +36,55 @@ namespace Promact.Erp.Core.Controllers
             _scrumBotRepository = scrumBotRepository;
             _environmentVariableRepository = environmentVariableRepository;
         }
+        #endregion
 
-
+        #region Public Methods
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
         public void TaskMailBot()
         {
+            // assigning bot token on Slack Socket Client
+            SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            // Telling Slack Socket Client to the bot whose access token was given early
+            client.Connect((connected) => { });
             try
             {
-                // assigning bot token on Slack Socket Client
-                SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
-                MessageReceived messageReceive = new MessageReceived();
-                messageReceive.ok = true;
-                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                // Telling Slack Socket Client to the bot whose access token was given early
-                client.Connect((connected) => { });
-                try
+                // Method will hit when someone send some text in task mail bot
+                client.OnMessageReceived += (message) =>
                 {
-                    // Method will hit when someone send some text in task mail bot
-                    client.OnMessageReceived += (message) =>
+                    var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                    string replyText = _stringConstant.EmptyString;
+                    var text = message.text;
+                    if (user != null)
                     {
-                        var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
-                        string replyText = _stringConstant.EmptyString;
-                        var text = message.text;
-                        if (user != null)
+                        if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                         {
-                            if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
-                            {
-                                replyText =  _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
-                            }
-                            else
-                            {
-                                replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
-                            }
+                            replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                         }
                         else
                         {
-                            replyText = _stringConstant.NoSlackDetails;
+                            replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
                         }
+                    }
+                    else
+                    {
+                        replyText = _stringConstant.NoSlackDetails;
+                    }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
-                    };
-                }
-                catch (Exception)
-                {
-                    client.CloseSocket();
-                }
+                };
             }
             catch (Exception ex)
             {
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message + 
-                    Environment.NewLine + ex.StackTrace);
-                throw ex;
+                client.CloseSocket();
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
+                Environment.NewLine + ex.StackTrace);
             }
-
         }
 
 
@@ -116,7 +111,7 @@ namespace Promact.Erp.Core.Controllers
                     _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
                     replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
-                    
+
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Info("Scrum bot got reply");
@@ -134,6 +129,6 @@ namespace Promact.Erp.Core.Controllers
                 }
             };
         }
-
+        #endregion
     }
 }
