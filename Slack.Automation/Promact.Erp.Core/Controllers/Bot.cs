@@ -14,6 +14,7 @@ namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+        #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _logger;
@@ -34,8 +35,9 @@ namespace Promact.Erp.Core.Controllers
             _scrumBotRepository = scrumBotRepository;
             _environmentVariableRepository = environmentVariableRepository;
         }
+        #endregion
 
-
+        #region Public Methods
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -76,12 +78,7 @@ namespace Promact.Erp.Core.Controllers
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
-                    };
-                }
-                catch (Exception)
-                {
-                    client.CloseSocket();
-                }
+                };
             }
             catch (Exception ex)
             {
@@ -89,7 +86,6 @@ namespace Promact.Erp.Core.Controllers
                     Environment.NewLine + ex.StackTrace);
                 throw ex;
             }
-
         }
 
 
@@ -145,5 +141,6 @@ namespace Promact.Erp.Core.Controllers
                 }
             };
         }
+        #endregion
     }
 }
