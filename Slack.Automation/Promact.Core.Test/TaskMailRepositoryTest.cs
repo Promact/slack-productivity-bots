@@ -942,8 +942,9 @@ namespace Promact.Core.Test
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
             Assert.Equal(1, taskMailDetail.Count);
-        }
 
+        }
+       
         /// <summary>
         /// this test case for the task mail details for the next date.
         /// </summary>
