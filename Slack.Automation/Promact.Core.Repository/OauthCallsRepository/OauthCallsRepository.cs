@@ -158,9 +158,9 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)
             {
-                casualLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
+                allowedLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
             }
-            return casualLeave;
+            return allowedLeave;
         }
 
 
