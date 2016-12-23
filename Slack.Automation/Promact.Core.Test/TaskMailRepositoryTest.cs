@@ -517,7 +517,7 @@ namespace Promact.Core.Test
             var expectReply = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
             Assert.Equal(response, expectReply);
         }
-        
+
         /// <summary>
         /// this test case for the task mail details 
         /// </summary>
@@ -692,7 +692,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest,_stringConstant.RoleEmployee,Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -725,11 +725,11 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest,_stringConstant.RoleEmployee,Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
-      
+
         /// <summary>
         /// get the user information.
         /// </summary>
@@ -746,6 +746,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
             var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            //Assert.Equal(0, result.Count);
             Assert.Equal(3, result.Count);
         }
 
@@ -834,58 +835,9 @@ namespace Promact.Core.Test
             var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
             Assert.Equal(1, result.Count);
         }
-        
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
 
-            var response = Task.FromResult(_stringConstant.EmployeeInformation);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(1, result.Count);
-        }
-        
-            var response = Task.FromResult(_stringConstant.ListOfEmployeeForTeamLeader);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(3, result.Count);
-        }
-
-        /// <summary>
-        /// get the employee information for user role is Employee.
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task GetEmployeeInfromationAsync()
-        {
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.EmployeeInformation);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(1, result.Count);
-        }
-        
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var response = Task.FromResult(_stringConstant.EmployeeInformation);
-            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(1, result.Count);
-        }
-        
         /// <summary>
         /// this test case for the task mail details for the selected date.
         /// </summary>
@@ -913,7 +865,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
             Assert.Equal(1, taskMailDetail.Count);
         }
 
