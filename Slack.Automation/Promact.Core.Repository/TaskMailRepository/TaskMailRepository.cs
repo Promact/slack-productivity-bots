@@ -53,6 +53,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
         #endregion
 
+
         #region Public Methods
         /// <summary>
         /// Method to start task mail
