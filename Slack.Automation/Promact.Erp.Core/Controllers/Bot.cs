@@ -14,14 +14,16 @@ namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+        #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
+        #endregion
 
-
+        #region Constructor
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetailsRepository, ILogger logger,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
@@ -34,8 +36,9 @@ namespace Promact.Erp.Core.Controllers
             _scrumBotRepository = scrumBotRepository;
             _environmentVariableRepository = environmentVariableRepository;
         }
+        #endregion
 
-
+        #region Public Methods
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -76,20 +79,14 @@ namespace Promact.Erp.Core.Controllers
                         }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
-                    };
-                }
-                catch (Exception)
-                {
-                    client.CloseSocket();
-                }
+                };
             }
             catch (Exception ex)
             {
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message + 
-                    Environment.NewLine + ex.StackTrace);
-                throw ex;
+                client.CloseSocket();
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
+                Environment.NewLine + ex.StackTrace);
             }
-
         }
 
 
@@ -116,7 +113,7 @@ namespace Promact.Erp.Core.Controllers
                     _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
                     replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
-                    
+
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Info("Scrum bot got reply");
@@ -134,6 +131,6 @@ namespace Promact.Erp.Core.Controllers
                 }
             };
         }
-
+        #endregion
     }
 }
