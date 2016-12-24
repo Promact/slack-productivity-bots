@@ -20,7 +20,6 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// <param name="employeeId"></param>
         /// <param name="accessToken"></param>
         /// <returns>Details of leave for an employee</returns>
-        Task<IEnumerable<LeaveReportDetails>> LeaveReportDetailsAsync(string employeeId, string accessToken);
-        
+        Task<IEnumerable<LeaveReportDetails>> LeaveReportDetailsAsync(string employeeId, string accessToken);        
     }
 }
