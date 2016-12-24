@@ -249,7 +249,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                 if (user.Id != null)
                                                 {
                                                     // Method to check more than one leave cannot be applied on that date
-                                                    validDate = LeaveDateDuplicate(user.Id, startDate);
+                                                    validDate = LeaveDateDuplicate(user.Id, startDate, endDate);
                                                     if (!validDate)
                                                     {
                                                         leaveRequest.EmployeeId = user.Id;
@@ -683,7 +683,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="userId">User's Id</param>
         /// <param name="startDate">leave start date</param>
         /// <returns>true or false</returns>
-        private bool LeaveDateDuplicate(string userId, DateTime startDate)
+        private bool LeaveDateDuplicate(string userId, DateTime startDate, DateTime? endDate)
         {
             int valid = -1;
             bool validIndicator = false;
@@ -695,13 +695,40 @@ namespace Promact.Core.Repository.SlackRepository
                     valid = leave.EndDate.Value.CompareTo(startDate);
                 else
                     valid = leave.FromDate.CompareTo(startDate);
-                if (valid >= 0)
+                switch (valid)
                 {
-                    validIndicator = true;
-                    break;
+                    case -1:
+                        {
+                            if (endDate != null)
+                                valid = leave.FromDate.CompareTo(endDate);
+                            else
+                                valid = leave.FromDate.CompareTo(startDate);
+                            if (valid == -1)
+                                validIndicator = false;
+                            else
+                                validIndicator = true;
+                        }
+                        break;
+                    case 0:
+                        {
+                            validIndicator = true;
+                        }
+                        break;
+                    case 1:
+                        {
+                            if (endDate != null)
+                                valid = leave.FromDate.CompareTo(endDate);
+                            else
+                                valid = leave.FromDate.CompareTo(startDate);
+                            if (valid == 1)
+                                validIndicator = false;
+                            else
+                                validIndicator = true;
+                        }
+                        break;
                 }
-                else
-                    validIndicator = false;
+                if (validIndicator)
+                    break;
             }
             return validIndicator;
         }
