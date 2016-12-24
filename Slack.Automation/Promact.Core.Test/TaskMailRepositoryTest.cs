@@ -583,7 +583,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for user role is team leader
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async void TaskMailDetailsForSelectedDateForTeamLeaderAsync()
+        public async Task TaskMailDetailsForSelectedDateForTeamLeaderAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
