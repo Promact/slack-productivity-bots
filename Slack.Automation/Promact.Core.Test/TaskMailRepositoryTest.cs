@@ -870,7 +870,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// this test case for the task mail details for the next date.
+        /// this test case for the task mail details for the next date. 
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task TaskMailDetailsReportNextPreviousDateAsync()
