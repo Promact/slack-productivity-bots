@@ -17,7 +17,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly IStringConstantRepository _stringConstant;
         public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
         {
-            this._taskMailReport = taskMailReport;
+            _taskMailReport = taskMailReport;
             _stringConstant = stringConstant;
         }
 
@@ -70,7 +70,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiParam {string} id  user Id
         * @apiParam {string} role  user Role
         * @apiParam {string} name  user Name
-        * @apiParam {string} createdOns user Task Mail CreatedOn
+        * @apiParam {string} createdOn user Task Mail CreatedOn
         * @apiParam {string} pageType user Task Mail CreatedOn
         * @apiParamExample {json} Request-Example:
         *      
@@ -120,7 +120,7 @@ namespace Promact.Erp.Core.Controllers
         * @apiParam {string} id  user Id
         * @apiParam {string} role  user Role
         * @apiParam {string} name  user Name
-        * @apiParam {string} createdOns user Task Mail CreatedOn
+        * @apiParam {string} createdOn user Task Mail CreatedOn
         * @apiParam {string} selectedDate user Task Mail SelectedDate
         * @apiParamExample {json} Request-Example:
         *        {
