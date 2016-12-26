@@ -811,6 +811,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         private DateTime GetMaxDate(IEnumerable<TaskMail> taskMails)
         {
+            DateTime? maxDate = null;
             var taskMail = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
             if (taskMail != null)
             {
