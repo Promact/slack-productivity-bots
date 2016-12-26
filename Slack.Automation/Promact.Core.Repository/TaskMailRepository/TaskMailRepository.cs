@@ -578,7 +578,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
-        /// <param name="rple"></param>
+        /// <param name="role"></param>
         /// <param name="createdOn"></param>
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
