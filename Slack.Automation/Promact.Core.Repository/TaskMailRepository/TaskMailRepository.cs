@@ -31,10 +31,6 @@ namespace Promact.Core.Repository.TaskMailRepository
 
         string questionText = "";
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
-        DateTime? maxDate = null;
-        DateTime? minDate = null;
-        List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-        List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
         #endregion
 
         #region Constructor
@@ -392,6 +388,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string userId)
         {
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
@@ -420,14 +417,16 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// Task Mail Details Report Information For the User Role Admin and Employee
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <param name="role"></param>
-        /// <param name="name"></param>
+        /// <param name="userName"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
-        private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string id, string role, string name, string loginId)
+        private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string userId, string role, string userName, string loginId)
         {
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id);
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userId);
             if (taskMails.Count() != 0)
             {
                 var taskMailId = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault().Id;
@@ -441,7 +440,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     }
                     DateTime createdOn = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
                     DateTime minDate = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportAcList, createdOn: createdOn, maxDate: createdOn, minDate: minDate);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: createdOn, maxDate: createdOn, minDate: minDate);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
                 else
@@ -451,7 +450,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     DateTime minDate = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
                     var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable,status:TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn: createdOn ,maxDate: createdOn,minDate: minDate);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: createdOn ,maxDate: createdOn,minDate: minDate);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -460,7 +459,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn: DateTime.Now,maxDate: DateTime.Now,minDate: DateTime.Now);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: DateTime.Now,maxDate: DateTime.Now,minDate: DateTime.Now);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -469,20 +468,23 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail detils.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <param name="role"></param>
-        /// <param name="name"></param>
+        /// <param name="userName"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id, string role, string name, string loginId)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId, string role, string userName, string loginId)
         {
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
             {
-                taskMailReportAcList = await GetTaskMailDetailsInformationAsync(id, role, name, loginId);
+                taskMailReportAcList = await GetTaskMailDetailsInformationAsync(userId, role, userName, loginId);
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> userRoles = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
@@ -507,7 +509,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                             taskMailDetailReportAcList.Add(taskmailReportAc);
                         }
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportAcList,createdOn: taskMail.CreatedOn.Date , maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList,createdOn: taskMail.CreatedOn.Date , maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                     else
@@ -515,7 +517,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                         var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status:TaskMailStatus.none);
                         taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn: Convert.ToDateTime(maxDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(maxDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                 }
@@ -527,21 +529,25 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// TaskMailDetails Information For the selected date
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
         /// <param name="role"></param>
         /// <param name="createdOn"></param>
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
         /// <returns></returns>
-        private async Task<List<TaskMailReportAc>> TaskMailDetailsForSelectedDateAsync(string id, string name, string role, string createdOn, string loginId, string selectedDate)
+        private async Task<List<TaskMailReportAc>> TaskMailDetailsForSelectedDateAsync(string userId, string userName, string role, string createdOn, string loginId, string selectedDate)
         {
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
             DateTime pickDate = Convert.ToDateTime(selectedDate).Date;
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(pickDate));
+            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(pickDate));
             if (taskMails.Count() != 0)
             {
-                maxDate = (await _taskMail.FetchAsync(x => x.EmployeeId == id)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;
-                minDate = (await _taskMail.FetchAsync(x => x.EmployeeId == id)).OrderBy(x => x.CreatedOn).FirstOrDefault().CreatedOn;
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
+                maxDate = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;
+                minDate = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).OrderBy(x => x.CreatedOn).FirstOrDefault().CreatedOn;
                 if (taskMails != null)
                 {
                     var taskMail = taskMails.FirstOrDefault();
@@ -551,7 +557,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                         taskMailDetailReportAcList.Add(taskmailReportAc);
                     }
-                    TaskMailReportAc taskMailReportAc =new TaskMailReportAc(id, role, name, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc =new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
                 else
@@ -559,7 +565,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                     var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    var taskMailReportAc =new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn:Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
+                    var taskMailReportAc =new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn:Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -568,7 +574,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(selectedDate).Date, minDate:Convert.ToDateTime(selectedDate).Date);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(selectedDate).Date, minDate:Convert.ToDateTime(selectedDate).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -577,19 +583,23 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// this Method use to fetch the task mail details for the selected date.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
         /// <param name="role"></param>
         /// <param name="createdOn"></param>
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string name, string role, string createdOn, string loginId, string selectedDate)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string userName, string role, string createdOn, string loginId, string selectedDate)
         {
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
-            { taskMailReportAcList = await TaskMailDetailsForSelectedDateAsync(id, name, role, createdOn, loginId, selectedDate); }
+            { taskMailReportAcList = await TaskMailDetailsForSelectedDateAsync(userId, userName, role, createdOn, loginId, selectedDate); }
             else if (role == _stringConstant.RoleTeamLeader)
             {
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> userRolesAcList = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
@@ -634,21 +644,25 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
         /// <param name="role"></param>
         /// <param name="createdOn"></param>
         /// <param name="loginId"></param>
         /// <returns></returns>
-        private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string id, string name, string role, DateTime createdOn, string loginId)
+        private async Task<List<TaskMailReportAc>> TaskMailDetailsForNextPreviousDateAsync(string userId, string userName, string role, DateTime createdOn, string loginId)
         {
-            var taskMailList = await _taskMail.FetchAsync(y => y.EmployeeId == id);
+            DateTime? maxDate = null;
+            DateTime? minDate = null;
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
+            var taskMailList = await _taskMail.FetchAsync(y => y.EmployeeId == userId);
             if (taskMailList != null)
             {
-                var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(createdOn));
+                var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(createdOn));
                 var taskMail = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault();
-                minDate = (await _taskMail.FetchAsync(y => y.EmployeeId == id)).OrderBy(y => y.CreatedOn).FirstOrDefault().CreatedOn;
-                maxDate = (await _taskMail.FetchAsync(y => y.EmployeeId == id)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;
+                minDate = (await _taskMail.FetchAsync(y => y.EmployeeId == userId)).OrderBy(y => y.CreatedOn).FirstOrDefault().CreatedOn;
+                maxDate = (await _taskMail.FetchAsync(y => y.EmployeeId == userId)).OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn;
                 if (taskMail != null)
                 {
                     List<TaskMailDetails> taskMailDetails = (await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id)).ToList();
@@ -657,7 +671,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                         taskMailDetailReportAcList.Add(taskmailReportAc);
                     }
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate:Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate:Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
                 else
@@ -665,7 +679,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                     var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn:Convert.ToDateTime(createdOn).Date, maxDate:  Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn:Convert.ToDateTime(createdOn).Date, maxDate:  Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -674,7 +688,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportAcList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(id, role, name, taskMailDetailReportList, createdOn: Convert.ToDateTime(createdOn).Date, maxDate:Convert.ToDateTime(createdOn).Date,minDate: Convert.ToDateTime(createdOn).Date);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(createdOn).Date, maxDate:Convert.ToDateTime(createdOn).Date,minDate: Convert.ToDateTime(createdOn).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -683,16 +697,18 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <summary>
         /// This Method use to fetch the task mail details for the next and previous date
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
         /// <param name="role"></param>
         /// <param name="createdOn"></param>
         /// <param name="loginId"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string name, string role, string createdOn, string loginId, string type)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string userName, string role, string createdOn, string loginId, string type)
         {
             DateTime? createdDate = null;
+            List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
+            List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
             if (type == _stringConstant.NextPage)
             { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
             else
@@ -700,10 +716,12 @@ namespace Promact.Core.Repository.TaskMailRepository
 
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
             {
-                taskMailReportAcList = await TaskMailDetailsForNextPreviousDateAsync(id, name, role, Convert.ToDateTime(createdDate), loginId);
+                taskMailReportAcList = await TaskMailDetailsForNextPreviousDateAsync(userId, userName, role, Convert.ToDateTime(createdDate), loginId);
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
+                DateTime? maxDate = null;
+                DateTime? minDate = null;
                 var user = _user.FirstOrDefault(x => x.Id == loginId);
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 List<UserRoleAc> usersRole = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
@@ -745,7 +763,6 @@ namespace Promact.Core.Repository.TaskMailRepository
             return taskMailReportAcList;
         }
 
-        
         /// <summary>
         /// This Method use to fetch Maximum Date
         /// </summary>
@@ -753,6 +770,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns></returns>
         private DateTime GetMaxDate(IEnumerable<TaskMail> taskMails)
         {
+            DateTime? maxDate = null;
             var taskMail = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
             if (taskMail != null)
             {
@@ -796,7 +814,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             return minDate.Value;
         }
-
+        
         #endregion 
     }
 }

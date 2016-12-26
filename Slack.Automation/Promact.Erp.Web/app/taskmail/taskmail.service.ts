@@ -17,43 +17,43 @@ export class TaskService {
             .catch(this.handleError);
     }
     
-    getTaskMailDetailsReport(id: string, role: string, name: string): Observable<TaskMailModel[]> {
+    getTaskMailDetailsReport(userId: string, role: string, userName: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
-        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + id, { search: params })
+        params.set(this.stringConstant.name, userName);
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    getTaskMailDetailsReportPreviousDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
+    getTaskMailDetailsReportPreviousDate(userName: string, userId: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
+        params.set(this.stringConstant.name, userName);
         params.set(this.stringConstant.createdOns, createdOns);
         params.set(this.stringConstant.pageType, this.stringConstant.previous);
-        return this.http.get(this.TaskMailUrl  + this.stringConstant.taskDetailsUrl  + id, { search: params })
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
             .map(this.extractData)
             .catch(this.handleError);
     }
-    getTaskMailDetailsReportNextDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
+    getTaskMailDetailsReportNextDate(userName: string, userId: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
+        params.set(this.stringConstant.name, userName);
         params.set(this.stringConstant.createdOns, createdOns);
         params.set(this.stringConstant.pageType, this.stringConstant.next);
-        return this.http.get(this.TaskMailUrl  + this.stringConstant.taskDetailsUrl  + id, { search: params })
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
             .map(this.extractData)
             .catch(this.handleError); 
     }
 
-    getTaskMailDetailsReportSelectedDate(name: string, id: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailModel[]> {
+    getTaskMailDetailsReportSelectedDate(userName: string, userId: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
+        params.set(this.stringConstant.name, userName);
         params.set(this.stringConstant.createdOns, createdOns);
         params.set(this.stringConstant.selectedDate, selectedDate);
-        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl+ id, { search: params })
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl+ userId, { search: params })
             .map(this.extractData)
             .catch(this.handleError);
     }

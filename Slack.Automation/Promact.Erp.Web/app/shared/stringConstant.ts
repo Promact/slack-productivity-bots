@@ -49,5 +49,5 @@ export class StringConstant {
     previous = "Previous";
     pageType = "PageType";
     role = "role";
-    name = "name";
+    name = "userName";
 }
