@@ -23,19 +23,19 @@ namespace Promact.Erp.Core.Controllers
 
 
         /**
-         * @api {get}  api/TaskReport/user/:id
+         * @api {get}  api/TaskReport/user/:userId
          * @apiVersion 1.0.0
          * @apiName TaskMailDetailsReportAsync
          * @apiGroup TaskReport
-         * @apiParam {string} id  user Id
+         * @apiParam {string} userId  user Id
          * @apiParam {string} role  user Role
-         * @apiParam {string} name  user Name
+         * @apiParam {string} userName  user Name
          * @apiParamExample {json} Request-Example:
          *      
          *        {
-         *             "id": "1",
+         *             "userId": "1",
          *             "role": "Admin",
-         *             "name" : "test",
+         *             "userName" : "test",
          *        }      
          * @apiSuccessExample {json} Success-Response:
          * HTTP/1.1 200 OK 
@@ -56,28 +56,28 @@ namespace Promact.Erp.Core.Controllers
          * }
          */
         [HttpGet]
-        [Route("user/{id}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string id,string role, string name)
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId,string role, string userName)
         {
-           return await _taskMailReport.TaskMailDetailsReportAsync(id, role, name, User.Identity.GetUserId());
+           return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, User.Identity.GetUserId());
         }
 
         /**
-        * @api {get} api/TaskReport/user/:id 
+        * @api {get} api/TaskReport/user/:userId 
         * @apiVersion 1.0.0
         * @apiName TaskMailDetailsReportNextPreviousDateAsync
         * @apiGroup TaskReport
-        * @apiParam {string} id  user Id
+        * @apiParam {string} userId  user Id
         * @apiParam {string} role  user Role
-        * @apiParam {string} name  user Name
+        * @apiParam {string} userName  user Name
         * @apiParam {string} createdOn user Task Mail CreatedOn
         * @apiParam {string} pageType user Task Mail CreatedOn
         * @apiParamExample {json} Request-Example:
         *      
         *        {
-        *             "id": "1",
+        *             "userId": "1",
         *             "role": "Admin",
-        *             "name" : "test",
+        *             "userName" : "test",
         *             "createdOns": "01-01-2016",
         *             "pageType"
         *        }      
@@ -99,34 +99,34 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("user/{id}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string id, string role, string name, string createdOn, string pageType)
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
             if (pageType == _stringConstant.NextPage)
             {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), _stringConstant.NextPage);
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.NextPage);
             }
             else 
             {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), _stringConstant.Previouspage);
+                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.Previouspage);
             }
         }
 
         /**
-        * @api {get} api/TaskReport/user/:id 
+        * @api {get} api/TaskReport/user/:userId 
         * @apiVersion 1.0.0
         * @apiName TaskMailDetailsReportSelectedDateAsync
         * @apiGroup TaskReport
-        * @apiParam {string} id  user Id
+        * @apiParam {string} userId  user Id
         * @apiParam {string} role  user Role
-        * @apiParam {string} name  user Name
+        * @apiParam {string} userName  user Name
         * @apiParam {string} createdOn user Task Mail CreatedOn
         * @apiParam {string} selectedDate user Task Mail SelectedDate
         * @apiParamExample {json} Request-Example:
         *        {
-        *             "id": "1",
+        *             "userId": "1",
         *             "role": "Admin",
-        *             "name" : "test",
+        *             "userName" : "test",
         *             "createdOns": "01-01-0001",
         *             "selectedDate":"01-01-0001"
         *        }      
@@ -148,10 +148,10 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("user/{id}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string id, string role, string name, string createdOn, string selectedDate)
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string role, string userName, string createdOn, string selectedDate)
         {
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(id, name, role, createdOn, User.Identity.GetUserId(), selectedDate);
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), selectedDate);
         }
 
 
