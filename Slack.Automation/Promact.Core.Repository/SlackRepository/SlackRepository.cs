@@ -206,8 +206,7 @@ namespace Promact.Core.Repository.SlackRepository
                 User user = new User();
                 var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                 // checking whether string can convert to date of independent culture or not, if return true then further process will be conduct
-                var startDateConvertorResult = DateTime.TryParseExact(slackRequest[3], dateFormat, CultureInfo.InvariantCulture,
-                    DateTimeStyles.None, out startDate);
+                var startDateConvertorResult = DateFormatChecker(slackRequest[3], out startDate);
                 if (startDateConvertorResult)
                 {
                     user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
@@ -226,10 +225,8 @@ namespace Promact.Core.Repository.SlackRepository
                                 case LeaveType.cl:
                                     {
                                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                                        var endDateConvertorResult = DateTime.TryParseExact(slackRequest[4], dateFormat,
-                                            CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
-                                        var reJoinDateConvertorResult = DateTime.TryParseExact(slackRequest[5], dateFormat,
-                                            CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
+                                        var endDateConvertorResult = DateFormatChecker(slackRequest[4], out endDate);
+                                        var reJoinDateConvertorResult = DateFormatChecker(slackRequest[5], out reJoinDate);
                                         if (endDateConvertorResult && reJoinDateConvertorResult)
                                         {
                                             // Method to check leave's end date is not beyond start date and re-join date is not beyond end date
@@ -371,13 +368,13 @@ namespace Promact.Core.Repository.SlackRepository
                         replyText += string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id,
                             leave.Reason, leave.FromDate.ToShortDateString(),
                             leave.EndDate.Value.ToShortDateString(), leave.Status,
-                            System.Environment.NewLine);
+                            Environment.NewLine);
                     }
                     else
                     {
                         replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id,
                             leave.Reason, leave.FromDate.ToShortDateString(), leave.Status,
-                            System.Environment.NewLine);
+                            Environment.NewLine);
                     }
                 }
             }
@@ -594,8 +591,8 @@ namespace Promact.Core.Repository.SlackRepository
                     {
                         var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                         // checking whether string can convert to date of indian culture or not, if return true then further process will be conduct
-                        var endDateConvertorResult = DateTime.TryParseExact(slackText[2], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate);
-                        var reJoinDateConvertorResult = DateTime.TryParseExact(slackText[3], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out reJoinDate);
+                        var endDateConvertorResult = DateFormatChecker(slackText[2], out endDate);
+                        var reJoinDateConvertorResult = DateFormatChecker(slackText[3], out reJoinDate);
                         if (endDateConvertorResult && reJoinDateConvertorResult)
                         {
                             var employeeDetail = await _userManagerRepository.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
@@ -618,7 +615,7 @@ namespace Promact.Core.Repository.SlackRepository
                         }
                         else
                             // if date is not proper than date format error message will be send to user
-                            replyText = _stringConstant.DateFormatErrorMessage;
+                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
                     }
                     else
                         // if sick leave will doesn't exist for leaveId
@@ -724,6 +721,19 @@ namespace Promact.Core.Repository.SlackRepository
                     break;
             }
             return validIndicator;
+        }
+
+        /// <summary>
+        /// try to convert string date to DateTime
+        /// </summary>
+        /// <param name="inputDate">string date</param>
+        /// <param name="date">expected date as out</param>
+        /// <returns>true or false</returns>
+        private bool DateFormatChecker(string inputDate, out DateTime date)
+        {
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            return DateTime.TryParseExact(inputDate, dateFormat, CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out date);
         }
         #endregion
     }
