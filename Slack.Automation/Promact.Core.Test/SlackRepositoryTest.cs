@@ -566,11 +566,12 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForErrorDateFormatForCasualAsync()
         {
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
             await AddUser();
             await AddThreeUserIncomingWebHookAsync();
             slackLeave.Text = _stringConstant.SlashCommandTextErrorDateFormatCasual;
             MockingOfUserDetails();
-            var replyText = _stringConstant.DateFormatErrorMessage;
+            var replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
