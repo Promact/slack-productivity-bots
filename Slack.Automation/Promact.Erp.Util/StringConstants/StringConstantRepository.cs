@@ -1437,7 +1437,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
+                return "You have taken 0 casual leave out of 10\r\nYou are left with 10 casual leave";
             }
         }
         public string OrElseString
@@ -1697,7 +1697,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
+                return "You have taken 0 sick leave out of 5\r\nYou are left with 5 sick leave";
             }
         }
         public string SlashCommandTextSick
