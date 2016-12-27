@@ -271,7 +271,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         }
                                         else
                                             // if date is not proper than date format error message will be send to user
-                                            replyText = _stringConstant.DateFormatErrorMessage;
+                                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
                                     }
                                     break;
                                 case LeaveType.sl:
