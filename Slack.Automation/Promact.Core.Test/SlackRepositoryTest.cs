@@ -653,13 +653,14 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveUpdateDateFormatErrorAsync()
         {
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
             await AddUser();
             await AddThreeUserIncomingWebHookAsync();
             leave.Status = Condition.Approved;
             leave.Type = LeaveType.sl;
             await _leaveRequestRepository.ApplyLeaveAsync(leave);
             MockingUserIsAdminBySlackId();
-            var replyText = _stringConstant.DateFormatErrorMessage;
+            var replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
             slackLeave.Text = _stringConstant.SlashCommandUpdateDateError;
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();

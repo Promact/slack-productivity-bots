@@ -373,13 +373,13 @@ namespace Promact.Core.Repository.SlackRepository
                         replyText += string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id,
                             leave.Reason, leave.FromDate.ToShortDateString(),
                             leave.EndDate.Value.ToShortDateString(), leave.Status,
-                            System.Environment.NewLine);
+                            Environment.NewLine);
                     }
                     else
                     {
                         replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id,
                             leave.Reason, leave.FromDate.ToShortDateString(), leave.Status,
-                            System.Environment.NewLine);
+                            Environment.NewLine);
                     }
                 }
             }
@@ -625,7 +625,7 @@ namespace Promact.Core.Repository.SlackRepository
                         }
                         else
                             // if date is not proper than date format error message will be send to user
-                            replyText = _stringConstant.DateFormatErrorMessage;
+                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
                     }
                     else
                         // if sick leave will doesn't exist for leaveId
@@ -731,6 +731,19 @@ namespace Promact.Core.Repository.SlackRepository
                     break;
             }
             return validIndicator;
+        }
+
+        /// <summary>
+        /// try to convert string date to DateTime
+        /// </summary>
+        /// <param name="inputDate">string date</param>
+        /// <param name="date">expected date as out</param>
+        /// <returns>true or false</returns>
+        private bool DateFormatChecker(string inputDate, out DateTime date)
+        {
+            var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            return DateTime.TryParseExact(inputDate, dateFormat, CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out date);
         }
         #endregion
     }
