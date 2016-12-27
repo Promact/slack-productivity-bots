@@ -22,7 +22,7 @@ using Promact.Erp.Util.ExceptionHandler;
 namespace Promact.Core.Repository.SlackRepository
 {
     public class SlackRepository : ISlackRepository
-    {
+    { 
         #region Private Variable
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
