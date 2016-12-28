@@ -128,7 +128,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         public async Task<IEnumerable<ProjectAc>> GetProjectsAsync(string userId)
         {
             //Getting the details of the logged in user from Oauth server
-            User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId);
+            User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId, null);
             //Fetch list of all the projects from oauth server
             List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjectsAsync();
             //Checking if there are projects returned from oauth server or not
@@ -176,7 +176,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         public async Task<ScrumProjectDetails> ScrumReportDetailsAsync(int projectId, DateTime scrumDate, string userId)
         {
             //Getting details of the logged in user from Oauth server
-            User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId);
+            User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId, null);
             //Getting details of the specific project from Oauth server
             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId);
             //Getting scrum for a specific project

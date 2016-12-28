@@ -133,13 +133,17 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// Method to call an api from project oAuth server and get employee detail by their Id
         /// </summary>
         /// <param name="employeeId"></param>
+        /// <param name="accessToken"></param>
         /// <returns>User Details</returns>
-        public async Task<User> GetUserByEmployeeIdAsync(string employeeId)
+        public async Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken)
         {
-            string accessToken = await AccessTokenOfRequestedUser();
+            if(string.IsNullOrEmpty(accessToken))
+            {
+                accessToken = await AccessTokenOfRequestedUser();
+            }           
             User userDetails = new User();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, employeeId, _stringConstant.UserDetailUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
