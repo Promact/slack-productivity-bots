@@ -58,8 +58,7 @@ namespace Promact.Core.Test
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
-            Assert.Equal(1, projects.Count());
-
+            Assert.Equal(true, projects.Any());
         }
 
         /// <summary>
@@ -75,7 +74,7 @@ namespace Promact.Core.Test
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
-            Assert.Equal(1, projects.Count());
+            Assert.Equal(true, projects.Any());
 
         }
 
@@ -92,7 +91,7 @@ namespace Promact.Core.Test
             var requestUrlProjects = _stringConstant.AllProjectUrl;
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.TestAccessToken)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
-            Assert.Equal(1, projects.Count());
+            Assert.Equal(true, projects.Any());
 
         }
 
@@ -212,12 +211,15 @@ namespace Promact.Core.Test
 
             questionOne.QuestionStatement = _stringConstant.ScrumFirstQuestion;
             questionOne.Type = 1;
+            questionOne.OrderNumber = 1;
 
             questionTwo.QuestionStatement = _stringConstant.ScrumSecondQuestion;
             questionTwo.Type = 1;
+            questionTwo.OrderNumber = 2;
 
             questionThree.QuestionStatement = _stringConstant.ScrumThirdQuestion;
             questionThree.Type = 1;
+            questionThree.OrderNumber = 3;
         }
         #endregion
     }
