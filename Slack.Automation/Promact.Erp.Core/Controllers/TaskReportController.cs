@@ -174,9 +174,9 @@ namespace Promact.Erp.Core.Controllers
        */
         [HttpGet]
         [Route("")]
-        public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync()
+        public async Task<List<TaskMailReportAc>> GetUserInformationAsync()
         {
-            return await _taskMailReport.GetAllEmployeeAsync(User.Identity.GetUserId());
+            return await _taskMailReport.GetUserInformationAsync(User.Identity.GetUserId());
         }
 
     }

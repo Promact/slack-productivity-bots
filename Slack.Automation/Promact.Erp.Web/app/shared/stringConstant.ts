@@ -40,7 +40,7 @@ export class StringConstant {
     empty = "";
     paramsUserId = "UserId";
     paramsUserName = "UserName";
-    userRole= "role";
+    userRole = "UserRole";
     createdOns = "createdOn";
     taskDetailsUrl = "/user/";
     selectedDate = "SelectedDate";

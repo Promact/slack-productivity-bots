@@ -10,13 +10,13 @@ import { URLSearchParams, QueryEncoder } from '@angular/http';
 export class TaskService {
     private TaskMailUrl = this.stringConstant.taskMaiUrl;  // URL to web api
     constructor(private http: Http, private stringConstant: StringConstant) { }
-
+    
     getListOfEmployee(): Observable<TaskMailModel[]> {
         return this.http.get(this.TaskMailUrl)
             .map(this.extractData)
             .catch(this.handleError);
     }
-
+    
     getTaskMailDetailsReport(userId: string, role: string, userName: string): Observable<TaskMailModel[]> {
         let params = new URLSearchParams();
         params.set(this.stringConstant.role, role);
@@ -44,7 +44,7 @@ export class TaskService {
         params.set(this.stringConstant.pageType, this.stringConstant.next);
         return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
             .map(this.extractData)
-            .catch(this.handleError);
+            .catch(this.handleError); 
     }
 
     getTaskMailDetailsReportSelectedDate(userName: string, userId: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailModel[]> {
@@ -53,7 +53,7 @@ export class TaskService {
         params.set(this.stringConstant.name, userName);
         params.set(this.stringConstant.createdOns, createdOns);
         params.set(this.stringConstant.selectedDate, selectedDate);
-        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
+        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl+ userId, { search: params })
             .map(this.extractData)
             .catch(this.handleError);
     }

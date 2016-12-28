@@ -602,21 +602,20 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
-            taskMail.EmployeeId = user.Id;
+            taskMail.EmployeeId = "1";
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
             taskMailDetails.TaskId = taskMail.Id;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-
-            var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
+             var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(3, taskMailDetail.Count);
+            Assert.Equal(1, taskMailDetail.Count);
         }
         ///<summary>
         /// this test case for the task mail details 
@@ -638,7 +637,7 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
-            taskMail.EmployeeId = user.Id;
+            taskMail.EmployeeId = "1";
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
             taskMailDetails.TaskId = taskMail.Id;
@@ -652,7 +651,7 @@ namespace Promact.Core.Test
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(3, taskMailDetail.Count);
+            Assert.Equal(1, taskMailDetail.Count);
         }
 
         ///<summary>
@@ -735,7 +734,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
             //Assert.Equal(0, result.Count);
             Assert.Equal(3, result.Count);
         }
@@ -755,7 +754,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
             Assert.Equal(3, result.Count);
         }
 
@@ -776,7 +775,7 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
             Assert.Equal(1, result.Count);
         }
 
