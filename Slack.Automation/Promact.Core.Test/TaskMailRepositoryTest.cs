@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
@@ -46,6 +47,7 @@ namespace Promact.Core.Test
         private Question SixthQuestion = new Question();
         private Question SeventhQuestion = new Question();
         private EmailApplication email = new EmailApplication();
+        private readonly Mock<ILogger> _loggerMock;
         #endregion
 
         #region Constructor
@@ -61,6 +63,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
+            _loggerMock = _componentContext.Resolve<Mock<ILogger>>();
             Initialize();
         }
         #endregion
@@ -998,9 +1001,9 @@ namespace Promact.Core.Test
             slackUserDetails.Profile = profile;
 
             firstQuestion.CreatedOn = DateTime.UtcNow;
-            firstQuestion.OrderNumber = 1;
+            firstQuestion.OrderNumber = QuestionOrder.YourTask;
             firstQuestion.QuestionStatement = _stringConstant.FirstQuestionForTest;
-            firstQuestion.Type = 2;
+            firstQuestion.Type = BotQuestionType.TaskMail;
 
             user.Id = "1";
             user.Email = _stringConstant.EmailForTest;
@@ -1020,40 +1023,45 @@ namespace Promact.Core.Test
             taskMailDetails.Status = TaskMailStatus.completed;
 
             secondQuestion.CreatedOn = DateTime.UtcNow;
-            secondQuestion.OrderNumber = 2;
+            secondQuestion.OrderNumber = QuestionOrder.HoursSpent;
             secondQuestion.QuestionStatement = _stringConstant.SecondQuestionForTest;
-            secondQuestion.Type = 2;
+            secondQuestion.Type = BotQuestionType.TaskMail;
 
             thirdQuestion.CreatedOn = DateTime.UtcNow;
-            thirdQuestion.OrderNumber = 3;
+            thirdQuestion.OrderNumber = QuestionOrder.Status;
             thirdQuestion.QuestionStatement = _stringConstant.ThirdQuestionForTest;
-            thirdQuestion.Type = 2;
+            thirdQuestion.Type = BotQuestionType.TaskMail;
 
             forthQuestion.CreatedOn = DateTime.UtcNow;
-            forthQuestion.OrderNumber = 4;
+            forthQuestion.OrderNumber = QuestionOrder.Comment;
             forthQuestion.QuestionStatement = _stringConstant.ForthQuestionForTest;
-            forthQuestion.Type = 2;
+            forthQuestion.Type = BotQuestionType.TaskMail;
 
             fifthQuestion.CreatedOn = DateTime.UtcNow;
-            fifthQuestion.OrderNumber = 5;
+            fifthQuestion.OrderNumber = QuestionOrder.SendEmail;
             fifthQuestion.QuestionStatement = _stringConstant.FifthQuestionForTest;
-            fifthQuestion.Type = 2;
+            fifthQuestion.Type = BotQuestionType.TaskMail;
 
 
 
             SixthQuestion.CreatedOn = DateTime.UtcNow;
-            SixthQuestion.OrderNumber = 6;
+            SixthQuestion.OrderNumber = QuestionOrder.ConfirmSendEmail;
             SixthQuestion.QuestionStatement = _stringConstant.SixthQuestionForTest;
-            SixthQuestion.Type = 2;
+            SixthQuestion.Type = BotQuestionType.TaskMail;
 
 
             SeventhQuestion.CreatedOn = DateTime.UtcNow;
-            SeventhQuestion.OrderNumber = 7;
+            SeventhQuestion.OrderNumber = QuestionOrder.TaskMailSend;
             SeventhQuestion.QuestionStatement = _stringConstant.SeventhQuestionForTest;
-            SeventhQuestion.Type = 2;
+            SeventhQuestion.Type = BotQuestionType.TaskMail;
 
             email.From = _stringConstant.ManagementEmailForTest;
             email.Subject = _stringConstant.TaskMailSubject;
+        }
+
+        private void LoggerMocking()
+        {
+            _loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>()));
         }
         #endregion
     }
