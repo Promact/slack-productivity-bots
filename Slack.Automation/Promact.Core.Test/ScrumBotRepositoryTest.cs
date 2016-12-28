@@ -13,6 +13,7 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
 using Promact.Erp.Util.HttpClient;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Core.Test
 {
@@ -75,18 +76,18 @@ namespace Promact.Core.Test
             scrumAnswer.ScrumId = 1;
 
             question1.CreatedOn = DateTime.UtcNow;
-            question1.OrderNumber = 2;
+            question1.OrderNumber = QuestionOrder.Today;
             question1.QuestionStatement = _stringConstant.ScrumQuestionForTest;
-            question1.Type = 1;
+            question1.Type = BotQuestionType.Scrum;
 
             user.Email = _stringConstant.EmailForTest;
             user.UserName = _stringConstant.EmailForTest;
             user.SlackUserId = _stringConstant.StringIdForTest;
 
             question.CreatedOn = DateTime.UtcNow;
-            question.OrderNumber = 1;
+            question.OrderNumber = QuestionOrder.Yesterday;
             question.QuestionStatement = _stringConstant.ScrumQuestionForTest;
-            question.Type = 1;
+            question.Type = BotQuestionType.Scrum;
 
             testUser.Email = _stringConstant.EmailForTest;
             testUser.UserName = _stringConstant.EmailForTest;
@@ -290,9 +291,9 @@ namespace Promact.Core.Test
             Question question1 = new Question
             {
                 CreatedOn = DateTime.UtcNow,
-                OrderNumber = 2,
+                OrderNumber = QuestionOrder.Today,
                 QuestionStatement = _stringConstant.ScrumQuestionForTest,
-                Type = 1
+                Type = BotQuestionType.Scrum
             };
             _botQuestionRepository.AddQuestion(question1);
             _scrumDataRepository.Insert(scrum);

@@ -13,6 +13,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using System.Net.Mail;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Autofac.Extras.NLog;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -31,10 +32,15 @@ namespace Promact.Core.Repository.TaskMailRepository
 
         string questionText = "";
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager, IEmailServiceTemplateRepository emailServiceTemplate)
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, 
+            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, 
+            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, 
+            IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager, 
+            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
         {
             _taskMail = taskMail;
             _stringConstant = stringConstant;
@@ -47,6 +53,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
             questionText = _stringConstant.EmptyString;
+            _logger = logger;
         }
         #endregion
 
@@ -67,7 +74,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 // get user details from
                 var oAuthUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
-                TaskMailQuestion question = new TaskMailQuestion();
+                QuestionOrder question = new QuestionOrder();
                 Question previousQuestion = new Question();
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 // getting user information from Promact Oauth Server
@@ -82,10 +89,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                     IEnumerable<TaskMailDetails> taskMailDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
                     taskMailDetail = taskMailDetailsList.Last();
                     previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
-                    question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
+                    question = previousQuestion.OrderNumber;
                 }
                 // if previous task mail completed then it will start a new one
-                if (taskMail == null || question == TaskMailQuestion.TaskMailSend)
+                if (taskMail == null || question == QuestionOrder.TaskMailSend)
                 {
                     if (taskMail == null)
                     {
@@ -103,7 +110,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     else
                     {
                         // getting first question of type 2
-                        var firstQuestion = await _botQuestionRepository.FindByQuestionTypeAsync(2);
+                        var firstQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
                         TaskMailDetails taskDetails = new TaskMailDetails();
                         taskDetails.QuestionId = firstQuestion.Id;
                         taskDetails.TaskId = taskMail.Id;
@@ -153,16 +160,20 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // getting inform of previous question asked to user
                     var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
                     // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
-                    if (previousQuestion.OrderNumber <= 7)
+                    if ((int)previousQuestion.OrderNumber <= (int)QuestionOrder.TaskMailSend)
                     {
                         // getting next question to be asked to user
-                        var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync((previousQuestion.OrderNumber + 1), 2);
+                        var orderValue = (int)previousQuestion.OrderNumber;
+                        var typeValue = (int)BotQuestionType.TaskMail;
+                        orderValue++;
+                        var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
                         // Converting question Ordr to enum
-                        var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion),
+                        var question = (QuestionOrder)Enum.Parse(typeof(QuestionOrder), 
                             previousQuestion.OrderNumber.ToString());
                         switch (question)
                         {
-                            case TaskMailQuestion.YourTask:
+                            #region Your Task
+                            case QuestionOrder.YourTask:
                                 {
                                     // if previous question was description of task and it was not null/wrong vale then answer will ask next question
                                     if (answer != null)
@@ -178,7 +189,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                 }
                                 break;
-                            case TaskMailQuestion.HoursSpent:
+                            #endregion
+
+                            #region Hour Spent
+                            case QuestionOrder.HoursSpent:
                                 {
                                     double answerType;
                                     // checking whether string can be convert to double type or not
@@ -204,7 +218,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             }
                                             else
                                             {
-                                                nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(6, 2);
+                                                orderValue = (int)QuestionOrder.ConfirmSendEmail;
+                                                nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
                                                 taskDetails.QuestionId = nextQuestion.Id;
                                                 questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                                     _stringConstant.HourLimitExceed, Environment.NewLine,
@@ -214,7 +229,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage,
+                                            questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.TaskMailBotHourErrorMessage,
                                                 Environment.NewLine, previousQuestion.QuestionStatement);
                                     }
                                     else
@@ -224,7 +240,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             previousQuestion.QuestionStatement);
                                 }
                                 break;
-                            case TaskMailQuestion.Status:
+                            #endregion
+
+                            #region Status
+                            case QuestionOrder.Status:
                                 {
                                     TaskMailStatus taskMailStatusType;
                                     // checking whether string can be convert to TaskMailStatus type or not
@@ -244,7 +263,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
-                            case TaskMailQuestion.Comment:
+                            #endregion
+
+                            #region Comment
+                            case QuestionOrder.Comment:
                                 {
                                     if (answer != null)
                                     {
@@ -260,7 +282,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                 }
                                 break;
-                            case TaskMailQuestion.SendEmail:
+                            #endregion
+
+                            #region Send Email
+                            case QuestionOrder.SendEmail:
                                 {
                                     SendEmailConfirmation sendEmailConfirmation;
                                     // checking whether string can be convert to TaskMailStatus type or not
@@ -284,7 +309,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 {
                                                     // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
                                                     taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                    nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(7, 2);
+                                                    orderValue = (int)QuestionOrder.TaskMailSend;
+                                                    nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     questionText = _stringConstant.ThankYou;
                                                 }
@@ -296,9 +322,12 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                             _stringConstant.SendTaskMailConfirmationErrorMessage,
                                             Environment.NewLine, previousQuestion.QuestionStatement);
-                                    break;
                                 }
-                            case TaskMailQuestion.ConfirmSendEmail:
+                                break;
+                            #endregion
+
+                            #region Confirm Send Email
+                            case QuestionOrder.ConfirmSendEmail:
                                 {
                                     SendEmailConfirmation sendEmailConfirmation;
                                     // checking whether string can be convert to TaskMailStatus type or not
@@ -358,9 +387,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
+                            #endregion
+
+                            #region Default
                             default:
                                 questionText = _stringConstant.RequestToStartTaskMail;
                                 break;
+                                #endregion
                         }
                         _taskMailDetail.Update(taskDetails);
                         _taskMail.Save();
@@ -368,8 +401,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                 }
                 catch (SmtpException ex)
                 {
-                    // error message will be send to email. But leave will be applied
-                    questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
+                    // Email error message will be send to user. But task mail will be added
+                    questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, 
+                        _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
+                    _logger.Error(questionText, ex);
                 }
                 catch (Exception)
                 {
