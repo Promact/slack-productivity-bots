@@ -29,17 +29,15 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
-
-        string questionText = "";
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         private readonly ILogger _logger;
         #endregion
 
         #region Constructor
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, 
-            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail, 
-            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, 
-            IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager, 
+        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant,
+            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail,
+            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService,
+            IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
         {
             _taskMail = taskMail;
@@ -52,7 +50,6 @@ namespace Promact.Core.Repository.TaskMailRepository
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
-            questionText = _stringConstant.EmptyString;
             _logger = logger;
         }
         #endregion
@@ -65,6 +62,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> StartTaskMailAsync(string userId)
         {
+            string questionText = _stringConstant.EmptyString;
             // getting user name from user's slack name
             var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
             // getting access token for that user
@@ -87,7 +85,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                 {
                     // if exist then check the whether the task mail was completed or not
                     IEnumerable<TaskMailDetails> taskMailDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
-                    taskMailDetail = taskMailDetailsList.Last();
+                    if (taskMailDetailsList.Any())
+                        taskMailDetail = taskMailDetailsList.Last();
                     previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
                     question = previousQuestion.OrderNumber;
                 }
@@ -122,7 +121,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 else
                 {
                     // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswerAsync(null, userId);
+                    questionText = await QuestionAndAnswerAsync(null, userId);
                 }
             }
             else
@@ -138,283 +137,291 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
-            // getting user name from user's slack name
-            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
-            if (user != null)
+            string questionText = _stringConstant.EmptyString;
+            try
             {
-                // getting access token for that user
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-                IEnumerable<TaskMailDetails> taskList;
-                TaskMail taskMail = new TaskMail();
-                // getting user information from Promact Oauth Server
-                var oAuthUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
-                try
+                // getting user name from user's slack name
+                var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
+                if (user != null)
                 {
+                    // getting access token for that user
+                    var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                    IEnumerable<TaskMailDetails> taskList;
+                    TaskMail taskMail = new TaskMail();
+                    // getting user information from Promact Oauth Server
+                    var oAuthUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
                     // checking for previous task mail exist or not for today
                     taskMail = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
                     x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
                     x.CreatedOn.Year == DateTime.UtcNow.Year);
-                    // getting task mail details for pervious started task mail
-                    var taskDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
-                    var taskDetails = taskDetailsList.Last();
-                    // getting inform of previous question asked to user
-                    var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
-                    // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
-                    if ((int)previousQuestion.OrderNumber <= (int)QuestionOrder.TaskMailSend)
+                    if (taskMail != null)
                     {
-                        // getting next question to be asked to user
-                        var orderValue = (int)previousQuestion.OrderNumber;
-                        var typeValue = (int)BotQuestionType.TaskMail;
-                        orderValue++;
-                        var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
-                        // Converting question Ordr to enum
-                        var question = (QuestionOrder)Enum.Parse(typeof(QuestionOrder), 
-                            previousQuestion.OrderNumber.ToString());
-                        switch (question)
+                        // getting task mail details for pervious started task mail
+                        var taskDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
+                        if (taskDetailsList.Any())
                         {
-                            #region Your Task
-                            case QuestionOrder.YourTask:
+                            var taskDetails = taskDetailsList.Last();
+                            // getting inform of previous question asked to user
+                            var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
+                            // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
+                            if ((int)previousQuestion.OrderNumber <= (int)QuestionOrder.TaskMailSend)
+                            {
+                                // getting next question to be asked to user
+                                var orderValue = (int)previousQuestion.OrderNumber;
+                                var typeValue = (int)BotQuestionType.TaskMail;
+                                orderValue++;
+                                var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, 
+                                    typeValue);
+                                // Converting question Ordr to enum
+                                var question = (QuestionOrder)Enum.Parse(typeof(QuestionOrder),
+                                    previousQuestion.OrderNumber.ToString());
+                                switch (question)
                                 {
-                                    // if previous question was description of task and it was not null/wrong vale then answer will ask next question
-                                    if (answer != null)
-                                    {
-                                        taskDetails.Description = answer.ToLower();
-                                        questionText = nextQuestion.QuestionStatement;
-                                        taskDetails.QuestionId = nextQuestion.Id;
-                                    }
-                                    else
-                                    {
-                                        // if previous question was description of task and it was null then answer will ask for description again
-                                        questionText = previousQuestion.QuestionStatement;
-                                    }
-                                }
-                                break;
-                            #endregion
-
-                            #region Hour Spent
-                            case QuestionOrder.HoursSpent:
-                                {
-                                    double answerType;
-                                    // checking whether string can be convert to double type or not
-                                    var answerConvertResult = double.TryParse(answer, out answerType);
-                                    if (answerConvertResult)
-                                    {
-                                        // if previous question was hour of task and it was not null/wrong value then answer will ask next question
-                                        var hour = Convert.ToDecimal(answer);
-                                        decimal totalHourSpented = 0;
-                                        // checking range of hours
-                                        if (answerType > 0 && answerType <= 8)
+                                    #region Your Task
+                                    case QuestionOrder.YourTask:
                                         {
-                                            foreach(var task in taskDetailsList)
+                                            // if previous question was description of task and it was not null/wrong vale then answer will ask next question
+                                            if (answer != null)
                                             {
-                                                totalHourSpented += task.Hours;
-                                            }
-                                            totalHourSpented += hour;
-                                            if (totalHourSpented <= 8)
-                                            {
-                                                taskDetails.Hours = hour;
+                                                taskDetails.Description = answer.ToLower();
                                                 questionText = nextQuestion.QuestionStatement;
                                                 taskDetails.QuestionId = nextQuestion.Id;
                                             }
                                             else
                                             {
-                                                orderValue = (int)QuestionOrder.ConfirmSendEmail;
-                                                nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
-                                                taskDetails.QuestionId = nextQuestion.Id;
-                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                    _stringConstant.HourLimitExceed, Environment.NewLine,
-                                                    nextQuestion.QuestionStatement);
-                                                taskDetails.Comment = _stringConstant.StartWorking;
+                                                // if previous question was description of task and it was null then answer will ask for description again
+                                                questionText = previousQuestion.QuestionStatement;
                                             }
                                         }
-                                        else
-                                            // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                _stringConstant.TaskMailBotHourErrorMessage,
-                                                Environment.NewLine, previousQuestion.QuestionStatement);
-                                    }
-                                    else
-                                        // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                            _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine,
-                                            previousQuestion.QuestionStatement);
-                                }
-                                break;
-                            #endregion
+                                        break;
+                                    #endregion
 
-                            #region Status
-                            case QuestionOrder.Status:
-                                {
-                                    TaskMailStatus taskMailStatusType;
-                                    // checking whether string can be convert to TaskMailStatus type or not
-                                    var taskMailStatusConvertResult = Enum.TryParse(answer, out taskMailStatusType);
-                                    if (taskMailStatusConvertResult)
-                                    {
-                                        // if previous question was status of task and it was not null/wrong value then answer will ask next question
-                                        var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer.ToLower());
-                                        taskDetails.Status = status;
-                                        questionText = nextQuestion.QuestionStatement;
-                                        taskDetails.QuestionId = nextQuestion.Id;
-                                    }
-                                    else
-                                        // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                            _stringConstant.TaskMailBotStatusErrorMessage,
-                                            Environment.NewLine, previousQuestion.QuestionStatement);
-                                }
-                                break;
-                            #endregion
-
-                            #region Comment
-                            case QuestionOrder.Comment:
-                                {
-                                    if (answer != null)
-                                    {
-                                        // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
-                                        taskDetails.Comment = answer.ToLower();
-                                        questionText = nextQuestion.QuestionStatement;
-                                        taskDetails.QuestionId = nextQuestion.Id;
-                                    }
-                                    else
-                                    {
-                                        // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
-                                        questionText = previousQuestion.QuestionStatement;
-                                    }
-                                }
-                                break;
-                            #endregion
-
-                            #region Send Email
-                            case QuestionOrder.SendEmail:
-                                {
-                                    SendEmailConfirmation sendEmailConfirmation;
-                                    // checking whether string can be convert to TaskMailStatus type or not
-                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
-                                    if (sendEmailConfirmationConvertResult)
-                                    {
-                                        // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
-                                            answer.ToLower().ToString());
-                                        switch (confirmation)
+                                    #region Hour Spent
+                                    case QuestionOrder.HoursSpent:
                                         {
-                                            case SendEmailConfirmation.yes:
+                                            double answerType;
+                                            // checking whether string can be convert to double type or not
+                                            var answerConvertResult = double.TryParse(answer, out answerType);
+                                            if (answerConvertResult)
+                                            {
+                                                // if previous question was hour of task and it was not null/wrong value then answer will ask next question
+                                                var hour = Convert.ToDecimal(answer);
+                                                decimal totalHourSpented = 0;
+                                                // checking range of hours
+                                                if (answerType > 0 && answerType <= 8)
                                                 {
-                                                    // if previous question was send email of task and answer was yes then answer will ask next question
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                    questionText = nextQuestion.QuestionStatement;
-                                                }
-                                                break;
-                                            case SendEmailConfirmation.no:
-                                                {
-                                                    // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                    orderValue = (int)QuestionOrder.TaskMailSend;
-                                                    nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                    questionText = _stringConstant.ThankYou;
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    else
-                                        // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
-                                            Environment.NewLine, previousQuestion.QuestionStatement);
-                                }
-                                break;
-                            #endregion
-
-                            #region Confirm Send Email
-                            case QuestionOrder.ConfirmSendEmail:
-                                {
-                                    SendEmailConfirmation sendEmailConfirmation;
-                                    // checking whether string can be convert to TaskMailStatus type or not
-                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
-                                    if (sendEmailConfirmationConvertResult)
-                                    {
-                                        // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
-                                            answer.ToLower().ToString());
-                                        questionText = _stringConstant.ThankYou;
-                                        switch (confirmation)
-                                        {
-                                            case SendEmailConfirmation.yes:
-                                                {
-                                                    // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                    // get list of task done and register for today for that user
-                                                    var taskMailDetails = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
-                                                    x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
-                                                    x.CreatedOn.Year == DateTime.UtcNow.Year);
-                                                    //var taskMailDetails = taskMailList.Last();
-                                                    taskList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMailDetails.Id);
-                                                    var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
-                                                    var managements = await _oauthCallsRepository.GetManagementUserNameAsync(accessToken);
-                                                    foreach (var management in managements)
+                                                    foreach (var task in taskDetailsList)
                                                     {
-                                                        teamLeaders.Add(management);
+                                                        totalHourSpented += task.Hours;
                                                     }
-                                                    foreach (var teamLeader in teamLeaders)
+                                                    totalHourSpented += hour;
+                                                    if (totalHourSpented <= 8)
                                                     {
-                                                        // transforming task mail details to template page and getting as string
-                                                        var emailBody = _emailServiceTemplate.EmailServiceTemplateTaskMail(taskList);
-                                                        EmailApplication email = new EmailApplication();
-                                                        email.Body = emailBody;
-                                                        email.From = oAuthUser.Email;
-                                                        email.To = teamLeader.Email;
-                                                        email.Subject = _stringConstant.TaskMailSubject;
-                                                        // Email send 
-                                                        _emailService.Send(email);
+                                                        taskDetails.Hours = hour;
+                                                        questionText = nextQuestion.QuestionStatement;
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                    }
+                                                    else
+                                                    {
+                                                        orderValue = (int)QuestionOrder.ConfirmSendEmail;
+                                                        nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                            _stringConstant.HourLimitExceed, Environment.NewLine,
+                                                            nextQuestion.QuestionStatement);
+                                                        taskDetails.Comment = _stringConstant.StartWorking;
                                                     }
                                                 }
-                                                break;
-                                            case SendEmailConfirmation.no:
-                                                {
-                                                    // if previous question was confirm send email of task and it was not null/wrong value then answer will say thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                }
-                                                break;
+                                                else
+                                                    // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
+                                                    questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                        _stringConstant.TaskMailBotHourErrorMessage,
+                                                        Environment.NewLine, previousQuestion.QuestionStatement);
+                                            }
+                                            else
+                                                // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
+                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine,
+                                                    previousQuestion.QuestionStatement);
                                         }
-                                    }
-                                    else
-                                        // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
-                                            Environment.NewLine, previousQuestion.QuestionStatement);
-                                }
-                                break;
-                            #endregion
+                                        break;
+                                    #endregion
 
-                            #region Default
-                            default:
-                                questionText = _stringConstant.RequestToStartTaskMail;
-                                break;
-                                #endregion
+                                    #region Status
+                                    case QuestionOrder.Status:
+                                        {
+                                            TaskMailStatus taskMailStatusType;
+                                            // checking whether string can be convert to TaskMailStatus type or not
+                                            var taskMailStatusConvertResult = Enum.TryParse(answer, out taskMailStatusType);
+                                            if (taskMailStatusConvertResult)
+                                            {
+                                                // if previous question was status of task and it was not null/wrong value then answer will ask next question
+                                                var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer.ToLower());
+                                                taskDetails.Status = status;
+                                                questionText = nextQuestion.QuestionStatement;
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                            }
+                                            else
+                                                // if previous question was status of task and it was null or wrong value then answer will ask for status again
+                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.TaskMailBotStatusErrorMessage,
+                                                    Environment.NewLine, previousQuestion.QuestionStatement);
+                                        }
+                                        break;
+                                    #endregion
+
+                                    #region Comment
+                                    case QuestionOrder.Comment:
+                                        {
+                                            if (answer != null)
+                                            {
+                                                // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
+                                                taskDetails.Comment = answer.ToLower();
+                                                questionText = nextQuestion.QuestionStatement;
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                            }
+                                            else
+                                            {
+                                                // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
+                                                questionText = previousQuestion.QuestionStatement;
+                                            }
+                                        }
+                                        break;
+                                    #endregion
+
+                                    #region Send Email
+                                    case QuestionOrder.SendEmail:
+                                        {
+                                            SendEmailConfirmation sendEmailConfirmation;
+                                            // checking whether string can be convert to TaskMailStatus type or not
+                                            var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
+                                            if (sendEmailConfirmationConvertResult)
+                                            {
+                                                // convert answer to SendEmailConfirmation type
+                                                var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
+                                                    answer.ToLower());
+                                                switch (confirmation)
+                                                {
+                                                    case SendEmailConfirmation.yes:
+                                                        {
+                                                            // if previous question was send email of task and answer was yes then answer will ask next question
+                                                            taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
+                                                            taskDetails.QuestionId = nextQuestion.Id;
+                                                            questionText = nextQuestion.QuestionStatement;
+                                                        }
+                                                        break;
+                                                    case SendEmailConfirmation.no:
+                                                        {
+                                                            // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
+                                                            taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
+                                                            orderValue = (int)QuestionOrder.TaskMailSend;
+                                                            nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
+                                                            taskDetails.QuestionId = nextQuestion.Id;
+                                                            questionText = _stringConstant.ThankYou;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                                // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
+                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                                    Environment.NewLine, previousQuestion.QuestionStatement);
+                                        }
+                                        break;
+                                    #endregion
+
+                                    #region Confirm Send Email
+                                    case QuestionOrder.ConfirmSendEmail:
+                                        {
+                                            SendEmailConfirmation sendEmailConfirmation;
+                                            // checking whether string can be convert to TaskMailStatus type or not
+                                            var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
+                                            if (sendEmailConfirmationConvertResult)
+                                            {
+                                                // convert answer to SendEmailConfirmation type
+                                                var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
+                                                    answer.ToLower());
+                                                questionText = _stringConstant.ThankYou;
+                                                switch (confirmation)
+                                                {
+                                                    case SendEmailConfirmation.yes:
+                                                        {
+                                                            // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
+                                                            taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
+                                                            taskDetails.QuestionId = nextQuestion.Id;
+                                                            // get list of task done and register for today for that user
+                                                            var taskMailDetails = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
+                                                            x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
+                                                            x.CreatedOn.Year == DateTime.UtcNow.Year);
+                                                            //var taskMailDetails = taskMailList.Last();
+                                                            taskList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMailDetails.Id);
+                                                            var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
+                                                            var managements = await _oauthCallsRepository.GetManagementUserNameAsync(accessToken);
+                                                            foreach (var management in managements)
+                                                            {
+                                                                teamLeaders.Add(management);
+                                                            }
+                                                            foreach (var teamLeader in teamLeaders)
+                                                            {
+                                                                // transforming task mail details to template page and getting as string
+                                                                var emailBody = _emailServiceTemplate.EmailServiceTemplateTaskMail(taskList);
+                                                                EmailApplication email = new EmailApplication();
+                                                                email.Body = emailBody;
+                                                                email.From = oAuthUser.Email;
+                                                                email.To = teamLeader.Email;
+                                                                email.Subject = _stringConstant.TaskMailSubject;
+                                                                // Email send 
+                                                                _emailService.Send(email);
+                                                            }
+                                                        }
+                                                        break;
+                                                    case SendEmailConfirmation.no:
+                                                        {
+                                                            // if previous question was confirm send email of task and it was not null/wrong value then answer will say thank you and task mail stopped
+                                                            taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
+                                                            taskDetails.QuestionId = nextQuestion.Id;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                                // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
+                                                questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                                    Environment.NewLine, previousQuestion.QuestionStatement);
+                                        }
+                                        break;
+                                    #endregion
+
+                                    #region Default
+                                    default:
+                                        questionText = _stringConstant.RequestToStartTaskMail;
+                                        break;
+                                        #endregion
+                                }
+                                _taskMailDetail.Update(taskDetails);
+                                _taskMail.Save();
+                            }
                         }
-                        _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        else
+                            questionText = _stringConstant.RequestToStartTaskMail;
                     }
+                    else
+                        // if previous task mail doesnot exist then ask user to start task mail
+                        questionText = _stringConstant.RequestToStartTaskMail;
                 }
-                catch (SmtpException ex)
-                {
-                    // Email error message will be send to user. But task mail will be added
-                    questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, 
-                        _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
-                    _logger.Error(questionText, ex);
-                }
-                catch (Exception)
-                {
-                    // if previous task mail doesnot exist then ask user to start task mail
-                    questionText = _stringConstant.RequestToStartTaskMail;
-                }
+                else
+                    // if user doesn't exist in oAuth server
+                    questionText = _stringConstant.YouAreNotInExistInOAuthServer;
             }
-            else
-                // if user doesn't exist in oAuth server
-                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
+            catch (SmtpException ex)
+            {
+                // Email error message will be send to user. But task mail will be added
+                questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
+                    _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message);
+                _logger.Error(questionText, ex);
+            }
             return questionText;
         }
 
@@ -427,14 +434,14 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string userId)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-            var user =await _user.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _user.FirstOrDefaultAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
             if (userRoleAcList.FirstOrDefault(x => x.UserName == user.UserName).Role == _stringConstant.RoleAdmin)
             {
                 foreach (var userRole in userRoleAcList)
                 {
-                   if (userId != userRole.UserId)
+                    if (userId != userRole.UserId)
                     {
                         TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, userRole.Role, userRole.Name, userEmail: userRole.UserName);
                         taskMailReportAcList.Add(taskMailReportAc);
@@ -445,11 +452,11 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 foreach (var userRole in userRoleAcList)
                 {
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId,userRole.Role,userRole.Name,userEmail:userRole.UserName);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, userRole.Role, userRole.Name, userEmail: userRole.UserName);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
-           }
-           return taskMailReportAcList;
+            }
+            return taskMailReportAcList;
         }
 
         /// <summary>
@@ -471,9 +478,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetails> taskMailDetailList = (await _taskMailDetail.FetchAsync(x => x.TaskId == taskMailId)).ToList();
                 if (taskMailDetailList.Count() != 0)
                 {
-                   foreach (var taskMailDetail in taskMailDetailList)
+                    foreach (var taskMailDetail in taskMailDetailList)
                     {
-                        TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc (taskMailDetail.Description,taskMailDetail.Comment,id: taskMailDetail.Id,hours: taskMailDetail.Hours,status: taskMailDetail.Status);
+                        TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                         taskMailDetailReportAcList.Add(taskmailReportAc);
                     }
                     DateTime createdOn = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
@@ -486,9 +493,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                     List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                     DateTime createdOn = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
                     DateTime minDate = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault().CreatedOn.Date;
-                    var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable,status:TaskMailStatus.none);
+                    var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: createdOn ,maxDate: createdOn,minDate: minDate);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: createdOn, maxDate: createdOn, minDate: minDate);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -497,7 +504,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: DateTime.Now,maxDate: DateTime.Now,minDate: DateTime.Now);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: DateTime.Now, maxDate: DateTime.Now, minDate: DateTime.Now);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -547,15 +554,15 @@ namespace Promact.Core.Repository.TaskMailRepository
                             TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                             taskMailDetailReportAcList.Add(taskmailReportAc);
                         }
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList,createdOn: taskMail.CreatedOn.Date , maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                     else
                     {
                         List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
-                        var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status:TaskMailStatus.none);
+                        var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                         taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(maxDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(maxDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                 }
@@ -595,7 +602,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                         taskMailDetailReportAcList.Add(taskmailReportAc);
                     }
-                    TaskMailReportAc taskMailReportAc =new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
                 else
@@ -603,7 +610,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                     var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    var taskMailReportAc =new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn:Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate:Convert.ToDateTime(minDate).Date);
+                    var taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -612,7 +619,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(selectedDate).Date, minDate:Convert.ToDateTime(selectedDate).Date);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(selectedDate).Date, minDate: Convert.ToDateTime(selectedDate).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -643,7 +650,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<UserRoleAc> userRolesAcList = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRoleAc in userRolesAcList)
                 {
-                   var taskMailsRecodes = await _taskMail.FetchAsync(y => y.EmployeeId == userRoleAc.UserId);
+                    var taskMailsRecodes = await _taskMail.FetchAsync(y => y.EmployeeId == userRoleAc.UserId);
                     if (taskMailsRecodes.Count() != 0)
                     {
                         maxDate = GetMaxDate(taskMailsRecodes);
@@ -663,7 +670,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                             taskMailDetailReportAcList.Add(taskmailReportAc);
                         }
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, role, userRole.Name, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn, maxDate:  Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, role, userRole.Name, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                     else
@@ -671,7 +678,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                         var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                         taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, role, userRole.Name, taskMailDetailReportList, createdOn:Convert.ToDateTime(selectedDate).Date,  maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                        TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, role, userRole.Name, taskMailDetailReportList, createdOn: Convert.ToDateTime(selectedDate).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                         taskMailReportAcList.Add(taskMailReportAc);
                     }
                 }
@@ -709,7 +716,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                         TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
                         taskMailDetailReportAcList.Add(taskmailReportAc);
                     }
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate:Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportAcList, createdOn: taskMail.CreatedOn.Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
                 else
@@ -717,7 +724,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                     var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                     taskMailDetailReportList.Add(TaskMailDetailReportAc);
-                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn:Convert.ToDateTime(createdOn).Date, maxDate:  Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
+                    TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(createdOn).Date, maxDate: Convert.ToDateTime(maxDate).Date, minDate: Convert.ToDateTime(minDate).Date);
                     taskMailReportAcList.Add(taskMailReportAc);
                 }
             }
@@ -726,7 +733,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<TaskMailDetailReportAc> taskMailDetailReportList = new List<TaskMailDetailReportAc>();
                 var TaskMailDetailReportAc = new TaskMailDetailReportAc(description: _stringConstant.NotAvailable, comment: _stringConstant.NotAvailable, status: TaskMailStatus.none);
                 taskMailDetailReportAcList.Add(TaskMailDetailReportAc);
-                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(createdOn).Date, maxDate:Convert.ToDateTime(createdOn).Date,minDate: Convert.ToDateTime(createdOn).Date);
+                TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userId, role, userName, taskMailDetailReportList, createdOn: Convert.ToDateTime(createdOn).Date, maxDate: Convert.ToDateTime(createdOn).Date, minDate: Convert.ToDateTime(createdOn).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -765,7 +772,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 List<UserRoleAc> usersRole = await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
                 foreach (var userRole in usersRole)
                 {
-                   var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userRole.UserId);
+                    var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userRole.UserId);
                     if (taskMails.Count() != 0)
                     {
                         maxDate = GetMaxDate(taskMails);
@@ -774,7 +781,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 }
                 foreach (var userRole in usersRole)
                 {
-                   
+
                     var employeeTaskMails = await _taskMail.FetchAsync(y => y.EmployeeId == userRole.UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(createdDate));
                     if (employeeTaskMails != null && employeeTaskMails.Count() != 0)
                     {
@@ -852,7 +859,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             return minDate.Value;
         }
-        
-        #endregion 
+
+        #endregion
     }
 }
