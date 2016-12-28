@@ -135,7 +135,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
             User loginUser = await GetEmployeeByIdAsync(userId, accessToken);
 
             //Check if there exists any approved leave request 
-            if(leaveRequests.Count != 0)
+            if(leaveRequests.Any())
             {
                 //Return leave report as per the role of logged in user
                 //For admin, leave report of all the employees 

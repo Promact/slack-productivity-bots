@@ -84,7 +84,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate.Date == scrumDate.Date && x.ScrumId == scrum.Id).ToList();
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             //Assigning answers to specific scrum questions
-            if (todayScrumAnswers.Count() == 0)
+            if (!todayScrumAnswers.Any())
             {
                 employeeScrumDetail.Status = _stringConstant.PersonNotAvailable;
             }
@@ -92,15 +92,15 @@ namespace Promact.Core.Repository.ScrumReportRepository
             {
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 1)
                 {
-                    employeeScrumDetail.Answer1 = SplitAnswer(todayScrumAnswer.Answer);
+                    employeeScrumDetail.Answer1 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 2)
                 {
-                    employeeScrumDetail.Answer2 = SplitAnswer(todayScrumAnswer.Answer);
+                    employeeScrumDetail.Answer2 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
                 if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 3)
                 {
-                    employeeScrumDetail.Answer3 = SplitAnswer(todayScrumAnswer.Answer);
+                    employeeScrumDetail.Answer3 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
             }
             return employeeScrumDetail;
@@ -109,11 +109,11 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <summary>
         /// Method to split the multiple scrum answers into an array
         /// </summary>
-        /// <param name="Answer"></param>
+        /// <param name="answer"></param>
         /// <returns>scrum answer</returns>
-        private string[] SplitAnswer(string Answer)
+        private string[] SplitScrumAnswer(string answer)
         {
-            return Answer.Split(new string[] { "\\n" }, StringSplitOptions.None);
+            return answer.Split(new string[] { "\\n" }, StringSplitOptions.None);
         }
 
         #endregion
@@ -133,7 +133,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Fetch list of all the projects from oauth server
             List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjectsAsync(accessToken);
             //Checking if there are projects returned from oauth server or not
-            if (projects.Count != 0)
+            if (projects.Any())
             {
                 //Returning list of projects as per the role of the loggeed in user
                 if (loginUser.Role.Equals(_stringConstant.Admin))
