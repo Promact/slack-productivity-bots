@@ -1,4 +1,5 @@
-﻿using Promact.Erp.DomainModel.Models;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// </summary>
         /// <param name="type">question's type</param>
         /// <returns>question</returns>
-        Task<Question> FindByQuestionTypeAsync(int type);
+        Task<Question> FindFirstQuestionByTypeAsync(BotQuestionType type);
 
         /// <summary>
         /// Method to find question by it's type and order number
