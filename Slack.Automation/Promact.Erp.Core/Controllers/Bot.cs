@@ -39,13 +39,12 @@ namespace Promact.Erp.Core.Controllers
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
-        public void Main()
+        public void TaskMailBot()
         {
             try
             {
                 // assigning bot token on Slack Socket Client
-                string botToken = _environmentVariableRepository.TaskmailAccessToken;
-                SlackSocketClient client = new SlackSocketClient(botToken);
+                SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
@@ -58,13 +57,13 @@ namespace Promact.Erp.Core.Controllers
                     client.OnMessageReceived += (message) =>
                     {
                         var user = _slackUserDetails.GetByIdAsync(message.user).Result;
-                        string replyText = "";
+                        string replyText = _stringConstant.EmptyString;
                         var text = message.text;
                         if (user != null)
                         {
                             if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                             {
-                                replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
+                                replyText =  _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
                             {
@@ -86,7 +85,8 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + " " + ex.Message + "\n" + ex.StackTrace);
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message + 
+                    Environment.NewLine + ex.StackTrace);
                 throw ex;
             }
 
