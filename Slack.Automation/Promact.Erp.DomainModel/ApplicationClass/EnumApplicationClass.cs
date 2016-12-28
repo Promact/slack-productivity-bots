@@ -43,20 +43,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     }
 
     /// <summary>
-    /// Daily Task Mail Question Order
-    /// </summary>
-    public enum TaskMailQuestion
-    {
-        YourTask = 1,
-        HoursSpent = 2,
-        Status = 3,
-        Comment = 4,
-        SendEmail = 5,
-        ConfirmSendEmail = 6,
-        TaskMailSend = 7
-    }
-
-    /// <summary>
     /// Scrum Status
     /// </summary>
     public enum ScrumStatus
@@ -98,5 +84,31 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         halt,
         resume,
         time
+    }
+
+    /// <summary>
+    /// Type of Bot
+    /// </summary>
+    public enum BotQuestionType
+    {
+        Scrum = 1,
+        TaskMail = 2
+    }
+
+    /// <summary>
+    /// Bot Question order 
+    /// </summary>
+    public enum QuestionOrder
+    {
+        YourTask = 1,
+        HoursSpent = 2,
+        Status = 3,
+        Comment = 4,
+        SendEmail = 5,
+        ConfirmSendEmail = 6,
+        TaskMailSend = 7,
+        Yesterday = 8,
+        Today = 9,
+        RoadBlock = 10
     }
 }
