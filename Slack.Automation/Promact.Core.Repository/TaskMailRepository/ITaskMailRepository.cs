@@ -36,7 +36,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<List<TaskMailReportAc>> GetAllEmployeeAsync(string userId);
+        Task<List<TaskMailReportAc>> GetUserInformationAsync(string userId);
 
         /// <summary>
         /// This method use to fetch the selected date task mail details.
