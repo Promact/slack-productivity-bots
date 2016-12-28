@@ -104,13 +104,13 @@ namespace Promact.Core.Repository.LeaveReportRepository
         }
 
         /// <summary>
-        /// Method to get user details from the Oauth server using their id 
+        /// Method to get user details from the oauth server using their id 
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns>User details</returns>
         private async Task<User> GetEmployeeByIdAsync(string employeeId)
         {
-            User user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId);
+            User user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId, null);
             return user;
         }
 
