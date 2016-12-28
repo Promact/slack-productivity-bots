@@ -153,7 +153,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
                     return leaveReports;
                 }
                 //For teamleader, leave report of all the team member(s) 
-                if (loginUser.Role.Equals(_stringConstant.TeamLeader))
+                else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
                 {
                     List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id, accessToken);
                     foreach (var projectUser in projectUsers)
