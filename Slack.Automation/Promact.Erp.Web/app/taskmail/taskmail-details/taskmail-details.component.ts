@@ -40,7 +40,7 @@ export class TaskMailDetailsComponent implements OnInit {
                 this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe(this.stringConstant.medium);
                 this.MinDate = datePipeMinDate.transform(this.taskMail[0].MinDate, this.stringConstant.dateDefaultFormat);
-                if (this.MinDate === this.stringConstant.defaultDate) {
+                if (this.taskMail[0].MinDate === this.taskMail[0].CreatedOn) {
                     this.IsMinDate = true;
                 }
                 let datePipeMaxDate = new DatePipe(this.stringConstant.medium);
@@ -100,16 +100,16 @@ export class TaskMailDetailsComponent implements OnInit {
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMails => {
             this.taskMail = taskMails;
-            if (this.taskMail[0].MaxDate === this.taskMail[0].CreatedOn) {
+            this.IsMaxDate = false;
+            this.IsMinDate = false;
+            let datePipe = new DatePipe(this.stringConstant.medium);
+            if (datePipe.transform(this.taskMail[0].MaxDate, this.stringConstant.dateFormat) === datePipe.transform(this.taskMail[0].CreatedOn, this.stringConstant.dateFormat)) {
                 this.IsMaxDate = true;
-                this.IsMinDate = false;
             }
-            if (this.taskMail[0].MinDate === this.taskMail[0].CreatedOn) {
-                this.IsMaxDate = false;
+            if (datePipe.transform(this.taskMail[0].MinDate, this.stringConstant.dateFormat) === datePipe.transform(this.taskMail[0].CreatedOn, this.stringConstant.dateFormat)) {
                 this.IsMinDate = true;
             }
             this.taskMail.forEach(taskmails => {
-                let datePipe = new DatePipe(this.stringConstant.medium);
                 taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
                 taskmails.TaskMails.forEach(taskMail => {
                        taskMail.StatusName = TaskMailStatus[taskMail.Status];
