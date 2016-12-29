@@ -18,7 +18,7 @@ using Autofac.Extras.NLog;
 namespace Promact.Core.Repository.TaskMailRepository
 {
     public class TaskMailRepository : ITaskMailRepository
-    {
+    { 
         #region Private Variables
         private readonly IRepository<TaskMail> _taskMail;
         private readonly IRepository<TaskMailDetails> _taskMailDetail;
