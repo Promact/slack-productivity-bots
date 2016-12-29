@@ -12,5 +12,20 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="message"></param>
         /// <returns>reply message</returns>
         Task<string> ProcessMessagesAsync(string userId, string channelId, string message);
+                
+
+        /// <summary>
+        /// Used to add temporary scrum details
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="slackUserId"></param>
+        void AddTemporaryScrumDetails(int projectId,string slackUserId);
+
+
+        /// <summary>
+        /// Used to remove temporary scrum details of the given project
+        /// </summary>
+        /// <param name="projectId"></param>
+        void RemoveTemporaryScrumDetailsAll(int projectId);
     }
 }

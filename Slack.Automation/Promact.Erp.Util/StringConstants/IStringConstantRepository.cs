@@ -32,7 +32,7 @@ namespace Promact.Erp.Util.StringConstants
         string SlackErrorMessage { get; }
 
 
-        string UsersDetailByGroupUrl { get; }
+        string UsersDetailByChannelNameUrl { get; }
         string UserDetailsByIdUrl { get; }
         string UrlRtmStart { get; }
         string OAuthAuthorizationScopeAndClientId { get; }
@@ -100,6 +100,7 @@ namespace Promact.Erp.Util.StringConstants
         string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
+        string MarkedInActive { get; }
         string Unrecognized { get; }
         string UserChange { get; }
         string ChannelCreated { get; }
@@ -276,7 +277,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
-        string MarkedInActive { get; }
+        string IsInActive { get; }
 
         #region String Constants for Test Cases
 

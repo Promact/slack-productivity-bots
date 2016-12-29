@@ -151,7 +151,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string UsersDetailByGroupUrl
+        public string UsersDetailByChannelNameUrl
         {
             get
             {
@@ -572,7 +572,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "But,<@{0}> your answers have been recorded today :worried:\n";
+                return "But,<@{0}>'s answers have been recorded today :worried:\n";
             }
         }
         public string NotExpected
@@ -597,6 +597,15 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. No active employee found for this project.";
             }
         }
+
+        public string IsInActive
+        {
+            get
+            {
+                return "<@{0}> is marked as inactive\n";
+            }
+        }
+        
         public string Unrecognized
         {
             get

@@ -101,9 +101,9 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
         /// <returns>list of object of User</returns>
-        public async Task<List<User>> GetUsersByGroupNameAsync(string groupName, string accessToken)
+        public async Task<List<User>> GetUsersByChannelNameAsync(string groupName, string accessToken)
         {
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByGroupUrl, groupName);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByChannelNameUrl, groupName);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             List<User> users = new List<User>();
             if (response != null)
@@ -249,7 +249,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return project;
         }
-
+      
         #endregion
     }
 }

@@ -59,7 +59,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
         /// <returns>list of object of User</returns>
-        Task<List<User>> GetUsersByGroupNameAsync(string groupName, string accessToken);
+        Task<List<User>> GetUsersByChannelNameAsync(string groupName, string accessToken);
 
 
         /// <summary>
