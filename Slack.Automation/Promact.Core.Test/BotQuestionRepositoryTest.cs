@@ -109,7 +109,7 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _botQuestionRepository.AddQuestion(question);
             var responseQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
-            Assert.NotEqual(responseQuestion.OrderNumber,QuestionOrder.SendEmail);
+            Assert.NotEqual(responseQuestion.OrderNumber,QuestionOrder.Comment);
         }
 
         /// <summary>

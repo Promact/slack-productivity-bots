@@ -59,9 +59,10 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <returns>question</returns>
         public async Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type)
         {
-            var orderNumberValue = (QuestionOrder)orderNumber;
             var typeValue = (BotQuestionType)type;
-            var question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == orderNumberValue && x.Type == typeValue);
+            var orderNumberValue = (QuestionOrder)orderNumber;
+            var question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == orderNumberValue &&
+            x.Type == typeValue);
             return question;
         }
         #endregion

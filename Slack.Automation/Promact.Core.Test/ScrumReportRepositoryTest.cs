@@ -216,7 +216,6 @@ namespace Promact.Core.Test
 
             questionTwo.QuestionStatement = _stringConstant.ScrumSecondQuestion;
             questionTwo.Type = BotQuestionType.Scrum;
-            questionTwo.OrderNumber = QuestionOrder.Today;
 
             questionThree.QuestionStatement = _stringConstant.ScrumThirdQuestion;
             questionThree.Type = BotQuestionType.Scrum;

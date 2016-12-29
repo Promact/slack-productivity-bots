@@ -254,8 +254,8 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.TaskMailReport);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmailForTest, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var userRole = await _oauthCallsRepository.GetUserRoleAsync(_stringConstant.EmailForTest,_stringConstant.AccessTokenForTest);
-            Assert.Equal(3, userRole.Count);
+            var userRole = _oauthCallsRepository.GetUserRoleAsync(_stringConstant.EmailForTest,_stringConstant.AccessTokenForTest);
+            Assert.Equal(3, userRole.Result.Count);
         }
 
       
