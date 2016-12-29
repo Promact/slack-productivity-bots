@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Promact.Core.Repository.BotQuestionRepository;
-using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.StringConstants;
@@ -48,7 +47,7 @@ namespace Promact.Core.Test
         {
             _botQuestionRepository.AddQuestion(question);
             var responseQuestion = await _botQuestionRepository.FindByIdAsync(1);
-            Assert.NotEqual(BotQuestionType.Scrum, responseQuestion.Type);
+            Assert.NotEqual(1, responseQuestion.Type);
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace Promact.Core.Test
         public async Task FindByQuestionTypeAsync()
         {
             _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
+            var responseQuestion = await _botQuestionRepository.FindByQuestionTypeAsync(2);
             Assert.Equal(DateTime.UtcNow.Date, responseQuestion.CreatedOn.Date);
         }
 
@@ -108,8 +107,8 @@ namespace Promact.Core.Test
             _botQuestionRepository.AddQuestion(question);
             _botQuestionRepository.AddQuestion(question);
             _botQuestionRepository.AddQuestion(question);
-            var responseQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
-            Assert.NotEqual(responseQuestion.OrderNumber,QuestionOrder.Comment);
+            var responseQuestion = await _botQuestionRepository.FindByQuestionTypeAsync(2);
+            Assert.NotEqual(responseQuestion.OrderNumber, 5);
         }
 
         /// <summary>
@@ -129,9 +128,9 @@ namespace Promact.Core.Test
         public void Initialize()
         {
             question.CreatedOn = DateTime.UtcNow;
-            question.OrderNumber = QuestionOrder.YourTask;
+            question.OrderNumber = 1;
             question.QuestionStatement = _stringConstant.FirstQuestionForTest;
-            question.Type = BotQuestionType.TaskMail;
+            question.Type = 2;
         }
         #endregion
     }

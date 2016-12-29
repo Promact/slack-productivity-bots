@@ -1,6 +1,5 @@
 namespace Promact.Erp.DomainModel.Migrations
 {
-    using ApplicationClass;
     using Models;
     using System;
     using System.Data.Entity.Migrations;
@@ -21,16 +20,16 @@ namespace Promact.Erp.DomainModel.Migrations
         {
             if (context.Question.Count() == 0)
             {
-                Question firstQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.YourTask, QuestionStatement = "On which task did you work today?", Type = BotQuestionType.TaskMail };
-                Question secondQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.HoursSpent, QuestionStatement = "How many hours have you spent on task?", Type = BotQuestionType.TaskMail };
-                Question thirdQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Status, QuestionStatement = "What is the status of task?", Type = BotQuestionType.TaskMail };
-                Question fourthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Comment, QuestionStatement = "List Comment/Roadblock (if any).", Type = BotQuestionType.TaskMail };
-                Question fifthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.SendEmail, QuestionStatement = "Your task mail is ready. Do you want to send it?", Type = BotQuestionType.TaskMail };
-                Question sixthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.ConfirmSendEmail, QuestionStatement = "After sending the email you won't be able to add any task for today. Are you sure you want to send email?", Type = BotQuestionType.TaskMail };
-                Question seventhQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.TaskMailSend, QuestionStatement = "Task Mail Complete", Type = BotQuestionType.TaskMail };
-                Question firstQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Yesterday, QuestionStatement = "What did you do yesterday?", Type = BotQuestionType.Scrum };
-                Question secondQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Today, QuestionStatement = "What are you going to do today?", Type = BotQuestionType.Scrum };
-                Question thirdQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.RoadBlock, QuestionStatement = "Any roadblock?", Type = BotQuestionType.Scrum };
+                Question firstQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 1, QuestionStatement = "On which task did you work today?", Type = 2 };
+                Question secondQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 2, QuestionStatement = "How many hours have you spent on task?", Type = 2 };
+                Question thirdQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 3, QuestionStatement = "What is the status of task?", Type = 2 };
+                Question fourthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 4, QuestionStatement = "List Comment/Roadblock (if any).", Type = 2 };
+                Question fifthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 5, QuestionStatement = "Your task mail is ready. Do you want to send it?", Type = 2 };
+                Question sixthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 6, QuestionStatement = "After sending the email you won't be able to add any task for today. Are you sure you want to send email?", Type = 2 };
+                Question seventhQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 7, QuestionStatement = "Task Mail Complete", Type = 2 };
+                Question firstQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 1, QuestionStatement = "What did you do yesterday?", Type = 1 };
+                Question secondQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 2, QuestionStatement = "What are you going to do today?", Type = 1 };
+                Question thirdQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = 3, QuestionStatement = "Any roadblock?", Type = 1 };
                 context.Question.AddOrUpdate(x => x.Id,
                     firstQuestionTaskMail,
                     secondQuestionTaskMail,

@@ -31,6 +31,12 @@ export class StringConstant {
     noLeaves = "No employee has any approved leaves";
     noDetails = "No details to show";
     noProjectToDisplay = "No projects to display";
+    userRole= "role";
+    userName= "name";
+    createdOns = "createdOn";
+    taskDetailsUrl = "/user/";
+    selectedDate = "SelectedDate";
+    taskMaiUrl = "api/TaskReport"
     medium = "medium";
     userId = "1";
     userName = "test";
@@ -48,5 +54,5 @@ export class StringConstant {
     previous = "Previous";
     pageType = "PageType";
     role = "role";
-    name = "userName";
+    name = "name";
 }

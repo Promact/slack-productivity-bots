@@ -168,7 +168,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         // get access token of user for promact oauth server
                         string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
                         //list of scrum questions. Type =1
-                        List<Question> questions = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).ToList();
+                        List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                         //employees of the given group name fetched from the oauth server
                         List<User> employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
 
@@ -194,7 +194,7 @@ namespace Promact.Core.Repository.ScrumRepository
                                     {
                                         //not all questions have been answered
                                         Question prevQuestion = _questionRepository.FirstOrDefault(x => x.Id == lastScrumAnswer.QuestionId);
-                                        Question question = _questionRepository.FirstOrDefault(x => x.Type == BotQuestionType.Scrum && x.OrderNumber == prevQuestion.OrderNumber + 1);
+                                        Question question = _questionRepository.FirstOrDefault(x => x.Type == 1 && x.OrderNumber == prevQuestion.OrderNumber + 1);
                                         AddAnswer(lastScrumAnswer.ScrumId, question.Id, lastScrumAnswer.EmployeeId, message);
                                     }
                                     else
@@ -309,7 +309,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             // get access token of user for promact oauth server
                             var accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
-                            List<Question> questions = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).ToList();
+                            List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                             List<User> employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
 
                             ScrumStatus scrumStatus = FetchScrumStatus(groupName, accessToken, null, employees, questions).Result;
@@ -438,7 +438,7 @@ namespace Promact.Core.Repository.ScrumRepository
             string replyMessage = string.Empty;
             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(groupName, accessToken);
             List<User> employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
-            List<Question> questionList = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).ToList();
+            List<Question> questionList = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             ScrumStatus scrumStatus = FetchScrumStatus(groupName, accessToken, project, employees, questionList).Result;
             if (scrumStatus == ScrumStatus.NotStarted)
             {
@@ -536,7 +536,7 @@ namespace Promact.Core.Repository.ScrumRepository
             string returnMsg = string.Empty;
             List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrumId).ToList();
             if (questions == null)
-                questions = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).ToList();
+                questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
             if (employees == null)
                 employees = await _oauthCallsRepository.GetUsersByGroupNameAsync(groupName, accessToken);
 
@@ -663,15 +663,15 @@ namespace Promact.Core.Repository.ScrumRepository
             if (isFirstQuestion)
             {
                 //fetch the first question statement
-                Question question = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).FirstOrDefault();
+                Question question = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).FirstOrDefault();
                 return question.QuestionStatement;
             }
             else
             {
                 //order number of the given question 
-                var orderNumber = _questionRepository.FirstOrDefault(x => x.Id == questionId).OrderNumber;
+                int orderNumber = _questionRepository.FirstOrDefault(x => x.Id == questionId).OrderNumber;
                 //question with the next order
-                Question question = _questionRepository.FirstOrDefault(x => x.OrderNumber == orderNumber + 1 && x.Type == BotQuestionType.Scrum);
+                Question question = _questionRepository.FirstOrDefault(x => x.OrderNumber == orderNumber + 1 && x.Type == 1);
                 if (question != null)
                     return question.QuestionStatement;
                 else
@@ -695,7 +695,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 //previous scrum
                 Scrum previousScrum = scrumList.FirstOrDefault();
-                List<Question> questions = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).OrderBy(x => x.OrderNumber).ToList();
+                List<Question> questions = _questionRepository.Fetch(x => x.Type == 1).OrderBy(x => x.OrderNumber).ToList();
                 List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.Fetch(x => x.ScrumId == previousScrum.Id && x.EmployeeId == employeeId).ToList();
                 if (scrumAnswers.Any() && questions.Any())
                 {
@@ -734,7 +734,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (employees.Count > 0)
                     {
                         if (questions == null || questions.Count == 0)
-                            questions = _questionRepository.Fetch(x => x.Type == BotQuestionType.Scrum).ToList();
+                            questions = _questionRepository.Fetch(x => x.Type == 1).ToList();
                         if (questions.Count > 0)
                         {
                             List<Scrum> scrumList = _scrumRepository.Fetch(x => String.Compare(x.GroupName, groupName, true) == 0).ToList();
