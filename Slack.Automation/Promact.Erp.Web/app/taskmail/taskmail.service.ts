@@ -1,59 +1,44 @@
 ﻿import { Injectable } from '@angular/core';
-import { taskmailModel } from './taskmail.model';
-import {taskmailuserModel} from './taskmailuser.model';
-import {Http, Headers, RequestOptions, Response} from "@angular/http";
+import { TaskMailDetailsModel } from './taskmaildetails.model';
+import { TaskMailModel } from './taskmail.model';
+import { Http, Headers, RequestOptions, Response } from "@angular/http";
 import { Observable } from 'rxjs/Rx';
-import { StringConstant } from '../shared/stringConstant';
-import { URLSearchParams, QueryEncoder } from '@angular/http';
 
 @Injectable()
 export class TaskService {
-    private TaskMailUrl = this.stringConstant.taskMaiUrl;  // URL to web api
-    constructor(private http: Http, private stringConstant: StringConstant) { }
+    private TaskMailUrl = 'api/TaskReport';
+    constructor(private http: Http) { }
 
     getListOfEmployee(): Observable<TaskMailModel[]> {
-        return this.http.get(this.TaskMailUrl)
+        return this.http.get("getAllEmployee/")
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    getTaskMailReport(currentPage: number, itemsPerPage: number): Observable<TaskMailDetailsModel[]> {
+        return this.http.get("taskMailReport/" + currentPage + "/" + itemsPerPage)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    getTaskMailDetailsReport(UserId: string, UserRole: string, UserName: string): Observable<TaskMailModel[]> {//, UserName: string, UserEmail: string): Observable<taskmailuserModel[]> {
+        return this.http.get("taskMailDetailsReport/" + UserId + "/" + UserRole + "/" + UserName)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    getTaskMailDetailsReport(userId: string, role: string, userName: string): Observable<TaskMailModel[]> {
-        let params = new URLSearchParams();
-        params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
-        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + id, { search: params })
+
+    getTaskMailDetailsReportPreviousDate(UserName: string, UserId: string, UserRole: string, CreatedOns: string): Observable<TaskMailModel[]> {
+        return this.http.get("taskMailDetailsReportPreviousDate/" + UserRole + "/" + CreatedOns + "/" + UserId + "/" + UserName)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    getTaskMailDetailsReportNextDate(UserName: string, UserId: string, UserRole: string, CreatedOns: string): Observable<TaskMailModel[]> {
+        return this.http.get("taskMailDetailsReportNextDate/" + UserRole + "/" + CreatedOns + "/" + UserId + "/" + UserName)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    getTaskMailDetailsReportPreviousDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
-        let params = new URLSearchParams();
-        params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
-        params.set(this.stringConstant.createdOns, createdOns);
-        params.set(this.stringConstant.pageType, this.stringConstant.previous);
-        return this.http.get(this.TaskMailUrl  + this.stringConstant.taskDetailsUrl  + id, { search: params })
-            .map(this.extractData)
-            .catch(this.handleError);
-    }
-    getTaskMailDetailsReportNextDate(name: string, id: string, role: string, createdOns: string): Observable<TaskMailModel[]> {
-        let params = new URLSearchParams();
-        params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
-        params.set(this.stringConstant.createdOns, createdOns);
-        params.set(this.stringConstant.pageType, this.stringConstant.next);
-        return this.http.get(this.TaskMailUrl  + this.stringConstant.taskDetailsUrl  + id, { search: params })
-            .map(this.extractData)
-            .catch(this.handleError);
-    }
-
-    getTaskMailDetailsReportSelectedDate(name: string, id: string, role: string, createdOns: string, selectedDate: string): Observable<TaskMailModel[]> {
-        let params = new URLSearchParams();
-        params.set(this.stringConstant.role, role);
-        params.set(this.stringConstant.name, name);
-        params.set(this.stringConstant.createdOns, createdOns);
-        params.set(this.stringConstant.selectedDate, selectedDate);
-        return this.http.get(this.TaskMailUrl + this.stringConstant.taskDetailsUrl + userId, { search: params })
+    getTaskMailDetailsReportSelectedDate(UserName: string, UserId: string, UserRole: string, CreatedOns: string, SelectedDate: string): Observable<TaskMailModel[]> {
+        return this.http.get("taskMailDetailsReportSelectedDate/" + UserRole + "/" + CreatedOns + "/" + UserId + "/" + UserName + "/" + SelectedDate)
             .map(this.extractData)
             .catch(this.handleError);
     }
@@ -67,5 +52,5 @@ export class TaskService {
         let errMsg = 'Server error';
         return Observable.throw(errMsg);
     }
-    
+
 }
