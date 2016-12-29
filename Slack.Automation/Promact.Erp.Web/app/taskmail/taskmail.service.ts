@@ -1,7 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { TaskMailDetailsModel } from './taskmaildetails.model';
 import { TaskMailModel } from './taskmail.model';
-import {Http, Headers, RequestOptions, Response} from "@angular/http";
+import { Http, Headers, RequestOptions, Response } from "@angular/http";
 import { Observable } from 'rxjs/Rx';
 import { StringConstant } from '../shared/stringConstant';
 import { URLSearchParams, QueryEncoder } from '@angular/http';
@@ -67,5 +67,5 @@ export class TaskService {
         let errMsg = 'Server error';
         return Observable.throw(errMsg);
     }
-    
+
 }

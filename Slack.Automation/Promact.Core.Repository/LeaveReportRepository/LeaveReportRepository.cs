@@ -135,7 +135,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
             User loginUser = await GetEmployeeByIdAsync(userId, accessToken);
 
             //Check if there exists any approved leave request 
-            if(leaveRequests.Count != 0)
+            if(leaveRequests.Any())
             {
                 //Return leave report as per the role of logged in user
                 //For admin, leave report of all the employees 
@@ -153,7 +153,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
                     return leaveReports;
                 }
                 //For teamleader, leave report of all the team member(s) 
-                if (loginUser.Role.Equals(_stringConstant.TeamLeader))
+                else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
                 {
                     List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id, accessToken);
                     foreach (var projectUser in projectUsers)

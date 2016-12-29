@@ -28,7 +28,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// </summary>
         /// <param name="taskMail">List of TaskMail</param>
         /// <returns>template emailBody as string</returns>
-        string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail);
+        string EmailServiceTemplateTaskMail(IEnumerable<TaskMailDetails> taskMail);
 
         /// <summary>
         /// Method to generate template body 

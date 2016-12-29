@@ -16,7 +16,7 @@ export class StringConstant {
     unit = 'pt';
     format = 'a4';
     detail = '/detail';
-    detailColumns = ["Employee Name", "Employee Username", "Type","Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
+    detailColumns = ["Employee Name", "Employee Username", "Type", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
     scrum = "api/project";
     slash = "/";

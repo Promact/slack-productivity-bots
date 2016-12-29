@@ -81,29 +81,39 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Fetch all the scrum answers for a particular employee
             List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id)).ToList();
             //Find scrum answers for a particular employee of a particular project on a specific date 
-            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate == scrumDate && x.ScrumId == scrum.Id).ToList();
+            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate.Date == scrumDate.Date && x.ScrumId == scrum.Id).ToList();
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             //Assigning answers to specific scrum questions
-            if (todayScrumAnswers.Count() == 0)
+            if (!todayScrumAnswers.Any())
             {
                 employeeScrumDetail.Status = _stringConstant.PersonNotAvailable;
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
-                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumFirstQuestion))
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Yesterday)
                 {
-                    employeeScrumDetail.Answer1 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer1 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
-                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumSecondQuestion))
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Today)
                 {
-                    employeeScrumDetail.Answer2 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer2 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
-                if (todayScrumAnswer.Question.QuestionStatement.Equals(_stringConstant.ScrumThirdQuestion))
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.RoadBlock)
                 {
-                    employeeScrumDetail.Answer3 = todayScrumAnswer.Answer.Split('\n');
+                    employeeScrumDetail.Answer3 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
             }
             return employeeScrumDetail;
+        }
+
+        /// <summary>
+        /// Method to split the multiple scrum answers into an array
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <returns>scrum answer</returns>
+        private string[] SplitScrumAnswer(string answer)
+        {
+            return answer.Split(new string[] { "\\n" }, StringSplitOptions.None);
         }
 
         #endregion
@@ -123,7 +133,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Fetch list of all the projects from oauth server
             List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjectsAsync(accessToken);
             //Checking if there are projects returned from oauth server or not
-            if (projects.Count != 0)
+            if (projects.Any())
             {
                 //Returning list of projects as per the role of the loggeed in user
                 if (loginUser.Role.Equals(_stringConstant.Admin))

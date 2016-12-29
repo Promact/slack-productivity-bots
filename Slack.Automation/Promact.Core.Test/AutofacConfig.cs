@@ -68,10 +68,10 @@ namespace Promact.Core.Test
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
             builder.RegisterInstance(emailServiceMockObject).As<IEmailService>();
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
-            var loggerMock = new Mock<ILogger>();
-            var loggerMockObject = loggerMock.Object;
-            builder.RegisterInstance(loggerMock).As<Mock<ILogger>>();
-            builder.RegisterInstance(loggerMockObject).As<ILogger>();
+            var iLoggerMock = new Mock<ILogger>();
+            var iLoggerMockObject = iLoggerMock.Object;
+            builder.RegisterInstance(iLoggerMock).As<Mock<ILogger>>();
+            builder.RegisterInstance(iLoggerMockObject).As<ILogger>();
             var container = builder.Build();
             return container;
         }

@@ -11,7 +11,7 @@ namespace Promact.Erp.Core.Controllers
 
     [RoutePrefix("api/taskreport")]
     [Authorize]
-    public class TaskReportController: ApiController
+    public class TaskReportController : ApiController
     {
         private readonly ITaskMailRepository _taskMailReport;
         private readonly IStringConstantRepository _stringConstant;
@@ -57,9 +57,9 @@ namespace Promact.Erp.Core.Controllers
          */
         [HttpGet]
         [Route("user/{userId}")]
-        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId,string role, string userName)
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId, string role, string userName)
         {
-           return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, User.Identity.GetUserId());
+            return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, User.Identity.GetUserId());
         }
 
         /**
@@ -106,7 +106,7 @@ namespace Promact.Erp.Core.Controllers
             {
                 return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.NextPage);
             }
-            else 
+            else
             {
                 return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.Previouspage);
             }
