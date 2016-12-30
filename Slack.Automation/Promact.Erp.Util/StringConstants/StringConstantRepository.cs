@@ -597,15 +597,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. No active employee found for this project.";
             }
         }
-
-        public string IsInActive
-        {
-            get
-            {
-                return "<@{0}> is marked as inactive\n";
-            }
-        }
-        
+              
         public string Unrecognized
         {
             get
@@ -1471,7 +1463,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is not included in the project(of this group in OAuth)";
+                return "<@{0}> is not included in the project(of this group in OAuth)\n";
             }
         }
         public string Admin
@@ -2270,7 +2262,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is marked as In-active in OAuth server. Please contact your system administrator. ";
+                return "<@{0}> is marked as In-active in OAuth server. Please contact your system administrator.\n ";
             }
         }
         public string TeamLeaderLogin

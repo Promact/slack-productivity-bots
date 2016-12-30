@@ -277,8 +277,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
-        string IsInActive { get; }
-
+       
         #region String Constants for Test Cases
 
         string InActiveProjectDetailsFromOauth { get; }
