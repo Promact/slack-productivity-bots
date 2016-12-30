@@ -670,7 +670,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}>,you were marked as In-active in OAuth before. Now you are marked as an Active User.\n Please answer ";
+                return "<@{0}>,you were marked as In-active or not in OAuth before. Now you are marked as an Active User.\n Please answer ";
             }
         }
         public string Channel
@@ -1854,13 +1854,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Completed bot";
             }
         }
-        //public string LeaveApplicant
-        //{
-        //    get
-        //    {
-        //        return "apoorvapatel";
-        //    }
-        //}
+      
         public string ChannelIdForTest
         {
             get
@@ -1951,7 +1945,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@pranali> is marked as In-active in OAuth server. Please contact your system administrator. \r\nI am expecting <@apoorvapatel> to answer.";
+                return "<@pranali> is marked as In-active or not in OAuth server. Please contact your system administrator.\n \r\n<@apoorvapatel> What did you do yesterday?\r\nI am expecting <@apoorvapatel> to answer.";
             }
         }
         public string UserBySlackUserName
@@ -2262,7 +2256,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is marked as In-active in OAuth server. Please contact your system administrator.\n ";
+                return "<@{0}> is marked as In-active or not in OAuth server. Please contact your system administrator.\n ";
             }
         }
         public string TeamLeaderLogin
