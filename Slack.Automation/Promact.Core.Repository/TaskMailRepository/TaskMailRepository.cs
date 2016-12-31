@@ -18,7 +18,7 @@ using Autofac.Extras.NLog;
 namespace Promact.Core.Repository.TaskMailRepository
 {
     public class TaskMailRepository : ITaskMailRepository
-    { 
+    {
         #region Private Variables
         private readonly IRepository<TaskMail> _taskMail;
         private readonly IRepository<TaskMailDetails> _taskMailDetail;
@@ -62,74 +62,64 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> StartTaskMailAsync(string userId)
         {
-            string questionText = _stringConstant.EmptyString;
-            // getting user name from user's slack name
-            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
-            // getting access token for that user
-            if (user != null)
+            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetails(userId);
+            bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText);
+            // if question text is null or not request to start task mail then only allowed
+            if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
-                // get access token of user for promact oauth server
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-                // get user details from
-                var oAuthUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
-                QuestionOrder question = new QuestionOrder();
-                Question previousQuestion = new Question();
+                QuestionOrder questionOrder = new QuestionOrder();
+                Question previousQuestion;
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
-                // getting user information from Promact Oauth Server
-                TaskMail taskMail = null;
-                // checking for previous task mail exist or not for today
-                taskMail = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
-                x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
-                x.CreatedOn.Year == DateTime.UtcNow.Year);
-                if (taskMail != null)
+                #region Task Mail Details
+                TaskMailCondition taskMailCondition = new TaskMailCondition();
+                if (userAndTaskMailDetailsWithAccessToken.TaskList == null)
+                    taskMailCondition = TaskMailCondition.Null;
+                switch (taskMailCondition)
                 {
-                    // if exist then check the whether the task mail was completed or not
-                    IEnumerable<TaskMailDetails> taskMailDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
-                    if (taskMailDetailsList.Any())
+                    case TaskMailCondition.NotNull:
+                        {
+                            taskMailDetail = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                            previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
+                            questionOrder = previousQuestion.OrderNumber;
+                            // If previous task mail is on the process and user started new task mail then will need to first complete pervious one
+                            if (questionOrder <= QuestionOrder.TaskMailSend)
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = await QuestionAndAnswerAsync(null, userId);
+                        }
+                        break;
+                    case TaskMailCondition.Null:
+                        {
+                            // If task mail is not started for that day
+                            userAndTaskMailDetailsWithAccessToken.TaskMail = AddTaskMail(userAndTaskMailDetailsWithAccessToken.User.Id);
+                        }
+                        break;
+                }
+                #endregion
+
+                #region If Task mail not send for that day
+                // if question text is null or not request to start task mail then only allowed
+                if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
+                {
+                    SendEmailConfirmation confirmation = taskMailDetail.SendEmailConfirmation;
+                    switch (confirmation)
                     {
-                        taskMailDetail = taskMailDetailsList.Last();
-                        previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
-                        question = previousQuestion.OrderNumber;
+                        case SendEmailConfirmation.yes:
+                            {
+                                // If mail is send then user will not be able to add task mail for that day
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.AlreadyMailSend;
+                            }
+                            break;
+                        case SendEmailConfirmation.no:
+                            {
+                                // If mail is not send then user will be able to add task mail for that day
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = await AddTaskMailDetailAndGetQuestionStatementAsync(userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                            }
+                            break;
                     }
                 }
-                // if previous task mail completed then it will start a new one
-                if (taskMail == null || question == QuestionOrder.TaskMailSend)
-                {
-                    if (taskMail == null)
-                    {
-                        // If mail is not send then user will be able to add task mail for that day
-                        taskMail = new TaskMail();
-                        taskMail.CreatedOn = DateTime.UtcNow;
-                        taskMail.EmployeeId = oAuthUser.Id;
-                        _taskMail.Insert(taskMail);
-                        _taskMail.Save();
-                    }
-                    // Before going to create new task it will check whether the user has send mail for today or not.
-                    if (taskMailDetail != null && taskMailDetail.SendEmailConfirmation == SendEmailConfirmation.yes)
-                        // If mail is send then user will not be able to add task mail for that day
-                        questionText = _stringConstant.AlreadyMailSend;
-                    else
-                    {
-                        // getting first question of type 2
-                        var firstQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
-                        TaskMailDetails taskDetails = new TaskMailDetails();
-                        taskDetails.QuestionId = firstQuestion.Id;
-                        taskDetails.TaskId = taskMail.Id;
-                        questionText = firstQuestion.QuestionStatement;
-                        _taskMailDetail.Insert(taskDetails);
-                        _taskMailDetail.Save();
-                    }
-                }
-                else
-                {
-                    // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    questionText = await QuestionAndAnswerAsync(null, userId);
-                }
+                #endregion
             }
-            else
-                // if user doesn't exist then this message will be shown to user
-                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
-            return questionText;
+            return userAndTaskMailDetailsWithAccessToken.QuestionText;
         }
 
         /// <summary>
@@ -139,298 +129,244 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
-            string questionText = _stringConstant.EmptyString;
+            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetails(userId);
             try
             {
-                // getting user name from user's slack name
-                var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == userId);
-                if (user != null)
+                // if question text is null then only allowed
+                if (string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText))
                 {
-                    // getting access token for that user
-                    var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-                    IEnumerable<TaskMailDetails> taskList;
-                    TaskMail taskMail = new TaskMail();
-                    // getting user information from Promact Oauth Server
-                    var oAuthUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
-                    if (oAuthUser.Id != null)
+                    if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
                     {
-                        // checking for previous task mail exist or not for today
-                        taskMail = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
-                        x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
-                        x.CreatedOn.Year == DateTime.UtcNow.Year);
-                        if (taskMail != null)
+                        var taskDetails = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                        // getting inform of previous question was asked to user
+                        var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
+                        // checking if previous question was last and answered by user and previous task report was completed then asked for new task mail
+                        if (previousQuestion.OrderNumber <= QuestionOrder.TaskMailSend)
                         {
-                            // getting task mail details for pervious started task mail
-                            var taskDetailsList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMail.Id);
-                            if (taskDetailsList.Any())
+                            // getting next question to be asked to user
+                            var nextQuestion = await NextQuestionForTaskMail(previousQuestion.OrderNumber);
+                            switch (previousQuestion.OrderNumber)
                             {
-                                var taskDetails = taskDetailsList.Last();
-                                // getting inform of previous question asked to user
-                                var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
-                                // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
-                                if ((int)previousQuestion.OrderNumber <= (int)QuestionOrder.TaskMailSend)
-                                {
-                                    // getting next question to be asked to user
-                                    var orderValue = (int)previousQuestion.OrderNumber;
-                                    var typeValue = (int)BotQuestionType.TaskMail;
-                                    orderValue++;
-                                    var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue,
-                                        typeValue);
-                                    // Converting question Ordr to enum
-                                    var question = (QuestionOrder)Enum.Parse(typeof(QuestionOrder),
-                                        previousQuestion.OrderNumber.ToString());
-                                    switch (question)
+                                #region Your Task
+                                case QuestionOrder.YourTask:
                                     {
-                                        #region Your Task
-                                        case QuestionOrder.YourTask:
-                                            {
-                                                // if previous question was description of task and it was not null/wrong vale then answer will ask next question
-                                                if (answer != null)
-                                                {
-                                                    taskDetails.Description = answer.ToLower();
-                                                    questionText = nextQuestion.QuestionStatement;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                }
-                                                else
-                                                {
-                                                    // if previous question was description of task and it was null then answer will ask for description again
-                                                    questionText = previousQuestion.QuestionStatement;
-                                                }
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Hour Spent
-                                        case QuestionOrder.HoursSpent:
-                                            {
-                                                double answerType;
-                                                // checking whether string can be convert to double type or not
-                                                var answerConvertResult = double.TryParse(answer, out answerType);
-                                                if (answerConvertResult)
-                                                {
-                                                    // if previous question was hour of task and it was not null/wrong value then answer will ask next question
-                                                    var hour = Convert.ToDecimal(answer);
-                                                    decimal totalHourSpented = 0;
-                                                    // checking range of hours
-                                                    if (answerType > 0 && answerType <= 8)
-                                                    {
-                                                        foreach (var task in taskDetailsList)
-                                                        {
-                                                            totalHourSpented += task.Hours;
-                                                        }
-                                                        totalHourSpented += hour;
-                                                        if (totalHourSpented <= 8)
-                                                        {
-                                                            taskDetails.Hours = hour;
-                                                            questionText = nextQuestion.QuestionStatement;
-                                                            taskDetails.QuestionId = nextQuestion.Id;
-                                                        }
-                                                        else
-                                                        {
-                                                            orderValue = (int)QuestionOrder.ConfirmSendEmail;
-                                                            nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
-                                                            taskDetails.QuestionId = nextQuestion.Id;
-                                                            questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                                _stringConstant.HourLimitExceed, Environment.NewLine,
-                                                                nextQuestion.QuestionStatement);
-                                                            taskDetails.Comment = _stringConstant.StartWorking;
-                                                        }
-                                                    }
-                                                    else
-                                                        // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                                        questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                            _stringConstant.TaskMailBotHourErrorMessage,
-                                                            Environment.NewLine, previousQuestion.QuestionStatement);
-                                                }
-                                                else
-                                                    // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                                    questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                        _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine,
-                                                        previousQuestion.QuestionStatement);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Status
-                                        case QuestionOrder.Status:
-                                            {
-                                                TaskMailStatus taskMailStatusType;
-                                                // checking whether string can be convert to TaskMailStatus type or not
-                                                var taskMailStatusConvertResult = Enum.TryParse(answer, out taskMailStatusType);
-                                                if (taskMailStatusConvertResult)
-                                                {
-                                                    // if previous question was status of task and it was not null/wrong value then answer will ask next question
-                                                    var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer.ToLower());
-                                                    taskDetails.Status = status;
-                                                    questionText = nextQuestion.QuestionStatement;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                }
-                                                else
-                                                    // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                                    questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                        _stringConstant.TaskMailBotStatusErrorMessage,
-                                                        Environment.NewLine, previousQuestion.QuestionStatement);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Comment
-                                        case QuestionOrder.Comment:
-                                            {
-                                                if (answer != null)
-                                                {
-                                                    // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
-                                                    taskDetails.Comment = answer.ToLower();
-                                                    questionText = nextQuestion.QuestionStatement;
-                                                    taskDetails.QuestionId = nextQuestion.Id;
-                                                }
-                                                else
-                                                {
-                                                    // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
-                                                    questionText = previousQuestion.QuestionStatement;
-                                                }
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Send Email
-                                        case QuestionOrder.SendEmail:
-                                            {
-                                                SendEmailConfirmation sendEmailConfirmation;
-                                                // checking whether string can be convert to TaskMailStatus type or not
-                                                var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
-                                                if (sendEmailConfirmationConvertResult)
-                                                {
-                                                    // convert answer to SendEmailConfirmation type
-                                                    var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
-                                                        answer.ToLower());
-                                                    switch (confirmation)
-                                                    {
-                                                        case SendEmailConfirmation.yes:
-                                                            {
-                                                                // if previous question was send email of task and answer was yes then answer will ask next question
-                                                                taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
-                                                                taskDetails.QuestionId = nextQuestion.Id;
-                                                                questionText = nextQuestion.QuestionStatement;
-                                                            }
-                                                            break;
-                                                        case SendEmailConfirmation.no:
-                                                            {
-                                                                // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
-                                                                taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                                orderValue = (int)QuestionOrder.TaskMailSend;
-                                                                nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
-                                                                taskDetails.QuestionId = nextQuestion.Id;
-                                                                questionText = _stringConstant.ThankYou;
-                                                            }
-                                                            break;
-                                                    }
-                                                }
-                                                else
-                                                    // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                                    questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                        _stringConstant.SendTaskMailConfirmationErrorMessage,
-                                                        Environment.NewLine, previousQuestion.QuestionStatement);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Confirm Send Email
-                                        case QuestionOrder.ConfirmSendEmail:
-                                            {
-                                                SendEmailConfirmation sendEmailConfirmation;
-                                                // checking whether string can be convert to TaskMailStatus type or not
-                                                var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
-                                                if (sendEmailConfirmationConvertResult)
-                                                {
-                                                    // convert answer to SendEmailConfirmation type
-                                                    var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation),
-                                                        answer.ToLower());
-                                                    questionText = _stringConstant.ThankYou;
-                                                    switch (confirmation)
-                                                    {
-                                                        case SendEmailConfirmation.yes:
-                                                            {
-                                                                // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
-                                                                taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
-                                                                taskDetails.QuestionId = nextQuestion.Id;
-                                                                // get list of task done and register for today for that user
-                                                                var taskMailDetails = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == oAuthUser.Id &&
-                                                                x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
-                                                                x.CreatedOn.Year == DateTime.UtcNow.Year);
-                                                                //var taskMailDetails = taskMailList.Last();
-                                                                taskList = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMailDetails.Id);
-                                                                var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
-                                                                var managements = await _oauthCallsRepository.GetManagementUserNameAsync(accessToken);
-                                                                foreach (var management in managements)
-                                                                {
-                                                                    teamLeaders.Add(management);
-                                                                }
-                                                                foreach (var teamLeader in teamLeaders)
-                                                                {
-                                                                    // transforming task mail details to template page and getting as string
-                                                                    var emailBody = _emailServiceTemplate.EmailServiceTemplateTaskMail(taskList);
-                                                                    EmailApplication email = new EmailApplication();
-                                                                    email.Body = emailBody;
-                                                                    email.From = oAuthUser.Email;
-                                                                    email.To = teamLeader.Email;
-                                                                    email.Subject = _stringConstant.TaskMailSubject;
-                                                                    // Email send 
-                                                                    _emailService.Send(email);
-                                                                }
-                                                            }
-                                                            break;
-                                                        case SendEmailConfirmation.no:
-                                                            {
-                                                                // if previous question was confirm send email of task and it was not null/wrong value then answer will say thank you and task mail stopped
-                                                                taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                                taskDetails.QuestionId = nextQuestion.Id;
-                                                            }
-                                                            break;
-                                                    }
-                                                }
-                                                else
-                                                    // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                                    questionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                        _stringConstant.SendTaskMailConfirmationErrorMessage,
-                                                        Environment.NewLine, previousQuestion.QuestionStatement);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Default
-                                        default:
-                                            questionText = _stringConstant.RequestToStartTaskMail;
-                                            break;
-                                            #endregion
+                                        // if previous question was description of task and it was not null/wrong vale then answer will ask next question
+                                        if (answer != null)
+                                        {
+                                            taskDetails.Description = answer;
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                            taskDetails.QuestionId = nextQuestion.Id;
+                                        }
+                                        else
+                                        {
+                                            // if previous question was description of task and it was null then answer will ask for description again
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
+                                        }
                                     }
-                                    _taskMailDetail.Update(taskDetails);
-                                    _taskMail.Save();
-                                }
+                                    break;
+                                #endregion
+
+                                #region Hour Spent
+                                case QuestionOrder.HoursSpent:
+                                    {
+                                        // if previous question was hour of task and it was not null/wrong value then answer will ask next question
+                                        decimal hour;
+                                        // checking whether string can be convert to decimal or not
+                                        var taskMailHourConvertResult = decimal.TryParse(answer, out hour);
+                                        if (taskMailHourConvertResult)
+                                        {
+                                            decimal totalHourSpented = 0;
+                                            // checking range of hours
+                                            if (hour > 0 && hour <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
+                                            {
+                                                // adding up all hours of task mail
+                                                foreach (var task in userAndTaskMailDetailsWithAccessToken.TaskList)
+                                                {
+                                                    totalHourSpented += task.Hours;
+                                                }
+                                                totalHourSpented += hour;
+                                                // checking whether all up hour doesnot exceed task mail hour limit
+                                                if (totalHourSpented <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
+                                                {
+                                                    taskDetails.Hours = hour;
+                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                                    taskDetails.QuestionId = nextQuestion.Id;
+                                                }
+                                                else
+                                                {
+                                                    // getting last question of task mail
+                                                    nextQuestion = await NextQuestionForTaskMail(QuestionOrder.SendEmail);
+                                                    taskDetails.QuestionId = nextQuestion.Id;
+                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                        _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                    taskDetails.Comment = _stringConstant.StartWorking;
+                                                }
+                                            }
+                                            else
+                                                // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
+                                                userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        }
+                                        else
+                                            // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Status
+                                case QuestionOrder.Status:
+                                    {
+                                        TaskMailStatus status;
+                                        // checking whether string can be convert to TaskMailStatus type or not
+                                        var taskMailStatusConvertResult = Enum.TryParse(answer, out status);
+                                        if (taskMailStatusConvertResult)
+                                        {
+                                            // if previous question was status of task and it was not null/wrong value then answer will ask next question
+                                            taskDetails.Status = status;
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                            taskDetails.QuestionId = nextQuestion.Id;
+                                        }
+                                        else
+                                            // if previous question was status of task and it was null or wrong value then answer will ask for status again
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.TaskMailBotStatusErrorMessage,
+                                                Environment.NewLine, previousQuestion.QuestionStatement);
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Comment
+                                case QuestionOrder.Comment:
+                                    {
+                                        if (answer != null)
+                                        {
+                                            // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
+                                            taskDetails.Comment = answer;
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                            taskDetails.QuestionId = nextQuestion.Id;
+                                        }
+                                        else
+                                        {
+                                            // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
+                                        }
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Send Email
+                                case QuestionOrder.SendEmail:
+                                    {
+                                        SendEmailConfirmation confirmation;
+                                        // checking whether string can be convert to TaskMailStatus type or not
+                                        var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out confirmation);
+                                        if (sendEmailConfirmationConvertResult)
+                                        {
+                                            taskDetails.SendEmailConfirmation = confirmation;
+                                            switch (confirmation)
+                                            {
+                                                case SendEmailConfirmation.yes:
+                                                    {
+                                                        // if previous question was send email of task and answer was yes then answer will ask next question
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                                    }
+                                                    break;
+                                                case SendEmailConfirmation.no:
+                                                    {
+                                                        // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
+                                                        nextQuestion = await NextQuestionForTaskMail(QuestionOrder.ConfirmSendEmail);
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                            // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                                Environment.NewLine, previousQuestion.QuestionStatement);
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Confirm Send Email
+                                case QuestionOrder.ConfirmSendEmail:
+                                    {
+                                        SendEmailConfirmation confirmation;
+                                        // checking whether string can be convert to TaskMailStatus type or not
+                                        var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out confirmation);
+                                        if (sendEmailConfirmationConvertResult)
+                                        {
+                                            taskDetails.SendEmailConfirmation = confirmation;
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
+                                            switch (confirmation)
+                                            {
+                                                case SendEmailConfirmation.yes:
+                                                    {
+                                                        EmailApplication email = new EmailApplication();
+                                                        email.From = userAndTaskMailDetailsWithAccessToken.User.Email;
+                                                        email.Subject = _stringConstant.TaskMailSubject;
+                                                        // transforming task mail details to template page and getting as string
+                                                        email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetailsWithAccessToken.TaskList);
+                                                        // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                        // getting team leader list
+                                                        var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, userAndTaskMailDetailsWithAccessToken.AccessToken);
+                                                        // getting managemnt list
+                                                        var managements = await _oauthCallsRepository.GetManagementUserNameAsync(userAndTaskMailDetailsWithAccessToken.AccessToken);
+                                                        teamLeaders.AddRange(managements);
+                                                        foreach (var teamLeader in teamLeaders)
+                                                        {
+                                                            email.To = teamLeader.Email;
+                                                            // Email send 
+                                                            _emailService.Send(email);
+                                                        }
+                                                    }
+                                                    break;
+                                                case SendEmailConfirmation.no:
+                                                    {
+                                                        // if previous question was confirm send email of task and it was not null/wrong value then answer will say thank you and task mail stopped
+                                                        taskDetails.QuestionId = nextQuestion.Id;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                            // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                                Environment.NewLine, previousQuestion.QuestionStatement);
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Default
+                                default:
+                                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
+                                    break;
+                                    #endregion
                             }
-                            else
-                                questionText = _stringConstant.RequestToStartTaskMail;
+                            _taskMailDetail.Update(taskDetails);
+                            _taskMail.Save();
                         }
-                        else
-                            // if previous task mail doesnot exist then ask user to start task mail
-                            questionText = _stringConstant.RequestToStartTaskMail;
                     }
                     else
-                        // if user doesn't exist in oAuth server
-                        questionText = _stringConstant.YouAreNotInExistInOAuthServer;
+                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
                 }
-                else
-                    // if user doesn't exist in oAuth server
-                    questionText = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             catch (SmtpException ex)
             {
                 // Email error message will be send to user. But task mail will be added
-                questionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
+                userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
                     _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message);
-                _logger.Error(questionText, ex);
+                _logger.Error(userAndTaskMailDetailsWithAccessToken.QuestionText, ex);
             }
-            return questionText;
+            return userAndTaskMailDetailsWithAccessToken.QuestionText;
         }
 
 
@@ -814,6 +750,105 @@ namespace Promact.Core.Repository.TaskMailRepository
             return taskMailReportAcList;
         }
 
+        /// <summary>
+        /// Private method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+        /// </summary>
+        /// <param name="slackUserId">User's SlackId</param>
+        /// <returns></returns>
+        private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetails(string slackUserId)
+        {
+            UserAndTaskMailDetailsWithAccessToken userAndTaskMailDetailsWithAccessToken = new UserAndTaskMailDetailsWithAccessToken();
+            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
+            if (user != null)
+            {
+                // getting access token for that user
+                userAndTaskMailDetailsWithAccessToken.AccessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                // getting user information from Promact Oauth Server
+                userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, userAndTaskMailDetailsWithAccessToken.AccessToken);
+                if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
+                {
+                    // checking for previous task mail exist or not for today
+                    userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
+                    x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
+                    x.CreatedOn.Year == DateTime.UtcNow.Year);
+                    if (userAndTaskMailDetailsWithAccessToken.TaskMail != null)
+                    {
+                        // getting task mail details for started task mail
+                        userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetail.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                    }
+                    else
+                    {
+                        // if task mail doesnot exist then ask user to start task mail
+                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
+                    }
+                }
+                else
+                    // if user doesn't exist in oAuth server
+                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
+            }
+            else
+                // if user doesn't exist in ERP server
+                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
+            return userAndTaskMailDetailsWithAccessToken;
+        }
+
+        /// <summary>
+        /// Method to check whether question text is similar to request to start task mail
+        /// </summary>
+        /// <param name="questionText">task mail question text</param>
+        /// <returns>true or false</returns>
+        private bool CheckQuestionTextIsRequestToStartMailOrNot(string questionText)
+        {
+            bool textIsTaskMailOrNot = string.Equals(questionText, _stringConstant.RequestToStartTaskMail);
+            return textIsTaskMailOrNot;
+        }
+        
+        /// <summary>
+        /// Method to add task mail
+        /// </summary>
+        /// <param name="employeeId">User's Id</param>
+        /// <returns>task mail details</returns>
+        private TaskMail AddTaskMail(string employeeId)
+        {
+            TaskMail taskMail = new TaskMail();
+            taskMail.CreatedOn = DateTime.UtcNow;
+            taskMail.EmployeeId = employeeId;
+            _taskMail.Insert(taskMail);
+            _taskMail.Save();
+            return taskMail;
+        }
+
+        /// <summary>
+        /// Add task mail details 
+        /// </summary>
+        /// <param name="taskMailId">task mail Id</param>
+        /// <returns>first question statement</returns>
+        private async Task<string> AddTaskMailDetailAndGetQuestionStatementAsync(int taskMailId)
+        {
+            TaskMailDetails taskMailDetails = new TaskMailDetails();
+            // getting first question of task mail type
+            var firstQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
+            taskMailDetails.TaskId = taskMailId;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetail.Insert(taskMailDetails);
+            _taskMailDetail.Save();
+            return firstQuestion.QuestionStatement;
+        }
+
+        /// <summary>
+        /// Method to get the next question of task mail by previous question order
+        /// </summary>
+        /// <param name="previousQuestionOrder">previous question order</param>
+        /// <returns>question</returns>
+        private async Task<Question> NextQuestionForTaskMail(QuestionOrder previousQuestionOrder)
+        {
+            var orderValue = (int)previousQuestionOrder;
+            var typeValue = (int)BotQuestionType.TaskMail;
+            orderValue++;
+            // getting question by order number and question type as task mail
+            var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue,typeValue);
+            return nextQuestion;
+        }
         #endregion
     }
 }

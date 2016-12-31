@@ -2272,7 +2272,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Your daily limit of task is 8 hour. For today you can't add task. Your working hour is exceeded";
+                return string.Format("Your daily limit of task is {0} hour. For today you can't add task. Your working hour is exceeded", TaskMailHours);
             }
         }
 
@@ -2696,6 +2696,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return " ";
+            }
+        }
+
+        public string TaskMailMaximumTime
+        {
+            get
+            {
+                return "8";
             }
         }
     }

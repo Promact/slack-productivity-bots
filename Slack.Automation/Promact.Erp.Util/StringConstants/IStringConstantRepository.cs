@@ -391,5 +391,6 @@ namespace Promact.Erp.Util.StringConstants
         string RequestToAddSlackApp { get; }
         string Space { get; }
         string UserDetailsFromOauthServerFalse { get; }
+        string TaskMailMaximumTime { get; }
     }
 }
