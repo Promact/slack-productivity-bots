@@ -72,7 +72,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 Question previousQuestion;
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 #region Task Mail Details
-                TaskMailCondition taskMailCondition = new TaskMailCondition();
+                TaskMailCondition taskMailCondition = TaskMailCondition.NotNull;
                 if (userAndTaskMailDetailsWithAccessToken.TaskList == null)
                     taskMailCondition = TaskMailCondition.Null;
                 switch (taskMailCondition)
