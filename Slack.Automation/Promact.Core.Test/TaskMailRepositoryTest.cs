@@ -615,7 +615,7 @@ namespace Promact.Core.Test
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(1, taskMailDetail.Count);
+            Assert.Equal(3, taskMailDetail.Count);
         }
         ///<summary>
         /// this test case for the task mail details 
@@ -651,7 +651,7 @@ namespace Promact.Core.Test
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(1, taskMailDetail.Count);
+            Assert.Equal(3, taskMailDetail.Count);
         }
 
         ///<summary>
@@ -681,7 +681,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id,DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -714,7 +714,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -808,7 +808,7 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -848,7 +848,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -888,7 +888,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -924,7 +924,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.Previouspage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id,DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
 
         }
