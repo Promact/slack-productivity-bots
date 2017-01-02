@@ -113,7 +113,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <returns>scrum answer</returns>
         private string[] SplitScrumAnswer(string answer)
         {
-            return answer.Split(new string[] { "\\n" }, StringSplitOptions.None);
+            return answer.Split(new string[] { "\n" }, StringSplitOptions.None);
         }
 
         #endregion
