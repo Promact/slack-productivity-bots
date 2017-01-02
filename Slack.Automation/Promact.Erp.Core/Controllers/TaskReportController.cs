@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.StringConstants;
+using System;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -79,7 +80,7 @@ namespace Promact.Erp.Core.Controllers
         *             "role": "Admin",
         *             "userName" : "test",
         *             "createdOns": "01-01-2016",
-        *             "pageType"
+        *             "pageType":"Next"
         *        }      
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
@@ -102,14 +103,12 @@ namespace Promact.Erp.Core.Controllers
         [Route("user/{userId}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
+            DateTime createdDate;
             if (pageType == _stringConstant.NextPage)
-            {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.NextPage);
-            }
+            { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
             else
-            {
-                return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), _stringConstant.Previouspage);
-            }
+            { createdDate = Convert.ToDateTime(createdOn).AddDays(-1); }
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), createdDate);
         }
 
         /**
@@ -151,7 +150,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("user/{userId}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string role, string userName, string createdOn, string selectedDate)
         {
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), selectedDate);
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), Convert.ToDateTime(selectedDate));
         }
 
 
