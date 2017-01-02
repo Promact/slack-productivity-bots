@@ -111,4 +111,10 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Today = 9,
         RoadBlock = 10
     }
+
+    public enum TaskMailCondition
+    {
+        Null = 1,
+        NotNull = 2
+    }
 }

@@ -57,11 +57,11 @@ namespace Promact.Erp.Core.Controllers
                     client.OnMessageReceived += (message) =>
                     {
                         var user = _slackUserDetails.GetByIdAsync(message.user).Result;
-                        string replyText = _stringConstant.EmptyString;
-                        var text = message.text;
+                        string replyText = "";
+                        var text = message.text.ToLower();
                         if (user != null)
                         {
-                            if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
+                            if (text == _stringConstant.TaskMailSubject)
                             {
                                 replyText =  _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
