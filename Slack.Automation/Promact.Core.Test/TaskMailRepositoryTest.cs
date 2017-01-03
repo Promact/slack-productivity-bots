@@ -499,29 +499,6 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case for conduct task mail after started for task mail started after sixth question
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task QuestionAndAnswerForEmailServiceErrorAsync()
-        {
-            SmtpException ex = new SmtpException();
-            await mockAndUserCreateAsync();
-            _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws<SmtpException>();
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
-            _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = SixthQuestion.Id;
-            _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
-            var expectReply = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
-            Assert.Equal(response, expectReply);
-        }
-
-        /// <summary>
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
