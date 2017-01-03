@@ -61,7 +61,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<string> StartTaskMailAsync(string userId)
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
-            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetails(userId);
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
             bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText);
             // if question text is null or not request to start task mail then only allowed
             if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
@@ -120,7 +120,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
-            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetails(userId);
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
             // if question text is null then only allowed
             if (string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
@@ -133,7 +133,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     if (previousQuestion.OrderNumber <= QuestionOrder.TaskMailSend)
                     {
                         // getting next question to be asked to user
-                        var nextQuestion = await NextQuestionForTaskMail(previousQuestion.OrderNumber);
+                        var nextQuestion = await NextQuestionForTaskMailAsync(previousQuestion.OrderNumber);
                         switch (previousQuestion.OrderNumber)
                         {
                             #region Your Task
@@ -184,7 +184,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             else
                                             {
                                                 // getting last question of task mail
-                                                nextQuestion = await NextQuestionForTaskMail(QuestionOrder.SendEmail);
+                                                nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.SendEmail);
                                                 taskDetails.QuestionId = nextQuestion.Id;
                                                 userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                                     _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
@@ -266,7 +266,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             case SendEmailConfirmation.no:
                                                 {
                                                     // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
-                                                    nextQuestion = await NextQuestionForTaskMail(QuestionOrder.ConfirmSendEmail);
+                                                    nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.ConfirmSendEmail);
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
                                                 }
@@ -390,7 +390,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-                taskMailReportAcList = await TaskMailDetails(role, loginId, default(DateTime));
+                taskMailReportAcList = await TaskMailDetailsAsync(role, loginId, default(DateTime));
             }
             return taskMailReportAcList;
         }
@@ -409,10 +409,10 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
-            { taskMailReportAcList = await TaskMailDetails(userId, userName, role,  loginId, createdOn, selectedDate); }
+            { taskMailReportAcList = await TaskMailDetailsAsync(userId, userName, role,  loginId, createdOn, selectedDate); }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-                taskMailReportAcList = await TaskMailDetails( role, loginId, selectedDate);
+                taskMailReportAcList = await TaskMailDetailsAsync( role, loginId, selectedDate);
             }
             return taskMailReportAcList;
         }
@@ -440,7 +440,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
         /// <returns>list of task mail reports</returns>
-        private async Task<List<TaskMailReportAc>> TaskMailDetails(string role, string loginId, DateTime selectedDate)
+        private async Task<List<TaskMailReportAc>> TaskMailDetailsAsync(string role, string loginId, DateTime selectedDate)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
@@ -453,7 +453,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             foreach (var userRole in userRoleAcList)
             {
-                TaskMailReportAc taskMailReportAc = await GetTaskMailReportList(userRole.UserId, role, userRole.Name, selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn).Date);
+                TaskMailReportAc taskMailReportAc = await GetTaskMailReportListAsync(userRole.UserId, role, userRole.Name, selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
@@ -469,7 +469,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="maxDate"></param>
         /// <param name="minDate"></param>
         /// <returns>list of task mail report</returns>
-        private async Task<TaskMailReportAc> GetTaskMailReportList(string userId, string role, string userName, DateTime selectedDate, DateTime maxDate, DateTime minDate)
+        private async Task<TaskMailReportAc> GetTaskMailReportListAsync(string userId, string role, string userName, DateTime selectedDate, DateTime maxDate, DateTime minDate)
         {
             TaskMailReportAc taskMailReportAc;
             var taskMail = (await _taskMail.FetchAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDate))).OrderByDescending(x => x.CreatedOn).FirstOrDefault();
@@ -494,13 +494,13 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
         /// <returns>list of task mail reports</returns>
-        private async Task<List<TaskMailReportAc>> TaskMailDetails(string userId, string userName, string role, string createdOn, string loginId, DateTime selectedDate)
+        private async Task<List<TaskMailReportAc>> TaskMailDetailsAsync(string userId, string userName, string role, string createdOn, string loginId, DateTime selectedDate)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             var taskMail = (await _taskMail.FetchAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDate))).FirstOrDefault();
             DateTime maxDate = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).Max(x => x.CreatedOn);
             DateTime minDate = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).Min(x => x.CreatedOn);
-            TaskMailReportAc taskMailReportAc = await GetTaskMailReportList(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
+            TaskMailReportAc taskMailReportAc = await GetTaskMailReportListAsync(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
             taskMailReportAcList.Add(taskMailReportAc);
             return taskMailReportAcList;
         }
@@ -579,7 +579,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="slackUserId">User's SlackId</param>
         /// <returns></returns>
-        private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetails(string slackUserId)
+        private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetailsAsync(string slackUserId)
         {
             UserAndTaskMailDetailsWithAccessToken userAndTaskMailDetailsWithAccessToken = new UserAndTaskMailDetailsWithAccessToken();
             var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
@@ -664,7 +664,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="previousQuestionOrder">previous question order</param>
         /// <returns>question</returns>
-        private async Task<Question> NextQuestionForTaskMail(QuestionOrder previousQuestionOrder)
+        private async Task<Question> NextQuestionForTaskMailAsync(QuestionOrder previousQuestionOrder)
         {
             var orderValue = (int)previousQuestionOrder;
             var typeValue = (int)BotQuestionType.TaskMail;
