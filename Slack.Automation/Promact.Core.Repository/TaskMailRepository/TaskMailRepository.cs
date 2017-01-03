@@ -560,13 +560,12 @@ namespace Promact.Core.Repository.TaskMailRepository
             if (taskMail.Any())
             {
                 taskMailReportAc = await GetTaskMailReportAsync(userId, role, userName, taskMail.OrderByDescending(y => y.CreatedOn).FirstOrDefault().Id, taskMail.Max(x => x.CreatedOn).Date, taskMail.Max(x => x.CreatedOn).Date, taskMail.Min(x => x.CreatedOn).Date);
-                taskMailReportAcList.Add(taskMailReportAc);
             }
             else
             {
                 taskMailReportAc = GetTaskMailReport(userId, role, userName, DateTime.Now.Date, DateTime.Now.Date, DateTime.Now.Date);
-                taskMailReportAcList.Add(taskMailReportAc);
             }
+            taskMailReportAcList.Add(taskMailReportAc);
             return taskMailReportAcList;
         }
 
