@@ -453,7 +453,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             foreach (var userRole in userRoleAcList)
             {
-                TaskMailReportAc taskMailReportAc = await GetTaskMailReportList(userRole.UserId, role, userRole.Name, selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn));
+                TaskMailReportAc taskMailReportAc = await GetTaskMailReportList(userRole.UserId, role, userRole.Name, selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
