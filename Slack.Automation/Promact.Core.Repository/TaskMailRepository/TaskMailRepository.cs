@@ -390,7 +390,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-                taskMailReportAcList = await TaskMailDetailsAsync(role, loginId, default(DateTime));
+                taskMailReportAcList = await TaskMailDetailsAsync(role, loginId, DateTime.MinValue);
             }
             return taskMailReportAcList;
         }
@@ -447,13 +447,9 @@ namespace Promact.Core.Repository.TaskMailRepository
             var userIdList = userRoleAcList.Select(x => x.UserId);
             var taskMails = await _taskMail.FetchAsync(x => userIdList.Contains(x.EmployeeId));
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
-            if (selectedDate == default(DateTime))
-            {
-                selectedDate = maxDate;
-            }
             foreach (var userRole in userRoleAcList)
             {
-                TaskMailReportAc taskMailReportAc = await GetTaskReportAsync(userRole.UserId, role, userRole.Name, selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn).Date);
+                TaskMailReportAc taskMailReportAc = await GetTaskReportAsync(userRole.UserId, role, userRole.Name, selectedDate==DateTime.MinValue?maxDate.Date:selectedDate.Date, maxDate.Date, taskMails.Min(x => x.CreatedOn).Date);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
             return taskMailReportAcList;
