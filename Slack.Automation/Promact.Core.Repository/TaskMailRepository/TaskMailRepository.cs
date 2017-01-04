@@ -461,7 +461,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>max and min Date</returns> 
         private async Task<Tuple<DateTime, DateTime>> GetMaxMinDateAsync(List<UserRoleAc> userRoleAcList)
         {
-            //getting list of usrId.
+            //getting list of userId.
             var userIdList = userRoleAcList.Select(x => x.UserId);
             //getting list of task mails using userIdList.
             var taskMails = await _taskMail.FetchAsync(x => userIdList.Contains(x.EmployeeId));
@@ -513,7 +513,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else
             {
-                //if selected employee does not have any task mail than show default task mail to the end users. 
+                //if team member does not have any task mail than show default task mail to the end users. 
                 taskMailReportAc = GetTaskMailReport(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
             }
             return taskMailReportAc;
@@ -607,7 +607,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else
             {
-                //if selected employee does not have any task mail than show default task mail to the end users. 
+                //if employee does not have any task mail than show default task mail to the end users. 
                 taskMailReportAc = GetTaskMailReport(userId, role, userName, DateTime.Now.Date, DateTime.Now.Date, DateTime.Now.Date);
             }
             taskMailReportAcList.Add(taskMailReportAc);
