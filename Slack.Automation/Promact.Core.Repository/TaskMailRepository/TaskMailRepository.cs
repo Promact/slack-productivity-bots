@@ -54,7 +54,7 @@ namespace Promact.Core.Repository.TaskMailRepository
 
         #region Public Methods
         /// <summary>
-        /// Method to start task mail
+        /// Method to start task mail and send first question of task mail
         /// </summary>
         /// <param name="userId">User's slack user Id</param>
         /// <returns>questionText in string format containing question statement</returns>
@@ -113,10 +113,11 @@ namespace Promact.Core.Repository.TaskMailRepository
         }
 
         /// <summary>
-        /// Method to conduct task mail after started
+        /// Method to conduct task mail after been started, and send next question of task mail
         /// </summary>
-        /// <param name="answer">User's slack user Id</param>
-        /// <returns>questionText in string format containing question statement</returns>
+        /// <param name="answer">Answer of previous question ask to user</param>
+        /// <param name="userId">User's slack Id</param>
+        /// <returns>questionText in string format containing next question statement</returns>
         public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
