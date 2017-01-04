@@ -396,7 +396,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 //getting the team members information.
                 List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
-                //getting maximum and minimum date form the team members task mails
+                //getting maximum and minimum date from the team members task mails
                 var maxMinTaskMailDate = await GetMaxMinDateAsync(userRoleAcList);
                 //first time there are no selected date that's why pass maxdate as a selected date.
                 //getting the team members task mail reports
@@ -427,7 +427,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             {
                 //getting the team members information 
                 List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
-                //find maximum and minimum date form the team members task mails
+                //find maximum and minimum date from the team members task mails
                 var maxMinTaskMailDate = await GetMaxMinDateAsync(userRoleAcList);
                 //getting the team members task mail reports for selected date
                 taskMailReportAcList = await TaskMailDetailsAsync(role, loginId, selectedDate.Date, maxMinTaskMailDate.Item1.Date, maxMinTaskMailDate.Item2.Date);
