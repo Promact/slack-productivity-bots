@@ -438,7 +438,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         #endregion
 
         #region Private Methods
-
+         
         /// <summary>
         /// Getting user information
         /// </summary>
