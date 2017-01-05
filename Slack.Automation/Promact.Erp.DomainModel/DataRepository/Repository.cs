@@ -93,6 +93,16 @@ namespace Promact.Erp.DomainModel.DataRepository
         }
 
         /// <summary>
+        /// Method fetches the first item from the datacontext based on the the supplied function.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<T> FirstAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await dbSet.FirstAsync<T>(predicate);
+        }
+
+        /// <summary>
         /// Method to search database using Linq Expression and get All Value corresponding to expression
         /// </summary>
         /// <param name="predicate"></param>
