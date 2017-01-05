@@ -200,7 +200,7 @@ namespace Promact.Core.Test
         public async Task UpdateLeaveFalseAsync()
         {
             await _leaveRequestRepository.ApplyLeaveAsync(leave);
-            var leaves = _leaveRequestRepository.LeaveById(1);
+            var leaves = await _leaveRequestRepository.LeaveByIdAsync(1);
             leaves.Status = Condition.Rejected;
             await _leaveRequestRepository.UpdateLeaveAsync(leaves);
             Assert.NotEqual(Condition.Approved, leaves.Status);

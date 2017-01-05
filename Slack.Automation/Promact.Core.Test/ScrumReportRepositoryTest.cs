@@ -101,7 +101,7 @@ namespace Promact.Core.Test
         /// Method to test ScrumReportDetails when the person is not available on the scrum date
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public async void ScrumReportDetailsPersonUnavailableTest()
+        public async Task ScrumReportDetailsPersonUnavailableTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 15);
@@ -113,15 +113,16 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
 
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is employee 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public async void ScrumReportDetailsEmployeeTest()
+        public async Task ScrumReportDetailsEmployeeTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -137,7 +138,7 @@ namespace Promact.Core.Test
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             await _scrumAnswerDataRepository.SaveChangesAsync();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
 
@@ -146,7 +147,7 @@ namespace Promact.Core.Test
         /// Method to test ScrumReportDetails when the logged in person is admin 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public async void ScrumReportDetailsAdminTest()
+        public async Task ScrumReportDetailsAdminTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -162,15 +163,16 @@ namespace Promact.Core.Test
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             await _scrumAnswerDataRepository.SaveChangesAsync();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
 
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is teamLeader 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public async void ScrumReportDetailsTeamLeaderTest()
+        public async Task ScrumReportDetailsTeamLeaderTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -186,9 +188,11 @@ namespace Promact.Core.Test
             await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
             await _scrumAnswerDataRepository.SaveChangesAsync();
-            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.TestUserName, _stringConstant.TestAccessToken).Result;
+            var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
+
         #endregion
 
         #region Initialisation

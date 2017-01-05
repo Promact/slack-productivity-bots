@@ -399,6 +399,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "This channel is not registered as Project in OAuth. Please add it to OAuth first";
             }
         }
+        public string UserNotInOAuthOrProject
+        {
+            get
+            {
+                return "User not in OAuth or not a user in the project";
+            }
+        }
         public string GroupNameStartsWith
         {
             get
@@ -597,7 +604,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. No active employee found for this project.";
             }
         }
-              
+
         public string Unrecognized
         {
             get
@@ -628,11 +635,41 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
+        public string NameFormat
+        {
+            get
+            {
+                return "<@{0}> ";
+            }
+        }
+        public string AnswerNotRecorded
+        {
+            get
+            {
+                return "Answer could not be recorded";
+            }
+        }
+        public string NameFormatWithNewLine
+        {
+            get
+            {
+                return "<@{0}>!\n";
+            }
+        }
+
+        public string PreviousDayScrumAnswer
+        {
+            get
+            {
+                return "*_Q_*: {0}\r\n*_A_*: _{1}_\r\n";
+            }
+        }
+
         public string ScrumCannotBeHalted
         {
             get
             {
-                return " So scrum cannot be halted.";
+                return " Scrum cannot be halted.";
             }
         }
 
@@ -1854,7 +1891,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Completed bot";
             }
         }
-      
+
         public string ChannelIdForTest
         {
             get

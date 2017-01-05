@@ -4,7 +4,7 @@ namespace Promact.Core.Repository.ScrumRepository
 {
     public interface IScrumBotRepository
     {
-     
+
         /// <summary>
         /// This will process the messages from slack and use appropriate methods to give a suitable response through Bot
         /// </summary>
@@ -20,8 +20,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="slackUserId"></param>
-        /// <returns></returns>
-        Task AddTemporaryScrumDetailsAsync(int projectId, string slackUserId);
+        /// <param name="answerCount"></param>
+        /// <param name="questionId"></param>
+        Task AddTemporaryScrumDetailsAsync(int projectId, string slackUserId, int answerCount, int questionId);
 
     }
 }
