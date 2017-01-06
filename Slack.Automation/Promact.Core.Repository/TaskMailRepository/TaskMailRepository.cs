@@ -10,10 +10,8 @@ using Promact.Erp.Util.Email;
 using System.Data.Entity;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
-using System.Net.Mail;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
-using Autofac.Extras.NLog;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -66,15 +64,13 @@ namespace Promact.Core.Repository.TaskMailRepository
             // if question text is null or not request to start task mail then only allowed
             if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
-                QuestionOrder questionOrder = new QuestionOrder();
-                Question previousQuestion;
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 #region Task Mail Details
                 if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
                 {
                     taskMailDetail = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
-                    previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
-                    questionOrder = previousQuestion.OrderNumber;
+                    var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
+                    var questionOrder = previousQuestion.OrderNumber;
                     // If previous task mail is on the process and user started new task mail then will need to first complete pervious one
                     if (questionOrder <= QuestionOrder.TaskMailSend)
                         userAndTaskMailDetailsWithAccessToken.QuestionText = await QuestionAndAnswerAsync(null, userId);
@@ -464,7 +460,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             //getting list of userId.
             var userIdList = userRoleAcList.Select(x => x.UserId);
             //getting list of task mails using userIdList.
-            var taskMails = await _taskMail.FetchAsync(x => userIdList.Contains(x.EmployeeId));
+            var taskMails = (await _taskMail.FetchAsync(x => userIdList.Contains(x.EmployeeId))).ToList();
             //getting maximum and minimum date form the team members task mails
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
             DateTime minDate = taskMails.Min(x => x.CreatedOn);
@@ -478,6 +474,8 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="role"></param>
         /// <param name="loginId"></param>
         /// <param name="selectedDate"></param>
+        /// <param name="maxDate"></param>
+        /// <param name="minDate"></param>
         /// <returns>list of task mail reports</returns>
         private async Task<List<TaskMailReportAc>> TaskMailDetailsAsync(string role, string loginId, DateTime selectedDate,DateTime maxDate,DateTime minDate)
         {
@@ -533,7 +531,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             //find maximum and minimum date from the employee task mails
-            IEnumerable<TaskMail> taskMails = await _taskMail.FetchAsync(x => x.EmployeeId == userId);
+            IEnumerable<TaskMail> taskMails = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).ToList();
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
             DateTime minDate = taskMails.Min(x => x.CreatedOn);
             //getting task mail information.
@@ -597,7 +595,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string userId, string role, string userName, string loginId)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-            var taskMail = (await _taskMail.FetchAsync(y => y.EmployeeId == userId));
+            var taskMail = (await _taskMail.FetchAsync(y => y.EmployeeId == userId)).ToList();
             TaskMailReportAc taskMailReportAc;
             if (taskMail.Any())
             {
