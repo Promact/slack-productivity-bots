@@ -16,7 +16,7 @@ export class StringConstant {
     unit = 'pt';
     format = 'a4';
     detail = '/detail';
-    detailColumns = ["Employee Name", "Employee Username", "Type","Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
+    detailColumns = ["Employee Name", "Employee Username", "Type", "Leave From", "Start Day", "Leave Upto", "End Day", "Reason"];
     paramsId = 'id';
     scrum = "api/project";
     slash = "/";
@@ -38,7 +38,16 @@ export class StringConstant {
     comment = "test Comment";
     description = "test Description";
     empty = "";
-    userRole = "UserRole";
     paramsUserId = "UserId";
     paramsUserName = "UserName";
+    userRole = "UserRole";
+    createdOns = "createdOn";
+    taskDetailsUrl = "/user/";
+    selectedDate = "SelectedDate";
+    taskMaiUrl = "api/taskreport";
+    next = "Next";
+    previous = "Previous";
+    pageType = "PageType";
+    role = "role";
+    name = "userName";
 }

@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
+
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -45,6 +47,7 @@ namespace Promact.Core.Test
         private Question SixthQuestion = new Question();
         private Question SeventhQuestion = new Question();
         private EmailApplication email = new EmailApplication();
+        private readonly Mock<ILogger> _loggerMock;
         #endregion
 
         #region Constructor
@@ -60,6 +63,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
+            _loggerMock = _componentContext.Resolve<Mock<ILogger>>();
             Initialize();
         }
         #endregion
@@ -495,43 +499,19 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case for conduct task mail after started for task mail started after sixth question
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task QuestionAndAnswerForEmailServiceErrorAsync()
-        {
-            SmtpException ex = new SmtpException();
-            await mockAndUserCreateAsync();
-            _mockEmailService.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws<SmtpException>();
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            _botQuestionRepository.AddQuestion(SixthQuestion);
-            _botQuestionRepository.AddQuestion(SeventhQuestion);
-            _taskMailDataRepository.Insert(taskMail);
-            _taskMailDataRepository.Save();
-            taskMailDetails.TaskId = taskMail.Id;
-            taskMailDetails.QuestionId = SixthQuestion.Id;
-            _taskMailDetailsDataRepository.Insert(taskMailDetails);
-            _taskMailDetailsDataRepository.Save();
-            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
-            var expectReply = string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage, _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
-            Assert.Equal(response, expectReply);
-        }
-
-
-        /// <summary>
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task TaskMailDetailsReportAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
             var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
-            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
-            var managementRequestUrl = _stringConstant.ManagementDetailsUrl;
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
@@ -549,7 +529,71 @@ namespace Promact.Core.Test
             Assert.Equal(1, taskMailDetail.Count);
         }
 
+        /// <summary>
+        /// this test case for the task mail details 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task TaskMailDetailsReportForEmployeeAsync()
+        {
+            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _botQuestionRepository.AddQuestion(firstQuestion);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+            taskMail.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleEmployee, _stringConstant.FirstNameForTest, user.Id);
+            Assert.Equal(1, taskMailDetail.Count);
+        }
+        ///<summary>
+        /// this test case for the task mail details for user role is team leader
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task TaskMailDetailsForSelectedDateForTeamLeaderAsync()
+        {
+            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _botQuestionRepository.AddQuestion(firstQuestion);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+            taskMail.EmployeeId = "1";
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var response = Task.FromResult(_stringConstant.TaskMailReportTeamLeader);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.TeamMembersUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
 
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
+            Assert.Equal(3, taskMailDetail.Count);
+        }
         ///<summary>
         /// this test case for the task mail details 
         /// </summary>
@@ -570,7 +614,7 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
-            taskMail.EmployeeId = user.Id;
+            taskMail.EmployeeId = "1";
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
             taskMailDetails.TaskId = taskMail.Id;
@@ -584,25 +628,23 @@ namespace Promact.Core.Test
 
 
             var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportAsync(user.Id, _stringConstant.RoleTeamLeader, _stringConstant.FirstNameForTest, user.Id);
-            Assert.Equal(0, taskMailDetail.Count);
-
+            Assert.Equal(3, taskMailDetail.Count);
         }
-
 
         ///<summary>
         /// this test case for the task mail details 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportSelectedDateTeamLeaderAsync()
+        public async Task TaskMailDetailsForSelectedDateAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
             var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
-            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
-            var managementRequestUrl = _stringConstant.ManagementDetailsUrl;
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             _botQuestionRepository.AddQuestion(firstQuestion);
@@ -616,26 +658,104 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id,DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
+
+
+        ///<summary>
+        /// this test case for the task mail details 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task TaskMailDetailsForSelectedDateForAdminAsync()
+        {
+            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _botQuestionRepository.AddQuestion(firstQuestion);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+            taskMail.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
+            Assert.Equal(1, taskMailDetail.Count);
+        }
+
+
+        /// <summary>
+        /// get the user information.
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task GetAllEmployeeAsync()
         {
+
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
             var response = Task.FromResult(_stringConstant.TaskMailReport);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, user.Id, _stringConstant.UserRoleUrl);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var role = _stringConstant.RoleAdmin;
 
-
-            var result = await _taskMailRepository.GetAllEmployeeAsync(user.Id);
-            Assert.Equal(0, result.Count);
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
+            //Assert.Equal(0, result.Count);
+            Assert.Equal(3, result.Count);
         }
+
+        /// <summary>
+        /// get the employee information for user role is TeamLeader.
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetAllEmployeeForTeamLeaderAsync()
+        {
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var response = Task.FromResult(_stringConstant.ListOfEmployeeForTeamLeader);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
+            Assert.Equal(3, result.Count);
+        }
+
+
+
+        /// <summary>
+        /// get the employee information for user role is Employee.
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetEmployeeInfromationAsync()
+        {
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var response = Task.FromResult(_stringConstant.EmployeeInformation);
+            var requestUrl = string.Format("{0}{1}", user.Id, _stringConstant.UserRoleUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+
+            var result = await _taskMailRepository.GetUserInformationAsync(user.Id);
+            Assert.Equal(1, result.Count);
+        }
+
 
 
         /// <summary>
@@ -665,16 +785,12 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
-
-
-
-
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, Convert.ToString(DateTime.UtcNow));
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
         /// <summary>
-        /// this test case for the task mail details for the next date.
+        /// this test case for the task mail details for the next date. 
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task TaskMailDetailsReportNextPreviousDateAsync()
@@ -709,7 +825,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
@@ -717,7 +833,7 @@ namespace Promact.Core.Test
         /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task TaskMailDetailsReportNextPreviousDateTeamLeaderAsync()
+        public async Task TaskMailDetailsReportNextPreviousDateForEmployeeAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
@@ -736,6 +852,10 @@ namespace Promact.Core.Test
             taskMail.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMail);
             _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
 
             taskMailPrvious.EmployeeId = user.Id;
             _taskMailDataRepository.Insert(taskMailPrvious);
@@ -745,12 +865,49 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             _taskMailDetailsDataRepository.Save();
 
-            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportNextPreviousDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id, _stringConstant.PriviousPage);
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleEmployee, Convert.ToString(DateTime.UtcNow), user.Id, DateTime.UtcNow);
             Assert.Equal(1, taskMailDetail.Count);
         }
 
         /// <summary>
-        /// Test case for conduct task mail after started for task mail started after second question for exceed then 8 hour
+        /// this test case for the task mail details for the next date.
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task TaskMailDetailsReportNextPreviousDateForTeamLeaderAsync()
+        {
+            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var userRequestUrl = string.Format("{0}{1}", _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format("{0}{1}", _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = string.Format("{0}", _stringConstant.ManagementDetailsUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            _botQuestionRepository.AddQuestion(firstQuestion);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+            taskMail.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMail);
+            _taskMailDataRepository.Save();
+
+            taskMailPrvious.EmployeeId = user.Id;
+            _taskMailDataRepository.Insert(taskMailPrvious);
+            _taskMailDataRepository.Save();
+            taskMailDetails.TaskId = taskMailPrvious.Id;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            _taskMailDetailsDataRepository.Save();
+
+            var taskMailDetail = await _taskMailRepository.TaskMailDetailsReportSelectedDateAsync(user.Id, _stringConstant.FirstNameForTest, _stringConstant.RoleAdmin, Convert.ToString(DateTime.UtcNow), user.Id,DateTime.UtcNow);
+            Assert.Equal(1, taskMailDetail.Count);
+
+        }
+
+        /// <summary>
+        /// this test case for the task mail details for the next date.
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task QuestionAndAnswerAfterSecondAnswerExceedHoursAsync()
@@ -784,7 +941,8 @@ namespace Promact.Core.Test
             Assert.Equal(response, expectedResponse);
         }
 
-        /// <summary>
+
+        // <summary>
         /// Test case for conduct task mail after started for task mail started after second question
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -804,6 +962,7 @@ namespace Promact.Core.Test
             var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, _stringConstant.SecondQuestionForTest);
             Assert.Equal(response, text);
         }
+
         #endregion
 
         #region Initialisation
@@ -827,10 +986,11 @@ namespace Promact.Core.Test
             slackUserDetails.Profile = profile;
 
             firstQuestion.CreatedOn = DateTime.UtcNow;
-            firstQuestion.OrderNumber = 1;
+            firstQuestion.OrderNumber = QuestionOrder.YourTask;
             firstQuestion.QuestionStatement = _stringConstant.FirstQuestionForTest;
-            firstQuestion.Type = 2;
+            firstQuestion.Type = BotQuestionType.TaskMail;
 
+            user.Id = "1";
             user.Email = _stringConstant.EmailForTest;
             user.UserName = _stringConstant.EmailForTest;
             user.SlackUserId = _stringConstant.FirstNameForTest;
@@ -848,40 +1008,45 @@ namespace Promact.Core.Test
             taskMailDetails.Status = TaskMailStatus.completed;
 
             secondQuestion.CreatedOn = DateTime.UtcNow;
-            secondQuestion.OrderNumber = 2;
+            secondQuestion.OrderNumber = QuestionOrder.HoursSpent;
             secondQuestion.QuestionStatement = _stringConstant.SecondQuestionForTest;
-            secondQuestion.Type = 2;
+            secondQuestion.Type = BotQuestionType.TaskMail;
 
             thirdQuestion.CreatedOn = DateTime.UtcNow;
-            thirdQuestion.OrderNumber = 3;
+            thirdQuestion.OrderNumber = QuestionOrder.Status;
             thirdQuestion.QuestionStatement = _stringConstant.ThirdQuestionForTest;
-            thirdQuestion.Type = 2;
+            thirdQuestion.Type = BotQuestionType.TaskMail;
 
             forthQuestion.CreatedOn = DateTime.UtcNow;
-            forthQuestion.OrderNumber = 4;
+            forthQuestion.OrderNumber = QuestionOrder.Comment;
             forthQuestion.QuestionStatement = _stringConstant.ForthQuestionForTest;
-            forthQuestion.Type = 2;
+            forthQuestion.Type = BotQuestionType.TaskMail;
 
             fifthQuestion.CreatedOn = DateTime.UtcNow;
-            fifthQuestion.OrderNumber = 5;
+            fifthQuestion.OrderNumber = QuestionOrder.SendEmail;
             fifthQuestion.QuestionStatement = _stringConstant.FifthQuestionForTest;
-            fifthQuestion.Type = 2;
+            fifthQuestion.Type = BotQuestionType.TaskMail;
 
 
 
             SixthQuestion.CreatedOn = DateTime.UtcNow;
-            SixthQuestion.OrderNumber = 6;
+            SixthQuestion.OrderNumber = QuestionOrder.ConfirmSendEmail;
             SixthQuestion.QuestionStatement = _stringConstant.SixthQuestionForTest;
-            SixthQuestion.Type = 2;
+            SixthQuestion.Type = BotQuestionType.TaskMail;
 
 
             SeventhQuestion.CreatedOn = DateTime.UtcNow;
-            SeventhQuestion.OrderNumber = 7;
+            SeventhQuestion.OrderNumber = QuestionOrder.TaskMailSend;
             SeventhQuestion.QuestionStatement = _stringConstant.SeventhQuestionForTest;
-            SeventhQuestion.Type = 2;
+            SeventhQuestion.Type = BotQuestionType.TaskMail;
 
             email.From = _stringConstant.ManagementEmailForTest;
             email.Subject = _stringConstant.TaskMailSubject;
+        }
+
+        private void LoggerMocking()
+        {
+            _loggerMock.Setup(x => x.Error(It.IsAny<string>(), It.IsAny<Exception>()));
         }
         #endregion
     }

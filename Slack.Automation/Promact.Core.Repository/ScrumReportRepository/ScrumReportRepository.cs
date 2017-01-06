@@ -90,15 +90,15 @@ namespace Promact.Core.Repository.ScrumReportRepository
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
-                if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 1)
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Yesterday)
                 {
                     employeeScrumDetail.Answer1 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
-                if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 2)
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Today)
                 {
                     employeeScrumDetail.Answer2 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }
-                if (todayScrumAnswer.Question.Type == 1 && todayScrumAnswer.Question.OrderNumber == 3)
+                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.RoadBlock)
                 {
                     employeeScrumDetail.Answer3 = SplitScrumAnswer(todayScrumAnswer.Answer);
                 }

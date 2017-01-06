@@ -5,212 +5,177 @@ using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.StringConstants;
+using System;
 
 namespace Promact.Erp.Core.Controllers
 {
+
+    [RoutePrefix("api/taskreport")]
     [Authorize]
-    public class TaskReportController: ApiController
+    public class TaskReportController : ApiController
     {
         private readonly ITaskMailRepository _taskMailReport;
         private readonly IStringConstantRepository _stringConstant;
         public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
         {
-            this._taskMailReport = taskMailReport;
+            _taskMailReport = taskMailReport;
             _stringConstant = stringConstant;
         }
 
-        //[HttpGet]
-        //[Route("taskMailReport")]
-        //public async Task<IHttpActionResult> taskMailReport()
-        //{
-        //    string UserId = User.Identity.GetUserId();
-        //    IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId);
-        //    return Ok(taskMailReportAc);
-        //}
-
-        //[HttpGet]
-        //[Route("taskMailReport/{currentPage}/{itemsPerPage}")]
-        //public async Task<IHttpActionResult> taskMailReport(int currentPage,int itemsPerPage)
-        //{
-        //    string UserId = User.Identity.GetUserId();
-        //    IEnumerable<TaskMailReportAc> taskMailReportAc = await _taskMailReport.TaskMailReport(UserId,currentPage, itemsPerPage);
-        //    return Ok(taskMailReportAc);
-        //}
 
         /**
-         * @api {get} taskMailDetailsReport:{UserId}/{UserRole}/{UserName}
+         * @api {get}  api/TaskReport/user/:userId
          * @apiVersion 1.0.0
-         * @apiName TaskReport
+         * @apiName TaskMailDetailsReportAsync
          * @apiGroup TaskReport
-         * @apiParam {string} UserId  user Id
-         * @apiParam {string} UserRole  user Role
-         * @apiParam {string} UserName  user Name
+         * @apiParam {string} userId  user Id
+         * @apiParam {string} role  user Role
+         * @apiParam {string} userName  user Name
          * @apiParamExample {json} Request-Example:
          *      
          *        {
-         *             "UserId": "1"
-         *             "UserRole": "Admin"
-         *             "UserName" : "test"
-         *             "description":"get the TaskMailUser Object"
+         *             "userId": "1",
+         *             "role": "Admin",
+         *             "userName" : "test",
          *        }      
          * @apiSuccessExample {json} Success-Response:
          * HTTP/1.1 200 OK 
          * {
-         *      "UserId": "1"
-         *      "UserRole": "Admin"
-         *      "UserName" : "test"
-         *      "description":"get the TaskMailUser Object"
+         *      "UserId": "1",
+         *      "UserRole": "Admin",
+         *      "UserName" : "test",
+         *      "CreatedOn": "01-01-0001",
+         *      "TaskMails" : 
+         *      {
+         *          Description : "Worked on Issue #123".
+         *          Comment : "Worked comment",
+         *          Hours : 1.5, 
+         *          Status : Completed  
+         *      }
          * }
-         */
-
-        [HttpGet]
-        [Route("taskMailDetailsReport/{UserId}/{UserRole}/{UserName}")]
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReport(string UserId,string UserRole,string UserName)
-        {
-            string LoginId = User.Identity.GetUserId();
-            return await _taskMailReport.TaskMailDetailsReportAsync(UserId,UserRole,UserName, LoginId);
-        }
-
-        /**
-         * @api {get} taskMailDetailsReportPreviousDate:{UserRole}/{CreatedOn}/{UserId}/{UserName}
-         * @apiVersion 1.0.0
-         * @apiName TaskReport
-         * @apiGroup TaskReport
-         * @apiParam {string} UserId  user Id
-         * @apiParam {string} UserRole  user Role
-         * @apiParam {string} UserName  user Name
-         * @apiParam {string} CreatedOn user Task Mail CreatedOn
-         * @apiParamExample {json} Request-Example:
-         *      
-         *        {
-         *             "UserId": "1"
-         *             "UserRole": "Admin"
-         *             "UserName" : "test"
-         *             "CreatedOn": "01-01-0001"
-         *             "description":"get the TaskMailUser Object For Previous Date"
-         *        }      
-         * @apiSuccessExample {json} Success-Response:
-         * HTTP/1.1 200 OK 
-         * {
-         *      "UserId": "1"
-         *      "UserRole": "Admin"
-         *      "UserName" : "test"
-         *      "CreatedOn": "01-01-0001"
-         *      "description":"get the TaskMailUser Object For Previous Date"
-         * }
-         */
-
-        [HttpGet]
-        [Route("taskMailDetailsReportPreviousDate/{UserRole}/{CreatedOn}/{UserId}/{UserName}")]
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportPreviousDate(string UserRole, string CreatedOn,string UserId,string UserName)
-        {
-            string LoginId = User.Identity.GetUserId();
-            string PreviousPage = _stringConstant.PriviousPage;
-            return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole,CreatedOn, LoginId, PreviousPage);
-            //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
-        }
-
-        /**
-         * @api {get} taskMailDetailsReportNextDate:{UserRole}/{CreatedOn}/{UserId}/{UserName}
-         * @apiVersion 1.0.0
-         * @apiName TaskReport
-         * @apiGroup TaskReport
-         * @apiParam {string} UserId  user Id
-         * @apiParam {string} UserRole  user Role
-         * @apiParam {string} UserName  user Name
-         * @apiParam {string} CreatedOn user Task Mail CreatedOn
-         * @apiParamExample {json} Request-Example:
-         *      
-         *        {
-         *             "UserId": "1"
-         *             "UserRole": "Admin"
-         *             "UserName" : "test"
-         *             "CreatedOn": "01-01-0001"
-         *             "description":"get the TaskMailUser Object For Next Day"
-         *        }      
-         * @apiSuccessExample {json} Success-Response:
-         * HTTP/1.1 200 OK 
-         * {
-         *      "UserId": "1"
-         *      "UserRole": "Admin"
-         *      "UserName" : "test"
-         *      "CreatedOn": "01-01-0001"
-         *      "description":"get the TaskMailUser Object For Next Day"
+         
          * }
          */
         [HttpGet]
-        [Route("taskMailDetailsReportNextDate/{UserRole}/{CreatedOn}/{UserId}/{UserName}")]
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextDate(string UserRole, string CreatedOn, string UserId, string UserName)
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId, string role, string userName)
         {
-            string LoginId = User.Identity.GetUserId();
-            string NextPage = _stringConstant.NextPage;
-            return await _taskMailReport.TaskMailDetailsReportNextPreviousDateAsync(UserId, UserName, UserRole, CreatedOn, LoginId, NextPage);
-            //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
+            return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, User.Identity.GetUserId());
         }
 
         /**
-        * @api {get} taskMailDetailsReportSelectedDate:{UserRole}/{CreatedOn}/{UserId}/{UserName}/{SelectedDate}
+        * @api {get} api/TaskReport/user/:userId 
         * @apiVersion 1.0.0
-        * @apiName TaskReport
+        * @apiName TaskMailDetailsReportNextPreviousDateAsync
         * @apiGroup TaskReport
-        * @apiParam {string} UserId  user Id
-        * @apiParam {string} UserRole  user Role
-        * @apiParam {string} UserName  user Name
-        * @apiParam {string} CreatedOn user Task Mail CreatedOn
-        * @apiParam {string} SelectedDate user Task Mail SelectedDate
+        * @apiParam {string} userId  user Id
+        * @apiParam {string} role  user Role
+        * @apiParam {string} userName  user Name
+        * @apiParam {string} createdOn user Task Mail CreatedOn
+        * @apiParam {string} pageType user Task Mail CreatedOn
         * @apiParamExample {json} Request-Example:
         *      
         *        {
-        *             "UserId": "1"
-        *             "UserRole": "Admin"
-        *             "UserName" : "test"
-        *             "CreatedOn": "01-01-0001"
-        *             "SelectedDate":"01-01-0001"
-        *             "description":"get the TaskMailUser Object For Selected Date"
+        *             "userId": "1",
+        *             "role": "Admin",
+        *             "userName" : "test",
+        *             "createdOns": "01-01-2016",
+        *             "pageType":"Next"
         *        }      
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *      "UserId": "1"
-        *      "UserRole": "Admin"
-        *      "UserName" : "test"
-        *      "CreatedOn": "01-01-0001"
-        *      "SelectedDate":"01-01-0001"
-        *      "description":"get the TaskMailUser Object For Selected Date"
+        *      "UserId": "1",
+        *      "UserRole": "Admin",
+        *      "UserName" : "test",
+        *      "CreatedOn": "01-01-0001",
+        *      "SelectedDate":"01-01-0001",
+        *      "TaskMails" : 
+        *      {
+        *          Description : "Worked on Issue #123".
+        *          Comment : "Worked comment",
+        *          Hours : 1.5, 
+        *          Status : Completed  
+        *      }
         * }
         */
         [HttpGet]
-        [Route("taskMailDetailsReportSelectedDate/{UserRole}/{CreatedOn}/{UserId}/{UserName}/{SelectedDate}")]
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportSelectedDate(string UserRole, string CreatedOn, string UserId, string UserName,string SelectedDate)
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
-            string LoginId = User.Identity.GetUserId();
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(UserId, UserName, UserRole, CreatedOn, LoginId, SelectedDate);
-            //return await _taskMailReport.TaskMailDetailsReport(UserId, UserRole, UserName, LoginId);
+            DateTime createdDate;
+            if (pageType == _stringConstant.NextPage)
+            { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
+            else
+            { createdDate = Convert.ToDateTime(createdOn).AddDays(-1); }
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), createdDate);
+        }
+
+        /**
+        * @api {get} api/TaskReport/user/:userId 
+        * @apiVersion 1.0.0
+        * @apiName TaskMailDetailsReportSelectedDateAsync
+        * @apiGroup TaskReport
+        * @apiParam {string} userId  user Id
+        * @apiParam {string} role  user Role
+        * @apiParam {string} userName  user Name
+        * @apiParam {string} createdOn user Task Mail CreatedOn
+        * @apiParam {string} selectedDate user Task Mail SelectedDate
+        * @apiParamExample {json} Request-Example:
+        *        {
+        *             "userId": "1",
+        *             "role": "Admin",
+        *             "userName" : "test",
+        *             "createdOns": "01-01-0001",
+        *             "selectedDate":"01-01-0001"
+        *        }      
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *      "UserId": "1",
+        *      "UserRole": "Admin",
+        *      "UserName" : "test",
+        *      "CreatedOn": "01-01-0001",
+        *      "SelectedDate":"01-01-0001",
+        *      "TaskMails" : 
+        *      {
+        *          Description : "Worked on Issue #123".
+        *          Comment : "Worked comment",
+        *          Hours : 1.5, 
+        *          Status : Completed  
+        *      }
+        * }
+        */
+        [HttpGet]
+        [Route("user/{userId}")]
+        public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string role, string userName, string createdOn, string selectedDate)
+        {
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), Convert.ToDateTime(selectedDate));
         }
 
 
         /**
-       * @api {get} getAllEmployee
+       * @api {get} api/TaskReport 
        * @apiVersion 1.0.0
-       * @apiName TaskReport
+       * @apiName GetAllEmployeeAsync
        * @apiGroup TaskReport
-       * @apiParamExample {json} Request-Example:
-       *      
-       *        {
-       *             "description":"get the TaskMailUser Object"
-       *        }      
+       * @apiParam {null} no parameter
        * @apiSuccessExample {json} Success-Response:
        * HTTP/1.1 200 OK 
        * {
-       *     "description":"get the TaskMailUser Object"
+       *     "UserId": "1",
+       *     "UserRole": "Admin",
+       *     "UserName" : "test",
+       *     "CreatedOn": "01-01-0001",
+       *     "UserEmail": "test@xyz.com",
+       *     "TaskMails" : null
        * }
        */
         [HttpGet]
-        [Route("getAllEmployee")]
-        public async Task<List<TaskMailUserAc>> getAllEmployee()
+        [Route("")]
+        public async Task<List<TaskMailReportAc>> GetUserInformationAsync()
         {
-            string UserId = User.Identity.GetUserId();
-            return await _taskMailReport.GetAllEmployeeAsync(UserId);
+            return await _taskMailReport.GetUserInformationAsync(User.Identity.GetUserId());
         }
 
     }

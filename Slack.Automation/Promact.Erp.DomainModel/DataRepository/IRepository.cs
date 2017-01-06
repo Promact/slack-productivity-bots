@@ -21,5 +21,6 @@ namespace Promact.Erp.DomainModel.DataRepository
         bool All(Func<T, bool> predicate);
         T LastOrDefault(Expression<Func<T, bool>> predicate);
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+        Task<T> FirstAsync(Expression<Func<T, bool>> predicate);
     }
 }

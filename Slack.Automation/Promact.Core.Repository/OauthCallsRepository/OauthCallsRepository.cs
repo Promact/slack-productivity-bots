@@ -195,8 +195,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
-            var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
-            return Json;
+            var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return userRoleListAc;
         }
 
         /// <summary>
@@ -209,9 +209,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId,_stringConstant.TeamMembersUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
-            //var responseContent = response.Content.ReadAsStringAsync().Result;
-            var Json = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
-            return Json;
+            var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return userRoleListAc;
         }
 
 

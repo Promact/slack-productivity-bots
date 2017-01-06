@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Promact.Erp.Util.HttpClient;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Core.Test
 {
@@ -210,16 +211,15 @@ namespace Promact.Core.Test
             scrumAnswer.Id = 1;
 
             questionOne.QuestionStatement = _stringConstant.ScrumFirstQuestion;
-            questionOne.Type = 1;
-            questionOne.OrderNumber = 1;
+            questionOne.Type = BotQuestionType.Scrum;
+            questionOne.OrderNumber = QuestionOrder.Yesterday;
 
             questionTwo.QuestionStatement = _stringConstant.ScrumSecondQuestion;
-            questionTwo.Type = 1;
-            questionTwo.OrderNumber = 2;
+            questionTwo.Type = BotQuestionType.Scrum;
 
             questionThree.QuestionStatement = _stringConstant.ScrumThirdQuestion;
-            questionThree.Type = 1;
-            questionThree.OrderNumber = 3;
+            questionThree.Type = BotQuestionType.Scrum;
+            questionThree.OrderNumber = QuestionOrder.RoadBlock;
         }
         #endregion
     }

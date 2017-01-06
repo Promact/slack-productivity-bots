@@ -874,14 +874,28 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string ListOfEmployeeForTeamLeader
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string EmployeeInformation
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"}]";
             }
         }
         public string TaskMailReportTeamLeader
         {
             get
             {
-                return "[{\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userName\":\"test@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"1\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"test@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
             }
         }
         public string TeamLeaderEmailForTest
@@ -1084,7 +1098,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}/api/Users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl
@@ -2158,11 +2172,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Next";
             }
         }
-        public string PriviousPage
+        public string Previouspage
         {
             get
             {
-                return "Privious";
+                return "Previous";
             }
         }
 
@@ -2258,7 +2272,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Your daily limit of task is 8 hour. For today you can't add task. Your working hour is exceeded";
+                return string.Format("Your daily limit of task is {0} hour. For today you can't add task. Your working hour is exceeded", TaskMailHours);
             }
         }
 
@@ -2682,6 +2696,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return " ";
+            }
+        }
+
+        public string TaskMailMaximumTime
+        {
+            get
+            {
+                return "8";
             }
         }
     }

@@ -132,6 +132,8 @@ namespace Promact.Erp.Util.StringConstants
         string CommentAndDescriptionForTest { get; }
         string ManagementDetailsFromOauthServer { get; }
         string TaskMailReport { get; }
+        string ListOfEmployeeForTeamLeader { get; }
+        string EmployeeInformation { get; }
         string TaskMailReportTeamLeader { get; }
         string TeamLeaderEmailForTest { get; }
         string ManagementFirstForTest { get; }
@@ -340,7 +342,7 @@ namespace Promact.Erp.Util.StringConstants
 
         string NotAvailable { get; }
         string NextPage { get; }
-        string PriviousPage { get; }
+        string Previouspage { get; }
         string HourLimitExceed { get; }
         string StartWorking { get; }
         string HourSpentForTesting { get; }
@@ -389,5 +391,6 @@ namespace Promact.Erp.Util.StringConstants
         string RequestToAddSlackApp { get; }
         string Space { get; }
         string UserDetailsFromOauthServerFalse { get; }
+        string TaskMailMaximumTime { get; }
     }
 }
