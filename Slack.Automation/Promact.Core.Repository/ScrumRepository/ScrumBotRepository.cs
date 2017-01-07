@@ -670,19 +670,19 @@ namespace Promact.Core.Repository.ScrumRepository
                 DateTime today = DateTime.UtcNow.Date;
                 Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => string.Compare(x.GroupName, channelName, true) == 0 && DbFunctions.TruncateTime(x.ScrumDate) == today);
                 //user to whom the last question was asked
-                SlackUserDetailAc slackUser = await GetSlackUserAsync(project.Id, users);
-                if (slackUser != null && !string.IsNullOrEmpty(slackUser.Name))
+                SlackUserDetailAc prevUser = await GetSlackUserAsync(project.Id, users);
+                if (prevUser != null && !string.IsNullOrEmpty(prevUser.Name))
                 {
-                    if (slackUser.Deleted)
+                    if (prevUser.Deleted)
                         //user is not part of the project in OAuth
-                        replyMessage = string.Format(_stringConstant.UserNotInProject, slackUser.Name);
+                        replyMessage = string.Format(_stringConstant.UserNotInProject, prevUser.Name);
 
-                    else if (!slackUser.IsActive)
+                    else if (!prevUser.IsActive)
                     {
                         //user to whom the last question was asked. but this user is in active now
-                        User userDetail = users.FirstOrDefault(x => x.SlackUserId == slackUser.UserId);
+                        User userDetail = users.FirstOrDefault(x => x.SlackUserId == prevUser.UserId);
                         List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrum.Id && x.EmployeeId == userDetail.Id).Result.ToList();
-                        return string.Format(_stringConstant.InActiveInOAuth, slackUser.Name) + await MarkAsInActiveAsync(scrumAnswer, users, scrum.Id, questionList, channelName, project.Id, accessToken, slackUser.UserId, true);
+                        return string.Format(_stringConstant.InActiveInOAuth, prevUser.Name) + await MarkAsInActiveAsync(scrumAnswer, users, scrum.Id, questionList, channelName, project.Id, accessToken, prevUser.UserId, true);
                     }
                 }
                 //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
