@@ -42,7 +42,7 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"A message of leave will be send user using incoming webhook"
         * }
         * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 400 OK 
+        * HTTP/1.1 400 BadRequeest 
         * {
         *     "error":"A message of error will be send user using incoming webhook"
         * }
@@ -79,7 +79,7 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"A message of leave will be update in slack using slack chat update method"
         * }
         * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 400 OK 
+        * HTTP/1.1 400 BadRequest
         * {
         *     "error":"A message of error will be update in slack using slack chat update method"
         * }
