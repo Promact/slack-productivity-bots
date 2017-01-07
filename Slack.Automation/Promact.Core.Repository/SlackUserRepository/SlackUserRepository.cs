@@ -63,10 +63,13 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// </summary>
         /// <param name="slackId"></param>
         /// <returns>user</returns>
-        public async Task<SlackUserDetails> GetByIdAsync(string slackId)
+        public async Task<SlackUserDetailAc> GetByIdAsync(string slackId)
         {
+            SlackUserDetailAc slackUser = new SlackUserDetailAc();
             SlackUserDetails user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackId);
-            return user;
+            Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>());
+            slackUser = Mapper.Map(user, slackUser);
+            return slackUser;
         }
 
 

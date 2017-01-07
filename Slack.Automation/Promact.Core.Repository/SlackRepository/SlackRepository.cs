@@ -70,7 +70,7 @@ namespace Promact.Core.Repository.SlackRepository
                 // method to get leave by its id
                 LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
                 ApplicationUser user = await _userManager.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
-                SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                 ApplicationUser updaterUser = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
                 // only pending status can be modified
                 if (leave.Status == Condition.Pending)

@@ -23,7 +23,7 @@ namespace Promact.Core.Repository.SlackUserRepository
         /// </summary>
         /// <param name="slackId"></param>
         /// <returns>user</returns>
-        Task<SlackUserDetails> GetByIdAsync(string slackId);
+        Task<SlackUserDetailAc> GetByIdAsync(string slackId);
 
 
         /// <summary>

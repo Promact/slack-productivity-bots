@@ -2293,7 +2293,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is marked as In-active or not in OAuth server. Please contact your system administrator.\n ";
+                return "<@{0}> is marked as In-active,not added as a user in the project(in OAuth server) or not in OAuth server. Please contact your system administrator.\n ";
             }
         }
         public string TeamLeaderLogin
