@@ -977,11 +977,11 @@ namespace Promact.Core.Repository.ScrumRepository
             //scrum answer of the employee
             scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == employee.Id).ToList();
             //id of questions which were not answered by the employee
-            List<int> questionIds = questions.Where(x => x.Type == 1 && !scrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).OrderBy(i => i.OrderNumber).Select(z => z.Id).ToList();
+            List<int> questionIds = questions.Where(x => x.Type == BotQuestionType.Scrum && !scrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).OrderBy(i => i.OrderNumber).Select(z => z.Id).ToList();
             foreach (var questionId in questionIds)
             {
                 //mark all the remaining answers of the employee as inactive
-                await AddAnswerAsync(scrumId, questionId, employee.Id, _stringConstant.InActive, ScrumAnswerStatus.InActive);
+                await AddUpdateAnswerAsync(scrumId, questionId, employee.Id, _stringConstant.InActive, ScrumAnswerStatus.InActive);
             }
 
             //fetches the next question or status and returns
