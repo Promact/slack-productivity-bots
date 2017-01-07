@@ -31,9 +31,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         #endregion
 
         #region Constructor
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant,
-            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetail,
-            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService,
+        public TaskMailRepository(IRepository<TaskMail> taskMailRepository, IStringConstantRepository stringConstant,
+            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
+            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate)
         {
@@ -354,7 +354,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         public async Task<List<TaskMailReportAc>> GetUserInformationAsync(string userId)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-            var user = await _user.FirstAsync(x => x.Id == userId);
+            var user = await _userRepository.FirstAsync(x => x.Id == userId);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
 
             //getting user information from Promact Oauth Server.
@@ -443,7 +443,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>fetch users role</returns>
         private async Task<List<UserRoleAc>> GetUserRoleAsync(string loginId)
         {
-            var user =await _user.FirstAsync(x => x.Id == loginId);
+            var user =await _userRepository.FirstAsync(x => x.Id == loginId);
             // getting access token for that user
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             //getting user information from Promact Oauth Server
@@ -461,7 +461,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             //getting list of userId.
             var userIdList = userRoleAcList.Select(x => x.UserId);
             //getting list of task mails using userIdList.
-            var taskMails = (await _taskMail.FetchAsync(x => userIdList.Contains(x.EmployeeId))).ToList();
+            var taskMails = (await _taskMailRepository.FetchAsync(x => userIdList.Contains(x.EmployeeId))).ToList();
             //getting maximum and minimum date form the team members task mails
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
             DateTime minDate = taskMails.Min(x => x.CreatedOn);
@@ -504,7 +504,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private async Task<TaskMailReportAc> GetTaskReportAsync(string userId, string role, string userName, DateTime selectedDate, DateTime maxDate, DateTime minDate)
         {
             TaskMailReportAc taskMailReportAc;
-            var taskMail = (await _taskMail.FirstOrDefaultAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDate)));
+            var taskMail = (await _taskMailRepository.FirstOrDefaultAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDate)));
             if (taskMail != null)
             {
                 //getting the team members task mails details.
@@ -532,7 +532,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             //find maximum and minimum date from the employee task mails
-            IEnumerable<TaskMail> taskMails = (await _taskMail.FetchAsync(x => x.EmployeeId == userId)).ToList();
+            IEnumerable<TaskMail> taskMails = (await _taskMailRepository.FetchAsync(x => x.EmployeeId == userId)).ToList();
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
             DateTime minDate = taskMails.Min(x => x.CreatedOn);
             //getting task mail information.
@@ -575,7 +575,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailDetailReportAc> taskMailDetailReportAcList = new List<TaskMailDetailReportAc>();
             // getting taskmail details infromation using taskId. 
-            var taskMailDetailList = (await _taskMailDetail.FetchAsync(x => x.TaskId == taskId));
+            var taskMailDetailList = (await _taskMailDetailRepository.FetchAsync(x => x.TaskId == taskId));
             foreach (var taskMailDetail in taskMailDetailList)
             {
                 TaskMailDetailReportAc taskmailReportAc = new TaskMailDetailReportAc(taskMailDetail.Description, taskMailDetail.Comment, id: taskMailDetail.Id, hours: taskMailDetail.Hours, status: taskMailDetail.Status);
@@ -596,7 +596,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private async Task<List<TaskMailReportAc>> GetTaskMailDetailsInformationAsync(string userId, string role, string userName, string loginId)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-            var taskMail = (await _taskMail.FetchAsync(y => y.EmployeeId == userId)).ToList();
+            var taskMail = (await _taskMailRepository.FetchAsync(y => y.EmployeeId == userId)).ToList();
             TaskMailReportAc taskMailReportAc;
             if (taskMail.Any())
             {
@@ -620,7 +620,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetailsAsync(string slackUserId)
         {
             UserAndTaskMailDetailsWithAccessToken userAndTaskMailDetailsWithAccessToken = new UserAndTaskMailDetailsWithAccessToken();
-            var user = await _user.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
             if (user != null)
             {
                 // getting access token for that user
@@ -630,13 +630,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                 if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
                 {
                     // checking for previous task mail exist or not for today
-                    userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMail.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
+                    userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMailRepository.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
                     x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
                     x.CreatedOn.Year == DateTime.UtcNow.Year);
                     if (userAndTaskMailDetailsWithAccessToken.TaskMail != null)
                     {
                         // getting task mail details for started task mail
-                        userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetail.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                        userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetailRepository.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
                     }
                     else
                     {
