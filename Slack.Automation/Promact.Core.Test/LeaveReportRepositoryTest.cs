@@ -92,7 +92,7 @@ namespace Promact.Core.Test
             MockIdentity();
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest,_stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = await _leaveReportRepository.LeaveReportAsync( _stringConstant.EmployeeIdForTest);
@@ -109,7 +109,7 @@ namespace Promact.Core.Test
             MockIdentity();
             var response = Task.FromResult(_stringConstant.EmployeeDetailFromOauthServer);
             var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = await _leaveReportRepository.LeaveReportAsync( _stringConstant.EmployeeIdForTest);
@@ -126,10 +126,10 @@ namespace Promact.Core.Test
             MockIdentity();
             var response = Task.FromResult(_stringConstant.TeamLeaderDetailFromOauthServer);
             var requestIdUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.TestAccessToken)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestIdUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectUsers);
             var requestProjectUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.ProjectUsersByTeamLeaderId);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
             leave.EmployeeId = _stringConstant.EmployeeIdForTest;
             _leaveRequestRepository.ApplyLeave(leave);
             var leaveReports = await _leaveReportRepository.LeaveReportAsync( _stringConstant.EmployeeIdForTest);
@@ -180,7 +180,7 @@ namespace Promact.Core.Test
         {
             await AccessTokenSetUp();
             MockIdentity();
-            var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var response = Task.FromResult(_stringConstant.EmptyString);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             _leaveRequestRepository.ApplyLeave(leave);
