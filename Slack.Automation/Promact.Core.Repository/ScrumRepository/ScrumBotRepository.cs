@@ -958,38 +958,6 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
-        /// Mark a user as inactive during the scrum
-        /// </summary>
-        /// <param name="scrumAnswer"></param>
-        /// <param name="employees"></param>
-        /// <param name="scrumId"></param>
-        /// <param name="questions"></param>
-        /// <param name="groupName"></param>
-        /// <param name="projectId"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="applicantId"></param>
-        /// <returns>next question</returns>
-        private async Task<string> MarkAsInActiveAsync(List<ScrumAnswer> scrumAnswer, List<User> employees, int scrumId, List<Question> questions, string groupName, int projectId, string accessToken, string applicantId)
-        {
-            string returnMsg = string.Empty;
-            //EmployeeId of the inactive person
-            User employee = employees.FirstOrDefault(x => x.SlackUserId == applicantId);
-            //scrum answer of the employee
-            scrumAnswer = scrumAnswer.Where(x => x.EmployeeId == employee.Id).ToList();
-            //id of questions which were not answered by the employee
-            List<int> questionIds = questions.Where(x => x.Type == BotQuestionType.Scrum && !scrumAnswer.Select(y => y.QuestionId).ToList().Contains(x.Id)).OrderBy(i => i.OrderNumber).Select(z => z.Id).ToList();
-            foreach (var questionId in questionIds)
-            {
-                //mark all the remaining answers of the employee as inactive
-                await AddUpdateAnswerAsync(scrumId, questionId, employee.Id, _stringConstant.InActive, ScrumAnswerStatus.InActive);
-            }
-
-            //fetches the next question or status and returns
-            return returnMsg + Environment.NewLine + await GetQuestionAsync(scrumId, groupName, questions, employees, projectId, accessToken);
-        }
-
-
-        /// <summary>
         /// Used to mark scrum as completed
         /// </summary>
         /// <param name="scrumId"></param>
@@ -1376,7 +1344,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 if (project.IsActive)
                 {
-                    if (users!= null && users.Any())
+                    if (users != null && users.Any())
                     {
                         if (questions == null || !questions.Any())
                             questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.ToList();
