@@ -30,12 +30,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<List<User>> GetManagementUserNameAsync(string accessToken);
 
         /// <summary>
-        /// Used to get user role
+        /// Method to call an api from oauth server and get user list with user role if user are admin. if user are Team leader or team member then get own information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>user details</returns>
-        Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken);
+        /// <param name="userId">passed user Id to get user/users information</param>
+        /// <returns>user/users information</returns>
+        Task<List<UserRoleAc>> GetUserRoleAsync(string userId);
 
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group 
@@ -46,12 +45,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<ProjectAc> GetProjectDetailsAsync(string groupName, string accessToken);
 
         /// <summary>
-        /// List of employee under this employee
+        /// Method to call an api from oauth server and get team members information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>List of user</returns>
-        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken);
+        /// <param name="userId">passed user id to get team members information</param>
+        /// <returns>List of team members infromation</returns>
+        Task<List<UserRoleAc>> GetTeamMembersAsync(string userId);
 
         /// <summary>
         /// This method is used to fetch list of users/employees of the given group name

@@ -355,9 +355,8 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             var user = await _user.FirstAsync(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             //getting user information from Promact Oauth Server.
-            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
+            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id);
             var userInformation = userRoleAcList.First(x => x.UserName == user.UserName);
             if (userInformation.Role == _stringConstant.RoleAdmin)
             {
@@ -390,8 +389,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-                //getting the team members information.
-                List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
+                //getting the team members information from Promact Oauth Server.
+                List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetTeamMembersAsync(loginId);
                 //getting maximum and minimum date from the team members task mails
                 var maxMinTaskMailDate = await GetMaxMinDateAsync(userRoleAcList);
                 //first time there are no selected date that's why pass maxdate as a selected date.
@@ -421,8 +420,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             else if (role == _stringConstant.RoleTeamLeader)
             {
-                //getting the team members information 
-                List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
+                //getting the team members information from Promact Oauth Server. 
+                List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetTeamMembersAsync(loginId);
                 //find maximum and minimum date from the team members task mails
                 var maxMinTaskMailDate = await GetMaxMinDateAsync(userRoleAcList);
                 //getting the team members task mail reports for selected date
@@ -435,21 +434,6 @@ namespace Promact.Core.Repository.TaskMailRepository
 
         #region Private Methods
          
-        /// <summary>
-        /// Getting user information
-        /// </summary>
-        /// <param name="loginId"></param>
-        /// <returns>fetch users role</returns>
-        private async Task<List<UserRoleAc>> GetUserRoleAsync(string loginId)
-        {
-            var user =await _user.FirstAsync(x => x.Id == loginId);
-            // getting access token for that user
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-            //getting user information from Promact Oauth Server
-            return await _oauthCallsRepository.GetListOfEmployeeAsync(user.Id, accessToken);
-        }
-
-
         /// <summary>
         /// Getting max and min date from users task mails
         /// </summary>
@@ -480,8 +464,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         private async Task<List<TaskMailReportAc>> TaskMailDetailsAsync(string role, string loginId, DateTime selectedDate,DateTime maxDate,DateTime minDate)
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
-            List<UserRoleAc> userRoleAcList = await GetUserRoleAsync(loginId);
-            //getting the team members task mails using users information.
+            //getting the team members information from Promact Oauth Server..
+            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetTeamMembersAsync(loginId);
+            //getting the team members task mails using user role list.
             foreach (var userRole in userRoleAcList)
             {
                 TaskMailReportAc taskMailReportAc = await GetTaskReportAsync(userRole.UserId, role, userRole.Name, selectedDate, maxDate,minDate );

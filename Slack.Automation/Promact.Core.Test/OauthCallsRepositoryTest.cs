@@ -281,18 +281,35 @@ namespace Promact.Core.Test
             Assert.NotEqual(false, result);
         }
 
-      
+
 
         /// <summary>
-        /// Test case for conduct task mail after started
+        /// Test case for geting list of user with correct value
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task GetUserRoleAsync()
         {
+            await AccessTokenSetUp();
+            MockIdentity();
             var response = Task.FromResult(_stringConstant.TaskMailReport);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.EmailForTest, _stringConstant.UserRoleUrl);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserRoleUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var userRole = await _oauthCallsRepository.GetUserRoleAsync(_stringConstant.EmailForTest,_stringConstant.AccessTokenForTest);
+            var userRole = await _oauthCallsRepository.GetUserRoleAsync(_stringConstant.StringIdForTest);
+            Assert.Equal(3, userRole.Count);
+        }
+
+        /// <summary>
+        /// Test case for geting list of team members with correct value
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetTeamMembersAsync()
+        {
+            await AccessTokenSetUp();
+            MockIdentity();
+            var response = Task.FromResult(_stringConstant.ListOfEmployeeForTeamLeader);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.TeamMembersUrl);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            var userRole = await _oauthCallsRepository.GetTeamMembersAsync(_stringConstant.StringIdForTest);
             Assert.Equal(3, userRole.Count);
         }
 

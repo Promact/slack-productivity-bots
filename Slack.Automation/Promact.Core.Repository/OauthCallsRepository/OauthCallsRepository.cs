@@ -209,13 +209,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// Used to get user role
+        /// Method to call an api from oauth server and get user list with user role if user are admin. if user are Team leader or team member then get own information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>user details</returns>
-        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken)
+        /// <param name="userId">passed user Id to get user/users information </param>
+        /// <returns>user/users information</returns>
+        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId)
         {
+            string accessToken= await AccessTokenOfRequestedUser();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
@@ -223,13 +223,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// List of employee under this employee
+        /// Method to call an api from oauth server and get team members information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>List of user</returns>
-        public async Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken)
+        /// <param name="userId">passed user id to get team members information</param>
+        /// <returns>List of team members infromation</returns>
+        public async Task<List<UserRoleAc>> GetTeamMembersAsync(string userId)
         {
+            string accessToken = await AccessTokenOfRequestedUser();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId,_stringConstant.TeamMembersUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
