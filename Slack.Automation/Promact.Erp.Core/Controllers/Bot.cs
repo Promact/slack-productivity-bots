@@ -63,7 +63,7 @@ namespace Promact.Erp.Core.Controllers
                         {
                             if (text == _stringConstant.TaskMailSubject)
                             {
-                                replyText =  _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
+                                replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
                             else
                             {
@@ -85,7 +85,7 @@ namespace Promact.Erp.Core.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message + 
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
                     Environment.NewLine + ex.StackTrace);
                 throw ex;
             }
@@ -94,21 +94,21 @@ namespace Promact.Erp.Core.Controllers
 
 
         /// <summary>
-        /// Used for Scrum meeting bot connection and to conduct scrum meeting 
+        /// Used for Scrum meeting bot connection and to conduct scrum meeting. - JJ 
         /// </summary>
-        /// <param name="container"></param>
-        public void ScrumMain()
-        {           
+        public void Scrum()
+        {
             string botToken = _environmentVariableRepository.ScrumBotToken;
             SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-        
+
             // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
             messageReceive.ok = true;
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             //Connecting the bot of the given token 
-            client.Connect((connected) => {
-              
+            client.Connect((connected) =>
+            {
+
             });
 
             // Method will be called when someone sends message

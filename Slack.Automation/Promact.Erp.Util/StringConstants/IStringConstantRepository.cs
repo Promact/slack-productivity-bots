@@ -109,6 +109,8 @@ namespace Promact.Erp.Util.StringConstants
         string Unrecognized { get; }
         string UserChange { get; }
         string ChannelCreated { get; }
+        string ChannelArchive { get; }
+        string GroupArchive { get; }
         string ChannelRename { get; }
         string GroupRename { get; }
 

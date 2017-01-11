@@ -871,6 +871,20 @@ namespace Promact.Erp.Util.StringConstants
                 return "channel_created";
             }
         }
+        public string ChannelArchive
+        {
+            get
+            {
+                return "channel_archive";
+            }
+        }
+        public string GroupArchive
+        {
+            get
+            {
+                return "group_archive";
+            }
+        }
         public string UserDetailsFromOauthServer
         {
             get

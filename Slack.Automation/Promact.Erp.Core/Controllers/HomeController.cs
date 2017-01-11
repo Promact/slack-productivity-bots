@@ -84,17 +84,8 @@ namespace Promact.Erp.Core.Controllers
        */
         public ActionResult SlackAuthorize(string message)
         {
-            try
-            {
-                ViewBag.Message = message;
-                return View();
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            ViewBag.Message = message;
+            return View();
         }
 
 
@@ -137,37 +128,28 @@ namespace Promact.Erp.Core.Controllers
         */
         public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId, string userId)
         {
-            try
+            ApplicationUser user = _userManager.FindByEmail(email);
+            if (user != null)
             {
-                ApplicationUser user = _userManager.FindByEmail(email);
+                await _signInManager.SignInAsync(user, false, false);
+                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+            }
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+            }
+            if (user == null)
+            {
+                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
                 if (user != null)
                 {
+                    //Signing user with username or email only
                     await _signInManager.SignInAsync(user, false, false);
                     return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
                 }
-                if (User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                }
-                if (user == null)
-                {
-                    user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
-                    if (user != null)
-                    {
-                        //Signing user with username or email only
-                        await _signInManager.SignInAsync(user, false, false);
-                        return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                    }
-                    return RedirectToAction(_stringConstant.SlackAuthorize, _stringConstant.Home, new { message = _stringConstant.UserCouldNotBeAdded });
-                }
-                return View();
+                return RedirectToAction(_stringConstant.SlackAuthorize, _stringConstant.Home, new { message = _stringConstant.UserCouldNotBeAdded });
             }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            return View();
         }
 
         /**
@@ -183,17 +165,8 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult LogOff()
         {
-            try
-            {
-                AuthenticationManager.SignOut();
-                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageHomeControllerLogoff, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            AuthenticationManager.SignOut();
+            return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
         }
 
         private IAuthenticationManager AuthenticationManager
