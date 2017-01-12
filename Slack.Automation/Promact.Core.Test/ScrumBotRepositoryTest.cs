@@ -116,7 +116,7 @@ namespace Promact.Core.Test
 
             scrum.CreatedOn = DateTime.UtcNow;
             scrum.ProjectId = _stringConstant.ProjectIdForTest;
-            scrum.GroupName = _stringConstant.GroupName;
+            scrum.SlackChannelId = _stringConstant.SlackChannelIdForTest;
             scrum.ScrumDate = DateTime.UtcNow;
             scrum.TeamLeaderId = _stringConstant.TeamLeaderIdForTest;
             scrum.IsHalted = false;

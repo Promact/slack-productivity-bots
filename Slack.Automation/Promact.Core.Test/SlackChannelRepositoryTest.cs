@@ -46,7 +46,7 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
-        /// Test case to check the functionality of GetbyId method of Slack Channel Repository - true case
+        /// Test case to check the functionality of GetbyIdAsync method of Slack Channel Repository - true case
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task GetByIdAsync()
@@ -58,7 +58,7 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Test case to check the functionality of GetbyId method of Slack Channel Repository - false case
+        /// Test case to check the functionality of GetbyIdAsync method of Slack Channel Repository - false case
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task GetByIdFalseAsync()
@@ -66,6 +66,33 @@ namespace Promact.Core.Test
             await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
             SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
             Assert.NotEqual(slackChannel.ChannelId, _stringConstant.TeamLeaderIdForTest);
+        }
+
+
+        /// <summary>
+        /// Test case to check the functionality of UpdateSlackChannelAsync method of Slack Channel Repository - true case
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateSlackChannelAsync()
+        {
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            slackChannelDetails.Name = _stringConstant.ChannelName;
+            await _slackChannelRepository.UpdateSlackChannelAsync(slackChannelDetails);
+            SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(_stringConstant.ChannelIdForTest);
+            Assert.Equal(slackChannel.Name, _stringConstant.ChannelName);
+        }
+
+
+        /// <summary>
+        /// Test case to check the functionality of DeleteChannelAsync method of Slack Channel Repository - true case
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task DeleteChannelAsync()
+        {
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            await _slackChannelRepository.DeleteChannelAsync(slackChannelDetails.ChannelId);
+            SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(slackChannelDetails.ChannelId);
+            Assert.Null(slackChannel);
         }
 
 

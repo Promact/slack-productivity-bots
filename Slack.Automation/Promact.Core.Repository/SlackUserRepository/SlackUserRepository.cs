@@ -104,26 +104,13 @@ namespace Promact.Core.Repository.SlackUserRepository
         private async Task AddSlackUserDetailAsync(SlackUserDetails slackUserDetails)
         {
             Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
-
-                .ForMember(des => des.Title,
-                    opt => opt.MapFrom(src => src.Profile.Title)
-                  )
-                .ForMember(des => des.Email,
-                    opt => opt.MapFrom(src => src.Profile.Email)
-                  )
-                .ForMember(des => des.Skype,
-                    opt => opt.MapFrom(src => src.Profile.Skype)
-                  )
-                .ForMember(des => des.LastName,
-                    opt => opt.MapFrom(src => src.Profile.LastName)
-                  )
-                .ForMember(des => des.FirstName,
-                    opt => opt.MapFrom(src => src.Profile.FirstName)
-                  )
-                .ForMember(des => des.Phone,
-                    opt => opt.MapFrom(src => src.Profile.Phone)
-                  )
-               );
+                .ForMember(des => des.Title, opt => opt.MapFrom(src => src.Profile.Title))
+                .ForMember(des => des.Email, opt => opt.MapFrom(src => src.Profile.Email))
+                .ForMember(des => des.Skype, opt => opt.MapFrom(src => src.Profile.Skype))
+                .ForMember(des => des.LastName, opt => opt.MapFrom(src => src.Profile.LastName))
+                .ForMember(des => des.FirstName, opt => opt.MapFrom(src => src.Profile.FirstName))
+                .ForMember(des => des.Phone, opt => opt.MapFrom(src => src.Profile.Phone))
+            );
 
             // Perform mapping
             slackUserDetails = Mapper.Map(slackUserDetails, slackUserDetails);
@@ -142,15 +129,9 @@ namespace Promact.Core.Repository.SlackUserRepository
         {
             SlackBotUserDetail slackUserBotDetail = new SlackBotUserDetail();
             Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackBotUserDetail>()
-               .ForMember(des => des.FirstName,
-                  opt => opt.MapFrom(src => src.Profile.FirstName)
-               )
-               .ForMember(des => des.LastName,
-                   opt => opt.MapFrom(src => src.Profile.LastName)
-               )
-               .ForMember(des => des.BotId,
-                  opt => opt.MapFrom(src => src.Profile.BotId)
-               )
+               .ForMember(des => des.FirstName,opt => opt.MapFrom(src => src.Profile.FirstName))
+               .ForMember(des => des.LastName,opt => opt.MapFrom(src => src.Profile.LastName))
+               .ForMember(des => des.BotId,opt => opt.MapFrom(src => src.Profile.BotId))
             );
 
             // Perform mapping
@@ -171,7 +152,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             SlackUserDetails user = await _slackUserDetails.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId);
             if (user != null)
             {
-                if (user.Deleted)
+                if (slackUserDetails.Deleted)
                 {
                     _slackUserDetails.Delete(user.Id);
                     await _slackUserDetails.SaveChangesAsync();
@@ -179,35 +160,23 @@ namespace Promact.Core.Repository.SlackUserRepository
                 else
                 {
                     Mapper.Initialize(cfg => cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
-                .ForMember(des => des.Id, opt =>
-                {
-                    opt.UseDestinationValue();
-                    opt.Ignore();
-                })
-                .ForMember(des => des.CreatedOn, opt =>
-                {
-                    opt.UseDestinationValue();
-                    opt.Ignore();
-                })
-               .ForMember(des => des.Title,
-                      opt => opt.MapFrom(src => src.Profile.Title)
-                    )
-               .ForMember(des => des.Email,
-                       opt => opt.MapFrom(src => src.Profile.Email)
-                       )
-               .ForMember(des => des.Skype,
-                         opt => opt.MapFrom(src => src.Profile.Skype)
-                    )
-               .ForMember(des => des.LastName,
-                      opt => opt.MapFrom(src => src.Profile.LastName)
-                       )
-               .ForMember(des => des.FirstName,
-                          opt => opt.MapFrom(src => src.Profile.FirstName)
-                          )
-               .ForMember(des => des.Phone,
-                        opt => opt.MapFrom(src => src.Profile.Phone)
-                        )
-                 );
+                       .ForMember(des => des.Id, opt =>
+                       {
+                           opt.UseDestinationValue();
+                           opt.Ignore();
+                       })
+                       .ForMember(des => des.CreatedOn, opt =>
+                       {
+                          opt.UseDestinationValue();
+                           opt.Ignore();
+                       })
+                       .ForMember(des => des.Title,opt => opt.MapFrom(src => src.Profile.Title))
+                       .ForMember(des => des.Email,opt => opt.MapFrom(src => src.Profile.Email))
+                       .ForMember(des => des.Skype,opt => opt.MapFrom(src => src.Profile.Skype))
+                       .ForMember(des => des.LastName,opt => opt.MapFrom(src => src.Profile.LastName))
+                       .ForMember(des => des.FirstName,opt => opt.MapFrom(src => src.Profile.FirstName))
+                       .ForMember(des => des.Phone,opt => opt.MapFrom(src => src.Profile.Phone))
+                    );
 
                     // Perform mapping
                     user = Mapper.Map(slackUserDetails, user);
@@ -229,7 +198,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             SlackBotUserDetail botUser = await _slackUserBotDetails.FirstOrDefaultAsync(x => x.UserId == slackBotUserDetails.UserId);
             if (botUser != null)
             {
-                if (botUser.Deleted)
+                if (slackBotUserDetails.Deleted)
                 {
                     _slackUserBotDetails.Delete(botUser.Id);
                     await _slackUserBotDetails.SaveChangesAsync();
@@ -248,16 +217,10 @@ namespace Promact.Core.Repository.SlackUserRepository
                         opt.Ignore();
                     })
 
-                   .ForMember(des => des.LastName,
-                        opt => opt.MapFrom(src => src.Profile.LastName)
-                       )
-                   .ForMember(des => des.FirstName,
-                         opt => opt.MapFrom(src => src.Profile.FirstName)
-                       )
-                   .ForMember(des => des.BotId,
-                           opt => opt.MapFrom(src => src.Profile.BotId)
-                         )
-                     );
+                   .ForMember(des => des.LastName,opt => opt.MapFrom(src => src.Profile.LastName))
+                   .ForMember(des => des.FirstName,opt => opt.MapFrom(src => src.Profile.FirstName))
+                   .ForMember(des => des.BotId,opt => opt.MapFrom(src => src.Profile.BotId))
+                    );
 
                     // Perform mapping
                     botUser = Mapper.Map(slackBotUserDetails, botUser);

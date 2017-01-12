@@ -201,7 +201,7 @@ namespace Promact.Core.Test
         /// </summary>
         public void Initialize()
         {
-            scrum.GroupName = _stringConstant.TestGroupName;
+            scrum.SlackChannelId = _stringConstant.TestGroupName;
             scrum.ScrumDate = new DateTime(2016, 9, 19);
             scrum.ProjectId = 1012;
             scrum.TeamLeaderId = _stringConstant.TestId;
