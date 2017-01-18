@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Promact.Core.Repository.OauthCallsRepository
 {
@@ -12,13 +14,30 @@ namespace Promact.Core.Repository.OauthCallsRepository
         #region Private Variables
         private readonly IHttpClientService _httpClientService;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly IAttachmentRepository _attachmentRepository;
+        private readonly HttpContextBase _httpContextBase;
         #endregion
 
         #region Constructor
-        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant)
+        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant, 
+            IAttachmentRepository attachmentRepository, HttpContextBase httpContextBase)
         {
             _httpClientService = httpClientService;
             _stringConstant = stringConstant;
+            _attachmentRepository = attachmentRepository;
+            _httpContextBase = httpContextBase;
+        }
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Generate access token for the current user
+        /// </summary>
+        /// <returns>access token</returns>
+        private async Task<string> AccessTokenOfRequestedUser()
+        { 
+            return await _attachmentRepository.UserAccessTokenAsync(_httpContextBase.User.Identity.Name);
         }
         #endregion
 
@@ -114,13 +133,17 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// Method to call an api from project oAuth server and get employee detail by their Id
         /// </summary>
         /// <param name="employeeId"></param>
         /// <param name="accessToken"></param>
         /// <returns>User Details</returns>
         public async Task<User> GetUserByEmployeeIdAsync(string employeeId, string accessToken)
         {
+            if(string.IsNullOrEmpty(accessToken))
+            {
+                accessToken = await AccessTokenOfRequestedUser();
+            }           
             User userDetails = new User();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, employeeId, _stringConstant.UserDetailUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
@@ -153,13 +176,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
         /// </summary>
         /// <param name="teamLeaderId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>list of users in a project</returns>
-        public async Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId, string accessToken)
+        public async Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId)
         {
+            string accessToken = await AccessTokenOfRequestedUser();
             List<User> projectUsers = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, teamLeaderId, _stringConstant.ProjectUsersByTeamLeaderId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {
                 projectUsers = JsonConvert.DeserializeObject<List<User>>(response);
@@ -186,13 +209,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// Used to get user role
+        /// Method to call an api from oauth server and get user list with user role if user are admin. if user are Team leader or team member then get own information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>user details</returns>
-        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken)
+        /// <param name="userId">passed user Id to get user/users information </param>
+        /// <returns>user/users information</returns>
+        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId)
         {
+            string accessToken= await AccessTokenOfRequestedUser();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
@@ -200,13 +223,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
         /// <summary>
-        /// List of employee under this employee
+        /// Method to call an api from oauth server and get team members information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>List of user</returns>
-        public async Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken)
+        /// <param name="userId">passed user id to get team members information</param>
+        /// <returns>List of team members infromation</returns>
+        public async Task<List<UserRoleAc>> GetTeamMembersAsync(string userId)
         {
+            string accessToken = await AccessTokenOfRequestedUser();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId,_stringConstant.TeamMembersUrl);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
@@ -218,10 +241,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method is used to call an api from oauth server and return list of all the projects
         /// </summary>
-        /// <param name="accessToken"></param>
         /// <returns>list of all the projects</returns>
-        public async Task<List<ProjectAc>> GetAllProjectsAsync(string accessToken)
+        public async Task<List<ProjectAc>> GetAllProjectsAsync()
         {
+            string accessToken = await AccessTokenOfRequestedUser();
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = _stringConstant.AllProjectUrl;
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
@@ -236,10 +259,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// Method to call an api from oauth server and get the details of a project using projecId
         /// </summary>
         /// <param name="projectId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>Details of a project</returns>
-        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
+        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId)
         {
+            string accessToken = await AccessTokenOfRequestedUser();
             ProjectAc project = new ProjectAc();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, projectId,_stringConstant.GetProjectDetails);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
@@ -250,6 +273,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return project;
         }
 
+        
         #endregion
     }
 }

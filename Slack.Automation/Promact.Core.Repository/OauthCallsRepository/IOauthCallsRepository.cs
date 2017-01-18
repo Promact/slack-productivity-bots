@@ -30,15 +30,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<List<User>> GetManagementUserNameAsync(string accessToken);
 
         /// <summary>
-        /// Used to get user role
+        /// Method to call an api from oauth server and get user list with user role if user are admin. if user are Team leader or team member then get own information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>user details</returns>
-        Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken);
+        /// <param name="userId">passed user Id to get user/users information</param>
+        /// <returns>user/users information</returns>
+        Task<List<UserRoleAc>> GetUserRoleAsync(string userId);
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// Method to call an api from project oAuth server and get Project details of the given group 
         /// </summary>
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
@@ -46,15 +45,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<ProjectAc> GetProjectDetailsAsync(string groupName, string accessToken);
 
         /// <summary>
-        /// List of employee under this employee
+        /// Method to call an api from oauth server and get team members information.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="accessToken"></param>
-        /// <returns>List of user</returns>
-        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken);
+        /// <param name="userId">passed user id to get team members information</param>
+        /// <returns>List of team members infromation</returns>
+        Task<List<UserRoleAc>> GetTeamMembersAsync(string userId);
 
         /// <summary>
-        /// This method is used to fetch list of users/employees of the given group name. - JJ
+        /// This method is used to fetch list of users/employees of the given group name
         /// </summary>
         /// <param name="groupName"></param>
         /// <param name="accessToken"></param>
@@ -71,7 +69,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<LeaveAllowed> CasualLeaveAsync(string slackUserId, string accessToken);
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Employee detail by their Id
+        /// Method to call an api from project oAuth server and get employee detail by their Id
         /// </summary>
         /// <param name="employeeId"></param>
         /// <param name="accessToken"></param>
@@ -82,9 +80,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// Method to call an api from oauth server and get all the projects under a specific teamleader id along with users in it
         /// </summary>
         /// <param name="teamLeaderId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>list of users in a project</returns>
-        Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId, string accessToken);
+        Task<List<User>> GetProjectUsersByTeamLeaderIdAsync(string teamLeaderId);
 
         /// <summary>
         /// Method to call an api from oAuth server and get whether user is admin or not
@@ -97,16 +94,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api from oauth server and get the list of all the projects
         /// </summary>
-        /// <param name="accessToken"></param>
         /// <returns>list of all the projects</returns>
-        Task<List<ProjectAc>> GetAllProjectsAsync(string accessToken);
+        Task<List<ProjectAc>> GetAllProjectsAsync();
 
         /// <summary>
         /// Method to call an api from oauth server and get the details of a project using projecId
         /// </summary>
         /// <param name="projectId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>Details of a project</returns>
-        Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken);
+        Task<ProjectAc> GetProjectDetailsAsync(int projectId);
     }
 }

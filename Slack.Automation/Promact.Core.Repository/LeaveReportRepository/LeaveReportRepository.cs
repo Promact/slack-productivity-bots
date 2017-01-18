@@ -32,15 +32,14 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method to return the list of leave reports
         /// </summary>
         /// <param name="distinctLeaveRequests"></param>
-        /// <param name="accessToken"></param>
         /// <returns>List of leave reports</returns>
-        private async Task<List<LeaveReport>> GetLeaveReportListAsync(List<LeaveRequest> distinctLeaveRequests, string accessToken)
+        private async Task<List<LeaveReport>> GetLeaveReportListAsync(List<LeaveRequest> distinctLeaveRequests)
         {
             List<LeaveReport> leaveReports = new List<LeaveReport>();
             foreach (var leaveRequest in distinctLeaveRequests)
             {
                 //Get details of the employee from oauth server
-                User user = await GetEmployeeByIdAsync(leaveRequest.EmployeeId, accessToken);
+                User user = await GetEmployeeByIdAsync(leaveRequest.EmployeeId);
                 if (user != null)
                 {
                     LeaveReport leaveReport = new LeaveReport
@@ -105,14 +104,13 @@ namespace Promact.Core.Repository.LeaveReportRepository
         }
 
         /// <summary>
-        /// Method to get user details from the Oauth server using their id and access token
+        /// Method to get user details from the oauth server using their id 
         /// </summary>
         /// <param name="employeeId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>User details</returns>
-        private async Task<User> GetEmployeeByIdAsync(string employeeId, string accessToken)
+        private async Task<User> GetEmployeeByIdAsync(string employeeId)
         {
-            User user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByEmployeeIdAsync(employeeId, null);
             return user;
         }
 
@@ -122,17 +120,16 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// <summary>
         /// Method that returns leave report based on the role of logged in user
         /// </summary>
-        /// <param name="accessToken"></param>
         /// <param name="userId"></param>
         /// <returns>Leave report</returns>       
-        public async Task<IEnumerable<LeaveReport>> LeaveReportAsync(string accessToken,string userId )
+        public async Task<IEnumerable<LeaveReport>> LeaveReportAsync(string userId )
         {
             //Get all approved leave requests
             List<LeaveRequest> leaveRequests = _leaveRequest.GetAll().ToList().FindAll(x => x.Status.Equals(Condition.Approved));
             List<LeaveReport> leaveReports = new List<LeaveReport>();
-           
+
             //Get details of logged in user
-            User loginUser = await GetEmployeeByIdAsync(userId, accessToken);
+            User loginUser = await GetEmployeeByIdAsync(userId);
 
             //Check if there exists any approved leave request 
             if(leaveRequests.Any())
@@ -142,24 +139,24 @@ namespace Promact.Core.Repository.LeaveReportRepository
                 if (loginUser.Role.Equals(_stringConstant.Admin))
                 {
                     List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
-                    leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests, accessToken);
+                    leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests);
                     return leaveReports;
                 }
                 //For employee, only his leave report
                 else if (loginUser.Role.Equals(_stringConstant.Employee))
                 {
                     List<LeaveRequest> distinctLeaveRequests = leaveRequests.FindAll(x => x.EmployeeId == loginUser.Id);
-                    leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests, accessToken);
+                    leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests);
                     return leaveReports;
                 }
                 //For teamleader, leave report of all the team member(s) 
                 else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
                 {
-                    List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id, accessToken);
+                    List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id);
                     foreach (var projectUser in projectUsers)
                     {
                         List<LeaveRequest> distinctLeaveRequests = leaveRequests.Where(x => x.EmployeeId.Contains(projectUser.Id)).GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
-                        List<LeaveReport> leaveReport = await GetLeaveReportListAsync(distinctLeaveRequests, accessToken);
+                        List<LeaveReport> leaveReport = await GetLeaveReportListAsync(distinctLeaveRequests);
                         leaveReports.AddRange(leaveReport);
                     }
                     return leaveReports;
@@ -173,12 +170,11 @@ namespace Promact.Core.Repository.LeaveReportRepository
         /// Method that returns the details of leave for an employee
         /// </summary>
         /// <param name="employeeId"></param>
-        /// <param name="accessToken"></param>
         /// <returns>Details of leave for an employee</returns>
-        public async Task <IEnumerable<LeaveReportDetails>> LeaveReportDetailsAsync(string employeeId,string accessToken)
+        public async Task <IEnumerable<LeaveReportDetails>> LeaveReportDetailsAsync(string employeeId)
         {
             //Get user details
-            User user = await GetEmployeeByIdAsync(employeeId,accessToken);
+            User user = await GetEmployeeByIdAsync(employeeId);
             List<LeaveReportDetails> leaveReportDetails = new List<LeaveReportDetails>();
 
             if (user != null)
