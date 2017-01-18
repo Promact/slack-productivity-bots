@@ -311,38 +311,7 @@ namespace Promact.Core.Test
             Assert.Equal(expectedString, actualString);
         }
 
-
-        ///// <summary>
-        ///// Method StartScrum Testing with first employee inactive
-        ///// </summary>
-        //[Fact, Trait("Category", "Required")]
-        //public async Task ScrumInitiateFirstEmployeeInActive()
-        //{
-        //    await AddChannelUserAsync();
-
-        //    UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-        //    await _userManager.CreateAsync(user);
-        //    await _userManager.AddLoginAsync(user.Id, info);
-
-        //    var userResponse = Task.FromResult(_stringConstant.InValidOAuthUsers);
-        //    string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-        //    var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-        //    string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-        //    var oauthUser = Task.FromResult(_stringConstant.OAuthUserDetails);
-        //    var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
-        //    _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(oauthUser);
-
-        //    await _botQuestionRepository.AddQuestionAsync(question);
-
-        //    string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
-        //    Assert.Equal(_stringConstant.NoEmployeeFound, actualString);
-        //}
-
-
+              
         ///// <summary>
         ///// Method StartScrum Testing with first employee inactive
         ///// </summary>
