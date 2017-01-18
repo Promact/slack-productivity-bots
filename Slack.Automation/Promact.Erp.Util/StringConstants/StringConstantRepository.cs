@@ -432,7 +432,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Scrum is halted";
+                return "Scrum is halted\n";
             }
         }
         public string ScrumAlreadyHalted
@@ -649,14 +649,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Answer could not be recorded";
             }
         }
-        public string NameFormatWithNewLine
-        {
-            get
-            {
-                return "<@{0}>!\n";
-            }
-        }
-
+    
         public string PreviousDayScrumAnswer
         {
             get
@@ -677,7 +670,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return " So scrum cannot be resumed.";
+                return "Scrum cannot be resumed.";
             }
         }
 
@@ -707,7 +700,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}>,you were marked as In-active or not in OAuth before. Now you are marked as an Active User.\n Please answer ";
+                return "<@{0}>,you were marked as In-active or not in OAuth before or did not answer this answer before due to technical glitches.\n Please answer ";
             }
         }
         public string Channel
@@ -721,7 +714,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Good Day ";
+                return "Good Day <@{0}>!\n";
             }
         }
         public string Time
@@ -731,11 +724,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "time";
             }
         }
-        public string InActive
+        public string UserNotInSlack
         {
             get
             {
-                return "In-Active";
+                return "User is not in Slack";
             }
         }
         public string PleaseAnswer
@@ -1171,7 +1164,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}/api/Users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl

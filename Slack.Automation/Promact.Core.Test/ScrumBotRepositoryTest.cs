@@ -307,7 +307,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(oauthUser);
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumTime);
-            string expectedString = _stringConstant.GoodDay + "<@" + _stringConstant.UserNameForTest + ">!\n" + _stringConstant.ScrumQuestionForTest + Environment.NewLine;
+            string expectedString = string.Format(_stringConstant.GoodDay,_stringConstant.UserNameForTest) + _stringConstant.ScrumQuestionForTest + Environment.NewLine;
             Assert.Equal(expectedString, actualString);
         }
 

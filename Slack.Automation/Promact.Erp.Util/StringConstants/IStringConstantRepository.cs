@@ -84,7 +84,6 @@ namespace Promact.Erp.Util.StringConstants
         string PreviousDayStatus { get; }
         string PreviousDayScrumAnswer { get; }
         string NameFormat { get; }
-        string NameFormatWithNewLine { get; }
         string AnswerNotRecorded { get; }
         string UserNotInOAuthOrProject { get; }
         string ScrumBotToken { get; }
@@ -101,7 +100,7 @@ namespace Promact.Erp.Util.StringConstants
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
         string SlackUserNotFound { get; }
-        string InActive { get; }
+        string UserNotInSlack { get; }
         string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
@@ -284,7 +283,7 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
-       
+
         #region String Constants for Test Cases
 
         string InActiveProjectDetailsFromOauth { get; }
@@ -347,7 +346,7 @@ namespace Promact.Erp.Util.StringConstants
         string LeaveWrongCommandForBackDateSL { get; }
         string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
         string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
-      
+
         #endregion
 
         string RoleAdmin { get; }
