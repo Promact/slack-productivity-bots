@@ -1412,7 +1412,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Task Mail Bot";
             }
         }
-        public string SlackBotStringName
+        public string SlackBotName
         {
             get
             {

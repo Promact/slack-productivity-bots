@@ -6,12 +6,26 @@ namespace Promact.Core.Repository.SlackChannelRepository
 {
     public class SlackChannelRepository : ISlackChannelRepository
     {
-        private readonly IRepository<SlackChannelDetails> _slackChannelDetailsContext;
 
-        public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsContext)
+        #region Private Variable
+
+        private readonly IRepository<SlackChannelDetails> _slackChannelDetailsReposirtory;
+        
+        #endregion
+
+
+        #region Constructor
+
+        public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsReposirtory)
         {
-            _slackChannelDetailsContext = slackChannelDetailsContext;
+            _slackChannelDetailsReposirtory = slackChannelDetailsReposirtory;
         }
+
+        #endregion
+
+
+        #region Public Methods
+
 
         /// <summary>
         /// Method to add slack channel. - JJ
@@ -19,8 +33,8 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <param name="slackChannelDetails">object of SlackChannelDetails</param>
         public async Task AddSlackChannelAsync(SlackChannelDetails slackChannelDetails)
         {
-            _slackChannelDetailsContext.Insert(slackChannelDetails);
-            await _slackChannelDetailsContext.SaveChangesAsync();
+            _slackChannelDetailsReposirtory.Insert(slackChannelDetails);
+            await _slackChannelDetailsReposirtory.SaveChangesAsync();
         }
 
 
@@ -31,7 +45,7 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <returns>object of SlackChannelDetails</returns>
         public async Task<SlackChannelDetails> GetByIdAsync(string slackChannelId)
         {
-            SlackChannelDetails channel = await _slackChannelDetailsContext.FirstOrDefaultAsync(x => x.ChannelId == slackChannelId);
+            SlackChannelDetails channel = await _slackChannelDetailsReposirtory.FirstOrDefaultAsync(x => x.ChannelId == slackChannelId);
             return channel;
         }
 
@@ -42,8 +56,8 @@ namespace Promact.Core.Repository.SlackChannelRepository
         /// <param name="slackChannelDetails">object of SlackChannelDetails</param>
         public async Task UpdateSlackChannelAsync(SlackChannelDetails slackChannelDetails)
         {
-            _slackChannelDetailsContext.Update(slackChannelDetails);
-            await _slackChannelDetailsContext.SaveChangesAsync();
+            _slackChannelDetailsReposirtory.Update(slackChannelDetails);
+            await _slackChannelDetailsReposirtory.SaveChangesAsync();
         }
 
 
@@ -56,11 +70,12 @@ namespace Promact.Core.Repository.SlackChannelRepository
             SlackChannelDetails channel = await GetByIdAsync(slackChannelId);
             if (channel != null)
             {
-                _slackChannelDetailsContext.Delete(channel.Id);
-                await _slackChannelDetailsContext.SaveChangesAsync();
+                _slackChannelDetailsReposirtory.Delete(channel.Id);
+                await _slackChannelDetailsReposirtory.SaveChangesAsync();
             }
         }
 
 
+        #endregion
     }
 }

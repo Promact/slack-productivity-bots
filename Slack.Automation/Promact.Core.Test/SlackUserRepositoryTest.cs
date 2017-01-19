@@ -33,7 +33,8 @@ namespace Promact.Core.Test
         public async Task AddSlackUserAsync()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            Assert.Equal(slackUserDetails.Id, 1);
+            SlackUserDetailAc slackUserDetail = await _slackUserRepository.GetBySlackNameAsync(slackUserDetails.Name);
+            Assert.Equal(slackUserDetail.UserId, slackUserDetails.UserId);
         }
 
 
@@ -44,7 +45,7 @@ namespace Promact.Core.Test
         public async Task GetByIdAsync()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = await _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest);
+            SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest);
             Assert.Equal(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
@@ -57,7 +58,8 @@ namespace Promact.Core.Test
         {
             slackUserDetails.IsBot = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, 1);
+            SlackBotUserDetail slackBot = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.Name == slackUserDetails.Name);
+            Assert.Equal(slackBot.Id, 1);
         }
 
 
@@ -71,7 +73,7 @@ namespace Promact.Core.Test
             slackUserDetails.UserId = _stringConstant.SlackChannelIdForTest;
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.SlackChannelIdForTest).Result;
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.SlackChannelIdForTest).Result;
             Assert.NotEqual(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
@@ -86,7 +88,7 @@ namespace Promact.Core.Test
 
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
             Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
         }
 
@@ -103,7 +105,7 @@ namespace Promact.Core.Test
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             slackUserDetails.Deleted = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
             Assert.Null(slackUser);
         }
 
@@ -118,7 +120,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
+            SlackBotUserDetail slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
             Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
         }
 
@@ -135,19 +137,19 @@ namespace Promact.Core.Test
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             slackUserDetails.Deleted = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
+            SlackBotUserDetail slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
             Assert.Null(slackUser);
         }
 
 
         /// <summary>
-        /// Test case to check the functionality of GetBySlackName method of Slack User Repository
+        /// Test case to check the functionality of GetBySlackNameAsync method of Slack User Repository
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task GetBySlackName()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            var slackUser = _slackUserRepository.GetBySlackNameAsync(_stringConstant.FirstNameForTest).Result;
+            SlackUserDetailAc slackUser = _slackUserRepository.GetBySlackNameAsync(_stringConstant.FirstNameForTest).Result;
             Assert.Equal(slackUser.UserId, _stringConstant.StringIdForTest);
         }
 

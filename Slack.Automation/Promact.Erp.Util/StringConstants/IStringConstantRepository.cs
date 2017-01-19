@@ -209,7 +209,7 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageOAuthControllerSlackOAuth { get; }
         string LoggerErrorMessageOAuthControllerSlackEvent { get; }
         string LoggerErrorMessageTaskMailBot { get; }
-        string SlackBotStringName { get; }
+        string SlackBotName { get; }
         string CasualLeaveUrl { get; }
         string CasualLeaveResponse { get; }
         string SlackChannelIdForTest { get; }
