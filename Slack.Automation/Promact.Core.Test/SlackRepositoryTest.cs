@@ -18,11 +18,9 @@ using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using Xunit;
 
 namespace Promact.Core.Test

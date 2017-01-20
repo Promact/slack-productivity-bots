@@ -1,5 +1,4 @@
-﻿using Promact.Erp.DomainModel.Models;
-using System;
+﻿using System;
 
 namespace Promact.Erp.Util.StringConstants
 {

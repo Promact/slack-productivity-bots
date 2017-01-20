@@ -2,9 +2,11 @@
 using Autofac.Extras.NLog;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
@@ -81,6 +83,8 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
+            builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac

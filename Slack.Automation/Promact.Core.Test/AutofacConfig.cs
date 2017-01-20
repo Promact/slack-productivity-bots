@@ -7,7 +7,6 @@ using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.AttachmentRepository;
-using System.Net.Http;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
@@ -29,6 +28,8 @@ using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
 using Autofac.Extras.NLog;
+using AutoMapper;
+using Promact.Core.Repository.AutoMapperConfig;
 
 namespace Promact.Core.Test
 {
@@ -46,6 +47,7 @@ namespace Promact.Core.Test
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
+
             builder.RegisterType<EnvironmentVariableTestRepository>().As<IEnvironmentVariableRepository>();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
@@ -72,6 +74,8 @@ namespace Promact.Core.Test
             var iLoggerMockObject = iLoggerMock.Object;
             builder.RegisterInstance(iLoggerMock).As<Mock<ILogger>>();
             builder.RegisterInstance(iLoggerMockObject).As<ILogger>();
+            builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+
             var container = builder.Build();
             return container;
         }
