@@ -46,8 +46,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
-
-            builder.RegisterType<Bot>().AsSelf();
+               
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
