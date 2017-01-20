@@ -53,6 +53,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             {
                 if (!slackUserDetails.Deleted)
                 {
+                    //Added to database only if the user is not deleted
                     if (slackUserDetails.IsBot || slackUserDetails.Name == _stringConstant.SlackBotName)
                         await AddSlackBotUserDetailAsync(slackUserDetails);
                     else
@@ -144,23 +145,19 @@ namespace Promact.Core.Repository.SlackUserRepository
         private async Task UpdateSlackUserDetailAsync(SlackUserDetails slackUserDetails)
         {
             SlackUserDetails user = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.UserId == slackUserDetails.UserId);
-            if (user != null)
+            if (slackUserDetails.Deleted)
             {
-                if (slackUserDetails.Deleted)
-                {
-                    _slackUserDetailsRepository.Delete(user.Id);
-                    await _slackUserDetailsRepository.SaveChangesAsync();
-                }
-                else
-                {
-                    // Perform mapping
-                    user = _mapper.Map(slackUserDetails, user);
-                    _slackUserDetailsRepository.Update(user);
-                    await _slackUserDetailsRepository.SaveChangesAsync();
-                }
+                //delete the deleted user from database
+                _slackUserDetailsRepository.Delete(user.Id);
+                await _slackUserDetailsRepository.SaveChangesAsync();
             }
             else
-                throw new SlackUserNotFoundException(_stringConstant.UserNotFound);
+            {
+                // Perform mapping
+                user = _mapper.Map(slackUserDetails, user);
+                _slackUserDetailsRepository.Update(user);
+                await _slackUserDetailsRepository.SaveChangesAsync();
+            }
         }
 
 
@@ -171,23 +168,19 @@ namespace Promact.Core.Repository.SlackUserRepository
         private async Task UpdateSlackBotUserAsync(SlackUserDetails slackBotUserDetails)
         {
             SlackBotUserDetail botUser = await _slackUserBotDetailsRepository.FirstOrDefaultAsync(x => x.UserId == slackBotUserDetails.UserId);
-            if (botUser != null)
+            if (slackBotUserDetails.Deleted)
             {
-                if (slackBotUserDetails.Deleted)
-                {
-                    _slackUserBotDetailsRepository.Delete(botUser.Id);
-                    await _slackUserBotDetailsRepository.SaveChangesAsync();
-                }
-                else
-                {
-                    // Perform mapping
-                    botUser = _mapper.Map(slackBotUserDetails, botUser);
-                    _slackUserBotDetailsRepository.Update(botUser);
-                    await _slackUserBotDetailsRepository.SaveChangesAsync();
-                }
+                //delete the deleted user from database
+                _slackUserBotDetailsRepository.Delete(botUser.Id);
+                await _slackUserBotDetailsRepository.SaveChangesAsync();
             }
             else
-                throw new SlackUserNotFoundException(_stringConstant.BotNotFound);
+            {
+                // Perform mapping
+                botUser = _mapper.Map(slackBotUserDetails, botUser);
+                _slackUserBotDetailsRepository.Update(botUser);
+                await _slackUserBotDetailsRepository.SaveChangesAsync();
+            }
         }
 
 
