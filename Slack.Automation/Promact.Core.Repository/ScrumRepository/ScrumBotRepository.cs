@@ -1,4 +1,9 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -7,11 +12,6 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -134,67 +134,71 @@ namespace Promact.Core.Repository.ScrumRepository
 
             #endregion
 
-            else
+            if (slackUserDetail != null)
             {
-                if (slackUserDetail != null)
+                if (String.Compare(message, _stringConstant.ScrumHelp, StringComparison.OrdinalIgnoreCase) == 0) //when the message obtained is "scrum help"
                 {
-                    if (string.Compare(message, _stringConstant.ScrumHelp, true) == 0) //when the message obtained is "scrum help"
+                    replyText = _stringConstant.ScrumHelpMessage;
+                }
+                else if (slackChannelDetail != null)
+                {
+                    //commands could be"scrum time" or "scrum halt" or "scrum resume"
+                    if (String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 || 
+                        String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 || 
+                        String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        replyText = _stringConstant.ScrumHelpMessage;
+                        replyText = await ScrumAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
                     }
-                    else if (slackChannelDetail != null)
+                    //a particular user is on leave. command would be like "leave <@userId>"
+                    else if ((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) && messageArray.Length == 2)
                     {
-                        //commands could be"scrum time" or "scrum halt" or "scrum resume"
-                        if (string.Compare(message, _stringConstant.ScrumTime, true) == 0 || string.Compare(message, _stringConstant.ScrumHalt, true) == 0 || string.Compare(message, _stringConstant.ScrumResume, true) == 0)
+                        //"<@".Length is 2
+                        int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
+                        int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
+                        if (toIndex > 0 && fromIndex > 1)
                         {
-                            replyText = await ScrumAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
+                            //the slack userId is fetched
+                            string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                            //fetch the user of the given userId
+                            SlackUserDetailAc applicantDetails = await _slackUserDetailRepository.GetByIdAsync(applicantId);
+                            replyText = applicantDetails != null ? await LeaveAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, slackUserDetail.UserId, applicantDetails.Name, applicantId) : _stringConstant.NotAUser;
                         }
-                        //a particular user is on leave. command would be like "leave <@userId>"
-                        else if ((string.Compare(messageArray[0], _stringConstant.Leave, true) == 0) && messageArray.Length == 2)
-                        {
-                            //"<@".Length is 2
-                            int fromIndex = message.IndexOf("<@") + 2;
-                            int toIndex = message.LastIndexOf(">");
-                            if (toIndex > 0 && fromIndex > 1)
-                            {
-                                //the slack userId is fetched
-                                string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
-                                //fetch the user of the given userId
-                                SlackUserDetailAc applicantDetails = await _slackUserDetailRepository.GetByIdAsync(applicantId);
-                                replyText = applicantDetails != null ? await LeaveAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, slackUserDetail.UserId, applicantDetails.Name, applicantId) : _stringConstant.NotAUser;
-                            }
-                            else //when command would be like "leave <@>"
-                            {
-                                replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
-                            }
-                        }
-                        else  //all other texts
+                        else //when command would be like "leave <@>"
                         {
                             replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
                         }
                     }
-                    else   //channel is not registered in the database
+                    else  //all other texts
                     {
-                        //If channel is not registered in the database and the command encountered is "add channel channelname"
-                        if (string.Compare(messageArray[0], _stringConstant.Add, true) == 0 && string.Compare(messageArray[1], _stringConstant.Channel, true) == 0)
-                        {
-                            replyText = await AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
-                        }
-                        //If any of the commands which scrum bot recognizes is encountered
-                        else if (((string.Compare(messageArray[0], _stringConstant.Leave, true) == 0) && messageArray.Length == 2) || string.Compare(message, _stringConstant.ScrumTime, true) == 0 || string.Compare(message, _stringConstant.ScrumHalt, true) == 0 || string.Compare(message, _stringConstant.ScrumResume, true) == 0)
-                        {
-                            replyText = _stringConstant.ChannelAddInstruction;
-                        }
+                        replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
                     }
                 }
-                else //user == null
+                else   //channel is not registered in the database
                 {
-                    SlackBotUserDetail botUserDetail = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
-                    if (botUserDetail == null)
-                        replyText = _stringConstant.SlackUserNotFound;
+                    //If channel is not registered in the database and the command encountered is "add channel channelname"
+                    if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 && 
+                        String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        replyText = await AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
+                    }
+                    //If any of the commands which scrum bot recognizes is encountered
+                    else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) && 
+                              messageArray.Length == 2) || 
+                             String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 || 
+                             String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 || 
+                             String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        replyText = _stringConstant.ChannelAddInstruction;
+                    }
                 }
-                return replyText;
             }
+            else //user == null
+            {
+                SlackBotUserDetail botUserDetail = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
+                if (botUserDetail == null)
+                    replyText = _stringConstant.SlackUserNotFound;
+            }
+            return replyText;
         }
 
 
@@ -338,7 +342,8 @@ namespace Promact.Core.Repository.ScrumRepository
             string reply = string.Empty;
             DateTime today = DateTime.UtcNow.Date;
             //today's scrum of the channel 
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => string.Compare(x.SlackChannelId, slackChannelId, true) == 0 && DbFunctions.TruncateTime(x.ScrumDate) == today);
+            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+            DbFunctions.TruncateTime(x.ScrumDate) == today);
             if (scrum != null && scrum.IsOngoing && !scrum.IsHalted)
             {
                 // getting user name from user's slack name
@@ -414,7 +419,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                     DateTime today = DateTime.UtcNow.Date;
-                    Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => string.Compare(x.SlackChannelId, slackChannelId, true) == 0 && DbFunctions.TruncateTime(x.ScrumDate) == today);
+                    Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+                    DbFunctions.TruncateTime(x.ScrumDate) == today);
                     ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, null);
                     ScrumActions scrumCommand = (ScrumActions)Enum.Parse(typeof(ScrumActions), parameter);
                     User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);
@@ -435,41 +441,35 @@ namespace Promact.Core.Repository.ScrumRepository
                                 return string.Empty;
                         }
                     }
-                    else
+                    //if user is in-active
+                    string returnMessage = string.Empty;
+                    switch (scrumStatus)
                     {
-                        //if user is in-active
-                        string returnMessage = string.Empty;
-                        switch (scrumStatus)
-                        {
-                            case ScrumStatus.Halted:
-                                returnMessage = (scrumCommand == ScrumActions.resume ? _stringConstant.ScrumCannotBeResumed : string.Empty) + string.Format(_stringConstant.InActiveInOAuth, slackUserName);
-                                break;
+                        case ScrumStatus.Halted:
+                            returnMessage = (scrumCommand == ScrumActions.resume ? _stringConstant.ScrumCannotBeResumed : string.Empty) + string.Format(_stringConstant.InActiveInOAuth, slackUserName);
+                            break;
 
-                            //scrum is in progress
-                            case ScrumStatus.OnGoing:
-                                List<Question> questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
-                                returnMessage = await GetReplyToUserAsync(users, project.Id, scrum.Id, slackUserId, slackUserName, questions);
+                        //scrum is in progress
+                        case ScrumStatus.OnGoing:
+                            List<Question> questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
+                            returnMessage = await GetReplyToUserAsync(users, project.Id, scrum.Id, slackUserId, slackUserName, questions);
 
-                                if (scrumCommand == ScrumActions.resume)
-                                    returnMessage = _stringConstant.ScrumNotHalted + Environment.NewLine + returnMessage;
-                                else if (scrumCommand == ScrumActions.halt)
-                                    returnMessage = _stringConstant.ScrumCannotBeHalted + Environment.NewLine + returnMessage;
-                                break;
+                            if (scrumCommand == ScrumActions.resume)
+                                returnMessage = _stringConstant.ScrumNotHalted + Environment.NewLine + returnMessage;
+                            else if (scrumCommand == ScrumActions.halt)
+                                returnMessage = _stringConstant.ScrumCannotBeHalted + Environment.NewLine + returnMessage;
+                            break;
 
-                            //for all other status of the scrum
-                            default:
-                                returnMessage = string.Format(_stringConstant.InActiveInOAuth, slackUserName) + ReplyStatusofScrumToClient(scrumStatus);
-                                break;
-                        }
-                        return returnMessage;
+                        //for all other status of the scrum
+                        default:
+                            returnMessage = string.Format(_stringConstant.InActiveInOAuth, slackUserName) + ReplyStatusofScrumToClient(scrumStatus);
+                            break;
                     }
+                    return returnMessage;
                 }
-                else
-                    return _stringConstant.NoEmployeeFound;
+                return _stringConstant.NoEmployeeFound;
             }
-            else
-                // if user doesn't exist or hasn't logged in with Promact OAuth then this message will be shown to user
-                return _stringConstant.YouAreNotInExistInOAuthServer;
+            return _stringConstant.YouAreNotInExistInOAuthServer;
         }
 
 
@@ -485,11 +485,12 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>Question to the next person or other scrum status</returns>
         private async Task<string> LeaveAsync(string slackChannelId, string slackChannelName, string slackUserName, string slackUserId, string applicant, string applicantId)
         {
-            string returnMsg = string.Empty;
+            string returnMsg;
             DateTime today = DateTime.UtcNow.Date;
             //we will have to check whether the scrum is on going or not before calling FetchScrumStatus()
             //because any command outside the scrum time must not be entertained except with the replies like "scrum is concluded","scrum has not started" or "scrum has not started".
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => string.Compare(x.SlackChannelId, slackChannelId, true) == 0 && DbFunctions.TruncateTime(x.ScrumDate) == today);
+            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+            DbFunctions.TruncateTime(x.ScrumDate) == today);
             if (scrum != null)
             {
                 if (scrum.IsOngoing)
@@ -546,7 +547,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>status message</returns>
         private async Task<string> AddChannelManuallyAsync(string slackChannelName, string slackChannelId, string slackUserId)
         {
-            string returnMsg = string.Empty;
+            string returnMsg;
             //Checks whether channelId starts with "G". This is done inorder to make sure that only private channels are added manually
             if (IsPrivateChannel(slackChannelId))
             {
@@ -658,7 +659,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         SlackUserDetails slackUserDetail = _slackUserDetails.FirstOrDefault(x => users.Where(y => y.IsActive).Select(y => y.SlackUserId).Contains(x.UserId));
                         if (slackUserDetail != null)
-                            firstUser = users.FirstOrDefault(x => x.SlackUserId == slackUserDetail.UserId);
+                            firstUser = users.First(x => x.SlackUserId == slackUserDetail.UserId);
                         else
                             return _stringConstant.NoEmployeeFound;
                     }
@@ -685,10 +686,11 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
                 DateTime today = DateTime.UtcNow.Date;
-                Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => string.Compare(x.SlackChannelId, slackChannelId, true) == 0 && DbFunctions.TruncateTime(x.ScrumDate) == today);
+                Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+                DbFunctions.TruncateTime(x.ScrumDate) == today);
                 //user to whom the last question was asked
                 SlackUserDetailAc prevUser = await GetSlackUserAsync(scrum.Id, users);
-                if (prevUser != null && !string.IsNullOrEmpty(prevUser.Name))
+                if (!string.IsNullOrEmpty(prevUser?.Name))
                 {
                     if (prevUser.Deleted)
                         //user is not part of the project in OAuth
@@ -737,27 +739,24 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (string.IsNullOrEmpty(status))
                     {
                         //if applying user tries to mark himself/herself as on leave
-                        if (string.Compare(slackUserId, applicantId, true) == 0)
+                        if (String.Compare(slackUserId, applicantId, StringComparison.OrdinalIgnoreCase) == 0)
                             return _stringConstant.LeaveError;
-                        else
+                        string expectedUserId = users.First(x => x.SlackUserId == applicantId).Id;
+                        //fetch the scrum answer of the user given on that day
+                        List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == expectedUserId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.ToList();
+                        //If no answer from the user has been obtained yet.
+                        if (!scrumAnswer.Any())
                         {
-                            string expectedUserId = users.FirstOrDefault(x => x.SlackUserId == applicantId).Id;
-                            //fetch the scrum answer of the user given on that day
-                            List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == expectedUserId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.ToList();
-                            //If no answer from the user has been obtained yet.
-                            if (!scrumAnswer.Any())
+                            //all the scrum questions are answered as "leave"
+                            foreach (Question question in questions)
                             {
-                                //all the scrum questions are answered as "leave"
-                                foreach (Question question in questions)
-                                {
-                                    await AddUpdateAnswerAsync(scrumId, question.Id, expectedUserId, _stringConstant.Leave, ScrumAnswerStatus.Leave);
-                                }
-                                await UpdateTemporaryScrumDetailsAsync(applicantId, scrumId, users, null);
+                                await AddUpdateAnswerAsync(scrumId, question.Id, expectedUserId, _stringConstant.Leave, ScrumAnswerStatus.Leave);
                             }
-                            else
-                                //If the applicant has already answered questions
-                                returnMsg = string.Format(_stringConstant.AlreadyAnswered, applicant);
+                            await UpdateTemporaryScrumDetailsAsync(applicantId, scrumId, users, null);
                         }
+                        else
+                            //If the applicant has already answered questions
+                            returnMsg = string.Format(_stringConstant.AlreadyAnswered, applicant);
                     }
                     else
                         return status;
@@ -820,15 +819,14 @@ namespace Promact.Core.Repository.ScrumRepository
                                 await UpdateTemporaryScrumDetailsAsync(prevUser.SlackUserId, scrumId, users, question.Id);
                                 return string.Format(_stringConstant.NameFormat, slackUserDetail.Name) + question.QuestionStatement + Environment.NewLine;
                             }
-                            else
-                                return _stringConstant.NoQuestion;
+                            return _stringConstant.NoQuestion;
                         }
                     }
                     user = activeUnAnsweredUserList.FirstOrDefault();
                 }
             }
             else
-                user = prevUser != null ? prevUser : activeUnAnsweredUserList.FirstOrDefault();  //preveUser == null, if a user was asked a question before but at present is not active
+                user = prevUser ?? activeUnAnsweredUserList.FirstOrDefault();  //preveUser == null, if a user was asked a question before but at present is not active
 
             if (user != null)
             {
@@ -867,8 +865,7 @@ namespace Promact.Core.Repository.ScrumRepository
             var scrumAnswersInComplete = scrumAnswers.GroupBy(m => m.EmployeeId)
                 .Select(g => new
                 {
-                    AnswerCount = g.Count(),
-                    EmployeeId = g.FirstOrDefault().EmployeeId,
+                    AnswerCount = g.Count(), g.First().EmployeeId,
                     Answers = g
                 }).ToList();
 
@@ -879,7 +876,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     user = users.FirstOrDefault(x => x.Id == userId.EmployeeId && x.IsActive);
                     //check whether those who didn't answer now are active or not
-                    if (user != null && !string.IsNullOrEmpty(user.Id))
+                    if (!string.IsNullOrEmpty(user?.Id))
                     {
                         slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(user.SlackUserId);
                         if (slackUserDetail != null)
@@ -901,8 +898,7 @@ namespace Promact.Core.Repository.ScrumRepository
             if (await UpdateScrumAsync(scrumId, false, false) == 1)
                 //answers of all the users has been recorded            
                 return _stringConstant.ScrumComplete;
-            else
-                return _stringConstant.ErrorMsg;
+            return _stringConstant.ErrorMsg;
         }
 
 
@@ -952,7 +948,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (temporaryScrumDetails.AnswerCount == 0 || temporaryScrumDetails.AnswerCount == questionCount)
                     {
                         //all questions have been asked to the previous user 
-                        if (activeUserList != null && activeUserList.Any())
+                        if (activeUserList.Any())
                         {
                             //now the next user
                             TemporaryScrumDetails tempScrumDetails = await FetchTemporaryScrumDetailsAsync(scrumId);
@@ -1012,7 +1008,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 fetchQuestion = true;
                 reply = string.Format(_stringConstant.InActiveInOAuth, applicant) + reply;
             }
-            bool isPreviousUserNull = prevUser != null && !string.IsNullOrEmpty(prevUser.Name) ? false : true;
+            bool isPreviousUserNull = string.IsNullOrEmpty(prevUser?.Name);
             //if unexpectedUser is null it means that the user is not a member of the project in OAuth
             //in that case even the user who user who was asked the last question to(i.e prevUser) is same as this user, it is alright
             if (!isPreviousUserNull && (prevUser.UserId != applicantId || unexpectedUser == null))
@@ -1040,8 +1036,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             if (fetchQuestion)
                 return reply;
-            else
-                return string.Empty;
+            return string.Empty;
         }
 
 
@@ -1075,7 +1070,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         if (userDetail == null)
                             // User is either not a member of the project or not in OAuth
                             return string.Format(_stringConstant.UserNotInProject, tempSlackUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
-                        else if (userDetail != null && !userDetail.IsActive)
+                        if (!userDetail.IsActive)
                             return string.Format(_stringConstant.InActiveInOAuth, tempSlackUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
                     }
                     else
@@ -1083,26 +1078,21 @@ namespace Promact.Core.Repository.ScrumRepository
                 }
                 return string.Empty;
             }
-            else
+            string reply = await GetReplyToUserAsync(users, projectId, scrumId, applicantId, applicant, questions);
+            if (user != null)
             {
-                string reply = await GetReplyToUserAsync(users, projectId, scrumId, applicantId, applicant, questions);
-                if (user != null)
+                SlackUserDetailAc expectedUser = await _slackUserDetailRepository.GetByIdAsync(user.SlackUserId);
+                if (expectedUser != null)
                 {
-                    SlackUserDetailAc expectedUser = await _slackUserDetailRepository.GetByIdAsync(user.SlackUserId);
-                    if (expectedUser != null)
-                    {
-                        if (!user.IsActive)
-                            //the expected user is marked as in-active in OAuth. So mark the answers as in active and fetch question to the next user
-                            return string.Format(_stringConstant.InActiveInOAuth, expectedUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
-                        else
-                            //expected user is active
-                            reply += string.Format(_stringConstant.PleaseAnswer, expectedUser.Name);
-                    }
-                    else
-                        return _stringConstant.UserNotInSlack + await GetQuestionAsync(scrumId, questions, users, projectId);
+                    if (!user.IsActive)
+                        //the expected user is marked as in-active in OAuth. So mark the answers as in active and fetch question to the next user
+                        return string.Format(_stringConstant.InActiveInOAuth, expectedUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
+                    reply += string.Format(_stringConstant.PleaseAnswer, expectedUser.Name);
                 }
-                return reply;
+                else
+                    return _stringConstant.UserNotInSlack + await GetQuestionAsync(scrumId, questions, users, projectId);
             }
+            return reply;
         }
 
 
@@ -1192,23 +1182,17 @@ namespace Promact.Core.Repository.ScrumRepository
                                 if (!scrum.IsHalted)
                                     return scrum.IsOngoing ? ScrumStatus.OnGoing : ScrumStatus.Completed;
 
-                                else
-                                    return ScrumStatus.Halted;
+                                return ScrumStatus.Halted;
                             }
-                            else
-                                return ScrumStatus.NotStarted;
+                            return ScrumStatus.NotStarted;
                         }
-                        else
-                            return ScrumStatus.NoQuestion;
+                        return ScrumStatus.NoQuestion;
                     }
-                    else
-                        return ScrumStatus.NoEmployee;
+                    return ScrumStatus.NoEmployee;
                 }
-                else
-                    return ScrumStatus.InActiveProject;
+                return ScrumStatus.InActiveProject;
             }
-            else
-                return ScrumStatus.NoProject;
+            return ScrumStatus.NoProject;
         }
 
 
@@ -1227,10 +1211,9 @@ namespace Promact.Core.Repository.ScrumRepository
                 await UpdateScrumAsync(scrum.Id, true, true);
                 return _stringConstant.ScrumHalted;
             }
-            else if (status == (ScrumStatus.Halted))
+            if (status == (ScrumStatus.Halted))
                 return _stringConstant.ScrumAlreadyHalted;
-            else
-                return ReplyStatusofScrumToClient(status) + _stringConstant.ScrumCannotBeHalted;
+            return ReplyStatusofScrumToClient(status) + _stringConstant.ScrumCannotBeHalted;
         }
 
 
@@ -1244,10 +1227,10 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> ScrumResumeAsync(Scrum scrum, List<User> users, ScrumStatus status)
         {
             List<Question> questionList = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.ToList();
-            string returnMsg = string.Empty;
             //keyword encountered is "scrum resume"      
             if (status == (ScrumStatus.Halted) || status == (ScrumStatus.OnGoing))
             {
+                string returnMsg;
                 if (status == (ScrumStatus.Halted))
                 {
                     //scrum resumed
@@ -1259,7 +1242,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 //user to whom the last question was asked
                 SlackUserDetailAc prevUser = await GetSlackUserAsync(scrum.Id, users);
-                if (prevUser != null && !string.IsNullOrEmpty(prevUser.Name))
+                if (!string.IsNullOrEmpty(prevUser?.Name))
                 {
                     if (prevUser.Deleted)//the previous user is not part of the project in OAuth
                         returnMsg += string.Format(_stringConstant.UserNotInProject, prevUser.Name);
@@ -1271,8 +1254,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 returnMsg += await GetQuestionAsync(scrum.Id, questionList, users, scrum.ProjectId);
                 return returnMsg;
             }
-            else
-                return ReplyStatusofScrumToClient(status) + _stringConstant.ScrumCannotBeResumed;
+            return ReplyStatusofScrumToClient(status) + _stringConstant.ScrumCannotBeResumed;
         }
 
 
@@ -1283,7 +1265,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>appropriate message indicating the status of scrum</returns>
         private string ReplyStatusofScrumToClient(ScrumStatus scrumStatus)
         {
-            string returnMessage = string.Empty;
+            string returnMessage;
             switch (scrumStatus)
             {
                 case ScrumStatus.Completed:
