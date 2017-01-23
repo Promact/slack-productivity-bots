@@ -146,8 +146,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 else if (slackChannelDetail != null)
                 {
                     //commands could be"scrum time" or "scrum halt" or "scrum resume"
-                    if (String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 || 
-                        String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 || 
+                    if (String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 ||
+                        String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
                         String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         replyText = await ScrumAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
@@ -179,16 +179,16 @@ namespace Promact.Core.Repository.ScrumRepository
                 else   //channel is not registered in the database
                 {
                     //If channel is not registered in the database and the command encountered is "add channel channelname"
-                    if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 && 
+                    if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
                         String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         replyText = await AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
                     }
                     //If any of the commands which scrum bot recognizes is encountered
-                    else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) && 
-                              messageArray.Length == 2) || 
-                             String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 || 
-                             String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 || 
+                    else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) &&
+                              messageArray.Length == 2) ||
+                             String.Compare(message, _stringConstant.ScrumTime, StringComparison.OrdinalIgnoreCase) == 0 ||
+                             String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
                              String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         replyText = _stringConstant.ChannelAddInstruction;
@@ -345,7 +345,7 @@ namespace Promact.Core.Repository.ScrumRepository
             string reply = string.Empty;
             DateTime today = DateTime.UtcNow.Date;
             //today's scrum of the channel 
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
             DbFunctions.TruncateTime(x.ScrumDate) == today);
             if (scrum != null && scrum.IsOngoing && !scrum.IsHalted)
             {
@@ -419,7 +419,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 {
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                     DateTime today = DateTime.UtcNow.Date;
-                    Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+                    Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
                     DbFunctions.TruncateTime(x.ScrumDate) == today);
                     ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, null);
                     ScrumActions scrumCommand = (ScrumActions)Enum.Parse(typeof(ScrumActions), parameter);
@@ -442,7 +442,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         }
                     }
                     //if user is in-active
-                    string returnMessage = string.Empty;
+                    string returnMessage;
                     switch (scrumStatus)
                     {
                         case ScrumStatus.Halted:
@@ -489,7 +489,7 @@ namespace Promact.Core.Repository.ScrumRepository
             DateTime today = DateTime.UtcNow.Date;
             //we will have to check whether the scrum is on going or not before calling FetchScrumStatus()
             //because any command outside the scrum time must not be entertained except with the replies like "scrum is concluded","scrum has not started" or "scrum has not started".
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
             DbFunctions.TruncateTime(x.ScrumDate) == today);
             if (scrum != null)
             {
@@ -560,7 +560,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     //get the project details of the given channel name
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                     //add channel details only if the channel has been registered as project in OAuth server
-                    if (project != null && project.Id > 0)
+                    if (project?.Id > 0)
                     {
                         if (project.IsActive)
                         {
@@ -656,7 +656,9 @@ namespace Promact.Core.Repository.ScrumRepository
                     SlackUserDetailAc slackUserDetailAc = await _slackUserDetailRepository.GetByIdAsync(firstUser.SlackUserId);
                     if (slackUserDetailAc == null)
                     {
-                        SlackUserDetails slackUserDetail = _slackUserDetails.FirstOrDefault(x => users.Where(y => y.IsActive).Select(y => y.SlackUserId).ToList().Contains(x.UserId));
+                        List<string> idList = users.Where(y => y.IsActive).Select(y => y.SlackUserId).ToList();
+                        //fetch the next slack user who is an active user of the project.
+                        SlackUserDetails slackUserDetail = _slackUserDetails.FirstOrDefault(x => idList.Contains(x.UserId));
                         if (slackUserDetail != null)
                         {
                             firstUser = users.First(x => x.SlackUserId == slackUserDetail.UserId);
@@ -688,7 +690,7 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
                 DateTime today = DateTime.UtcNow.Date;
-                Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && 
+                Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
                 DbFunctions.TruncateTime(x.ScrumDate) == today);
                 //user to whom the last question was asked
                 SlackUserDetailAc prevUser = await GetSlackUserAsync(scrum.Id, users);
@@ -866,7 +868,8 @@ namespace Promact.Core.Repository.ScrumRepository
             var scrumAnswersInComplete = scrumAnswers.GroupBy(m => m.EmployeeId)
                 .Select(g => new
                 {
-                    AnswerCount = g.Count(), g.First().EmployeeId,
+                    AnswerCount = g.Count(),
+                    g.First().EmployeeId,
                     Answers = g
                 }).ToList();
 
