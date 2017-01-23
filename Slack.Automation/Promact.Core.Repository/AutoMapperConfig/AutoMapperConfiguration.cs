@@ -7,7 +7,7 @@ namespace Promact.Core.Repository.AutoMapperConfig
     {
         public static IMapper ConfigureMap()
         {
-            var config = new MapperConfiguration(cfg =>
+            MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>();
 

@@ -1,10 +1,11 @@
 ﻿using Autofac;
+using System.Threading.Tasks;
+using Xunit;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.StringConstants;
-using System.Threading.Tasks;
-using Xunit;
+
 
 namespace Promact.Core.Test
 {

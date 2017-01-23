@@ -1,6 +1,6 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -8,7 +8,7 @@ namespace Promact.Core.Repository.SlackUserRepository
     {
 
         /// <summary>
-        /// Method to add slack user 
+        /// Method to add/update slack user 
         /// </summary>
         /// <param name="slackUserDetails">slack user details. Object of SlackUserDetails</param>
         Task AddSlackUserAsync(SlackUserDetails slackUserDetails);

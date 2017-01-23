@@ -1,6 +1,7 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass;
+
 
 namespace Promact.Core.Repository.OauthCallsRepository
 {

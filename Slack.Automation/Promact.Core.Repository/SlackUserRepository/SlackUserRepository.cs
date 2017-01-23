@@ -1,10 +1,10 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.DomainModel.DataRepository;
-using System;
-using Promact.Erp.Util.ExceptionHandler;
-using Promact.Erp.Util.StringConstants;
-using AutoMapper;
+﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
+using Promact.Erp.Util.StringConstants;
+
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -25,6 +25,7 @@ namespace Promact.Core.Repository.SlackUserRepository
 
         #region Constructor
 
+
         public SlackUserRepository(IRepository<SlackUserDetails> slackUserDetailsRepository,
             IRepository<SlackBotUserDetail> slackUserBotDetailsRepository,
             IStringConstantRepository stringConstant, IMapper mapper)
@@ -35,6 +36,7 @@ namespace Promact.Core.Repository.SlackUserRepository
             _mapper = mapper;
         }
 
+
         #endregion
 
 
@@ -42,7 +44,7 @@ namespace Promact.Core.Repository.SlackUserRepository
 
 
         /// <summary>
-        /// Method to add slack user 
+        /// Method to add/update slack user 
         /// </summary>
         /// <param name="slackUserDetails">slack user details. Object of SlackUserDetails</param>
         public async Task AddSlackUserAsync(SlackUserDetails slackUserDetails)
