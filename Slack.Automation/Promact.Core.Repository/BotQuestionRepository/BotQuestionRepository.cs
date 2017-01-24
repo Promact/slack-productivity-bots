@@ -2,6 +2,8 @@
 using Promact.Erp.DomainModel.DataRepository;
 using System.Threading.Tasks;
 using Promact.Erp.DomainModel.ApplicationClass;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
@@ -76,6 +78,18 @@ namespace Promact.Core.Repository.BotQuestionRepository
             Question question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == orderNumberValue &&
             x.Type == typeValue);
             return question;
+        }
+
+
+        /// <summary>
+        /// Fetches the Questions based on type of question - JJ
+        /// </summary>
+        /// <param name="botQuestionType">type of question asked by bot</param>
+        /// <returns>list of object of Question</returns>
+        public async Task<List<Question>> GetQuestionsByTypeAsync(BotQuestionType botQuestionType)
+        {
+            IEnumerable<Question> questionList = await _questionRepository.FetchAsync(x => x.Type == botQuestionType);
+            return questionList.OrderBy(x => x.OrderNumber).ToList();
         }
 
 

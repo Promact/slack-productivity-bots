@@ -110,6 +110,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseRepository\RepositoryBase.cs" />
     <Compile Include="AttachmentRepository\AttachmentRepository.cs" />
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
     <Compile Include="AutoMapperConfig\AutoMapperConfiguration.cs" />

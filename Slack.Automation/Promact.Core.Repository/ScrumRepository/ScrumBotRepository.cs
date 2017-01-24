@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -13,28 +12,31 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
+using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.BotQuestionRepository;
+using Promact.Core.Repository.BaseRepository;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
-    public class ScrumBotRepository : IScrumBotRepository
+    public class ScrumBotRepository : RepositoryBase, IScrumBotRepository
     {
 
-        #region Private Variable
+        #region Private Variable 
 
 
-        private readonly IRepository<TemporaryScrumDetails> _tempScrumDetailsRepository;
-        private readonly IRepository<ScrumAnswer> _scrumAnswerRepository;
-        private readonly IRepository<Scrum> _scrumRepository;
-        private readonly IRepository<ApplicationUser> _applicationUser;
-        private readonly IRepository<Question> _questionRepository;
-        private readonly IRepository<SlackBotUserDetail> _slackBotUserDetailRepository;
-        private readonly IRepository<SlackUserDetails> _slackUserDetails;
+        private readonly IRepository<TemporaryScrumDetails> _tempScrumDetailsDataRepository;
+        private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
+        private readonly IRepository<Scrum> _scrumDataRepository;
+        private readonly IRepository<Question> _questionDataRepository;
+        private readonly IRepository<SlackBotUserDetail> _slackBotUserDetailDataRepository;
+        private readonly IRepository<SlackUserDetails> _slackUserDetailsDataRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
-        private readonly IAttachmentRepository _attachmentRepository;
         private readonly ISlackUserRepository _slackUserDetailRepository;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IMapper _mapper;
+        public DateTime today = DateTime.UtcNow.Date;
 
 
         #endregion
@@ -43,26 +45,27 @@ namespace Promact.Core.Repository.ScrumRepository
         #region Constructor
 
 
-        public ScrumBotRepository(IRepository<TemporaryScrumDetails> tempScrumDetailsRepository,
-            IRepository<ScrumAnswer> scrumAnswerRepository, IRepository<Scrum> scrumRepository,
-            IRepository<ApplicationUser> applicationUser, IRepository<Question> questionRepository,
-            IRepository<SlackBotUserDetail> slackBotUserDetailRepository, IRepository<SlackUserDetails> slackUserDetails,
-            ISlackChannelRepository slackChannelRepository, IMapper mapper,
-            IOauthCallsRepository oauthCallsRepository, IAttachmentRepository attachmentRepository,
-            ISlackUserRepository slackUserDetailRepository, IStringConstantRepository stringConstant)
+        public ScrumBotRepository(IRepository<TemporaryScrumDetails> tempScrumDetailsDataRepository,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository, IRepository<Scrum> scrumDataRepository,
+            IRepository<Question> questionDataRepository, IRepository<SlackBotUserDetail> slackBotUserDetailDataRepository,
+            IRepository<SlackUserDetails> slackUserDetailsDataRepository,
+            ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
+            ISlackUserRepository slackUserDetailRepository, IStringConstantRepository stringConstant,
+            IBotQuestionRepository botQuestionRepository, IMapper mapper,
+            IRepository<ApplicationUser> applicationUser, IAttachmentRepository attachmentRepository)
+            : base(applicationUser, attachmentRepository)
         {
-            _tempScrumDetailsRepository = tempScrumDetailsRepository;
-            _scrumAnswerRepository = scrumAnswerRepository;
-            _scrumRepository = scrumRepository;
-            _applicationUser = applicationUser;
-            _questionRepository = questionRepository;
-            _slackBotUserDetailRepository = slackBotUserDetailRepository;
+            _tempScrumDetailsDataRepository = tempScrumDetailsDataRepository;
+            _scrumAnswerDataRepository = scrumAnswerDataRepository;
+            _scrumDataRepository = scrumDataRepository;
+            _questionDataRepository = questionDataRepository;
+            _slackBotUserDetailDataRepository = slackBotUserDetailDataRepository;
             _slackUserDetailRepository = slackUserDetailRepository;
             _slackChannelRepository = slackChannelRepository;
             _oauthCallsRepository = oauthCallsRepository;
-            _attachmentRepository = attachmentRepository;
-            _slackUserDetails = slackUserDetails;
+            _slackUserDetailsDataRepository = slackUserDetailsDataRepository;
             _stringConstant = stringConstant;
+            _botQuestionRepository = botQuestionRepository;
             _mapper = mapper;
         }
 
@@ -94,30 +97,27 @@ namespace Promact.Core.Repository.ScrumRepository
             if (messageArray[0] == "delete")
             {
                 var date = DateTime.UtcNow.Date;
-                ApplicationUser applicationUser = await _applicationUser.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
-                // getting access token for that user
-                if (applicationUser != null)
+                // get access token of user for promact oauth server
+                var accessToken = await GetAccessToken(slackUserId);
+                if (accessToken != null)
                 {
-                    // get access token of user for promact oauth server
-                    string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
-
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelDetail.Name, accessToken);
                     if (project != null && project.Id > 0)
                     {
-                        Scrum scrum = _scrumRepository.FirstOrDefault(x => x.ProjectId == project.Id && x.ScrumDate == date);
+                        Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id && x.ScrumDate == date);
                         if (scrum != null)
                         {
-                            _scrumRepository.Delete(scrum.Id);
-                            int scrumDelete = await _scrumRepository.SaveChangesAsync();
+                            _scrumDataRepository.Delete(scrum.Id);
+                            int scrumDelete = await _scrumDataRepository.SaveChangesAsync();
                             if (scrumDelete == 1)
                                 replyText += "scrum has been deleted\n";
                             else
                                 replyText += "scrum has not been deleted\n";
-                            TemporaryScrumDetails temp = _tempScrumDetailsRepository.FirstOrDefault(x => x.ScrumId == scrum.Id);
+                            TemporaryScrumDetails temp = _tempScrumDetailsDataRepository.FirstOrDefault(x => x.ScrumId == scrum.Id);
                             if (temp != null)
                             {
-                                _tempScrumDetailsRepository.Delete(temp.Id);
-                                int deleteTemp = await _tempScrumDetailsRepository.SaveChangesAsync();
+                                _tempScrumDetailsDataRepository.Delete(temp.Id);
+                                int deleteTemp = await _tempScrumDetailsDataRepository.SaveChangesAsync();
                                 if (deleteTemp == 1)
                                     replyText += "temp data has been deleted\n";
                                 else
@@ -163,8 +163,8 @@ namespace Promact.Core.Repository.ScrumRepository
                             //the slack userId is fetched
                             string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
                             //fetch the user of the given userId
-                            SlackUserDetailAc applicantDetails = await _slackUserDetailRepository.GetByIdAsync(applicantId);
-                            replyText = applicantDetails != null ? await LeaveAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, slackUserDetail.UserId, applicantDetails.Name, applicantId) : _stringConstant.NotAUser;
+                            SlackUserDetailAc applicantDetailsAc = await _slackUserDetailRepository.GetByIdAsync(applicantId);
+                            replyText = applicantDetailsAc != null ? await LeaveAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, slackUserDetail.UserId, applicantDetailsAc.Name, applicantId) : _stringConstant.NotAUser;
                         }
                         else //when command would be like "leave <@>"
                         {
@@ -197,7 +197,7 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             else //user == null
             {
-                SlackBotUserDetail botUserDetail = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
+                SlackBotUserDetail botUserDetail = await _slackBotUserDetailDataRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
                 if (botUserDetail == null)
                     replyText = _stringConstant.SlackUserNotFound;
             }
@@ -218,7 +218,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns></returns>
         public async Task AddTemporaryScrumDetailsAsync(int scrumId, string slackUserId, int answerCount, int questionId)
         {
-            TemporaryScrumDetails tempScrumDetails = await _tempScrumDetailsRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == DateTime.UtcNow.Date);
+            TemporaryScrumDetails tempScrumDetails = await _tempScrumDetailsDataRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == DateTime.UtcNow.Date);
             if (tempScrumDetails == null)
             {
                 TemporaryScrumDetails temporaryScrumDetails = new TemporaryScrumDetails();
@@ -227,8 +227,8 @@ namespace Promact.Core.Repository.ScrumRepository
                 temporaryScrumDetails.AnswerCount = answerCount;
                 temporaryScrumDetails.QuestionId = questionId;
                 temporaryScrumDetails.CreatedOn = DateTime.UtcNow.Date;
-                _tempScrumDetailsRepository.Insert(temporaryScrumDetails);
-                await _tempScrumDetailsRepository.SaveChangesAsync();
+                _tempScrumDetailsDataRepository.Insert(temporaryScrumDetails);
+                await _tempScrumDetailsDataRepository.SaveChangesAsync();
             }
         }
 
@@ -252,8 +252,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>object of TemporaryScrumDetails</returns>
         private async Task<TemporaryScrumDetails> FetchTemporaryScrumDetailsAsync(int scrumId)
         {
-            DateTime today = DateTime.UtcNow.Date;
-            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsRepository.FirstOrDefaultAsync(x => DbFunctions.TruncateTime(x.CreatedOn) == today && x.ScrumId == scrumId);
+            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsDataRepository.FirstOrDefaultAsync(x => DbFunctions.TruncateTime(x.CreatedOn) == today && x.ScrumId == scrumId);
             return temporaryScrumDetails;
         }
 
@@ -265,12 +264,11 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns></returns>
         private async Task RemoveTemporaryScrumDetailsAsync(int scrumId)
         {
-            DateTime today = DateTime.UtcNow.Date;
-            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == today);
+            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsDataRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == today);
             if (temporaryScrumDetails != null)
             {
-                _tempScrumDetailsRepository.Delete(temporaryScrumDetails.Id);
-                await _tempScrumDetailsRepository.SaveChangesAsync();
+                _tempScrumDetailsDataRepository.Delete(temporaryScrumDetails.Id);
+                await _tempScrumDetailsDataRepository.SaveChangesAsync();
             }
         }
 
@@ -284,23 +282,23 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<SlackUserDetailAc> GetSlackUserAsync(int scrumId, List<User> users)
         {
             TemporaryScrumDetails temporaryScrumDetails = await FetchTemporaryScrumDetailsAsync(scrumId);
-            SlackUserDetailAc slackUserDetails = new SlackUserDetailAc();
+            SlackUserDetailAc slackUserDetailsAc = new SlackUserDetailAc();
             if (temporaryScrumDetails != null)
             {
-                slackUserDetails = await _slackUserDetailRepository.GetByIdAsync(temporaryScrumDetails.SlackUserId);
-                if (!string.IsNullOrEmpty(slackUserDetails.UserId))
+                slackUserDetailsAc = await _slackUserDetailRepository.GetByIdAsync(temporaryScrumDetails.SlackUserId);
+                if (slackUserDetailsAc != null)
                 {
                     User user = users.FirstOrDefault(x => x.SlackUserId == temporaryScrumDetails.SlackUserId);
                     if (user != null)
                     {
-                        slackUserDetails.IsActive = user.IsActive;
-                        slackUserDetails.Deleted = false;
+                        slackUserDetailsAc.IsActive = user.IsActive;
+                        slackUserDetailsAc.Deleted = false;
                     }
                     else
-                        slackUserDetails.Deleted = true;
+                        slackUserDetailsAc.Deleted = true;
                 }
             }
-            return slackUserDetails;
+            return slackUserDetailsAc;
         }
 
 
@@ -313,22 +311,33 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="questionId">Id of last question asked to the user</param>
         private async Task UpdateTemporaryScrumDetailsAsync(string slackUserId, int scrumId, List<User> users, int? questionId)
         {
-            DateTime today = DateTime.UtcNow.Date;
-            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == today);
+            TemporaryScrumDetails temporaryScrumDetails = await _tempScrumDetailsDataRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && DbFunctions.TruncateTime(x.CreatedOn) == today);
             if (temporaryScrumDetails != null)
             {
                 User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);
-                int answerCount = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == user.Id).Result.Count();
+                int answerCount = _scrumAnswerDataRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == user.Id).Result.Count();
                 temporaryScrumDetails.SlackUserId = slackUserId;
                 temporaryScrumDetails.AnswerCount = answerCount;
                 temporaryScrumDetails.QuestionId = questionId;
-                _tempScrumDetailsRepository.Update(temporaryScrumDetails);
-                await _tempScrumDetailsRepository.SaveChangesAsync();
+                _tempScrumDetailsDataRepository.Update(temporaryScrumDetails);
+                await _tempScrumDetailsDataRepository.SaveChangesAsync();
             }
         }
 
 
         #endregion
+
+
+        /// <summary>
+        /// Fetch today's scrum - JJ
+        /// </summary>
+        /// <param name="slackChannelId">SlackId of slack channel</param>
+        /// <returns>Object of Scrum</returns>
+        private async Task<Scrum> GetScrumAsync(string slackChannelId)
+        {
+            return await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
+                         DbFunctions.TruncateTime(x.ScrumDate) == today);
+        }
 
 
         /// <summary>
@@ -343,21 +352,16 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, string slackChannelId, string slackChannelName, string slackUserId)
         {
             string reply = string.Empty;
-            DateTime today = DateTime.UtcNow.Date;
             //today's scrum of the channel 
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-            DbFunctions.TruncateTime(x.ScrumDate) == today);
+            Scrum scrum = await GetScrumAsync(slackChannelId);
             if (scrum != null && scrum.IsOngoing && !scrum.IsHalted)
             {
-                // getting user name from user's slack name
-                ApplicationUser applicationUser = await _applicationUser.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
-                // getting access token for that user
-                if (applicationUser != null)
+                // get access token of user for promact oauth server
+                var accessToken = await GetAccessToken(slackUserId);
+                if (accessToken != null)
                 {
-                    // get access token of user for promact oauth server
-                    string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
                     //list of scrum questions. Type = BotQuestionType.Scrum
-                    List<Question> questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
+                    List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                     //users of the given channel name fetched from the oauth server
                     List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
@@ -407,20 +411,16 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>The question or the status of the scrum</returns>
         private async Task<string> ScrumAsync(string slackChannelId, string slackChannelName, string slackUserName, string parameter, string slackUserId)
         {
-            // getting user name from user's slack name
-            ApplicationUser applicationUser = await _applicationUser.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
-            // getting access token for that user
-            if (applicationUser != null)
+            // get access token of user for promact oauth server
+            var accessToken = await GetAccessToken(slackUserId);
+            if (accessToken != null)
             {
-                // get access token of user for promact oauth server
-                string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
                 List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
                 if (users != null && users.Any())
                 {
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
-                    DateTime today = DateTime.UtcNow.Date;
-                    Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-                    DbFunctions.TruncateTime(x.ScrumDate) == today);
+                    //today's scrum of the channel
+                    Scrum scrum = await GetScrumAsync(slackChannelId);
                     ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, null);
                     ScrumActions scrumCommand = (ScrumActions)Enum.Parse(typeof(ScrumActions), parameter);
                     User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);
@@ -451,7 +451,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
                         //scrum is in progress
                         case ScrumStatus.OnGoing:
-                            List<Question> questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
+                            List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                             returnMessage = await GetReplyToUserAsync(users, project.Id, scrum.Id, slackUserId, slackUserName, questions);
 
                             if (scrumCommand == ScrumActions.resume)
@@ -486,25 +486,20 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> LeaveAsync(string slackChannelId, string slackChannelName, string slackUserName, string slackUserId, string applicant, string applicantId)
         {
             string returnMsg;
-            DateTime today = DateTime.UtcNow.Date;
             //we will have to check whether the scrum is on going or not before calling FetchScrumStatus()
             //because any command outside the scrum time must not be entertained except with the replies like "scrum is concluded","scrum has not started" or "scrum has not started".
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-            DbFunctions.TruncateTime(x.ScrumDate) == today);
+            Scrum scrum = await GetScrumAsync(slackChannelId);
             if (scrum != null)
             {
                 if (scrum.IsOngoing)
                 {
                     if (!scrum.IsHalted)
                     {
-                        // getting user name from user's slack name
-                        ApplicationUser applicationUser = await _applicationUser.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
-                        // getting access token for that user
-                        if (applicationUser != null)
+                        // get access token of user for promact oauth server
+                        var accessToken = await GetAccessToken(slackUserId);
+                        if (accessToken != null)
                         {
-                            // get access token of user for promact oauth server
-                            string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
-                            List<Question> questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
+                            List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                             List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
                             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
 
@@ -550,13 +545,10 @@ namespace Promact.Core.Repository.ScrumRepository
             //Checks whether channelId starts with "G". This is done inorder to make sure that only private channels are added manually
             if (IsPrivateChannel(slackChannelId))
             {
-                // getting user name from user's slack name
-                ApplicationUser applicationUser = await _applicationUser.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
-                // getting access token for that user
-                if (applicationUser != null)
+                // get access token of user for promact oauth server
+                var accessToken = await GetAccessToken(slackUserId);
+                if (accessToken != null)
                 {
-                    // get access token of user for promact oauth server
-                    string accessToken = await _attachmentRepository.UserAccessTokenAsync(applicationUser.UserName);
                     //get the project details of the given channel name
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                     //add channel details only if the channel has been registered as project in OAuth server
@@ -610,13 +602,12 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="scrumAnswerStatus">the status of the answer like. Answered,Leave,etc</param>
         private async Task AddUpdateAnswerAsync(int scrumId, int questionId, string userId, string message, ScrumAnswerStatus scrumAnswerStatus)
         {
-            ScrumAnswer scrumAnswer = await _scrumAnswerRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && x.EmployeeId == userId && x.QuestionId == questionId);
+            ScrumAnswer scrumAnswer = await _scrumAnswerDataRepository.FirstOrDefaultAsync(x => x.ScrumId == scrumId && x.EmployeeId == userId && x.QuestionId == questionId);
             if (scrumAnswer != null)
             {
                 scrumAnswer.Answer = message;
                 scrumAnswer.ScrumAnswerStatus = scrumAnswerStatus;
-                _scrumAnswerRepository.Update(scrumAnswer);
-                await _scrumAnswerRepository.SaveChangesAsync();
+                _scrumAnswerDataRepository.Update(scrumAnswer);
             }
             else
             {
@@ -628,9 +619,9 @@ namespace Promact.Core.Repository.ScrumRepository
                 answer.QuestionId = questionId;
                 answer.ScrumId = scrumId;
                 answer.ScrumAnswerStatus = scrumAnswerStatus;
-                _scrumAnswerRepository.Insert(answer);
-                await _scrumAnswerRepository.SaveChangesAsync();
+                _scrumAnswerDataRepository.Insert(answer);
             }
+            await _scrumAnswerDataRepository.SaveChangesAsync();
         }
 
 
@@ -645,7 +636,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> StartScrumAsync(string slackChannelId, List<User> users, ProjectAc project, ScrumStatus scrumStatus)
         {
             string replyMessage = string.Empty;
-            List<Question> questionList = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.OrderBy(x => x.OrderNumber).ToList();
+            List<Question> questionList = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
             //only if scrum has not been conducted in the day can scrum start.
             if (scrumStatus == ScrumStatus.NotStarted)
             {
@@ -658,7 +649,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         List<string> idList = users.Where(y => y.IsActive).Select(y => y.SlackUserId).ToList();
                         //fetch the next slack user who is an active user of the project.
-                        SlackUserDetails slackUserDetail = _slackUserDetails.FirstOrDefault(x => idList.Contains(x.UserId));
+                        SlackUserDetails slackUserDetail = _slackUserDetailsDataRepository.FirstOrDefault(x => idList.Contains(x.UserId));
                         if (slackUserDetail != null)
                         {
                             firstUser = users.First(x => x.SlackUserId == slackUserDetail.UserId);
@@ -675,8 +666,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     scrum.TeamLeaderId = project.TeamLeaderId;
                     scrum.IsHalted = false;
                     scrum.IsOngoing = true;
-                    _scrumRepository.Insert(scrum);
-                    await _scrumRepository.SaveChangesAsync();
+                    _scrumDataRepository.Insert(scrum);
+                    await _scrumDataRepository.SaveChangesAsync();
 
                     //add the scrum details to the temporary table
                     await AddTemporaryScrumDetailsAsync(scrum.Id, firstUser.SlackUserId, 0, question.Id);
@@ -689,21 +680,18 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             else if (scrumStatus == ScrumStatus.OnGoing)
             {
-                DateTime today = DateTime.UtcNow.Date;
-                Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-                DbFunctions.TruncateTime(x.ScrumDate) == today);
+                Scrum scrum = await GetScrumAsync(slackChannelId);
                 //user to whom the last question was asked
-                SlackUserDetailAc prevUser = await GetSlackUserAsync(scrum.Id, users);
-                if (!string.IsNullOrEmpty(prevUser?.Name))
+                SlackUserDetailAc prevUserAc = await GetSlackUserAsync(scrum.Id, users);
+                if (!string.IsNullOrEmpty(prevUserAc?.Name))
                 {
-                    if (prevUser.Deleted)
+                    if (prevUserAc.Deleted)
                         //user is not part of the project in OAuth
-                        replyMessage = string.Format(_stringConstant.UserNotInProject, prevUser.Name);
+                        replyMessage = string.Format(_stringConstant.UserNotInProject, prevUserAc.Name);
 
-                    else if (!prevUser.IsActive)
+                    else if (!prevUserAc.IsActive)
                         //reply to the user to whom the last question was asked. but this user is in active now
-                        replyMessage = string.Format(_stringConstant.InActiveInOAuth, prevUser.Name);
-
+                        replyMessage = string.Format(_stringConstant.InActiveInOAuth, prevUserAc.Name);
                 }
                 //if scrum meeting was interrupted. "scrum time" is written to resume scrum meeting. So next question is fetched.
                 replyMessage += await GetQuestionAsync(scrum.Id, questionList, users, project.Id);
@@ -745,7 +733,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
                         string expectedUserId = users.First(x => x.SlackUserId == applicantId).Id;
                         //fetch the scrum answer of the user given on that day
-                        List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == expectedUserId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.ToList();
+                        List<ScrumAnswer> scrumAnswer = _scrumAnswerDataRepository.FetchAsync(x => x.ScrumId == scrumId && x.EmployeeId == expectedUserId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.ToList();
                         //If no answer from the user has been obtained yet.
                         if (!scrumAnswer.Any())
                         {
@@ -759,7 +747,6 @@ namespace Promact.Core.Repository.ScrumRepository
                         else
                             //If the applicant has already answered questions
                             returnMsg = string.Format(_stringConstant.AlreadyAnswered, applicant);
-
                     }
                     else
                         return status;
@@ -784,7 +771,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>The next question or the scrum complete message</returns>
         private async Task<string> GetQuestionAsync(int scrumId, List<Question> questions, List<User> users, int projectId)
         {
-            List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
+            List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
             TemporaryScrumDetails temporaryScrumDetails = await FetchTemporaryScrumDetailsAsync(scrumId);
             //user to whom the last question was asked
             User prevUser = users.FirstOrDefault(x => x.SlackUserId == temporaryScrumDetails.SlackUserId && x.IsActive);
@@ -811,8 +798,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     //as not all questions have been answered by the last user,the next question to that user will be asked
                     if (prevUser != null)
                     {
-                        SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(prevUser.SlackUserId);
-                        if (slackUserDetail != null)
+                        SlackUserDetailAc slackUserDetailAc = await _slackUserDetailRepository.GetByIdAsync(prevUser.SlackUserId);
+                        if (slackUserDetailAc != null)
                         {
                             //last scrum answer of the given scrum id.
                             ScrumAnswer lastScrumAnswer = scrumAnswers.OrderByDescending(x => x.Id).First(x => x.EmployeeId == prevUser.Id);
@@ -820,7 +807,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             if (question != null)
                             {
                                 await UpdateTemporaryScrumDetailsAsync(prevUser.SlackUserId, scrumId, users, question.Id);
-                                return string.Format(_stringConstant.NameFormat, slackUserDetail.Name) + question.QuestionStatement + Environment.NewLine;
+                                return string.Format(_stringConstant.NameFormat, slackUserDetailAc.Name) + question.QuestionStatement + Environment.NewLine;
                             }
                             return _stringConstant.NoQuestion;
                         }
@@ -859,10 +846,10 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> MarkScrumCompleteAsync(int scrumId, List<User> users, int questionCount)
         {
             //list of scrum answers of the given scrumId            
-            List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.Fetch(x => x.ScrumId == scrumId).OrderBy(x => x.Id).ToList();
+            List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.Fetch(x => x.ScrumId == scrumId).OrderBy(x => x.Id).ToList();
             User user = new User();
             Question question = new Question();
-            SlackUserDetailAc slackUserDetail = new SlackUserDetailAc();
+            SlackUserDetailAc slackUserDetailAc = new SlackUserDetailAc();
             string nextQuestion = string.Empty;
 
             var scrumAnswersInComplete = scrumAnswers.GroupBy(m => m.EmployeeId)
@@ -882,8 +869,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     //check whether those who didn't answer now are active or not
                     if (!string.IsNullOrEmpty(user?.Id))
                     {
-                        slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(user.SlackUserId);
-                        if (slackUserDetail != null)
+                        slackUserDetailAc = await _slackUserDetailRepository.GetByIdAsync(user.SlackUserId);
+                        if (slackUserDetailAc != null)
                         {
                             question = await FetchQuestionAsync(userId.Answers.OrderByDescending(x => x.Id).First().QuestionId);
                             nextQuestion = question != null ? question.QuestionStatement : string.Empty;
@@ -896,7 +883,7 @@ namespace Promact.Core.Repository.ScrumRepository
             if (!string.IsNullOrEmpty(nextQuestion))
             {
                 await UpdateTemporaryScrumDetailsAsync(user.SlackUserId, scrumId, users, question.Id);
-                return string.Format(_stringConstant.MarkedInActive, slackUserDetail.Name) + nextQuestion;
+                return string.Format(_stringConstant.MarkedInActive, slackUserDetailAc.Name) + nextQuestion;
             }
             //if no questions are pending then scrum is marked to be complete
             if (await UpdateScrumAsync(scrumId, false, false) == 1)
@@ -917,11 +904,11 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             if (!isOngoing)
                 await RemoveTemporaryScrumDetailsAsync(scrumId);
-            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => x.Id == scrumId);
+            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.Id == scrumId);
             scrum.IsOngoing = isOngoing;
             scrum.IsHalted = isHalted;
-            _scrumRepository.Update(scrum);
-            return await _scrumRepository.SaveChangesAsync();
+            _scrumDataRepository.Update(scrum);
+            return await _scrumDataRepository.SaveChangesAsync();
         }
 
 
@@ -938,7 +925,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private async Task<string> ExpectedUserAsync(int scrumId, List<Question> questions, List<User> users, string applicant, string applicantId, int projectId)
         {
             //List of scrum answer of the given scrumId.
-            List<ScrumAnswer> scrumAnswer = _scrumAnswerRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
+            List<ScrumAnswer> scrumAnswer = _scrumAnswerDataRepository.FetchAsync(x => x.ScrumId == scrumId).Result.ToList();
             User user = new User();
             if (scrumAnswer.Any())
             {
@@ -985,7 +972,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 if (user == null)
                     user = users.FirstOrDefault(x => x.IsActive);
             }
-
             return await ProcessExpectedUserResultAsync(user, applicantId, users, projectId, applicant, scrumId, questions);
         }
 
@@ -1109,13 +1095,13 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>object of Question</returns>
         private async Task<Question> FetchQuestionAsync(int questionId)
         {
-            Question question = await _questionRepository.FirstOrDefaultAsync(x => x.Id == questionId);
+            Question question = await _questionDataRepository.FirstOrDefaultAsync(x => x.Id == questionId);
             if (question != null)
             {
                 //order number of the given question 
                 int orderNumber = (int)question.OrderNumber;
                 //question with the next order
-                question = await _questionRepository.FirstOrDefaultAsync(x => x.OrderNumber == (QuestionOrder)(orderNumber + 1) && x.Type == BotQuestionType.Scrum);
+                question = await _questionDataRepository.FirstOrDefaultAsync(x => x.OrderNumber == (QuestionOrder)(orderNumber + 1) && x.Type == BotQuestionType.Scrum);
             }
             return question;
         }
@@ -1131,11 +1117,10 @@ namespace Promact.Core.Repository.ScrumRepository
         private string FetchPreviousDayStatus(string userId, int projectId, List<Question> questions)
         {
             string previousDayStatus = string.Empty;
-            DateTime today = DateTime.UtcNow.Date;
             //previous scrums' Ids of this channel(project)
-            List<int> scrumIdList = _scrumRepository.FetchAsync(x => x.ProjectId == projectId && DbFunctions.TruncateTime(x.ScrumDate) < today).Result.Select(x => x.Id).ToList();
+            List<int> scrumIdList = _scrumDataRepository.FetchAsync(x => x.ProjectId == projectId && DbFunctions.TruncateTime(x.ScrumDate) < today).Result.Select(x => x.Id).ToList();
             //answers in which user was not on leave.
-            List<ScrumAnswer> scrumAnswers = _scrumAnswerRepository.FetchAsync(x => scrumIdList.Contains(x.ScrumId) && x.EmployeeId == userId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.OrderByDescending(x => x.AnswerDate).ToList();
+            List<ScrumAnswer> scrumAnswers = _scrumAnswerDataRepository.FetchAsync(x => scrumIdList.Contains(x.ScrumId) && x.EmployeeId == userId && x.ScrumAnswerStatus == ScrumAnswerStatus.Answered).Result.OrderByDescending(x => x.AnswerDate).ToList();
             if (scrumAnswers.Any() && questions.Any())
             {
                 DateTime scrumDate = new DateTime();
@@ -1178,11 +1163,10 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (users != null && users.Any())
                     {
                         if (questions == null || !questions.Any())
-                            questions = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.ToList();
+                            questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                         if (questions.Any())
                         {
-                            DateTime today = DateTime.UtcNow.Date;
-                            Scrum scrum = await _scrumRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id && DbFunctions.TruncateTime(x.ScrumDate) == today);
+                            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id && DbFunctions.TruncateTime(x.ScrumDate) == today);
                             if (scrum != null)
                             {
                                 if (!scrum.IsHalted)
@@ -1237,7 +1221,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>scrum resume message along with the next question</returns>
         private async Task<string> ScrumResumeAsync(Scrum scrum, List<User> users, ScrumStatus status)
         {
-            List<Question> questionList = _questionRepository.FetchAsync(x => x.Type == BotQuestionType.Scrum).Result.ToList();
+            List<Question> questionList = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
             //keyword encountered is "scrum resume"      
             if (status == (ScrumStatus.Halted) || status == (ScrumStatus.OnGoing))
             {

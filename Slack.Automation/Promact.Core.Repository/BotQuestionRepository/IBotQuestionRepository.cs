@@ -1,6 +1,8 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
+
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
@@ -33,5 +35,13 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <param name="type">question's type</param>
         /// <returns>question</returns>
         Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type);
+
+
+        /// <summary>
+        /// Fetches the Questions based on type of question - JJ
+        /// </summary>
+        /// <param name="botQuestionType">type of question asked by bot</param>
+        /// <returns>list of object of Question</returns>
+        Task<List<Question>> GetQuestionsByTypeAsync(BotQuestionType botQuestionType);
     }
 }
