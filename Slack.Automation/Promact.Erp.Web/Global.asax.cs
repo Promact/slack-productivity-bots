@@ -20,8 +20,8 @@ namespace Promact.Erp.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bot bot = container.Resolve<Bot>();
-            bot.ScrumMain();
-            bot.TaskMailBot();
+            //bot.ScrumMain();
+            //bot.TaskMailBot();
         }
     }
 }

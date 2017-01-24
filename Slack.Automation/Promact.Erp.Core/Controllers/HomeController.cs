@@ -63,6 +63,7 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"After Login from OAuth server Page will be redirected to this page and will open a view of application"
         * }
         */
+        [Authorize]
         public ActionResult AfterLogIn()
         {
             return View();
