@@ -6,10 +6,10 @@ namespace Promact.Erp.DomainModel.Models
     public class Scrum : ModelBase
     {
         /// <summary>
-        /// Channel Name
+        /// Slack Channel Id
         /// </summary>
         [Required]
-        public string GroupName { get; set; }
+        public string SlackChannelId { get; set; }
 
         /// <summary>
         /// Team Leader's Id from Oauth

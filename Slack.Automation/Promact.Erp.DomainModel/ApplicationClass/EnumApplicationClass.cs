@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
     /// <summary>
@@ -74,8 +69,18 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         cl,
         sl
     }
-    
-        
+
+
+    /// <summary>
+    /// Scrum Answer Statuses
+    /// </summary>
+    public enum ScrumAnswerStatus
+    {
+        Answered,
+        Leave
+    }
+
+
     /// <summary>
     /// Scrum Actions
     /// </summary>

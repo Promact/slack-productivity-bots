@@ -1,5 +1,4 @@
-﻿using Promact.Erp.DomainModel.Models;
-using System;
+﻿using System;
 
 namespace Promact.Erp.Util.StringConstants
 {
@@ -151,7 +150,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
             }
         }
-        public string UsersDetailByGroupUrl
+        public string UsersDetailByChannelNameUrl
         {
             get
             {
@@ -166,13 +165,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "fetchUserById/";
             }
         }
-        public string UserDetailByUserNameUrl
-        {
-            get
-            {
-                return "fetchbyusername/";
-            }
-        }
         public string UrlRtmStart
         {
             get
@@ -180,11 +172,25 @@ namespace Promact.Erp.Util.StringConstants
                 return "https://slack.com/api/rtm.start";
             }
         }
+        public string UserCouldNotBeAdded
+        {
+            get
+            {
+                return "User could not be added";
+            }
+        }
         public string OAuthAuthorizationScopeAndClientId
         {
             get
             {
                 return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
+            }
+        }
+        public string SlackAuthorize
+        {
+            get
+            {
+                return "SlackAuthorize";
             }
         }
         public string UserDetailsUrl
@@ -314,7 +320,14 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum is in progress";
             }
         }
-              public string TaskMailDescription
+        public string SlackUserNotFound
+        {
+            get
+            {
+                return "Slack details of user have not been found.";
+            }
+        }
+        public string TaskMailDescription
         {
             get
             {
@@ -360,7 +373,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Channel details has been added";
+                return "Channel details have been added";
             }
         }
         public string Add
@@ -383,6 +396,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "This channel is not registered as Project in OAuth. Please add it to OAuth first";
+            }
+        }
+        public string UserNotInOAuthOrProject
+        {
+            get
+            {
+                return "User not in OAuth or not a user in the project";
             }
         }
         public string GroupNameStartsWith
@@ -411,7 +431,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Scrum is halted";
+                return "Scrum is halted\n";
             }
         }
         public string ScrumAlreadyHalted
@@ -467,7 +487,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "To automate your stand up meet.\nAdd me to your channel.\n>If your channel is private and added as project with same slack channel name in Promact-OAuth then start by adding your channel. The command is *add channel _channelname_*\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+                return "To automate your stand up meet.\nAdd me to your channel.\n>If your channel is private and added as project with same slack channel name in Promact-OAuth then start by adding your channel. The command is *add channel _channelname_*\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\n>Members who are marked as in-active in OAuth will not be asked questions.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
             }
         }
         public string NotAUser
@@ -516,7 +536,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "*Your previous day's status is :*\n";
+                return "*Your scrum status of {0} is :*\n";
             }
         }
         public string ScrumBotToken
@@ -558,7 +578,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "But,<@{0}> your answers have been recorded today :worried:\n";
+                return "But,<@{0}>'s answers have been recorded today :worried:\n";
             }
         }
         public string NotExpected
@@ -580,16 +600,10 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No employees found for this project.";
+                return "Sorry. No active employee found for this project.";
             }
         }
-        public string WrongPerson
-        {
-            get
-            {
-                return "<@{0}> please answer.";
-            }
-        }
+
         public string Unrecognized
         {
             get
@@ -602,7 +616,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "No project found for this channel.";
+                return "No active project found for this channel.";
             }
         }
         public string ScrumComplete
@@ -620,11 +634,34 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
+        public string NameFormat
+        {
+            get
+            {
+                return "<@{0}> ";
+            }
+        }
+        public string AnswerNotRecorded
+        {
+            get
+            {
+                return "Answer could not be recorded";
+            }
+        }
+    
+        public string PreviousDayScrumAnswer
+        {
+            get
+            {
+                return "*_Q_*: {0}\r\n*_A_*: _{1}_\r\n";
+            }
+        }
+
         public string ScrumCannotBeHalted
         {
             get
             {
-                return " So scrum cannot be halted.";
+                return " Scrum cannot be halted.";
             }
         }
 
@@ -632,7 +669,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return " So scrum cannot be resumed.";
+                return "Scrum cannot be resumed.";
             }
         }
 
@@ -658,6 +695,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry we do not have your slack details";
             }
         }
+        public string MarkedInActive
+        {
+            get
+            {
+                return "<@{0}>,you were marked as In-active or not in OAuth before or did not answer this answer before due to technical glitches.\n Please answer ";
+            }
+        }
         public string Channel
         {
             get
@@ -669,7 +713,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Good Day ";
+                return "Good Day <@{0}>!\n";
             }
         }
         public string Time
@@ -679,11 +723,18 @@ namespace Promact.Erp.Util.StringConstants
                 return "time";
             }
         }
+        public string UserNotInSlack
+        {
+            get
+            {
+                return "User is not in Slack\n";
+            }
+        }
         public string PleaseAnswer
         {
             get
             {
-                return "<@{0}> please answer.";
+                return "I am expecting <@{0}> to answer.";
             }
         }
         public string ScrumConcludedButLater
@@ -810,6 +861,20 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "channel_created";
+            }
+        }
+        public string ChannelArchive
+        {
+            get
+            {
+                return "channel_archive";
+            }
+        }
+        public string GroupArchive
+        {
+            get
+            {
+                return "group_archive";
             }
         }
         public string UserDetailsFromOauthServer
@@ -1304,6 +1369,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Home Controller-Extrenal Login CallBack ";
             }
         }
+        public string LoggerErrorMessageHomeControllerSlackOAuthAuthorization
+        {
+            get
+            {
+                return "Error in Home Controller-Slack OAuth Authorization ";
+            }
+        }
         public string LoggerErrorMessageHomeControllerLogoff
         {
             get
@@ -1339,7 +1411,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Task Mail Bot";
             }
         }
-        public string SlackBotStringName
+        public string SlackBotName
         {
             get
             {
@@ -1428,6 +1500,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Or Else";
+            }
+        }
+        public string UserNotInProject
+        {
+            get
+            {
+                return "<@{0}> is not included in the project(of this group in OAuth)\n";
             }
         }
         public string Admin
@@ -1818,13 +1897,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Completed bot";
             }
         }
-        //public string LeaveApplicant
-        //{
-        //    get
-        //    {
-        //        return "apoorvapatel";
-        //    }
-        //}
+
         public string ChannelIdForTest
         {
             get
@@ -1839,13 +1912,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5845155745451";
             }
         }
-        //public string TitleForTest
-        //{
-        //    get
-        //    {
-        //        return "Software Developer";
-        //    }
-        //}
         public string ScrumQuestionForTest
         {
             get
@@ -1888,6 +1954,41 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListFromOauthInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string InValidOAuthUsers
+        {
+            get
+            {
+                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string OAuthUserDetails
+        {
+            get
+            {
+                return "{\"firstName\":\"pranali\",\"lastName\":\"Promact\",\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"pranali\",\"slackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"userName\":\"pranali@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"pranali@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
+            }
+        }
+        public string UnExpectedInActiveUser
+        {
+            get
+            {
+                return "<@pranali> is marked as In-active or not in OAuth server. Please contact your system administrator.\n \r\n<@apoorvapatel> What did you do yesterday?\r\nI am expecting <@apoorvapatel> to answer.";
             }
         }
         public string UserBySlackUserName
@@ -2187,7 +2288,20 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Admin\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
             }
         }
-
+        public string TestQuestion
+        {
+            get
+            {
+                return "Good Day <@pranali>!\n\r\n*Your scrum status of {0} is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
+            }
+        }
+        public string InActiveInOAuth
+        {
+            get
+            {
+                return "<@{0}> is marked as In-active,not added as a user in the project(in OAuth server) or not in OAuth server. Please contact your system administrator.\n ";
+            }
+        }
         public string TeamLeaderLogin
         {
             get
@@ -2291,7 +2405,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5";
             }
         }
-
         public string HourSpentExceeded
         {
             get

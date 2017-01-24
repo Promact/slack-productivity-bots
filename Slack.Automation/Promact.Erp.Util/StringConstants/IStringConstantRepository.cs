@@ -1,11 +1,4 @@
-﻿using Promact.Erp.DomainModel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Promact.Erp.Util.StringConstants
+﻿namespace Promact.Erp.Util.StringConstants
 {
     public interface IStringConstantRepository
     {
@@ -31,16 +24,17 @@ namespace Promact.Erp.Util.StringConstants
         string SlackHelpMessage { get; }
         string SlackErrorMessage { get; }
 
-       
-        string UsersDetailByGroupUrl { get; }
+
+        string UsersDetailByChannelNameUrl { get; }
         string UserDetailsByIdUrl { get; }
-        string UserDetailByUserNameUrl { get; }
         string UrlRtmStart { get; }
         string OAuthAuthorizationScopeAndClientId { get; }
         string UserDetailsUrl { get; }
         string TeamLeaderDetailsUrl { get; }
         string ManagementDetailsUrl { get; }
         string OAuthAcessUrl { get; }
+        string SlackAuthorize { get; }
+        string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
         string ProjectUsersByTeamLeaderId { get; }
         string ProjectUserDetailsUrl { get; }
@@ -81,6 +75,10 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageHomeControllerAuthorizeStatusPage { get; }
         string LoggerErrorMessageOAuthControllerSlackDetailsAdd { get; }
         string PreviousDayStatus { get; }
+        string PreviousDayScrumAnswer { get; }
+        string NameFormat { get; }
+        string AnswerNotRecorded { get; }
+        string UserNotInOAuthOrProject { get; }
         string ScrumBotToken { get; }
         string ScrumBotName { get; }
         string LoggerScrumBot { get; }
@@ -94,14 +92,17 @@ namespace Promact.Erp.Util.StringConstants
         string ScrumCannotBeResumed { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
-      
-
+        string SlackUserNotFound { get; }
+        string UserNotInSlack { get; }
+        string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
-        string WrongPerson { get; }
+        string MarkedInActive { get; }
         string Unrecognized { get; }
         string UserChange { get; }
         string ChannelCreated { get; }
+        string ChannelArchive { get; }
+        string GroupArchive { get; }
         string ChannelRename { get; }
         string GroupRename { get; }
 
@@ -194,13 +195,14 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageLeaveRequestControllerSlackRequest { get; }
         string LoggerErrorMessageLeaveRequestControllerSlackButtonRequest { get; }
         string LoggerErrorMessageHomeControllerExtrenalLogin { get; }
+        string LoggerErrorMessageHomeControllerSlackOAuthAuthorization { get; }
         string LoggerErrorMessageHomeControllerExtrenalLoginCallBack { get; }
         string LoggerErrorMessageHomeControllerLogoff { get; }
         string LoggerErrorMessageOAuthControllerRefreshToken { get; }
         string LoggerErrorMessageOAuthControllerSlackOAuth { get; }
         string LoggerErrorMessageOAuthControllerSlackEvent { get; }
         string LoggerErrorMessageTaskMailBot { get; }
-        string SlackBotStringName { get; }
+        string SlackBotName { get; }
         string CasualLeaveUrl { get; }
         string CasualLeaveResponse { get; }
         string SlackChannelIdForTest { get; }
@@ -313,16 +315,23 @@ namespace Promact.Erp.Util.StringConstants
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
         string AdminLogin { get; }
-        string TeamLeaderLogin { get;}
+        string TeamLeaderLogin { get; }
         string EmployeeLogin { get; }
         string TeamLeaderLoginDetails { get; }
         string ProjectDetail { get; }
         string ProjectDetailsForAdminFromOauth { get; }
         string ProjectDetailsForTeamLeaderFromOauth { get; }
-        string ProjectDetailsForEmployeeFromOauth { get;  }
+        string ProjectDetailsForEmployeeFromOauth { get; }
         string TestAnswer { get; }
         string TestId { get; }
         string TestGroupName { get; }
+        string TestQuestion { get; }
+        string EmployeesListFromOauthInValid { get; }
+        string UnExpectedInActiveUser { get; }
+        string EmployeesListInValid { get; }
+        string InActiveInOAuth { get; }
+        string OAuthUserDetails { get; }
+        string InValidOAuthUsers { get; }
         string WrongActionSlashCommand { get; }
         string LeaveWrongCommandForBackDateCL { get; }
         string LeaveWrongCommandForBeyondDateFirstExample { get; }

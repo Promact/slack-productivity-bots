@@ -110,8 +110,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseRepository\RepositoryBase.cs" />
     <Compile Include="AttachmentRepository\AttachmentRepository.cs" />
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
+    <Compile Include="AutoMapperConfig\AutoMapperConfiguration.cs" />
     <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="Client\Client.cs" />
@@ -158,9 +160,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AutoMapper\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

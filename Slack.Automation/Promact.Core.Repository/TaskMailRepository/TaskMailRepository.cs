@@ -78,7 +78,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 else
                 {
                     // If task mail is not started for that day
-                    userAndTaskMailDetailsWithAccessToken.TaskMail = AddTaskMail(userAndTaskMailDetailsWithAccessToken.User.Id);
+                    userAndTaskMailDetailsWithAccessToken.TaskMail = await AddTaskMailAsync(userAndTaskMailDetailsWithAccessToken.User.Id);
                 }
                 #endregion
 
@@ -337,7 +337,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                 #endregion
                         }
                         _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        await _taskMail.SaveChangesAsync();
                     }
                 }
                 else
@@ -669,13 +669,13 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// </summary>
         /// <param name="employeeId">User's Id</param>
         /// <returns>task mail details</returns>
-        private TaskMail AddTaskMail(string employeeId)
+        private async Task<TaskMail> AddTaskMailAsync(string employeeId)
         {
             TaskMail taskMail = new TaskMail();
             taskMail.CreatedOn = DateTime.UtcNow;
             taskMail.EmployeeId = employeeId;
             _taskMail.Insert(taskMail);
-            _taskMail.Save();
+            await _taskMail.SaveChangesAsync();
             return taskMail;
         }
 
@@ -692,7 +692,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             taskMailDetails.TaskId = taskMailId;
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetail.Insert(taskMailDetails);
-            _taskMailDetail.Save();
+            await _taskMailDetail.SaveChangesAsync();
             return firstQuestion.QuestionStatement;
         }
 

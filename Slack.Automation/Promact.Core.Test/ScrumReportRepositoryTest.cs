@@ -101,7 +101,7 @@ namespace Promact.Core.Test
         /// Method to test ScrumReportDetails when the person is not available on the scrum date
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public void ScrumReportDetailsPersonUnavailableTest()
+        public async Task ScrumReportDetailsPersonUnavailableTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 15);
@@ -112,16 +112,17 @@ namespace Promact.Core.Test
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
+            await _scrumDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
 
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is employee 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public void ScrumReportDetailsEmployeeTest()
+        public async Task ScrumReportDetailsEmployeeTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -132,11 +133,11 @@ namespace Promact.Core.Test
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
+            await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionOne);
-            _questionDataRepository.Save();
+            await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
@@ -146,7 +147,7 @@ namespace Promact.Core.Test
         /// Method to test ScrumReportDetails when the logged in person is admin 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public void ScrumReportDetailsAdminTest()
+        public async Task ScrumReportDetailsAdminTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -154,23 +155,24 @@ namespace Promact.Core.Test
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.TestAccessToken)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
-            var requestProjectUrl = string.Format("{0}{1}",  testProjectId,_stringConstant.GetProjectDetails);
+            var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
+            await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionTwo);
-            _questionDataRepository.Save();
+            await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
 
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is teamLeader 
         /// </summary>
         [Fact Trait("Category", "Required")]
-        public void ScrumReportDetailsTeamLeaderTest()
+        public async Task ScrumReportDetailsTeamLeaderTest()
         {
             int testProjectId = 1012;
             DateTime scrumDate = new DateTime(2016, 9, 19);
@@ -181,14 +183,16 @@ namespace Promact.Core.Test
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.TestAccessToken)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
-            _scrumDataRepository.Save();
+            await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionThree);
-            _questionDataRepository.Save();
+            await _questionDataRepository.SaveChangesAsync();
             _scrumAnswerDataRepository.Insert(scrumAnswer);
-            _scrumAnswerDataRepository.Save();
+            await _scrumAnswerDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest, _stringConstant.TestAccessToken).Result;
             Assert.NotNull(scrumProjectDetails);
         }
+
+
         #endregion
 
         #region Initialisation
@@ -197,7 +201,7 @@ namespace Promact.Core.Test
         /// </summary>
         public void Initialize()
         {
-            scrum.GroupName = _stringConstant.TestGroupName;
+            scrum.SlackChannelId = _stringConstant.TestGroupName;
             scrum.ScrumDate = new DateTime(2016, 9, 19);
             scrum.ProjectId = 1012;
             scrum.TeamLeaderId = _stringConstant.TestId;

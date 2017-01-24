@@ -131,5 +131,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         [JsonProperty("email")]
         public string Email { get; set; }
 
+    
     }
 }

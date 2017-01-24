@@ -1,25 +1,27 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
-   public class SlackUserDetailAc
+    public class SlackUserDetailAc
     {
         /// <summary>
         /// User Id of Slack for user
         /// </summary>
-        [JsonProperty("userId")]
         public string UserId { get; set; }
 
         /// <summary>
         /// Real Name of the slack user
         /// </summary>
-        [JsonProperty("name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Bool true for they exist in team or not
+        /// </summary>
+        public bool Deleted { get; set; }
+
+        /// <summary>
+        /// Bit indicating whether this user is active in OAuth or Not
+        /// </summary>     
+        public bool IsActive { get; set; }
 
     }
 }

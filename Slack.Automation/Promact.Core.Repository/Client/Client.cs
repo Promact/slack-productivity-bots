@@ -40,8 +40,9 @@ namespace Promact.Core.Repository.Client
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
             IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook)
         {
-            _stringConstant = stringConstant;
+          
             _chatUpdateMessage = new HttpClient();
+            _stringConstant = stringConstant;
             _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _oauthCallRepository = oauthCallRepository;
             _emailService = emailService;
@@ -118,7 +119,7 @@ namespace Promact.Core.Repository.Client
         public async Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+            SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
             var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
             var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
@@ -153,7 +154,7 @@ namespace Promact.Core.Repository.Client
             }
             foreach (var teamLeader in teamLeaders)
             {
-                SlackUserDetails slackUser = await _slackUserRepository.GetByIdAsync(teamLeader.SlackUserId);
+                SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(teamLeader.SlackUserId);
                 var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };

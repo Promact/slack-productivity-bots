@@ -2,9 +2,11 @@
 using Autofac.Extras.NLog;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
@@ -44,8 +46,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
-
-            builder.RegisterType<Bot>().AsSelf();
+               
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
@@ -65,6 +66,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
+            builder.RegisterType<Bot>().AsSelf();
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
@@ -81,6 +83,8 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
+            builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+
             var container = builder.Build();
 
             // replace mvc dependancy resolver with autofac
