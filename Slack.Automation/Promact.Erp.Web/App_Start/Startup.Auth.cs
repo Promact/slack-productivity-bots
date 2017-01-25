@@ -9,14 +9,18 @@ using Promact.Erp.DomainModel.Models;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Promact.Erp.Util;
 using System.IdentityModel.Tokens;
+using Promact.Erp.Util.EnvironmentVariableRepository;
+using Autofac;
 
 namespace Promact.Erp.Web
 {
     public partial class Startup
     {
+        //private IEnvironmentVariableRepository _environmentVariable;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
-        public void ConfigureAuth(IAppBuilder app)
+        public void ConfigureAuth(IAppBuilder app/*, IComponentContext context*/)
         {
+            //_environmentVariable = context.Resolve<IEnvironmentVariableRepository>();
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
@@ -28,26 +32,22 @@ namespace Promact.Erp.Web
                 AuthenticationType = "Cookies"
             });
 
-           // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            
+            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            var url = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, "signin-oidc");
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
                 Authority = AppSettingUtil.OAuthUrl,
-                ClientId = "Z6UFWD97GNN3G6F",
-                ClientSecret = "9U13m73avmqZV74hGKvgKebf9Xq8P7",
-                RedirectUri = AppSettingUtil.PromactErpUrl,
+                ClientId = "O1UGSJW6X4V16IY" /*_environmentVariable.PromactOAuthClientId*/,
+                ClientSecret = "RtZIZVt7VyW11NiSKazAxvTZlOpjRf" /*_environmentVariable.PromactOAuthClientSecret*/,
+                
+                RedirectUri = url,
                 ResponseType = "code id_token",
                 Scope = "openid",
                 SignInAsAuthenticationType = "Cookies",
                 AuthenticationType = "oidc",
-                //RequireHttpsMetadata = false,
-                //GetClaimsFromUserInfoEndpoint = true,
-                //SaveTokens = true,
-                //AutomaticAuthenticate = true,
-                //AutomaticChallenge = true,
                 PostLogoutRedirectUri = AppSettingUtil.PromactErpUrl,
-                UseTokenLifetime = true
-
+                UseTokenLifetime = true,
             });
 
             // Enable the application to use a cookie to store information for the signed in user
