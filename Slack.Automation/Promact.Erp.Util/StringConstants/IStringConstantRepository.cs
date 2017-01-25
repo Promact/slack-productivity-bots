@@ -392,5 +392,9 @@ namespace Promact.Erp.Util.StringConstants
         string Space { get; }
         string UserDetailsFromOauthServerFalse { get; }
         string TaskMailMaximumTime { get; }
+        string Scopes { get; }
+        string AuthenticationType { get; }
+        string AuthenticationTypeOidc { get; }
+        string ResponseType { get; }
     }
 }

@@ -67,13 +67,31 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public ActionResult AfterLogIn()
         {
-            //var accessToken = await HttpContext.Authentication.GetTokenAsync("access_token");
+            //var accessToken =  HttpContext.Authentication.GetTokenAsync("access_token");
 
             var result = HttpContext.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-            var accessToken = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
-            var token = HttpContext.GetOwinContext().Authentication.GetExternalIdentity("acess_token");
-            var some = HttpContext.GetOwinContext().Authentication;
-            //var oauthServerDetails = await HttpContext.Authentication.GetAuthenticateInfoAsync("oidc");
+
+           // var accessToken = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
+
+           // var access_token = HttpContext.GetOwinContext().Authentication.User.FindFirst("access_token");
+
+
+            //var token = HttpContext.GetOwinContext().Authentication.GetExternalIdentity("access_token");
+            //var some = HttpContext.GetOwinContext().Authentication;
+
+            //var idTokenHint = HttpContext.GetOwinContext().Authentication.User.FindFirst("id_token");
+
+           
+
+            // var oauthServerDetails = await HttpContext.Authentication.GetAuthenticateInfoAsync("oidc");
+
+            //ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
+            //Creating a user with email only. Password not required
+            // var result = await _userManager.CreateAsync(user);
+            //Adding external Oauth details
+            //UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
+            // result = await _userManager.AddLoginAsync(user.Id, info);
+
             return View();
         }
 
