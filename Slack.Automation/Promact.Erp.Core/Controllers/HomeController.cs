@@ -67,6 +67,13 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public ActionResult AfterLogIn()
         {
+            //var accessToken = await HttpContext.Authentication.GetTokenAsync("access_token");
+
+            var result = HttpContext.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+            var accessToken = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
+            var token = HttpContext.GetOwinContext().Authentication.GetExternalIdentity("acess_token");
+            var some = HttpContext.GetOwinContext().Authentication;
+            //var oauthServerDetails = await HttpContext.Authentication.GetAuthenticateInfoAsync("oidc");
             return View();
         }
 
