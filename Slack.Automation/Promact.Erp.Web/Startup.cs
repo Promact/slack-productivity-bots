@@ -9,8 +9,8 @@ namespace Promact.Erp.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            //var container = AutofacConfig.RegisterDependancies();
-            ConfigureAuth(app);
+            var container = AutofacConfig.RegisterDependancies();
+            ConfigureAuth(app, container);
 
         }
     }

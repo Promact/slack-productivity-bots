@@ -2836,5 +2836,34 @@ namespace Promact.Erp.Util.StringConstants
                 return "8";
             }
         }
+        public string Scopes
+        {
+            get
+            { return "Scopes"; }
+
+        }
+        public string AuthenticationType
+        {
+            get
+            {
+                return "Cookies";
+            }
+        }
+        public string AuthenticationTypeOidc
+        {
+            get
+            {
+                return "oidc";
+            }
+        }
+
+        public string ResponseType
+        {
+            get
+            {
+                return "code id_token";
+            }
+        }
+
     }
 }
