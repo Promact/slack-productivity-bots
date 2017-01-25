@@ -120,13 +120,5 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
                 return "YourTaskmailAccessToken";
             }
         }
-
-        public string Scopes
-        {
-            get
-            {
-                return "YourScopes";
-            }
-        }
     }
 }
