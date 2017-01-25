@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Promact.Erp.Util;
 using System.IdentityModel.Tokens;
+using Promact.Erp.Util.EnvironmentVariableRepository;
+using Autofac;
 
 namespace Promact.Erp.Web
 {
