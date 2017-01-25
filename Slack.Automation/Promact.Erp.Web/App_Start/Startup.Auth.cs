@@ -19,6 +19,7 @@ using Promact.Erp.Util;
 using System.IdentityModel.Tokens;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Autofac;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Web
 {
@@ -43,7 +44,7 @@ namespace Promact.Erp.Web
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
             app.UseCookieAuthentication(new Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions
             {
-                AuthenticationType = "Cookies"
+                AuthenticationType = _stringConstantRepository.AuthenticationType
             });
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
