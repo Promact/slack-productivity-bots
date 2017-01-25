@@ -396,5 +396,6 @@ namespace Promact.Erp.Util.StringConstants
         string AuthenticationType { get; }
         string AuthenticationTypeOidc { get; }
         string ResponseType { get; }
+        string Scope { get; }
     }
 }

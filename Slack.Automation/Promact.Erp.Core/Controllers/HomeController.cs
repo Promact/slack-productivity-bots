@@ -20,6 +20,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+      
         private readonly IStringConstantRepository _stringConstant;
 
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
@@ -67,30 +68,14 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public ActionResult AfterLogIn()
         {
-            //var accessToken =  HttpContext.Authentication.GetTokenAsync("access_token");
-
-            var result = HttpContext.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-
-           // var accessToken = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
-
-           // var access_token = HttpContext.GetOwinContext().Authentication.User.FindFirst("access_token");
-
-
-            //var token = HttpContext.GetOwinContext().Authentication.GetExternalIdentity("access_token");
-            //var some = HttpContext.GetOwinContext().Authentication;
-
-            //var idTokenHint = HttpContext.GetOwinContext().Authentication.User.FindFirst("id_token");
-
-           
-
-            // var oauthServerDetails = await HttpContext.Authentication.GetAuthenticateInfoAsync("oidc");
-
-            //ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
+            
+            //ApplicationUser user = new ApplicationUser() { Email = "ABC", UserName = "Xyz", SlackUserId = "BCED", Id = "ERERER" };
+            //var result =  _userManager.CreateAsync(user);
             //Creating a user with email only. Password not required
-            // var result = await _userManager.CreateAsync(user);
+
             //Adding external Oauth details
             //UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
-            // result = await _userManager.AddLoginAsync(user.Id, info);
+            //result = await _userManager.AddLoginAsync(user.Id, info);
 
             return View();
         }
