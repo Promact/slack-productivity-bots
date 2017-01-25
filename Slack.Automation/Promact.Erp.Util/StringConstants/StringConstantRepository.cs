@@ -2864,6 +2864,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "code id_token";
             }
         }
-
+        public string Scope { get { return "openid"; } }
     }
 }
