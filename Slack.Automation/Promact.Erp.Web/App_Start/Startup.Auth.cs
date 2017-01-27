@@ -8,6 +8,7 @@ using Autofac;
 using Promact.Erp.Util.StringConstants;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens;
+using Promact.Core.Repository.ExternalLoginRepository;
 
 namespace Promact.Erp.Web
 {
@@ -15,12 +16,13 @@ namespace Promact.Erp.Web
     {
         private IEnvironmentVariableRepository _environmentVariable;
         private IStringConstantRepository _stringConstantRepository;
+        private IOAuthLoginRepository _oAuthLoginRepository;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
 
         public void ConfigureAuth(IAppBuilder app, IComponentContext context)
         {
             _environmentVariable = context.Resolve<IEnvironmentVariableRepository>();
-            //_userManager = context.Resolve<ApplicationUserManager>();
+            _oAuthLoginRepository = context.Resolve<IOAuthLoginRepository>();
             _stringConstantRepository = context.Resolve<IStringConstantRepository>();
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);
