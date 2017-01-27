@@ -11,8 +11,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userId">UserId of slack user</param>
         /// <param name="channelId">Slack Channel Id</param>
         /// <param name="message">message from slack</param>
+        /// <param name="scrumBotId">Id of the bot connected for conducting scrum</param>
         /// <returns>reply message</returns>
-        Task<string> ProcessMessagesAsync(string userId, string channelId, string message);
+        Task<string> ProcessMessagesAsync(string userId, string channelId, string message, string scrumBotId);
 
 
         /// <summary>

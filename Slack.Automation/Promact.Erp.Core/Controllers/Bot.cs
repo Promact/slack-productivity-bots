@@ -20,7 +20,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
-
+        private static string _scrumBotId;
 
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetails, ILogger logger,
@@ -108,7 +108,7 @@ namespace Promact.Erp.Core.Controllers
             //Connecting the bot of the given token 
             client.Connect((connected) =>
             {
-
+                _scrumBotId = connected.self.id;
             });
 
             // Method will be called when someone sends message
@@ -121,7 +121,7 @@ namespace Promact.Erp.Core.Controllers
                     string replyText = string.Empty;
                     Task.Run(async () =>
                     {
-                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
                     }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
