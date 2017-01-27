@@ -1,27 +1,18 @@
 ﻿@{
     Layout = null;
 }
-
-@*@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
-{
-    <div>
-        <form asp-controller="Home" asp-action="LogOff">
-            <h1>Leave Management</h1>
-            <h1>You Have Successfully Login with OAuth Server - </h1>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!","")
-            @Html.ActionLink("LogOff", "LogOff")
-        </form>
-    </div>
-}*@
-
+<div>
+    <form asp-controller="Home" asp-action="LogOff">
+        @Html.ActionLink("Log Out", "LogOff")
+    </form>
+</div>
 <head>
     <base href="/">
     <title>Promact</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
-     @*Polyfill(s) for older browsers*@
+    @*Polyfill(s) for older browsers*@
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
     <script src="node_modules/core-js/client/shim.min.js"></script>
@@ -30,9 +21,9 @@
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="systemjs.config.js"></script>
     <script>
-      System.import('app').catch(function(err){ console.error(err); });
+        System.import('app').catch(function (err) { console.error(err); });
     </script>
-    </head>
+</head>
 <body>
     <my-app>
         <div class="loader">
@@ -40,4 +31,3 @@
         </div>
     </my-app>
 </body>
-

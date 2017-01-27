@@ -201,7 +201,8 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                AuthenticationManager.SignOut();
+                //AuthenticationManager.SignOut();
+                Request.GetOwinContext().Authentication.SignOut();
                 return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
             }
             catch (Exception ex)
