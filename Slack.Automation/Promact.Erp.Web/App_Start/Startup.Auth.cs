@@ -37,11 +37,11 @@ namespace Promact.Erp.Web
             var url = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, "signin-oidc");
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                Authority = AppSettingUtil.OAuthUrl,
-                ClientId = /* _environmentVariable.PromactOAuthClientId*/"Z6UFWD97GNN3G6F",
-                ClientSecret = /*_environmentVariable.PromactOAuthClientSecret*/ "UVgC7d221yhydWPpF7UxHhsiYV2lS7",
+                Authority = /*AppSettingUtil.OAuthUrl*/"https://oauth.promactinfo.com/",
+                ClientId = /* _environmentVariable.PromactOAuthClientId*/"HJXF74EQ497GRAL",
+                ClientSecret = /*_environmentVariable.PromactOAuthClientSecret*/ "ChcBmvtaUwphIsbmRkbL9amOh9Qy6Q",
                 RedirectUri = url,
-                ResponseType = _stringConstantRepository.ResponseType,
+                ResponseType = /*_stringConstantRepository.ResponseType*/"code id_token token",
                 Scope = "email openid profile slack_user_id user_read" /*_stringConstantRepository.Scope*/,
                 SignInAsAuthenticationType = _stringConstantRepository.AuthenticationType,
                 AuthenticationType = _stringConstantRepository.AuthenticationTypeOidc,
@@ -51,17 +51,27 @@ namespace Promact.Erp.Web
                 {
                     SecurityTokenReceived = tokenReceived =>
                     {
+                        var accessToken = tokenReceived.ProtocolMessage.AccessToken;
                         //access the IdToken from Identity Server
                         var idToken = tokenReceived.ProtocolMessage.IdToken;
                         var refrenceToken = tokenReceived.ProtocolMessage.IdTokenHint;
                         var refrenceToken1 = tokenReceived.ProtocolMessage.AccessToken;
                         var UserName = tokenReceived.ProtocolMessage.Username;
                         var handler = new JwtSecurityTokenHandler();
-                        var tokenS = handler.ReadToken(idToken) as JwtSecurityToken;
-                        var userId = tokenS.Payload.Sub;
-
-                      _oAuthLoginRepository.AddNewUserFromExternalLoginAsync("email","accesToken","SlackUSerId","userId");
-                      return Task.FromResult(0);
+                        var tokenS = handler.ReadToken(accessToken) as JwtSecurityToken;
+                        string userId = null;
+                        string email = null;
+                        string slackUserId = null;
+                        foreach (var claim in tokenS.Claims)
+                        {
+                            if (claim.Type == "sub")
+                                userId = claim.Value;
+                            if (claim.Type == "email")
+                                email = claim.Value;
+                            if (claim.Type == "slack_user_id")
+                                slackUserId = claim.Value;
+                        }
+                        return Task.FromResult(0);
                     },
                     AuthenticationFailed = authenticationFailed =>
                     {
