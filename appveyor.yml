@@ -9,6 +9,7 @@ environment:
    secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
 cache:
 - "%LOCALAPPDATA%\\Yarn"
+- "%APPVEYOR_BUILD_FOLDER%\\Slack.Automation\\packages"
 build_script:
 - cmd: "nuget restore \".\\Slack.Automation\\Promact.ERP.sln\"\nnpm i -g yarn && yarn global add typescript typings\ncd \".\\Slack.Automation\\Promact.Erp.Web\"\nyarn\ncd \"..\\..\"\nmsbuild \".\\Slack.Automation\\Promact.ERP.sln\" /m /verbosity:minimal /logger:\"C:\\Program Files\\AppVeyor\\BuildAgent\\Appveyor.MSBuildLogger.dll\" /p:Optimize=False"
 build:
@@ -17,7 +18,7 @@ build:
  verbosity: minimal 
 test_script:
 - ps: >-
-   .\Slack.Automation\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:".\Slack.Automation\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" "-targetargs:"".\Slack.Automation\Promact.Core.Test\bin\Release\Promact.Core.Test.dll"" -appveyor -noshadow" -filter:"+[Promact.Core.Repository*]*" -output:opencoverCoverage.xml
+   .\Slack.Automation\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:".\Slack.Automation\packages\xunit.runner.console.2.2.0-beta5-build3474\tools\xunit.console.exe" "-targetargs:"".\Slack.Automation\Promact.Core.Test\bin\Release\Promact.Core.Test.dll"" -appveyor -noshadow" -filter:"+[Promact.Core.Repository*]*" -output:opencoverCoverage.xml
 
 
    if(![string]::IsNullOrEmpty($env:COVERALLS_REPO_TOKEN)){
