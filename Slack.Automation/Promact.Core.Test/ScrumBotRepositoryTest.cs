@@ -149,7 +149,6 @@ namespace Promact.Core.Test
 
             temporaryScrumDetails.ScrumId = 1;
             temporaryScrumDetails.CreatedOn = DateTime.UtcNow;
-
         }
 
 
@@ -317,14 +316,14 @@ namespace Promact.Core.Test
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
             string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-            
+
             await _botQuestionRepository.AddQuestionAsync(question);
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
             string expectedString = string.Format(_stringConstant.GoodDay, _stringConstant.TestUser) + _stringConstant.ScrumQuestionForTest + Environment.NewLine;
             Assert.Equal(expectedString, actualString);
         }
-                      
+
 
         /// <summary>
         /// Method StartScrum Testing with In Valid Start Command
