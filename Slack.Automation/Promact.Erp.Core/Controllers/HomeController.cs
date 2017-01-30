@@ -68,15 +68,6 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public ActionResult AfterLogIn()
         {
-            
-            //ApplicationUser user = new ApplicationUser() { Email = "ABC", UserName = "Xyz", SlackUserId = "BCED", Id = "ERERER" };
-            //var result =  _userManager.CreateAsync(user);
-            //Creating a user with email only. Password not required
-
-            //Adding external Oauth details
-            //UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
-            //result = await _userManager.AddLoginAsync(user.Id, info);
-
             return View();
         }
 
@@ -201,8 +192,7 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                //AuthenticationManager.SignOut();
-                Request.GetOwinContext().Authentication.SignOut();
+                AuthenticationManager.SignOut();
                 return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
             }
             catch (Exception ex)
@@ -220,7 +210,7 @@ namespace Promact.Erp.Core.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
-
+        
         /**
         * @api {get} Home/SlackOAuthAuthorization
         * @apiVersion 1.0.0

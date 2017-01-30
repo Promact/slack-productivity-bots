@@ -9,6 +9,9 @@ using Promact.Erp.Util.StringConstants;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens;
 using Promact.Core.Repository.ExternalLoginRepository;
+using IdentityModel.Client;
+using System.Security.Claims;
+using Microsoft.Owin.Security;
 
 namespace Promact.Erp.Web
 {
@@ -34,15 +37,17 @@ namespace Promact.Erp.Web
                 AuthenticationType = _stringConstantRepository.AuthenticationType
             });
 
-            var url = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, "signin-oidc");
+            var url = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                Authority = /*AppSettingUtil.OAuthUrl*/"https://oauth.promactinfo.com/",
-                ClientId = /* _environmentVariable.PromactOAuthClientId*/"HJXF74EQ497GRAL",
-                ClientSecret = /*_environmentVariable.PromactOAuthClientSecret*/ "ChcBmvtaUwphIsbmRkbL9amOh9Qy6Q",
+
+                Authority = AppSettingUtil.OAuthUrl,
+                ClientId = /* _environmentVariable.PromactOAuthClientId*/"Z6UFWD97GNN3G6F",
+                ClientSecret = /*_environmentVariable.PromactOAuthClientSecret*/ "UVgC7d221yhydWPpF7UxHhsiYV2lS7",
                 RedirectUri = url,
+
                 ResponseType = /*_stringConstantRepository.ResponseType*/"code id_token token",
-                Scope = "email openid profile slack_user_id user_read" /*_stringConstantRepository.Scope*/,
+                Scope = "email openid profile slack_user_id user_read offline_access" /*_stringConstantRepository.Scope*/,
                 SignInAsAuthenticationType = _stringConstantRepository.AuthenticationType,
                 AuthenticationType = _stringConstantRepository.AuthenticationTypeOidc,
                 PostLogoutRedirectUri = AppSettingUtil.PromactErpUrl,
@@ -52,11 +57,6 @@ namespace Promact.Erp.Web
                     SecurityTokenReceived = tokenReceived =>
                     {
                         var accessToken = tokenReceived.ProtocolMessage.AccessToken;
-                        //access the IdToken from Identity Server
-                        var idToken = tokenReceived.ProtocolMessage.IdToken;
-                        var refrenceToken = tokenReceived.ProtocolMessage.IdTokenHint;
-                        var refrenceToken1 = tokenReceived.ProtocolMessage.AccessToken;
-                        var UserName = tokenReceived.ProtocolMessage.Username;
                         var handler = new JwtSecurityTokenHandler();
                         var tokenS = handler.ReadToken(accessToken) as JwtSecurityToken;
                         string userId = null;
@@ -64,19 +64,40 @@ namespace Promact.Erp.Web
                         string slackUserId = null;
                         foreach (var claim in tokenS.Claims)
                         {
-                            if (claim.Type == "sub")
+                            if (claim.Type == _stringConstantRepository.Sub)
                                 userId = claim.Value;
-                            if (claim.Type == "email")
+                            if (claim.Type == _stringConstantRepository.Email)
                                 email = claim.Value;
-                            if (claim.Type == "slack_user_id")
+                            if (claim.Type == _stringConstantRepository.SlackUserID)
                                 slackUserId = claim.Value;
                         }
+                        _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, "", slackUserId, userId);
                         return Task.FromResult(0);
                     },
-                    AuthenticationFailed = authenticationFailed =>
-                    {
-                        return Task.FromResult(0);
-                    }
+                    //AuthorizationCodeReceived = async n =>
+                    //{
+                    //    var discoveryClient = new DiscoveryClient(AppSettingUtil.OAuthUrl);
+                    //    var doc = await discoveryClient.GetAsync();
+                    //    // use the code to get the access and refresh token
+                    //    var tokenClient = new TokenClient(
+                    //        doc.TokenEndpoint,
+                    //        "Z6UFWD97GNN3G6F",
+                    //        "UVgC7d221yhydWPpF7UxHhsiYV2lS7");
+
+                    //    var tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(
+                    //    n.Code, n.RedirectUri);
+
+                    //    // create new identity
+                    //    var id = new ClaimsIdentity(n.AuthenticationTicket.Identity.AuthenticationType);
+                    //    id.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
+                    //    id.AddClaim(new Claim("refresh_token", tokenResponse.RefreshToken));
+                    //    id.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
+                    //    id.AddClaim(new Claim("sid", n.AuthenticationTicket.Identity.FindFirst("sid").Value));
+
+                    //    n.AuthenticationTicket = new AuthenticationTicket(
+                    //        new ClaimsIdentity(id.Claims, n.AuthenticationTicket.Identity.AuthenticationType, "name", "role"),
+                    //        n.AuthenticationTicket.Properties);
+                    //},
                 }
             });
         }
