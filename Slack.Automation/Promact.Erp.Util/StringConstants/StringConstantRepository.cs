@@ -2861,9 +2861,15 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "code id_token";
+                return "code id_token token";
             }
         }
-        public string Scope { get { return "openid"; } }
+
+        public string Scope { get { return "email openid profile slack_user_id user_read"; } }
+
+        public string RedirectUrl { get { return "signin-oidc"; } }
+        public string Sub { get { return "sub"; } }
+        public string Email { get { return "email"; } }
+        public string SlackUserID { get { return "slack_user_id"; } }
     }
 }

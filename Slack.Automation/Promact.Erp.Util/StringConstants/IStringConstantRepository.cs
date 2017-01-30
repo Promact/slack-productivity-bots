@@ -413,5 +413,9 @@
         string AuthenticationTypeOidc { get; }
         string ResponseType { get; }
         string Scope { get; }
+        string RedirectUrl { get; }
+        string Sub { get; }
+        string Email { get; }
+        string SlackUserID { get; }
     }
 }
