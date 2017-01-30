@@ -298,6 +298,35 @@ namespace Promact.Core.Test
 
 
         /// <summary>
+        /// Method StartScrum Testing with the first user not in slack
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task ScrumInitiateSlackUserNotFound()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
+            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
+            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
+            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            
+            await _botQuestionRepository.AddQuestionAsync(question);
+
+            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
+            string expectedString = string.Format(_stringConstant.GoodDay, _stringConstant.TestUser) + _stringConstant.ScrumQuestionForTest + Environment.NewLine;
+            Assert.Equal(expectedString, actualString);
+        }
+                      
+
+        /// <summary>
         /// Method StartScrum Testing with In Valid Start Command
         /// </summary>
         [Fact, Trait("Category", "Required")]
