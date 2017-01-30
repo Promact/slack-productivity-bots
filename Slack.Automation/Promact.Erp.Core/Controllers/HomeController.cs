@@ -68,15 +68,6 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public ActionResult AfterLogIn()
         {
-            
-            //ApplicationUser user = new ApplicationUser() { Email = "ABC", UserName = "Xyz", SlackUserId = "BCED", Id = "ERERER" };
-            //var result =  _userManager.CreateAsync(user);
-            //Creating a user with email only. Password not required
-
-            //Adding external Oauth details
-            //UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
-            //result = await _userManager.AddLoginAsync(user.Id, info);
-
             return View();
         }
 
