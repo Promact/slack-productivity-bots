@@ -1,19 +1,23 @@
-﻿using Autofac.Extras.NLog;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using SlackAPI;
+using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
-using SlackAPI;
 using SlackAPI.WebSocketMessages;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+
+        #region Private Variables
+
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetails;
         private readonly ILogger _logger;
@@ -21,6 +25,9 @@ namespace Promact.Erp.Core.Controllers
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
 
+        #endregion
+
+        #region Constructor
 
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetails, ILogger logger,
@@ -35,6 +42,9 @@ namespace Promact.Erp.Core.Controllers
             _environmentVariableRepository = environmentVariableRepository;
         }
 
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
@@ -61,7 +71,7 @@ namespace Promact.Erp.Core.Controllers
                         var text = message.text.ToLower();
                         if (user != null)
                         {
-                            if (text == _stringConstant.TaskMailSubject)
+                            if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                             {
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }
@@ -96,6 +106,7 @@ namespace Promact.Erp.Core.Controllers
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting. - JJ 
         /// </summary>
+        /// <param name="container"></param>
         public void Scrum()
         {
             string botToken = _environmentVariableRepository.ScrumBotToken;
@@ -106,44 +117,52 @@ namespace Promact.Erp.Core.Controllers
             messageReceive.ok = true;
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             //Connecting the bot of the given token 
-            client.Connect((connected) =>
-            {
-
-            });
+            client.Connect((connected) => { });
 
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
             {
-                _logger.Info("Scrum bot got message :" + message);
                 try
                 {
-                    _logger.Info("Scrum bot got message, inside try");
                     string replyText = string.Empty;
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
-                    }).GetAwaiter().GetResult();
+                    replyText = _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text).Result;
+
                     if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Info("Scrum bot got reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
-                catch (TaskCanceledException ex)
+                catch (AggregateException ae)
                 {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
-                    client.CloseSocket();
-                    throw ex;
-                }
-                catch (HttpRequestException ex)
-                {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
-                    client.CloseSocket();
-                    throw ex;
+                    foreach (var e in ae.Flatten().InnerExceptions)
+                    {
+                        if (e is ForbiddenUserException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.UnAuthorized);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.ForbiddenUser + ae.InnerException + "\n" + ae.StackTrace);
+                        }
+                        else if (e is TaskCanceledException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.OAuthNotResponding + ae.InnerException + "\n" + ae.StackTrace);
+                            client.CloseSocket();
+                        }
+                        else if (e is HttpRequestException)
+                        {
+                            client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                            _logger.Error("\n" + _stringConstant.LoggerScrumBot + _stringConstant.OAuthServerClosed + ae.InnerException + "\n" + ae.StackTrace);
+                            client.CloseSocket();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                 }
             };
         }
+
+        #endregion
+
     }
 }

@@ -1,20 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.ExceptionHandler;
 
 namespace Promact.Erp.Util.HttpClient
 {
     public class HttpClientService : IHttpClientService
     {
-        private System.Net.Http.HttpClient _client;
-        public HttpClientService()
-        {
 
+        #region Private Variable
+
+
+        private System.Net.Http.HttpClient _client;
+        private readonly IStringConstantRepository _stringConstant;
+
+
+        #endregion
+
+
+        #region Constructor
+
+
+        public HttpClientService(IStringConstantRepository stringConstant)
+        {
+            _stringConstant = stringConstant;
         }
+
+
+        #endregion
+
+
+        #region Public Methods
+
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's GetAsync method
@@ -25,25 +45,25 @@ namespace Promact.Erp.Util.HttpClient
         /// <returns>responseContent</returns>
         public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
-            try
+            _client = new System.Net.Http.HttpClient();
+            _client.BaseAddress = new Uri(baseUrl);
+            // Added access token to request header if provided by user
+            if (!String.IsNullOrEmpty(accessToken))
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+
+            HttpResponseMessage response = await _client.GetAsync(contentUrl);
+            _client.Dispose();
+            if (response.IsSuccessStatusCode)
             {
-                _client = new System.Net.Http.HttpClient();
-                _client.BaseAddress = new Uri(baseUrl);
-                // Added access token to request header if provided by user
-                if (!String.IsNullOrEmpty(accessToken))
-                {
-                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
-                }
-                var response = await _client.GetAsync(contentUrl);
-                _client.Dispose();
-                var responseContent = response.Content.ReadAsStringAsync().Result;
+                string responseContent = response.Content.ReadAsStringAsync().Result;
                 return responseContent;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            else if (response.ReasonPhrase.Equals(_stringConstant.Forbidden))
+                throw new ForbiddenUserException(_stringConstant.UnAuthorized);
+            else
+                return string.Empty;
         }
+
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's PostAsync method
@@ -67,5 +87,10 @@ namespace Promact.Erp.Util.HttpClient
             }
 
         }
+
+
+        #endregion
+
+
     }
 }
