@@ -96,7 +96,6 @@
     <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
     <Compile Include="ExceptionHandler\LeaveNotFoundForUser.cs" />
     <Compile Include="ExceptionHandler\ForbiddenUserException.cs" />
-    <Compile Include="ExceptionHandler\SlackUserNotFoundException.cs" />
     <Compile Include="HttpClient\HttpClientService.cs" />
     <Compile Include="HttpClient\IHttpClientService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

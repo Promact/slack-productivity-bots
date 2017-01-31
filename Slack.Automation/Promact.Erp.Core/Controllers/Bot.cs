@@ -1,20 +1,23 @@
-﻿using Autofac.Extras.NLog;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using SlackAPI;
+using Autofac.Extras.NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
-using SlackAPI;
 using SlackAPI.WebSocketMessages;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+
+        #region Private Variables
+
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetails;
         private readonly ILogger _logger;
@@ -22,6 +25,9 @@ namespace Promact.Erp.Core.Controllers
         private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
 
+        #endregion
+
+        #region Constructor
 
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetails, ILogger logger,
@@ -36,6 +42,9 @@ namespace Promact.Erp.Core.Controllers
             _environmentVariableRepository = environmentVariableRepository;
         }
 
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
@@ -98,15 +107,10 @@ namespace Promact.Erp.Core.Controllers
         /// Used for Scrum meeting bot connection and to conduct scrum meeting. - JJ 
         /// </summary>
         /// <param name="container"></param>
-        public static void ScrumMain(IComponentContext container)
+        public void Scrum()
         {
-            _logger = container.Resolve<ILogger>();
-            _stringConstant = container.Resolve<IStringConstantRepository>();
-
-            _environmentVariableRepository = container.Resolve<IEnvironmentVariableRepository>();
             string botToken = _environmentVariableRepository.ScrumBotToken;
             SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
-            _scrumBotRepository = container.Resolve<IScrumBotRepository>();
 
             // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
@@ -121,7 +125,7 @@ namespace Promact.Erp.Core.Controllers
                 try
                 {
                     string replyText = string.Empty;
-                    replyText = _scrumBotRepository.ProcessMessages(message.user, message.channel, message.text).Result;
+                    replyText = _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text).Result;
 
                     if (!String.IsNullOrEmpty(replyText))
                     {
@@ -158,6 +162,7 @@ namespace Promact.Erp.Core.Controllers
             };
         }
 
+        #endregion
 
     }
 }
