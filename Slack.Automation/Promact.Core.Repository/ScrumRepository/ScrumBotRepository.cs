@@ -386,7 +386,10 @@ namespace Promact.Core.Repository.ScrumRepository
                             TemporaryScrumDetails temporaryScrumDetails = await FetchTemporaryScrumDetailsAsync(scrum.Id);
                             User user = users.First(x => x.SlackUserId == temporaryScrumDetails.SlackUserId);
                             if (temporaryScrumDetails.QuestionId != null)
-                                await AddAnswerAsync(scrum.Id, (int)temporaryScrumDetails.QuestionId, user.Id, message, ScrumAnswerStatus.Answered);
+                            {
+                                AddAnswer(scrum.Id, (int)temporaryScrumDetails.QuestionId, user.Id, message, ScrumAnswerStatus.Answered);
+                                await _scrumAnswerDataRepository.SaveChangesAsync();
+                            }
                             else
                                 return _stringConstant.AnswerNotRecorded;
 
@@ -617,7 +620,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="userId">Id of the user who has answered</param>
         /// <param name="message">answer</param>
         /// <param name="scrumAnswerStatus">the status of the answer like. Answered,Leave,etc</param>
-        private async Task AddAnswerAsync(int scrumId, int questionId, string userId, string message, ScrumAnswerStatus scrumAnswerStatus)
+        private void AddAnswer(int scrumId, int questionId, string userId, string message, ScrumAnswerStatus scrumAnswerStatus)
         {
             ScrumAnswer answer = new ScrumAnswer();
             answer.Answer = message;
@@ -628,7 +631,6 @@ namespace Promact.Core.Repository.ScrumRepository
             answer.ScrumId = scrumId;
             answer.ScrumAnswerStatus = scrumAnswerStatus;
             _scrumAnswerDataRepository.Insert(answer);
-            await _scrumAnswerDataRepository.SaveChangesAsync();
         }
 
 
@@ -747,8 +749,9 @@ namespace Promact.Core.Repository.ScrumRepository
                             //all the scrum questions are answered as "leave"
                             foreach (Question question in questions)
                             {
-                                await AddAnswerAsync(scrumId, question.Id, expectedUserId, _stringConstant.Leave, ScrumAnswerStatus.Leave);
+                                AddAnswer(scrumId, question.Id, expectedUserId, _stringConstant.Leave, ScrumAnswerStatus.Leave);
                             }
+                            await _scrumAnswerDataRepository.SaveChangesAsync();
                             await UpdateTemporaryScrumDetailsAsync(applicantId, scrumId, users, null);
                         }
                         else
