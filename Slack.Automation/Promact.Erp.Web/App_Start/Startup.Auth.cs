@@ -44,7 +44,7 @@ namespace Promact.Erp.Web
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
             app.UseCookieAuthentication(new Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions
             {
-                AuthenticationType = _stringConstantRepository.AuthenticationType
+                AuthenticationType = "Cookies"
             });
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
