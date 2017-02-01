@@ -52,7 +52,7 @@
         string TaskMailHours { get; }
         string TaskMailComment { get; }
         string TaskMailStatus { get; }
-        string ScrumTime { get; }
+        string StartBot { get; }
         string ScrumHalt { get; }
         string ScrumHalted { get; }
         string ScrumAlreadyHalted { get; }
@@ -92,8 +92,14 @@
         string ScrumCannotBeResumed { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
+        string EmployeesListFromOauthThreeEmployeesInActive { get; }
         string SlackUserNotFound { get; }
         string UserNotInSlack { get; }
+        string InValidStartCommand { get; }
+        string InActiveEmployeesList { get; }
+        string EmployeesListFromOauthOneEmployee { get; }
+        string EmployeesListFromOauthThreeEmployees{ get; }
+        string ThirdUserSlackUserId { get; }
         string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
@@ -276,6 +282,7 @@
         string ScrumThirdQuestion { get; }
         string AllProjectUrl { get; }
         string GetProjectDetails { get; }
+        string Start { get; }
 
         #region String Constants for Test Cases
 

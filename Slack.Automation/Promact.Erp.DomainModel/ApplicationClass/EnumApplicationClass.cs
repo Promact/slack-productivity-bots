@@ -88,7 +88,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     {
         halt,
         resume,
-        time
+        start
     }
 
     /// <summary>
