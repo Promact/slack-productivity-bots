@@ -12,7 +12,7 @@ namespace Promact.Erp.Core.Controllers
 
     [RoutePrefix("api/taskreport")]
     [Authorize]
-    public class TaskReportController : ApiController
+    public class TaskReportController : BaseController 
     {
         private readonly ITaskMailRepository _taskMailReport;
         private readonly IStringConstantRepository _stringConstant;

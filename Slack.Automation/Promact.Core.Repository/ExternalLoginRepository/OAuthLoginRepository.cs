@@ -13,6 +13,8 @@ using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
 
+
+
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
@@ -27,6 +29,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
+        
+
         #endregion
 
         #region Constructor
@@ -59,7 +63,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId)
         {
-
             ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)
