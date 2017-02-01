@@ -2820,7 +2820,6 @@ namespace Promact.Erp.Util.StringConstants
                 return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
-
         public string Space
         {
             get
