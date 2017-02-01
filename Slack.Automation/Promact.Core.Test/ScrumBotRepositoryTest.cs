@@ -1529,8 +1529,9 @@ namespace Promact.Core.Test
         public async Task ScrumAnswerProcess()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            string msg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.GroupName, _stringConstant.ScrumHelp, _stringConstant.ScrumBotName);
-            Assert.Equal(msg, _stringConstant.ScrumHelpMessage);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.GroupName, _stringConstant.ScrumHelp, _stringConstant.ScrumBotName);
+            string expected = string.Format(_stringConstant.ScrumHelpMessage, _stringConstant.ScrumBotName);
+            Assert.Equal(expected, actual);
         }
 
 

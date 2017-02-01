@@ -143,7 +143,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 if (String.Compare(message, _stringConstant.ScrumHelp, StringComparison.OrdinalIgnoreCase) == 0) //when the message obtained is "scrum help"
                 {
-                    replyText = _stringConstant.ScrumHelpMessage;
+                    replyText = string.Format(_stringConstant.ScrumHelpMessage, scrumBotId);
                 }
                 else if (slackChannelDetail != null)
                 {
