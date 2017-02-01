@@ -2828,7 +2828,6 @@ namespace Promact.Erp.Util.StringConstants
                 return " ";
             }
         }
-
         public string TaskMailMaximumTime
         {
             get
