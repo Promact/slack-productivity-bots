@@ -233,6 +233,21 @@ namespace Promact.Core.Repository.OauthCallsRepository
 
 
         /// <summary>
+        /// Used to get user role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>user details</returns>
+        public async Task<List<UserRoleAc>> GetUserRoleAsync(string userId)
+        {
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl);
+            var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return userRoleListAc;
+        }
+
+
+        /// <summary>
         /// List of employee under this employee. - RS
         /// </summary>
         /// <param name="userId">id of user</param>

@@ -52,6 +52,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<List<UserRoleAc>> GetUserRoleAsync(string userId);
 
         /// <summary>
+        /// Used to get user role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>user details</returns>
+        Task<List<UserRoleAc>> GetUserRoleAsync(string userId);
+
+        /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
         /// </summary>
         /// <param name="channelName">slack channel name</param>
@@ -68,6 +76,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>List of user. List of object of UserRoleAc</returns>
         Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken);
 
+
+        /// <summary>
+        /// List of employee under this employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>List of user</returns>
+        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId);
 
         /// <summary>
         /// List of employee under this employee
