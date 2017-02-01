@@ -13,6 +13,8 @@ using Promact.Erp.Util.StringConstants;
 using System;
 using System.Threading.Tasks;
 
+
+
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
@@ -27,6 +29,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
+        
+
         #endregion
 
         #region Constructor
@@ -59,11 +63,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string uerId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
-            //Creating a user with email only. Password not required
-            IdentityResult result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
+            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
+            ApplicationUser userInfo = _userManager.FindById(userId);
+            if (userInfo == null)
             {
+                //Creating a user with email only. Password not required
+                var result = await _userManager.CreateAsync(user);
                 //Adding external Oauth details
                 UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
                 result = await _userManager.AddLoginAsync(user.Id, info);
