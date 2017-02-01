@@ -38,6 +38,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<List<UserRoleAc>> GetUserRoleAsync(string userId, string accessToken);
 
         /// <summary>
+        /// Used to get user role
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>user details</returns>
+        Task<List<UserRoleAc>> GetUserRoleAsync(string userId);
+
+        /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
         /// </summary>
         /// <param name="groupName"></param>

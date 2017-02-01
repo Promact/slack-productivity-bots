@@ -355,9 +355,9 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             var user = await _user.FirstAsync(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+            //var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             //getting user information from Promact Oauth Server.
-            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id, accessToken);
+            List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id);
             var userInformation = userRoleAcList.First(x => x.UserName == user.UserName);
             if (userInformation.Role == _stringConstant.RoleAdmin)
             {
