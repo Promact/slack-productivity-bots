@@ -2861,11 +2861,13 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-        public string Scope { get { return "email openid profile slack_user_id user_read"; } }
+        public string Scope { get { return "openid offline_access email profile slack_user_id user_read project_read"; } }
 
         public string RedirectUrl { get { return "signin-oidc"; } }
         public string Sub { get { return "sub"; } }
         public string Email { get { return "email"; } }
         public string SlackUserID { get { return "slack_user_id"; } }
+        public string RoleClaimType { get { return "role"; } }
+        public string NameClaimType { get { return "name"; } }
     }
 }

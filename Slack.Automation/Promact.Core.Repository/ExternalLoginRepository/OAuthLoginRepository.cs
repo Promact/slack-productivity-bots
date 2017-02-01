@@ -54,22 +54,23 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="email"></param>
         /// <param name="accessToken"></param>
-        /// <param name="slackUserId"></param>
-        /// <param name="uerId"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="userId"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string uerId)
+        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = uerId };
-            //Creating a user with email only. Password not required
-            IdentityResult result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
+
+            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
+            ApplicationUser userInfo = _userManager.FindById(userId);
+            if (userInfo == null)
             {
+                //Creating a user with email only. Password not required
+                var result = await _userManager.CreateAsync(user);
                 //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, accessToken);
+                UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
                 result = await _userManager.AddLoginAsync(user.Id, info);
-                return user;
             }
-            return null;
+            return user;
         }
 
         /// <summary>
