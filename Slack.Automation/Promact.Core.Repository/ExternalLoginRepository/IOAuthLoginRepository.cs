@@ -11,11 +11,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to add a new user in Application user table and store user's external login information in UserLogin table
         /// </summary>
         /// <param name="email"></param>
-        /// <param name="accessToken"></param>
+        /// <param name="refreshToken"></param>
         /// <param name="slackUserId"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
-        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string accessToken, string slackUserId, string userId);
+        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId);
 
         /// <summary>
         /// Method to get OAuth Server's app information
