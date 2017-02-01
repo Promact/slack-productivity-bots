@@ -62,7 +62,15 @@ namespace Promact.Core.Repository.OauthCallsRepository
 
 
         /// <summary>
-        /// This method is used to fetch list of users/employees of the given channel name from OAuth server. - JJ
+        /// List of employee under this employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>List of user</returns>
+        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId);
+
+        /// <summary>
+        /// This method is used to fetch list of users/employees of the given group name. - JJ
         /// </summary>
         /// <param name="channelName">slack channel name</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>

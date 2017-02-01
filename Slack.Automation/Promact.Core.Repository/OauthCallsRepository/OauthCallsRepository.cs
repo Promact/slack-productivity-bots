@@ -231,7 +231,16 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return userRoleListAc;
         }
 
-        
+        public async Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId)
+        {
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.TeamMembersUrl);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl);
+            var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
+            return userRoleListAc;
+        }
+
+
+
         /// <summary>
         /// Method is used to call an api from oauth server and return list of all the projects. - GA
         /// </summary>
