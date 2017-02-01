@@ -54,6 +54,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
         Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId, string accessToken);
 
         /// <summary>
+        /// List of employee under this employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns>List of user</returns>
+        Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId);
+
+        /// <summary>
         /// This method is used to fetch list of users/employees of the given group name. - JJ
         /// </summary>
         /// <param name="groupName"></param>

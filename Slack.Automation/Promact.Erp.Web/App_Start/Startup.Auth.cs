@@ -22,7 +22,7 @@ namespace Promact.Erp.Web
         private IEnvironmentVariableRepository _environmentVariable;
         private IStringConstantRepository _stringConstantRepository;
         private IOAuthLoginRepository _oAuthLoginRepository;
-        private string redirectUrl = null;
+        private string _redirectUrl = null;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
 
         public void ConfigureAuth(IAppBuilder app, IComponentContext context)
@@ -30,7 +30,7 @@ namespace Promact.Erp.Web
             _environmentVariable = context.Resolve<IEnvironmentVariableRepository>();
             _oAuthLoginRepository = context.Resolve<IOAuthLoginRepository>();
             _stringConstantRepository = context.Resolve<IStringConstantRepository>();
-            redirectUrl = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
+            _redirectUrl = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
@@ -40,61 +40,21 @@ namespace Promact.Erp.Web
             {
                 AuthenticationType = "Cookies"
             });
-
-            //app.UseExternalSignInCookie();
-
-            //var url = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
-            //app.UsePromactAuthentication(new PromactAuthenticationOptions()
-            //{
-            //    Authority = AppSettingUtil.OAuthUrl,
-            //    ClientId = "O1UGSJW6X4V16IY",
-            //    ClientSecret = "RtZIZVt7VyW11NiSKazAxvTZlOpjRf",
-            //    LogoutUrl = AppSettingUtil.PromactErpUrl,
-            //    RedirectUrl = url,
-            //    Notifications = new OpenIdConnectAuthenticationNotifications
-            //    {
-            //        SecurityTokenReceived = tokenReceived =>
-            //        {
-            //            var accessToken = tokenReceived.ProtocolMessage.AccessToken;
-            //            var doc = DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl).Result;
-            //            var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
-
-            //            var response = userInfoClient.GetAsync(accessToken).Result;
-            //            var claims = response.Claims;
-            //            var handler = new JwtSecurityTokenHandler();
-            //            var tokenS = handler.ReadToken(accessToken) as JwtSecurityToken;
-            //            string userId = null;
-            //            string email = null;
-            //            string slackUserId = null;
-            //            foreach (var claim in tokenS.Claims)
-            //            {
-            //                if (claim.Type == _stringConstantRepository.Sub)
-            //                    userId = claim.Value;
-            //                if (claim.Type == _stringConstantRepository.Email)
-            //                    email = claim.Value;
-            //                if (claim.Type == _stringConstantRepository.SlackUserID)
-            //                    slackUserId = claim.Value;
-            //            }
-            //            _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, "", slackUserId, userId);
-            //            return Task.FromResult(0);
-            //        },
-            //    }
-            //});
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
 
                 Authority = AppSettingUtil.OAuthUrl,
-                ClientId = /* _environmentVariable.PromactOAuthClientId*/"O1UGSJW6X4V16IY",
-                ClientSecret = /*_environmentVariable.PromactOAuthClientSecret*/ "RtZIZVt7VyW11NiSKazAxvTZlOpjRf",
-                RedirectUri = redirectUrl,
+                ClientId = _environmentVariable.PromactOAuthClientId,
+                ClientSecret = _environmentVariable.PromactOAuthClientSecret,
+                RedirectUri = _redirectUrl,
                 TokenValidationParameters = new TokenValidationParameters
                 {
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
+                    NameClaimType = _stringConstantRepository.NameClaimType,
+                    RoleClaimType = _stringConstantRepository.RoleClaimType
                 },
 
-                ResponseType = /*_stringConstantRepository.ResponseType*/"code id_token token",
-                Scope = "openid offline_access email profile slack_user_id user_read project_read" /*_stringConstantRepository.Scope*/,
+                ResponseType = _stringConstantRepository.ResponseType,
+                Scope = _stringConstantRepository.Scope,
                 SignInAsAuthenticationType = _stringConstantRepository.AuthenticationType,
                 AuthenticationType = _stringConstantRepository.AuthenticationTypeOidc,
                 PostLogoutRedirectUri = AppSettingUtil.PromactErpUrl,
@@ -107,9 +67,8 @@ namespace Promact.Erp.Web
                         var doc = DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl).Result;
                         var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
                         var user = userInfoClient.GetAsync(accessToken).Result;
-                        
-                        var tokenClient = new TokenClient(doc.TokenEndpoint, "O1UGSJW6X4V16IY", "RtZIZVt7VyW11NiSKazAxvTZlOpjRf");
-                        var response = tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, redirectUrl).Result;
+                        var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
+                        var response = tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl).Result;
                         var refreshToken = response.RefreshToken;
                         string userId = null;
                         string email = null;

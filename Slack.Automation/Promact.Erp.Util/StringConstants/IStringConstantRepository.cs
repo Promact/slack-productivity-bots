@@ -401,5 +401,7 @@ namespace Promact.Erp.Util.StringConstants
         string Sub { get; }
         string Email { get; }
         string SlackUserID { get; }
+        string RoleClaimType { get; }
+        string NameClaimType { get; }
     }
 }
