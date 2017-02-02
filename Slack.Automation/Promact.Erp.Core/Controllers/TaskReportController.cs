@@ -16,10 +16,11 @@ namespace Promact.Erp.Core.Controllers
     {
         private readonly ITaskMailRepository _taskMailReport;
         private readonly IStringConstantRepository _stringConstant;
-        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
+        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant) :base(stringConstant)
         {
             _taskMailReport = taskMailReport;
             _stringConstant = stringConstant;
+
         }
 
 
@@ -175,7 +176,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<List<TaskMailReportAc>> GetUserInformationAsync()
         {
-            return await _taskMailReport.GetUserInformationAsync(User.Identity.GetUserId());
+            return await _taskMailReport.GetUserInformationAsync(GetUserId(User.Identity));
         }
 
     }

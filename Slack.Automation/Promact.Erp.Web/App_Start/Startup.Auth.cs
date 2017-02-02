@@ -6,13 +6,9 @@ using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Autofac;
 using Promact.Erp.Util.StringConstants;
-using System.Threading.Tasks;
 using System.IdentityModel.Tokens;
 using Promact.Core.Repository.ExternalLoginRepository;
 using IdentityModel.Client;
-using System.Security.Claims;
-using Microsoft.Owin.Security;
-using System.Web;
 using System.Collections.Generic;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Promact.Erp.Util;
@@ -42,7 +38,8 @@ namespace Promact.Erp.Web
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
-            app.UseCookieAuthentication(new Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions
+            
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "Cookies"
             });
@@ -67,14 +64,14 @@ namespace Promact.Erp.Web
                 UseTokenLifetime = true,
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
-                    SecurityTokenReceived = tokenReceived =>
+                    SecurityTokenReceived = async tokenReceived =>
                     {
                         var accessToken = tokenReceived.ProtocolMessage.AccessToken;
-                        var doc = DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl).Result;
+                        var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
                         var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
-                        var user = userInfoClient.GetAsync(accessToken).Result;
+                        var user = await userInfoClient.GetAsync(accessToken);
                         var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
-                        var response = tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl).Result;
+                        var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);
                         var refreshToken = response.RefreshToken;
                         string userId = null;
                         string email = null;
@@ -88,8 +85,9 @@ namespace Promact.Erp.Web
                             if (claim.Type == _stringConstantRepository.SlackUserID)
                                 slackUserId = claim.Value;
                         }
-                        _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
-                        return Task.FromResult(0);
+                       await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
+                        
+                       
                     },
                 }
             });

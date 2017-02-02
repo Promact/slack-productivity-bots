@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Promact.Erp.Util.StringConstants;
 
 namespace Promact.Erp.Util.HttpClient
 {
     public class HttpClientService : IHttpClientService
     {
         private System.Net.Http.HttpClient _client;
-        public HttpClientService()
+        private readonly IStringConstantRepository _stringConstant;
+        public HttpClientService(IStringConstantRepository stringConstant)
         {
+            _stringConstant = stringConstant;
 
         }
 
@@ -32,7 +35,7 @@ namespace Promact.Erp.Util.HttpClient
                 // Added access token to request header if provided by user
                 if (!String.IsNullOrEmpty(accessToken))
                 {
-                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessToken);
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_stringConstant.Bearer,accessToken);
                 }
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();

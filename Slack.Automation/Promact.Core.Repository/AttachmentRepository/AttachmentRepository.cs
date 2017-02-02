@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using IdentityModel.Client;
+using Newtonsoft.Json;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
@@ -15,13 +17,15 @@ namespace Promact.Core.Repository.AttachmentRepository
     public class AttachmentRepository:IAttachmentRepository
     {
         #region Private Variables
+        private IEnvironmentVariableRepository _environmentVariable;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         #endregion
 
         #region Constructor
-        public AttachmentRepository(ApplicationUserManager userManager,IStringConstantRepository stringConstant)
+        public AttachmentRepository(ApplicationUserManager userManager,IStringConstantRepository stringConstant, IEnvironmentVariableRepository environmentVariable)
         {
+            _environmentVariable = environmentVariable;
             _userManager = userManager;
             _stringConstant = stringConstant;
         }
@@ -133,15 +137,19 @@ namespace Promact.Core.Repository.AttachmentRepository
         public async Task<string> UserAccessTokenAsync(string username)
         {
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
-            var accessToken = _stringConstant.EmptyString;
+            var refreshToken = string.Empty ;
             foreach (var provider in providerInfo)
             {
                 if(provider.LoginProvider == _stringConstant.PromactStringName)
                 {
-                    accessToken = provider.ProviderKey;
+                    refreshToken = provider.ProviderKey;
                 }
             }
-            return accessToken;
+            //feching access token using refresh token. 
+            var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
+            var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
+            var reRefresh = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
+            return reRefresh.AccessToken;
         }
 
         /// <summary>
