@@ -2811,7 +2811,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "{0} {1}";
             }
         }
-
         public string RequestToAddSlackApp
         {
             get
