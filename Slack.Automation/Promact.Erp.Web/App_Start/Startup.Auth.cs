@@ -10,12 +10,7 @@ using System.IdentityModel.Tokens;
 using Promact.Core.Repository.ExternalLoginRepository;
 using IdentityModel.Client;
 using System.Collections.Generic;
-using Microsoft.Owin.Security.OpenIdConnect;
-using Promact.Erp.Util;
-using System.IdentityModel.Tokens;
-using Promact.Erp.Util.EnvironmentVariableRepository;
-using Autofac;
-using Promact.Erp.Util.StringConstants;
+using Microsoft.Owin.Security.Cookies;
 
 namespace Promact.Erp.Web
 {
@@ -86,8 +81,6 @@ namespace Promact.Erp.Web
                                 slackUserId = claim.Value;
                         }
                        await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
-                        
-                       
                     },
                 }
             });
