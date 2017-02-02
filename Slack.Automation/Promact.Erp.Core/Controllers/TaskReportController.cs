@@ -61,7 +61,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("user/{userId}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportAsync(string userId, string role, string userName)
         {
-            return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, User.Identity.GetUserId());
+            return await _taskMailReport.TaskMailDetailsReportAsync(userId, role, userName, GetUserId(User.Identity));
         }
 
         /**
@@ -109,7 +109,7 @@ namespace Promact.Erp.Core.Controllers
             { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
             else
             { createdDate = Convert.ToDateTime(createdOn).AddDays(-1); }
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), createdDate);
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, GetUserId(User.Identity), createdDate);
         }
 
         /**
@@ -151,7 +151,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("user/{userId}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string role, string userName, string createdOn, string selectedDate)
         {
-            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, User.Identity.GetUserId(), Convert.ToDateTime(selectedDate));
+            return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, GetUserId(User.Identity), Convert.ToDateTime(selectedDate));
         }
 
 

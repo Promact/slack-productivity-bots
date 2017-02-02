@@ -1,7 +1,8 @@
-﻿using Autofac.Extras.NLog;
-using Promact.Core.Repository.AttachmentRepository;
+﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.LeaveReportRepository;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.StringConstants;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -9,7 +10,7 @@ namespace Promact.Erp.Core.Controllers
 {
     [Authorize]
     [RoutePrefix("api/leaveReport")]
-    public class LeaveReportController : WebApiBaseController
+    public class LeaveReportController : BaseController
     {
         #region Private Variables 
         private readonly ILeaveReportRepository _leaveReport;
@@ -18,7 +19,8 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager)
+        public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository,
+            ApplicationUserManager userManager, IStringConstantRepository stringConstant) : base(stringConstant)
         {
             _leaveReport = leaveReport;
             _attachmentRepository = attachmentRepository;
@@ -52,8 +54,8 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<IHttpActionResult> LeaveReportAsync()
         {
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
-            var loginUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            var loginUser = await _userManager.FindByIdAsync(GetUserId(User.Identity));
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(loginUser.Email);
             return Ok(await _leaveReport.LeaveReportAsync(accessToken, loginUser.Id));
         }
 
@@ -84,7 +86,8 @@ namespace Promact.Erp.Core.Controllers
         {
             if (id != null)
             {
-                var accessToken = await _attachmentRepository.UserAccessTokenAsync(User.Identity.Name);
+                var loginUser = await _userManager.FindByIdAsync(GetUserId(User.Identity));
+                var accessToken = await _attachmentRepository.UserAccessTokenAsync(loginUser.Email);
                 return Ok(await _leaveReport.LeaveReportDetailsAsync(id, accessToken));
             }
             else
@@ -93,5 +96,6 @@ namespace Promact.Erp.Core.Controllers
             }
         }
         #endregion
+
     }
 }
