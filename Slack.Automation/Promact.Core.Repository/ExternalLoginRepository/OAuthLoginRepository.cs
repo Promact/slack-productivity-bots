@@ -29,7 +29,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
-        
+
 
         #endregion
 
@@ -57,23 +57,27 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to add a new user in Application user table and store user's external login information in UserLogin table
         /// </summary>
         /// <param name="email"></param>
-        /// <param name="accessToken"></param>
         /// <param name="refreshToken"></param>
+        /// <param name="slackUserId"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId)
         {
-            ApplicationUser user = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
             ApplicationUser userInfo = _userManager.FindById(userId);
-            if (userInfo == null)
+            if (userInfo == null)// check user is already added or not
             {
+                userInfo = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
                 //Creating a user with email only. Password not required
-                var result = await _userManager.CreateAsync(user);
-                //Adding external Oauth details
-                UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-                result = await _userManager.AddLoginAsync(user.Id, info);
+                var result = await _userManager.CreateAsync(userInfo);
             }
-            return user;
+            var userLoginInformation = await _userManager.GetLoginsAsync(userId);
+            if (userLoginInformation.Count > 0)//check already added external oauth detials if it exists so remove it. 
+                await _userManager.RemoveLoginAsync(userId, userLoginInformation[0]);
+
+            //Adding external Oauth details
+            UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
+            await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
+            return userInfo;
         }
 
         /// <summary>

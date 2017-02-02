@@ -36,7 +36,7 @@ namespace Promact.Erp.Web
             
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = "Cookies"
+                AuthenticationType = _stringConstantRepository.AuthenticationType
             });
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
