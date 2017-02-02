@@ -419,5 +419,7 @@
         string SlackUserID { get; }
         string RoleClaimType { get; }
         string NameClaimType { get; }
+        string Bearer { get; }
+
     }
 }

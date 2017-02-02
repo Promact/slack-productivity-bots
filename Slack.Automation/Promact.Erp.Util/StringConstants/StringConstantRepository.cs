@@ -2873,5 +2873,6 @@ namespace Promact.Erp.Util.StringConstants
         public string SlackUserID { get { return "slack_user_id"; } }
         public string RoleClaimType { get { return "role"; } }
         public string NameClaimType { get { return "name"; } }
+        public string Bearer { get { return "Bearer"; } }
     }
 }
