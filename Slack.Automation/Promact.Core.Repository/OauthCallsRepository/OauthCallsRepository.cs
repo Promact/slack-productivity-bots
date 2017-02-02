@@ -216,7 +216,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
             return userRoleListAc;
         }
 
-
         /// <summary>
         /// Used to get user role
         /// </summary>
