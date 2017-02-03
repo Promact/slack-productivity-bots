@@ -11,6 +11,7 @@ using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -68,9 +69,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 userInfo = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
                 //Creating a user with email only. Password not required
-                var result = await _userManager.CreateAsync(userInfo);
+                IdentityResult result = await _userManager.CreateAsync(userInfo);
             }
-            var userLoginInformation = await _userManager.GetLoginsAsync(userId);
+            IList<UserLoginInfo> userLoginInformation = await _userManager.GetLoginsAsync(userId);
             if (userLoginInformation.Count > 0)//check already added external oauth detials if it exists so remove it. 
                 await _userManager.RemoveLoginAsync(userId, userLoginInformation[0]);
 
