@@ -42,5 +42,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="slackEvent"></param>
         Task SlackChannelAddAsync(SlackEventApiAC slackEvent);
+
+        /// <summary>
+        /// Method check user slackid is exists or ot 
+        /// </summary>
+        /// <param name="userId">login user id</param>
+        /// <returns>boolean true or false</returns>
+        Task<bool> CheckUserSlackInformation(string userId);
     }
 }

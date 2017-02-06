@@ -217,6 +217,17 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 await _slackChannelDetails.SaveChangesAsync();
             }
         }
+
+        /// <summary>
+        /// Method check user slackid is exists or ot 
+        /// </summary>
+        /// <param name="userId">login user id</param>
+        /// <returns>boolean true or false</returns>
+        public async Task<bool> CheckUserSlackInformation(string userid)
+        {
+            var user = await _userManager.FindByIdAsync(userid);
+            return user.SlackUserId != null ? true : false;
+        }
         #endregion
     }
 }
