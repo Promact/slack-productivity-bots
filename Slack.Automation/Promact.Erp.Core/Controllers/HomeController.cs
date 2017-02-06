@@ -167,7 +167,8 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut();
+            //Set the cookie to expire
+            Request.GetOwinContext().Authentication.SignOut("Cookies");
             return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
         }
 

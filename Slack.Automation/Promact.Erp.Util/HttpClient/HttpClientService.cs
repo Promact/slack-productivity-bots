@@ -47,28 +47,7 @@ namespace Promact.Erp.Util.HttpClient
                 throw ex;
             }
         }
-        /// <summary>
-        /// Method to use System.Net.Http.HttpClient's GetAsync method
-        /// </summary>
-        /// <param name="baseUrl"></param>
-        /// <param name="contentUrl"></param>        
-        /// <returns>responseContent</returns>
-        public async Task<string> GetAsync(string baseUrl, string contentUrl)
-        {
-            try
-            {
-                _client = new System.Net.Http.HttpClient();
-                _client.BaseAddress = new Uri(baseUrl);
-               var response = await _client.GetAsync(contentUrl);
-                _client.Dispose();
-                var responseContent = response.Content.ReadAsStringAsync().Result;
-                return responseContent;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+       
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's PostAsync method
