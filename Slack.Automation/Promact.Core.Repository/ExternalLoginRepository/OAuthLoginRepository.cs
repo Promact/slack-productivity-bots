@@ -122,11 +122,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
 
             string detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
-
+            //get the basic user identity of the logged in slack user
             string basicUserDetailsResponse = await _httpClientService.GetAsync(_stringConstant.BasicSlackUserUrl, detailsRequest, null);
             SlackBasicUserDetailsAc slackUser = JsonConvert.DeserializeObject<SlackBasicUserDetailsAc>(basicUserDetailsResponse);
             if (slackUser.Ok)
             {
+                //get all the slack users of the team
                 string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
                 SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
                 if (slackUsers.Ok)
@@ -135,6 +136,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                     ApplicationUser applicationUser = await _userManager.FindByEmailAsync(email);
                     if (applicationUser != null && !string.IsNullOrEmpty(slackUserDetails?.Profile?.Email) && String.Compare(slackUserDetails.Profile.Email, applicationUser.Email, StringComparison.OrdinalIgnoreCase) == 0)
                     {
+                        //if the currently logged in slack user's email and the logged in OAuth user's email match
                         applicationUser.SlackUserId = slackUserDetails.UserId;
                         await _userManager.UpdateAsync(applicationUser);
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
