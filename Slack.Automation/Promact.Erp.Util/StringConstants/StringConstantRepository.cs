@@ -221,6 +221,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "https://slack.com/api/oauth.access";
             }
         }
+        public string BasicSlackUserUrl
+        {
+            get
+            {
+                return "https://slack.com/api/users.identity";
+            }
+        }
         public string ProjectDetailsByUserNameUrl
         {
             get
@@ -734,7 +741,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "User is not in Slack\n";
+                return "User is not in registered with Slack\n";
             }
         }
         public string PleaseAnswer

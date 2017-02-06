@@ -29,7 +29,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
-        
+
 
         #endregion
 
@@ -114,18 +114,35 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 _incomingWebHook.Insert(slackItem);
                 await _incomingWebHook.SaveChangesAsync();
             }
+
             string detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
-            string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
-            SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
-            if (slackUsers.Ok)
+
+            string basicUserDetailsResponse = await _httpClientService.GetAsync(_stringConstant.BasicSlackUserUrl, detailsRequest, null);
+            SlackBasicUserDetailsAc slackUser = JsonConvert.DeserializeObject<SlackBasicUserDetailsAc>(basicUserDetailsResponse);
+            if (slackUser.Ok)
             {
-                foreach (var user in slackUsers.Members)
+                string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
+                SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
+                if (slackUsers.Ok)
                 {
-                    await _slackUserRepository.AddSlackUserAsync(user);
+                    SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackUser?.User?.UserId);
+                    ApplicationUser applicationUser = new ApplicationUser();
+                    if (!string.IsNullOrEmpty(slackUserDetails?.Profile?.Email))
+                        applicationUser = _userManager.FindByEmail(slackUserDetails.Profile.Email);
+                    if (!string.IsNullOrEmpty(applicationUser?.Email))
+                    {
+                        applicationUser.SlackUserId = slackUserDetails.UserId;
+                        await _userManager.UpdateAsync(applicationUser);
+                        await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+                    }
+                    else
+                        throw new SlackAuthorizeException(_stringConstant.UserNotInSlack);
                 }
+                else
+                    throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
             }
             else
-                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
+                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUser.ErrorMessage);
 
             //the public channels' details
             string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);

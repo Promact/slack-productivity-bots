@@ -194,7 +194,11 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                if (User.Identity.IsAuthenticated)
+                {
+                    return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                }
+                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
             }
             catch (HttpRequestException ex)
             {

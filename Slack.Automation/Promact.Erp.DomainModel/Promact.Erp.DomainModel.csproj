@@ -132,6 +132,7 @@
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
+    <Compile Include="ApplicationClass\SlackBasicUserDetailsAc.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackBotUserDetail.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />
