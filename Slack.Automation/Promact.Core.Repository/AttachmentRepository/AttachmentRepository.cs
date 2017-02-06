@@ -148,8 +148,8 @@ namespace Promact.Core.Repository.AttachmentRepository
             //feching access token using refresh token. 
             var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
             var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
-            var reRefresh = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
-            return reRefresh.AccessToken;
+            var requestRefreshToken = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
+            return requestRefreshToken.AccessToken;
         }
 
         /// <summary>

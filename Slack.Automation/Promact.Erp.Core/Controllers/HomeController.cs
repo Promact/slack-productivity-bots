@@ -4,7 +4,6 @@ using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
-using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -23,7 +22,7 @@ namespace Promact.Erp.Core.Controllers
       
         private readonly IStringConstantRepository _stringConstant;
 
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
+        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -53,7 +52,6 @@ namespace Promact.Erp.Core.Controllers
             return View();
 
         }
-
         /**
         * @api {get} Home/AfterLogIn
         * @apiVersion 1.0.0
@@ -66,8 +64,9 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [Authorize]
-        public ActionResult AfterLogIn()
+        public async Task<ActionResult> AfterLogIn()
         {
+            ViewBag.isExistsSlackInformation = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
             return View();
         }
 
@@ -106,6 +105,7 @@ namespace Promact.Erp.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+
                 return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
             //BaseUrl of OAuth and clientId of App to be set 
@@ -167,7 +167,8 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut();
+            //Set the cookie to expire
+            Request.GetOwinContext().Authentication.SignOut("Cookies");
             return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
         }
 

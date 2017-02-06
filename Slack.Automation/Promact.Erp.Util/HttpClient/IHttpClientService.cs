@@ -16,14 +16,7 @@ namespace Promact.Erp.Util.HttpClient
         /// <param name="accessToken"></param>
         /// <returns>responseContent</returns>
         Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken);
-
-        /// <summary>
-        /// Method to use System.Net.Http.HttpClient's GetAsync method
-        /// </summary>
-        /// <param name="baseUrl"></param>
-        /// <param name="contentUrl"></param>        
-        /// <returns>responseContent</returns>
-        Task<string> GetAsync(string baseUrl, string contentUrl);
+        
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's PostAsync method
