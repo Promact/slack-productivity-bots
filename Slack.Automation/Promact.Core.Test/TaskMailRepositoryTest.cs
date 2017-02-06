@@ -3,7 +3,7 @@ using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Moq;
 using Promact.Core.Repository.BotQuestionRepository;
-
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -33,6 +33,7 @@ namespace Promact.Core.Test
         private readonly IRepository<TaskMailDetails> _taskMailDetailsDataRepository;
         private readonly Mock<IEmailService> _mockEmailService;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         private Question firstQuestion = new Question();
@@ -64,6 +65,7 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
             _loggerMock = _componentContext.Resolve<Mock<ILogger>>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialize();
         }
         #endregion
@@ -1068,6 +1070,8 @@ namespace Promact.Core.Test
 
             email.From = _stringConstant.ManagementEmailForTest;
             email.Subject = _stringConstant.TaskMailSubject;
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
         }
 
         private void LoggerMocking()
