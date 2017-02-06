@@ -81,6 +81,8 @@ namespace Promact.Erp.Web
                             if (claim.Type == _stringConstantRepository.SlackUserID)
                                 slackUserId = claim.Value;
                         }
+
+                        //added user details "email,refreshtoken,slackuserId, userId".
                        await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
                     },
                 }
