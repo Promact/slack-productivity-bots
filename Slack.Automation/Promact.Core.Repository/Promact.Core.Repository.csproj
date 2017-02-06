@@ -66,6 +66,10 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -165,6 +169,8 @@
     <Compile Include="ScrumReportRepository\ScrumReportRepository.cs" />
     <Compile Include="ScrumRepository\IScrumBotRepository.cs" />
     <Compile Include="ScrumRepository\ScrumBotRepository.cs" />
+    <Compile Include="ServiceRepository\IServiceRepository.cs" />
+    <Compile Include="ServiceRepository\ServiceRepository.cs" />
     <Compile Include="SlackChannelRepository\ISlackChannelRepository.cs" />
     <Compile Include="SlackChannelRepository\SlackChannelRepository.cs" />
     <Compile Include="SlackRepository\ISlackRepository.cs" />

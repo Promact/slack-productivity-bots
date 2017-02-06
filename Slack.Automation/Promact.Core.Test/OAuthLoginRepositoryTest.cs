@@ -2,6 +2,7 @@
 using Moq;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -25,6 +26,7 @@ namespace Promact.Core.Test
         private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         private SlackEventApiAC slackEvent = new SlackEventApiAC();
         private SlackChannelDetails channel = new SlackChannelDetails();
         private SlackProfile profile = new SlackProfile();
@@ -41,6 +43,7 @@ namespace Promact.Core.Test
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialize();
         }
         #endregion
@@ -53,6 +56,8 @@ namespace Promact.Core.Test
         public async Task AddNewUserFromExternalLoginAsync()
         {
             var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.FirstNameForTest, _stringConstant.UserIdForTest);
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
             Assert.Equal(user.UserName, _stringConstant.EmailForTest);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);

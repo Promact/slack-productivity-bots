@@ -1,9 +1,7 @@
-﻿using IdentityModel.Client;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
-using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
@@ -14,20 +12,21 @@ using System.Web;
 
 namespace Promact.Core.Repository.AttachmentRepository
 {
-    public class AttachmentRepository:IAttachmentRepository
+    public class AttachmentRepository : IAttachmentRepository
     {
         #region Private Variables
-        private IEnvironmentVariableRepository _environmentVariable;
+
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly IServiceRepository _serviceRepository;
         #endregion
 
         #region Constructor
-        public AttachmentRepository(ApplicationUserManager userManager,IStringConstantRepository stringConstant, IEnvironmentVariableRepository environmentVariable)
+        public AttachmentRepository(ApplicationUserManager userManager, IStringConstantRepository stringConstant, IServiceRepository serviceRepository)
         {
-            _environmentVariable = environmentVariable;
             _userManager = userManager;
             _stringConstant = stringConstant;
+            _serviceRepository = serviceRepository;
         }
         #endregion
 
@@ -137,19 +136,15 @@ namespace Promact.Core.Repository.AttachmentRepository
         public async Task<string> UserAccessTokenAsync(string username)
         {
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
-            var refreshToken = string.Empty ;
+            var refreshToken = string.Empty;
             foreach (var provider in providerInfo)
             {
-                if(provider.LoginProvider == _stringConstant.PromactStringName)
+                if (provider.LoginProvider == _stringConstant.PromactStringName)
                 {
                     refreshToken = provider.ProviderKey;
                 }
             }
-            //feching access token using refresh token. 
-            var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
-            var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
-            var requestRefreshToken = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
-            return requestRefreshToken.AccessToken;
+            return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken);
         }
 
         /// <summary>

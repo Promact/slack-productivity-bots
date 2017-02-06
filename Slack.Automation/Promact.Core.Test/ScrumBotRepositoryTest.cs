@@ -14,6 +14,8 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
+using Promact.Core.Repository.BaseRepository;
+using Promact.Core.Repository.ServiceRepository;
 
 namespace Promact.Core.Test
 {
@@ -34,6 +36,7 @@ namespace Promact.Core.Test
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelReposiroty;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
 
         private Question question = new Question();
         private ApplicationUser testUser = new ApplicationUser();
@@ -46,7 +49,6 @@ namespace Promact.Core.Test
         private Question question1 = new Question();
         private ScrumAnswer scrumAnswer = new ScrumAnswer();
         private TemporaryScrumDetails temporaryScrumDetails = new TemporaryScrumDetails();
-
         #endregion
 
 
@@ -66,6 +68,7 @@ namespace Promact.Core.Test
             _slackChannelReposiroty = _componentContext.Resolve<ISlackChannelRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _temporaryScrumDetailsRepository = _componentContext.Resolve<IRepository<TemporaryScrumDetails>>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialization();
 
         }
@@ -149,6 +152,9 @@ namespace Promact.Core.Test
 
             temporaryScrumDetails.ScrumId = 1;
             temporaryScrumDetails.CreatedOn = DateTime.UtcNow;
+
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
         }
 
 
@@ -172,11 +178,9 @@ namespace Promact.Core.Test
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
             string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
+            
         }
-
-
-
+        
         private async Task UserProjectSetup()
         {
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -190,7 +194,7 @@ namespace Promact.Core.Test
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
             string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
+            
         }
 
 
@@ -1561,7 +1565,6 @@ namespace Promact.Core.Test
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             await UserProjectSetup();
-
             string actual = await _scrumBotRepository.ProcessMessagesAsync(slackUserDetails.UserId, _stringConstant.GroupNameStartsWith + slackChannelDetails.ChannelId, _stringConstant.Add + " " + _stringConstant.Channel + " " + slackChannelDetails.Name, _stringConstant.ScrumBotName);
             Assert.Equal(_stringConstant.ChannelAddSuccess,actual);
         }

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -55,6 +56,7 @@ namespace Promact.Core.Test
         private IncomingWebHook thirdUserIncomingWebHook = new IncomingWebHook();
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private ApplicationUser updaterUser = new ApplicationUser();
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
         #region Constructor
@@ -73,6 +75,7 @@ namespace Promact.Core.Test
             _emailTemplateRepository = _componentContext.Resolve<IEmailServiceTemplateRepository>();
             _mockEmail = _componentContext.Resolve<Mock<IEmailService>>();
             _incomingWebHookRepository = _componentContext.Resolve<IRepository<IncomingWebHook>>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialize();
         }
         #endregion
@@ -1181,6 +1184,9 @@ namespace Promact.Core.Test
             updaterUser.UserName = _stringConstant.TeamLeaderEmailForTest;
             updaterUser.SlackUserId = _stringConstant.TeamLeaderSlackId;
             updaterUser.Id = _stringConstant.TeamLeaderIdForTest;
+
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
         }
         #endregion
 
