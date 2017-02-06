@@ -741,7 +741,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "User is not in registered with Slack\n";
+                return "User is not in Slack\n";
+            }
+        }
+        public string NotInSlackOrNotExpectedUser
+        {
+            get
+            {
+                return "User is not in Slack or the email of the users logged in with Promact and logged in with Slack do not match";
             }
         }
         public string PleaseAnswer

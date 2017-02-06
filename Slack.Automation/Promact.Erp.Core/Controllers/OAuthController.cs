@@ -4,17 +4,17 @@ using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    public class OAuthController : WebApiBaseController
+    public class OAuthController : BaseController
     {
         private static Queue<SlackEventApiAC> eventQueue;
         private readonly IHttpClientService _httpClientService;
@@ -24,20 +24,22 @@ namespace Promact.Erp.Core.Controllers
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
+        private readonly ApplicationUserManager _userManager;
         static OAuthController()
         {
             eventQueue = new Queue<SlackEventApiAC>();
         }
         public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, ILogger logger,
-            IRepository<SlackChannelDetails> slackChannelDetails,
-            IOAuthLoginRepository oAuthLoginRepository, ISlackChannelRepository slackChannelRepository)
+            IRepository<SlackChannelDetails> slackChannelDetails, ApplicationUserManager userManager,
+            IOAuthLoginRepository oAuthLoginRepository, ISlackChannelRepository slackChannelRepository) : base(stringConstant)
         {
             _httpClientService = httpClientService;
             _logger = logger;
             _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
+            _userManager = userManager;
             _slackUserRepository = slackUserRepository;
             _slackChannelRepository = slackChannelRepository;
         }
@@ -89,8 +91,9 @@ namespace Promact.Erp.Core.Controllers
             string message = string.Empty;
             var errorMessage = string.Empty;
             try
-            {
-                await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
+            {               
+                var loginUser = await _userManager.FindByIdAsync(GetUserId(User.Identity));
+                await _oAuthLoginRepository.AddSlackUserInformationAsync(code,loginUser.Email);
                 message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)

@@ -34,7 +34,7 @@ namespace Promact.Erp.Web
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
-            
+
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = _stringConstantRepository.AuthenticationType
@@ -71,17 +71,14 @@ namespace Promact.Erp.Web
                         var refreshToken = response.RefreshToken;
                         string userId = null;
                         string email = null;
-                        string slackUserId = null;
                         foreach (var claim in user.Claims)
                         {
                             if (claim.Type == _stringConstantRepository.Sub)
                                 userId = claim.Value;
                             if (claim.Type == _stringConstantRepository.Email)
                                 email = claim.Value;
-                            if (claim.Type == _stringConstantRepository.SlackUserID)
-                                slackUserId = claim.Value;
                         }
-                       await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
+                        await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, userId);
                     },
                 }
             });

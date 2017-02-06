@@ -62,12 +62,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackUserId"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId)
+        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
             {
-                userInfo = new ApplicationUser() { Email = email, UserName = email, SlackUserId = slackUserId, Id = userId };
+                userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
             }
@@ -99,11 +99,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         }
 
         /// <summary>
-        /// Method to add/update Slack Users,channels and groups information 
+        /// Method to add/update Slack User,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
-        public async Task AddSlackUserInformationAsync(string code)
+        public async Task AddSlackUserInformationAsync(string code, string email)
         {
             string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
@@ -131,17 +132,15 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 if (slackUsers.Ok)
                 {
                     SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackUser?.User?.UserId);
-                    ApplicationUser applicationUser = new ApplicationUser();
-                    if (!string.IsNullOrEmpty(slackUserDetails?.Profile?.Email))
-                        applicationUser = _userManager.FindByEmail(slackUserDetails.Profile.Email);
-                    if (!string.IsNullOrEmpty(applicationUser?.Email))
+                    ApplicationUser applicationUser = await _userManager.FindByEmailAsync(email);
+                    if (applicationUser != null && !string.IsNullOrEmpty(slackUserDetails?.Profile?.Email) && String.Compare(slackUserDetails.Profile.Email, applicationUser.Email, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         applicationUser.SlackUserId = slackUserDetails.UserId;
                         await _userManager.UpdateAsync(applicationUser);
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
                     }
                     else
-                        throw new SlackAuthorizeException(_stringConstant.UserNotInSlack);
+                        throw new SlackAuthorizeException(_stringConstant.NotInSlackOrNotExpectedUser);
                 }
                 else
                     throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
@@ -219,7 +218,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="slackEvent"></param>
         public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
         {
-
             SlackChannelDetails channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
             if (channel == null)
             {
@@ -235,16 +233,24 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
         }
 
+
         /// <summary>
         /// Method check user slackid is exists or ot 
         /// </summary>
         /// <param name="userId">login user id</param>
         /// <returns>boolean true or false</returns>
-        public async Task<bool> CheckUserSlackInformation(string userid)
+        public async Task<bool> CheckUserSlackInformation(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userid);
-            return user.SlackUserId != null ? true : false;
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            if (!string.IsNullOrEmpty(user.SlackUserId))
+            {
+                if (_slackUserDetails.Any(x => x.UserId == user.SlackUserId))
+                    return true;
+            }
+            return false;
         }
+
+
         #endregion
     }
 }
