@@ -11,7 +11,7 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using IdentityModel.Client;
 using System.Collections.Generic;
 using Microsoft.Owin.Security.Cookies;
-
+using System.Threading.Tasks;
 
 namespace Promact.Erp.Web
 {
@@ -84,6 +84,12 @@ namespace Promact.Erp.Web
 
                         //added user details "email,refreshtoken,slackuserId, userId".
                        await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, slackUserId, userId);
+                    },
+                    AuthenticationFailed  =  authenticationFailed =>
+                    {
+                        authenticationFailed.Response.Redirect("/"); //redirect to home page.
+                        authenticationFailed.HandleResponse();
+                        return Task.FromResult(0);
                     },
                 }
             });
