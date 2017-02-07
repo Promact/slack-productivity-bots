@@ -33,7 +33,6 @@
         string TeamLeaderDetailsUrl { get; }
         string ManagementDetailsUrl { get; }
         string OAuthAcessUrl { get; }
-        string BasicSlackUserUrl { get; }
         string SlackAuthorize { get; }
         string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }

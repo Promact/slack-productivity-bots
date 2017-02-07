@@ -91,9 +91,8 @@ namespace Promact.Erp.Core.Controllers
             string message = string.Empty;
             var errorMessage = string.Empty;
             try
-            {               
-                var loginUser = await _userManager.FindByIdAsync(GetUserId(User.Identity));
-                await _oAuthLoginRepository.AddSlackUserInformationAsync(code,loginUser.Email);
+            {              
+                await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
                 message = _stringConstant.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)

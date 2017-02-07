@@ -102,9 +102,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to add/update Slack User,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
-        /// <param name="email"></param>
         /// <returns></returns>
-        public async Task AddSlackUserInformationAsync(string code, string email)
+        public async Task AddSlackUserInformationAsync(string code)
         {
             string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
@@ -122,59 +121,57 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
 
             string detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
-            //get the basic user identity of the logged in slack user
-            string basicUserDetailsResponse = await _httpClientService.GetAsync(_stringConstant.BasicSlackUserUrl, detailsRequest, null);
-            SlackBasicUserDetailsAc slackUser = JsonConvert.DeserializeObject<SlackBasicUserDetailsAc>(basicUserDetailsResponse);
-            if (slackUser.Ok)
+            //get all the slack users of the team
+            string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
+            SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
+            if (slackUsers.Ok)
             {
-                //get all the slack users of the team
-                string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
-                SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
-                if (slackUsers.Ok)
+                SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackOAuth.UserId);
+                if (!string.IsNullOrEmpty(slackUserDetails?.Profile?.Email))
                 {
-                    SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackUser?.User?.UserId);
-                    ApplicationUser applicationUser = await _userManager.FindByEmailAsync(email);
-                    if (applicationUser != null && !string.IsNullOrEmpty(slackUserDetails?.Profile?.Email) && String.Compare(slackUserDetails.Profile.Email, applicationUser.Email, StringComparison.OrdinalIgnoreCase) == 0)
+                    //fetch the details of the user who is authenticated with Promact OAuth server with the given slack user's email
+                    ApplicationUser applicationUser = await _userManager.FindByEmailAsync(slackUserDetails.Profile.Email);
+                    if (applicationUser != null)
                     {
-                        //if the currently logged in slack user's email and the logged in OAuth user's email match
                         applicationUser.SlackUserId = slackUserDetails.UserId;
                         await _userManager.UpdateAsync(applicationUser);
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+
+                        //the public channels' details
+                        string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
+                        SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
+                        if (channels.Ok)
+                        {
+                            foreach (var channel in channels.Channels)
+                            {
+                                await AddChannelGroupAsync(channel);
+                            }
+                        }
+                        else
+                            throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
+
+                        //the public groups' details
+                        string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
+                        SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
+                        if (groups.Ok)
+                        {
+                            foreach (var channel in groups.Groups)
+                            {
+                                await AddChannelGroupAsync(channel);
+                            }
+                        }
+                        else
+                            throw new SlackAuthorizeException(_stringConstant.SlackAuthError + groups.ErrorMessage);
                     }
                     else
-                        throw new SlackAuthorizeException(_stringConstant.NotInSlackOrNotExpectedUser);
+                        throw new SlackAuthorizeException(_stringConstant.SlackAuthError + string.Format(_stringConstant.NotInSlackOrNotExpectedUser, slackUserDetails.Profile.Email));
                 }
                 else
-                    throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
+                    throw new SlackAuthorizeException(_stringConstant.SlackAuthError + _stringConstant.UserNotInSlack);
             }
             else
-                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUser.ErrorMessage);
+                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
 
-            //the public channels' details
-            string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
-            SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
-            if (channels.Ok)
-            {
-                foreach (var channel in channels.Channels)
-                {
-                    await AddChannelGroupAsync(channel);
-                }
-            }
-            else
-                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
-
-            //the public groups' details
-            string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
-            SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
-            if (groups.Ok)
-            {
-                foreach (var channel in groups.Groups)
-                {
-                    await AddChannelGroupAsync(channel);
-                }
-            }
-            else
-                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + groups.ErrorMessage);
         }
 
 
