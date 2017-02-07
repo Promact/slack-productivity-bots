@@ -83,7 +83,6 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ScrumReportRepository>().As<IScrumReportRepository>();
             builder.RegisterType<EnvironmentVariableRepository>().As<IEnvironmentVariableRepository>();
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
-            builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
