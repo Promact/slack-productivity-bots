@@ -95,10 +95,12 @@
         string EmployeesListFromOauthThreeEmployeesInActive { get; }
         string SlackUserNotFound { get; }
         string UserNotInSlack { get; }
+        string NotInSlackOrNotExpectedUser { get; }
+
         string InValidStartCommand { get; }
         string InActiveEmployeesList { get; }
         string EmployeesListFromOauthOneEmployee { get; }
-        string EmployeesListFromOauthThreeEmployees{ get; }
+        string EmployeesListFromOauthThreeEmployees { get; }
         string ThirdUserSlackUserId { get; }
         string UserNotInProject { get; }
         string NoQuestion { get; }

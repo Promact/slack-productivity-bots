@@ -19,9 +19,9 @@ namespace Promact.Erp.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            // Bot bot = container.Resolve<Bot>();
-            //bot.ScrumMain();
-            //bot.TaskMailBot();
+            Bot bot = container.Resolve<Bot>();
+            bot.Scrum();
+            bot.TaskMailBot();
         }
     }
 }

@@ -12,10 +12,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="email"></param>
         /// <param name="refreshToken"></param>
-        /// <param name="slackUserId"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
-        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string slackUserId, string userId);
+        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId);
 
         /// <summary>
         /// Method to get OAuth Server's app information

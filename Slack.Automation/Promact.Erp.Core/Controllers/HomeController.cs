@@ -19,7 +19,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-      
+
         private readonly IStringConstantRepository _stringConstant;
 
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository) : base(stringConstant)
@@ -50,7 +50,6 @@ namespace Promact.Erp.Core.Controllers
                 return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
             return View();
-
         }
         /**
         * @api {get} Home/AfterLogIn
@@ -105,7 +104,6 @@ namespace Promact.Erp.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-
                 return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
             //BaseUrl of OAuth and clientId of App to be set 
@@ -142,7 +140,7 @@ namespace Promact.Erp.Core.Controllers
             }
             if (user == null)
             {
-                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
+                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, userId);
                 if (user != null)
                 {
                     //Signing user with username or email only
@@ -179,7 +177,7 @@ namespace Promact.Erp.Core.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
-        
+
         /**
         * @api {get} Home/SlackOAuthAuthorization
         * @apiVersion 1.0.0
@@ -195,7 +193,11 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                if (User.Identity.IsAuthenticated)
+                {
+                    return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                }
+                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
             }
             catch (HttpRequestException ex)
             {

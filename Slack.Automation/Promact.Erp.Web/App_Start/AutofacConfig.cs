@@ -71,6 +71,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
+            builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
             builder.RegisterType<HttpClient>().InstancePerDependency();
             builder.RegisterType<HttpClientService>().As<IHttpClientService>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
