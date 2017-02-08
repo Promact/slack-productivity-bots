@@ -2,15 +2,16 @@
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace Promact.Erp.Core.Controllers
 {
     public abstract class MVCBaseController : Controller
     {
-        private readonly IStringConstantRepository _stringConstant;
-        public MVCBaseController(IStringConstantRepository stringConstant)
+        private readonly IStringConstantRepository _stringConstantRepository;
+        public MVCBaseController(IStringConstantRepository stringConstantRepository)
         {
-            _stringConstant = stringConstant;
+            _stringConstantRepository = stringConstantRepository;
         }
         /// <summary>
         /// get login user id.
@@ -20,15 +21,7 @@ namespace Promact.Erp.Core.Controllers
         public string GetUserId(IIdentity identity)
         {
             var claimsIdentity = identity as ClaimsIdentity;
-            if (claimsIdentity != null)
-            {
-                foreach (var claim in claimsIdentity.Claims)
-                {
-                    if (claim.Type == _stringConstant.Sub)
-                    { return claim.Value; }
-                }
-            }
-            return null;
+            return claimsIdentity.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
         }
     }
 }
