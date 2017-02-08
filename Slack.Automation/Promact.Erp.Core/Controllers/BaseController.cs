@@ -1,17 +1,17 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
-using System.Web.Http;
 using Promact.Erp.Util.StringConstants;
+using System.Web.Http;
+using System.Linq;
 
 namespace Promact.Erp.Core.Controllers
 {
-   
     public class BaseController : ApiController
     {
-        private readonly IStringConstantRepository _stringConstant;
-        public BaseController(IStringConstantRepository stringConstant)
+        private readonly IStringConstantRepository _stringConstantRepository;
+        public BaseController(IStringConstantRepository stringConstantRepository)
         {
-            _stringConstant = stringConstant;
+            _stringConstantRepository = stringConstantRepository;
         }
 
 
@@ -23,15 +23,7 @@ namespace Promact.Erp.Core.Controllers
         public string GetUserId(IIdentity identity)
         {
             var claimsIdentity = identity as ClaimsIdentity;
-            if (claimsIdentity != null)
-            {
-                foreach (var claim in claimsIdentity.Claims)
-                {
-                    if (claim.Type == _stringConstant.Sub)
-                    { return claim.Value; }
-                }
-            }
-            return null;
+            return claimsIdentity.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
         }
     }
 }
