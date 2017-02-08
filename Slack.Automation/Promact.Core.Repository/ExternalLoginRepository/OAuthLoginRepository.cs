@@ -164,10 +164,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                             throw new SlackAuthorizeException(_stringConstant.SlackAuthError + groups.ErrorMessage);
                     }
                     else
-                        throw new SlackAuthorizeException(_stringConstant.SlackAuthError + string.Format(_stringConstant.NotInSlackOrNotExpectedUser, slackUserDetails.Profile.Email));
+                        throw new SlackAuthorizeException(string.Format(_stringConstant.NotInSlackOrNotExpectedUser, slackUserDetails.Profile.Email));
                 }
                 else
-                    throw new SlackAuthorizeException(_stringConstant.SlackAuthError + _stringConstant.UserNotInSlack);
+                    throw new SlackAuthorizeException(_stringConstant.UserNotInSlack);
             }
             else
                 throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
