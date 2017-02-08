@@ -197,21 +197,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userDetails/";
+                return "user/";
             }
         }
         public string TeamLeaderDetailsUrl
         {
             get
             {
-                return "teamLeaderDetails/";
+                return "teamLeaders/";
             }
         }
         public string ManagementDetailsUrl
         {
             get
             {
-                return "managementDetails";
+                return "managements";
             }
         }
         public string OAuthAcessUrl
@@ -1163,35 +1163,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string ProjectUrl
         {
             get
             {
-                return string.Format("{0}/api/Project/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/project/", AppSettingUtil.OAuthUrl);
             }
         }
         public string UserUrl
         {
             get
             {
-                return string.Format("{0}/api/Users/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl
         {
             get
             {
-                return string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
             }
         }
         public string ClientReturnUrl
         {
             get
             {
-                return string.Format("{0}/Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
+                return string.Format("{0}Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveManagementAuthorizationUrl
@@ -1436,7 +1436,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "casual/leave/";
+                return "leaveAllowed/";
             }
         }
         public string CasualLeaveResponse
@@ -2875,7 +2875,7 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-        public string Scope { get { return "openid offline_access email profile slack_user_id user_read project_read"; } }
+        public string Scope { get { return "openid offline_access email profile user_read project_read"; } }
 
         public string RedirectUrl { get { return "signin-oidc"; } }
         public string Sub { get { return "sub"; } }

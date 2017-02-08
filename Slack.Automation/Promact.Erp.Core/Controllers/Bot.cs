@@ -61,7 +61,7 @@ namespace Promact.Erp.Core.Controllers
                         var text = message.text.ToLower();
                         if (user != null)
                         {
-                            if (text == _stringConstant.TaskMailSubject)
+                            if (text == _stringConstant.TaskMailSubject.ToLower())
                             {
                                 replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                             }

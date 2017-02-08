@@ -301,7 +301,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     // getting team leader list
-                                                    var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userId, userAndTaskMailDetailsWithAccessToken.AccessToken);
+                                                    var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
                                                     // getting managemnt list
                                                     var managements = await _oauthCallsRepository.GetManagementUserNameAsync(userAndTaskMailDetailsWithAccessToken.AccessToken);
                                                     teamLeaders.AddRange(managements);
@@ -626,7 +626,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                 // getting access token for that user
                 userAndTaskMailDetailsWithAccessToken.AccessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
                 // getting user information from Promact Oauth Server
-                userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, userAndTaskMailDetailsWithAccessToken.AccessToken);
+                userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(user.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
                 if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
                 {
                     // checking for previous task mail exist or not for today

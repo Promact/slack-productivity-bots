@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.DomainModel.DataRepository;
@@ -86,13 +85,13 @@ namespace Promact.Core.Repository.Client
         /// </summary>
         /// <param name="leaveRequest">LeaveRequest object</param>
         /// <param name="accessToken">OAuth access token of user</param>
-        /// <param name="replyText">Text to be send to slack</param>
-        /// <param name="slackUserId">Slack user Id of user</param>
-        public async Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string slackUserId)
+        /// <param name="replyText">Txt to be send to slack</param>
+        /// <param name="userId">userId of user</param>
+        public async Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagementAsync(slackUserId, leaveRequest, accessToken, attachment);
+            await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
@@ -101,12 +100,12 @@ namespace Promact.Core.Repository.Client
         /// <param name="leaveRequest">LeaveRequest object</param>
         /// <param name="accessToken">User's OAuth access token</param>
         /// <param name="replyText">Reply text to send</param>
-        /// <param name="slackUserId">USer's slack user Id</param>
-        public async Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string slackUserId)
+        /// <param name="userId">UserId of user</param>
+        public async Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagementAsync(slackUserId, leaveRequest, accessToken, attachment);
+            await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
@@ -139,15 +138,15 @@ namespace Promact.Core.Repository.Client
         /// <summary>
         /// Private method to get reply text and send to team leader and management
         /// </summary>
-        /// <param name="slackUserId">User's slack user Id</param>
+        /// <param name="userId">User's user Id</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
         /// <param name="accessToken">User's OAuth access token</param>
         /// <param name="attachment">Attachment to be send to team leader and management</param>
-        private async Task GetAttachmentAndSendToTLAndManagementAsync(string slackUserId, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
+        private async Task GetAttachmentAndSendToTLAndManagementAsync(string userId, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
         {
-            var teamLeaders = await _oauthCallRepository.GetTeamLeaderUserIdAsync(slackUserId, accessToken);
+            var teamLeaders = await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
             var management = await _oauthCallRepository.GetManagementUserNameAsync(accessToken);
-            var userDetail = await _oauthCallRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            var userDetail = await _oauthCallRepository.GetUserByUserIdAsync(userId, accessToken);
             foreach (var user in management)
             {
                 teamLeaders.Add(user);
