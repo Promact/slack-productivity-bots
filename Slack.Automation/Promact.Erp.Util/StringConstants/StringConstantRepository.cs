@@ -2875,7 +2875,7 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-        public string Scope { get { return "openid offline_access email profile slack_user_id user_read project_read"; } }
+        public string Scope { get { return "openid offline_access email profile user_read project_read"; } }
 
         public string RedirectUrl { get { return "signin-oidc"; } }
         public string Sub { get { return "sub"; } }
