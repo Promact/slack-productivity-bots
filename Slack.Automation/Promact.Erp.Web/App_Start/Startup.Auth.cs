@@ -70,9 +70,8 @@ namespace Promact.Erp.Web
                         var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
                         var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);
                         var refreshToken = response.RefreshToken;
-                        string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value; ;
-                        string email = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Email).Value; ;
-
+                        string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
+                        string email = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Email).Value;
                         await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, userId);
                     },
                     AuthenticationFailed = authenticationFailed =>
