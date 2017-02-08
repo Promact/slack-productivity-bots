@@ -427,10 +427,6 @@ namespace Promact.Core.Repository.ScrumRepository
             //Users of the OAuth project corresponding to the given slackChannelName
             List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
             var ids = users.Select(a => a.Id);
-
-            var test = _applicationUser.GetAll();
-
-
             //Application Users in Erp who are members of the OAuth project corresponding to the given slackChannelName 
             var appUsers = _applicationUser.FetchAsync(x => ids.Contains(x.Id)).Result
                 .Select(y => new { Id = y.Id, SlackUserId = y.SlackUserId }).ToList();
