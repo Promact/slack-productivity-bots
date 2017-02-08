@@ -237,16 +237,16 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method check user slackid is exists or ot 
         /// </summary>
         /// <param name="userId">login user id</param>
-        /// <returns>boolean true or false</returns>
-        public async Task<bool> CheckUserSlackInformation(string userId)
+        /// <returns>empty string</returns>
+        public async Task<string> CheckUserSlackInformation(string userId)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             if (!string.IsNullOrEmpty(user.SlackUserId))
             {
                 if (_slackUserDetails.Any(x => x.UserId == user.SlackUserId))
-                    return true;
+                    return string.Empty;
             }
-            return false;
+            return user.Email;
         }
 
 
