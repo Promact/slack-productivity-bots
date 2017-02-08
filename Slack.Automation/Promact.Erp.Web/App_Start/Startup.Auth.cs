@@ -11,7 +11,8 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using IdentityModel.Client;
 using System.Collections.Generic;
 using Microsoft.Owin.Security.Cookies;
-
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Promact.Erp.Web
 {
@@ -69,17 +70,17 @@ namespace Promact.Erp.Web
                         var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
                         var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);
                         var refreshToken = response.RefreshToken;
-                        string userId = null;
-                        string email = null;
-                        foreach (var claim in user.Claims)
-                        {
-                            if (claim.Type == _stringConstantRepository.Sub)
-                                userId = claim.Value;
-                            if (claim.Type == _stringConstantRepository.Email)
-                                email = claim.Value;
-                        }
+                        string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value; ;
+                        string email = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Email).Value; ;
+
                         await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, userId);
                     },
+                    AuthenticationFailed = authenticationFailed =>
+                  {
+                      authenticationFailed.Response.Redirect("/"); //redirect to home page.
+                        authenticationFailed.HandleResponse();
+                      return Task.FromResult(0);
+                  },
                 }
             });
         }

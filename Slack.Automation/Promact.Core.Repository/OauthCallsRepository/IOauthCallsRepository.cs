@@ -11,19 +11,19 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their slack userId. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>user Details.Object of User</returns>
-        Task<User> GetUserByUserIdAsync(string slackUserId, string accessToken);
+        Task<User> GetUserByUserIdAsync(string userId, string accessToken);
 
 
         /// <summary>
         /// Method to call an api from project oAuth server and get List of TeamLeader's slack UserName from employee userName. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>teamLeader details.List of object of User</returns>
-        Task<List<User>> GetTeamLeaderUserIdAsync(string slackUserId, string accessToken);
+        Task<List<User>> GetTeamLeaderUserIdAsync(string userId, string accessToken);
 
 
         /// <summary>
@@ -72,10 +72,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>Number of casual leave allowed. Object of LeaveAllowed</returns>
-        Task<LeaveAllowed> CasualLeaveAsync(string slackUserId, string accessToken);
+        Task<LeaveAllowed> CasualLeaveAsync(string userId, string accessToken);
 
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api from oAuth server and get whether user is admin or not. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>true if user has admin role else false</returns>
-        Task<bool> UserIsAdminAsync(string slackUserId, string accessToken);
+        Task<bool> UserIsAdminAsync(string userId, string accessToken);
 
 
         /// <summary>
