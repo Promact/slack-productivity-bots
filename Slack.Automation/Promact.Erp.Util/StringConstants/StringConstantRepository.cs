@@ -734,7 +734,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "User is not in Slack\n";
+                return "User is not in Slack or has not added app to slack yet\n";
             }
         }
         public string NotInSlackOrNotExpectedUser
@@ -1974,28 +1974,28 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthOneEmployee
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthThreeEmployees
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"nehal\",\"SlackUserId\":\"13b0f2c2f5-4713-a67e-37e50172e148n\",\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthThreeEmployeesInActive
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"nehal\",\"SlackUserId\":\"13b0f2c2f5-4713-a67e-37e50172e148n\",\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string ThirdUserSlackUserId
@@ -2010,28 +2010,28 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListInValid
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string InActiveEmployeesList
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string InValidOAuthUsers
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string OAuthUserDetails
