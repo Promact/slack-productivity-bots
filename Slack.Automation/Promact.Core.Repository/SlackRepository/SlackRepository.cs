@@ -547,7 +547,7 @@ namespace Promact.Core.Repository.SlackRepository
             if (user.Id != null)
             {
                 // get user leave allowed details from oAuth server
-                LeaveAllowed allowedLeave = await _oauthCallsRepository.CasualLeaveAsync(user.Id, accessToken);
+                LeaveAllowed allowedLeave = await _oauthCallsRepository.AllowedLeave(user.Id, accessToken);
                 // method to get user's number of leave taken
                 LeaveAllowed leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
                 double casualLeaveTaken = leaveTaken.CasualLeave;

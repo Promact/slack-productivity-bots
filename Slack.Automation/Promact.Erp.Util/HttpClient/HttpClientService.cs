@@ -25,6 +25,7 @@ namespace Promact.Erp.Util.HttpClient
         /// <param name="contentUrl"></param>        
         /// <param name="accessToken"></param>
         /// <returns>responseContent</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
         public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
@@ -50,12 +51,8 @@ namespace Promact.Erp.Util.HttpClient
             {
                 throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
-       
+
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's PostAsync method
@@ -64,6 +61,7 @@ namespace Promact.Erp.Util.HttpClient
         /// <param name="contentUrl"></param>        
         /// <param name="accessToken"></param>
         /// <returns>responseString</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
         public async Task<string> PostAsync(string baseUrl, string contentString, string contentHeader)
         {
             try
@@ -82,10 +80,6 @@ namespace Promact.Erp.Util.HttpClient
             catch (HttpRequestException)
             {
                 throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
     }
