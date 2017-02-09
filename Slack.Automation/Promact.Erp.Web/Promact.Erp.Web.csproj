@@ -1102,7 +1102,6 @@
     <Content Include="Scripts\jquery-validation\LICENSE.md" />
     <Content Include="Scripts\jquery-validation\package.json" />
     <Content Include="Scripts\jquery-validation\README.md" />
-    <Content Include="Scripts\jquery-validation\src\localization\messages_az" />
     <Content Include="Scripts\jquery-validation\validation.jquery.json" />
     <Content Include="Scripts\jquery\.bower.json" />
     <Content Include="Scripts\jquery\bower.json" />
