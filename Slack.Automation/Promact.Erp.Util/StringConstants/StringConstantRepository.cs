@@ -2303,7 +2303,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Person Not Available";
+                return "Person Not Available on {0}";
             }
         }
         public string FormatForDate
