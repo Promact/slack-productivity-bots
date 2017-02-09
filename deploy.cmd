@@ -117,6 +117,13 @@ IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
+:: 7. PowerShell Script
+if EXIST "%DEPLOYMENT_SOURCE%\Slack.Automation\Promact.Erp.Web\Web.config" (
+ @ECHO OFF
+  PowerShell.exe -Command "& '%~dpn0.ps1'"
+ PAUSE
+)
+
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
 
