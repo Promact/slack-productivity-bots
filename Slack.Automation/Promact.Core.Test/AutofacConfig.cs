@@ -17,7 +17,7 @@ using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Effort;
 using Promact.Core.Repository.BotQuestionRepository;
-using Moq;
+using Moq; 
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
@@ -30,6 +30,8 @@ using Promact.Erp.Util.HttpClient;
 using Autofac.Extras.NLog;
 using AutoMapper;
 using Promact.Core.Repository.AutoMapperConfig;
+using Promact.Core.Repository.ServiceRepository;
+using Promact.Core.Repository.BaseRepository;
 
 namespace Promact.Core.Test
 {
@@ -65,6 +67,7 @@ namespace Promact.Core.Test
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
+            builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
@@ -76,8 +79,14 @@ namespace Promact.Core.Test
             builder.RegisterInstance(iLoggerMockObject).As<ILogger>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
 
+            var mockServiceRepository = new Mock<IServiceRepository>();
+            var mockServiceRepositoryObject = mockServiceRepository.Object;
+            builder.RegisterInstance(mockServiceRepository).As<Mock<IServiceRepository>>();
+            builder.RegisterInstance(mockServiceRepositoryObject).As<IServiceRepository>();
+            
             var container = builder.Build();
             return container;
+
         }
     }
 }

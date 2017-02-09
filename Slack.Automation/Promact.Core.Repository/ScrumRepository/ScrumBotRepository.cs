@@ -30,6 +30,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IRepository<Question> _questionDataRepository;
         private readonly IRepository<SlackBotUserDetail> _slackBotUserDetailDataRepository;
         private readonly IRepository<SlackUserDetails> _slackUserDetailsDataRepository;
+        private readonly IRepository<ApplicationUser> _applicationUser;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserDetailRepository;
@@ -66,6 +67,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _slackUserDetailsDataRepository = slackUserDetailsDataRepository;
             _stringConstant = stringConstant;
             _botQuestionRepository = botQuestionRepository;
+            _applicationUser = applicationUser;
             _mapper = mapper;
             _today = DateTime.UtcNow.Date;
         }
@@ -101,6 +103,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 var date = DateTime.UtcNow.Date;
                 // get access token of user for promact oauth server
                 var accessToken = await GetAccessToken(slackUserId);
+
                 if (accessToken != null)
                 {
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelDetail.Name, accessToken);
@@ -204,12 +207,6 @@ namespace Promact.Core.Repository.ScrumRepository
                         replyText = _stringConstant.ChannelAddInstruction;
                     }
                 }
-            }
-            else //user == null
-            {
-                SlackBotUserDetail botUserDetail = await _slackBotUserDetailDataRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
-                if (botUserDetail == null)
-                    replyText = _stringConstant.SlackUserNotFound;
             }
             return replyText;
         }
@@ -373,7 +370,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     //list of scrum questions. Type = BotQuestionType.Scrum
                     List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                     //users of the given channel name fetched from the oauth server
-                    List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
+                    List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
                     ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                     ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, questions);
                     //scrumStatus could be anything like the project is in-active
@@ -414,6 +411,29 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
+        /// Get users of the OAuth project corresponding to the given slackChannelName - JJ
+        /// </summary>
+        /// <param name="slackChannelName">slack channel name from which the message has been send</param>
+        /// <param name="accessToken">Access token of the interacting user</param>
+        /// <returns>list of object of User</returns>
+        private async Task<List<User>> GetOAuthUsersAsync(string slackChannelName, string accessToken)
+        {
+            //Users of the OAuth project corresponding to the given slackChannelName
+            List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
+            var ids = users.Select(a => a.Id);
+            //Application Users in Erp who are members of the OAuth project corresponding to the given slackChannelName 
+            var appUsers = _applicationUser.FetchAsync(x => ids.Contains(x.Id)).Result
+                .Select(y => new { Id = y.Id, SlackUserId = y.SlackUserId }).ToList();
+            //assign SlackUserId 
+            users.ForEach(x =>
+            {
+                x.SlackUserId = appUsers.FirstOrDefault(y => y.Id == x.Id)?.SlackUserId;
+            });
+            return users.Where(x => !string.IsNullOrEmpty(x.SlackUserId)).ToList();
+        }
+
+
+        /// <summary>
         /// This method will be called when the keyword "scrum time" or "scrum halt" or "scrum resume" is encountered. - JJ
         /// </summary>
         /// <param name="slackChannelId">slack channel id</param>
@@ -435,7 +455,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     var accessToken = await GetAccessToken(slackUserId);
                     if (accessToken != null)
                     {
-                        List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
+                        List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
                         ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
                         ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, null);
 
@@ -520,7 +540,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         if (accessToken != null)
                         {
                             List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
-                            List<User> users = await _oauthCallsRepository.GetUsersByChannelNameAsync(slackChannelName, accessToken);
+                            List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
                             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
 
                             ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, questions);
@@ -1222,7 +1242,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (prevUser.Deleted)//the previous user is not part of the project in OAuth
                         returnMsg += string.Format(_stringConstant.UserNotInProject, prevUser.Name);
 
-                    else if (!prevUser.IsActive && status == (ScrumStatus.Halted))
+                    else if (!prevUser.IsActive)
                         returnMsg += string.Format(_stringConstant.InActiveInOAuth, prevUser.Name);
                 }
                 //next question is fetched
@@ -1273,7 +1293,6 @@ namespace Promact.Core.Repository.ScrumRepository
         }
 
 
-        #endregion
-
+        #endregion    
     }
 }

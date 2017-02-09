@@ -95,10 +95,12 @@
         string EmployeesListFromOauthThreeEmployeesInActive { get; }
         string SlackUserNotFound { get; }
         string UserNotInSlack { get; }
+        string NotInSlackOrNotExpectedUser { get; }
+
         string InValidStartCommand { get; }
         string InActiveEmployeesList { get; }
         string EmployeesListFromOauthOneEmployee { get; }
-        string EmployeesListFromOauthThreeEmployees{ get; }
+        string EmployeesListFromOauthThreeEmployees { get; }
         string ThirdUserSlackUserId { get; }
         string UserNotInProject { get; }
         string NoQuestion { get; }
@@ -408,5 +410,18 @@
         string Space { get; }
         string UserDetailsFromOauthServerFalse { get; }
         string TaskMailMaximumTime { get; }
+        string Scopes { get; }
+        string AuthenticationType { get; }
+        string AuthenticationTypeOidc { get; }
+        string ResponseType { get; }
+        string Scope { get; }
+        string RedirectUrl { get; }
+        string Sub { get; }
+        string Email { get; }
+        string SlackUserID { get; }
+        string RoleClaimType { get; }
+        string NameClaimType { get; }
+        string Bearer { get; }
+
     }
 }

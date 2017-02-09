@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -55,6 +56,7 @@ namespace Promact.Core.Test
         private IncomingWebHook thirdUserIncomingWebHook = new IncomingWebHook();
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private ApplicationUser updaterUser = new ApplicationUser();
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
         #region Constructor
@@ -73,6 +75,7 @@ namespace Promact.Core.Test
             _emailTemplateRepository = _componentContext.Resolve<IEmailServiceTemplateRepository>();
             _mockEmail = _componentContext.Resolve<Mock<IEmailService>>();
             _incomingWebHookRepository = _componentContext.Resolve<IRepository<IncomingWebHook>>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialize();
         }
         #endregion
@@ -422,7 +425,7 @@ namespace Promact.Core.Test
             var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
-            var allowedLeaveRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.UserSlackId);
+            var allowedLeaveRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.StringIdForTest);
             GetAsyncMethodMocking(_stringConstant.LeaveAllowed, _stringConstant.ProjectUserUrl, allowedLeaveRequestUrl, _stringConstant.AccessTokenForTest);
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
@@ -501,6 +504,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             MockingOfTeamLeaderDetails();
             MockingOfManagementDetails();
+            MockingUserIsAdminBySlackId();
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
             var adminResponse = Task.FromResult(_stringConstant.True);
             var adminrequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.UserSlackId);
@@ -1181,6 +1185,9 @@ namespace Promact.Core.Test
             updaterUser.UserName = _stringConstant.TeamLeaderEmailForTest;
             updaterUser.SlackUserId = _stringConstant.TeamLeaderSlackId;
             updaterUser.Id = _stringConstant.TeamLeaderIdForTest;
+
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
         }
         #endregion
 
@@ -1191,7 +1198,7 @@ namespace Promact.Core.Test
         private void UserMock()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
         }
 
@@ -1251,7 +1258,7 @@ namespace Promact.Core.Test
         private void MockingOfUserDetails()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
         }
 
@@ -1261,7 +1268,7 @@ namespace Promact.Core.Test
         private void MockingOfTeamLeaderDetails()
         {
             var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
-            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
         }
 
@@ -1302,7 +1309,7 @@ namespace Promact.Core.Test
         /// </summary>
         private void MockingUserDetialFromSlackUserId()
         {
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.UserSlackId);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
             GetAsyncMethodMocking(_stringConstant.UserDetailsFromOauthServer, _stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest);
         }
 
@@ -1312,7 +1319,7 @@ namespace Promact.Core.Test
         private void MockingUserIsAdminBySlackId()
         {
             var adminResponse = Task.FromResult(_stringConstant.True);
-            var adminrequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.UserSlackId);
+            var adminrequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
         }
 

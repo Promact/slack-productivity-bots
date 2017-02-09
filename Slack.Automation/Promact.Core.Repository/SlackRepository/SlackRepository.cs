@@ -17,7 +17,6 @@ using Promact.Core.Repository.SlackUserRepository;
 using System.Threading;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.Email;
-using Promact.Erp.Util;
 using Promact.Erp.Util.ExceptionHandler;
 
 namespace Promact.Core.Repository.SlackRepository
@@ -141,7 +140,7 @@ namespace Promact.Core.Repository.SlackRepository
                         switch (actionType)
                         {
                             case SlackAction.apply:
-                                replyText = await LeaveApplyAsync(slackText, leave, accessToken);
+                                replyText = await LeaveApplyAsync(slackText, leave, accessToken, user.Id);
                                 break;
                             case SlackAction.list:
                                 replyText = await SlackLeaveListAsync(slackText, leave, accessToken);
@@ -198,7 +197,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leave">leave slash command</param>
         /// <param name="accessToken">User's access token</param>
         /// <returns>Reply text to be send</returns>
-        private async Task<string> LeaveApplyAsync(List<string> slackRequest, SlashCommand leave, string accessToken)
+        private async Task<string> LeaveApplyAsync(List<string> slackRequest, SlashCommand leave, string accessToken, string userId)
         {
             try
             {
@@ -211,7 +210,7 @@ namespace Promact.Core.Repository.SlackRepository
                     DateTimeStyles.None, out startDate);
                 if (startDateConvertorResult)
                 {
-                    user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
+                    user = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
                     LeaveRequest leaveRequest = new LeaveRequest();
                     // Method to check leave's start date is not beyond today. Back date checking
                     bool validStartDate = LeaveStartDateValid(startDate);
@@ -257,7 +256,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                         replyText = _attachmentRepository.ReplyText(leave.Username, leaveRequest);
                                                         // method to send slack notification and email to team leaders and management
                                                         await _client.SendMessageWithAttachmentIncomingWebhookAsync(leaveRequest,
-                                                            accessToken, replyText, leave.UserId);
+                                                            accessToken, replyText, user.Id);
                                                     }
                                                     else
                                                         replyText = _stringConstant.LeaveAlreadyExistOnSameDate;
@@ -280,12 +279,13 @@ namespace Promact.Core.Repository.SlackRepository
                                         User newUser = new User();
                                         if (slackRequest.Count > 4)
                                         {
-                                            IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(leave.UserId, accessToken);
+                                            IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(userId, accessToken);
                                             if (IsAdmin)
                                             {
                                                 SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackRequest[4]);
                                                 // get user details from oAuth server for other user
-                                                newUser = await _oauthCallsRepository.GetUserByUserIdAsync(slackUser.UserId, accessToken);
+                                                var newUserDetails = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
+                                                newUser = await _oauthCallsRepository.GetUserByUserIdAsync(newUserDetails.Id, accessToken);
                                             }
                                             else
                                                 replyText = _stringConstant.AdminErrorMessageApplySickLeave;
@@ -293,7 +293,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         else
                                         {
                                             // get user details from oAuth server for own
-                                            newUser = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
+                                            newUser = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
                                             leaveRequest.EndDate = startDate;
                                             leaveRequest.RejoinDate = startDate.AddDays(1);
                                         }
@@ -313,7 +313,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                 await _leaveRepository.ApplyLeaveAsync(leaveRequest);
                                                 replyText = _attachmentRepository.ReplyTextSick(newUser.FirstName, leaveRequest);
                                                 await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leaveRequest,
-                                                    accessToken, replyText, newUser.SlackUserId);
+                                                    accessToken, replyText, newUser.Id);
                                                 if (IsAdmin)
                                                 {
                                                     await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leaveRequest,
@@ -353,13 +353,13 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get Employee Id from its slackUserId and from its employeeId, to get list of leave
         /// </summary>
-        /// <param name="slackUserId">User's slack used Id</param>
+        /// <param name="userId">User's used Id</param>
         /// <param name="accessToken">User's access token</param>
         /// <returns>Reply text to be send</returns>
-        private async Task<string> LeavesListBySlackUserIdAsync(string slackUserId, string accessToken)
+        private async Task<string> LeavesListBySlackUserIdAsync(string userId, string accessToken)
         {
             // get user details from oAuth server
-            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
             // get list of leave from user Id
             IEnumerable<LeaveRequest> leaveList = _leaveRepository.LeaveListByUserId(user.Id);
             // if leave exit then further will get list in string else 
@@ -394,13 +394,13 @@ namespace Promact.Core.Repository.SlackRepository
         /// Method to Cancel leave, only allowed to the applier of the leave to cancel the leave
         /// </summary>
         /// <param name="leaveId">leave request Id</param>
-        /// <param name="slackUserId">User's slack user Id</param>
+        /// <param name="userId">User's user Id</param>
         /// <param name="accessToken">User's access token</param>
         /// <returns>Reply text to be send</returns>
-        private async Task<string> LeaveCancelByIdAsync(int leaveId, string slackUserId, string accessToken)
+        private async Task<string> LeaveCancelByIdAsync(int leaveId, string userId, string accessToken)
         {
             // get user details from oAuth server
-            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
             LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(leaveId);
             // only authorize user of leave is allowed to cancel there leave
             if (user.Id == leave.EmployeeId)
@@ -422,13 +422,13 @@ namespace Promact.Core.Repository.SlackRepository
         /// <summary>
         /// Method to get Employee Id from its userName and from its employeeId, to get last leave status
         /// </summary>
-        /// <param name="slackUserId">User's slack user Id</param>
+        /// <param name="userId">User's user Id</param>
         /// <param name="accessToken">User's access token</param>
         /// <returns>Reply text to be send</returns>
-        private async Task<string> LeaveStatusBySlackUserIdAsync(string slackUserId, string accessToken)
+        private async Task<string> LeaveStatusBySlackUserIdAsync(string userId, string accessToken)
         {
             // get user details from oAuth server
-            User user = await _oauthCallsRepository.GetUserByUserIdAsync(slackUserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(userId, accessToken);
             try
             {
                 // get only last leave of the user
@@ -467,13 +467,15 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 // other user slack user name
                 SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
+                var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
                 // leave list of other user 
-                replyText = await LeavesListBySlackUserIdAsync(slackUser.UserId, accessToken);
+                replyText = await LeavesListBySlackUserIdAsync(user.Id, accessToken);
             }
             else
             {
+                var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
                 // leave list of own
-                replyText = await LeavesListBySlackUserIdAsync(leave.UserId, accessToken);
+                replyText = await LeavesListBySlackUserIdAsync(user.Id, accessToken);
             }
             return replyText;
         }
@@ -492,8 +494,9 @@ namespace Promact.Core.Repository.SlackRepository
             bool leaveIdConvertorResult = int.TryParse(slackText[1], out leaveId);
             if (leaveIdConvertorResult)
             {
+                var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
                 // method to cancel leave by its id
-                replyText = await LeaveCancelByIdAsync(leaveId, leave.UserId, accessToken);
+                replyText = await LeaveCancelByIdAsync(leaveId, user.Id, accessToken);
             }
             else
                 // if string converting to integer return false then user will get cancel command error message
@@ -515,13 +518,15 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 // other user slack user name
                 SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
+                var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
                 // last leave details of other user 
-                replyText = await LeaveStatusBySlackUserIdAsync(slackUser.UserId, accessToken);
+                replyText = await LeaveStatusBySlackUserIdAsync(user.Id, accessToken);
             }
             else
             {
+                var user = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
                 // last leave details of own
-                replyText = await LeaveStatusBySlackUserIdAsync(leave.UserId, accessToken);
+                replyText = await LeaveStatusBySlackUserIdAsync(user.Id, accessToken);
             }
             return replyText;
         }
@@ -535,12 +540,13 @@ namespace Promact.Core.Repository.SlackRepository
         /// <returns>Reply text to be send</returns>
         private async Task<string> SlackLeaveBalanceAsync(SlashCommand leave, string accessToken)
         {
+            var userDetails = await _userManager.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
             // get user details from oAuth server
-            User user = await _oauthCallsRepository.GetUserByUserIdAsync(leave.UserId, accessToken);
+            User user = await _oauthCallsRepository.GetUserByUserIdAsync(userDetails.Id, accessToken);
             if (user.Id != null)
             {
                 // get user leave allowed details from oAuth server
-                LeaveAllowed allowedLeave = await _oauthCallsRepository.CasualLeaveAsync(leave.UserId, accessToken);
+                LeaveAllowed allowedLeave = await _oauthCallsRepository.CasualLeaveAsync(user.Id, accessToken);
                 // method to get user's number of leave taken
                 LeaveAllowed leaveTaken = _leaveRepository.NumberOfLeaveTaken(user.Id);
                 double casualLeaveTaken = leaveTaken.CasualLeave;
@@ -581,7 +587,7 @@ namespace Promact.Core.Repository.SlackRepository
         private async Task<string> UpdateSickLeaveAsync(List<string> slackText, ApplicationUser user, string accessToken)
         {
             // checking from oAuth whether user is Admin or not
-            bool IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(user.SlackUserId, accessToken);
+            bool IsAdmin = await _oauthCallsRepository.UserIsAdminAsync(user.Id, accessToken);
             if (IsAdmin)
             {
                 int leaveId;
@@ -610,7 +616,7 @@ namespace Promact.Core.Repository.SlackRepository
                                 replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
                                     , newUser.FirstName, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                     leave.Reason, leave.RejoinDate.Value.ToShortDateString());
-                                await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leave, accessToken, replyText, newUser.SlackUserId);
+                                await _client.SendMessageWithoutButtonAttachmentIncomingWebhookAsync(leave, accessToken, replyText, newUser.Id);
                                 await _client.SendSickLeaveMessageToUserIncomingWebhookAsync(leave, user.Email, replyText, newUser);
                             }
                             else

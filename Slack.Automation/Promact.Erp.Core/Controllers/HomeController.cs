@@ -4,7 +4,6 @@ using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
-using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -20,9 +19,10 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+
         private readonly IStringConstantRepository _stringConstant;
 
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
+        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -50,9 +50,7 @@ namespace Promact.Erp.Core.Controllers
                 return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
             }
             return View();
-
         }
-
         /**
         * @api {get} Home/AfterLogIn
         * @apiVersion 1.0.0
@@ -64,8 +62,10 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"After Login from OAuth server Page will be redirected to this page and will open a view of application"
         * }
         */
-        public ActionResult AfterLogIn()
+        [Authorize]
+        public async Task<ActionResult> AfterLogIn()
         {
+            ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
             return View();
         }
 
@@ -140,7 +140,7 @@ namespace Promact.Erp.Core.Controllers
             }
             if (user == null)
             {
-                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, slackUserId, userId);
+                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, userId);
                 if (user != null)
                 {
                     //Signing user with username or email only
@@ -165,7 +165,8 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut();
+            //Set the cookie to expire
+            Request.GetOwinContext().Authentication.SignOut("Cookies");
             return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
         }
 
@@ -192,7 +193,11 @@ namespace Promact.Erp.Core.Controllers
         {
             try
             {
-                return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                if (User.Identity.IsAuthenticated)
+                {
+                    return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                }
+                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
             }
             catch (HttpRequestException ex)
             {
