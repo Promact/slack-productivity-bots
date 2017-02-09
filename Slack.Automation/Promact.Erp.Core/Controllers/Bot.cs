@@ -46,38 +46,36 @@ namespace Promact.Erp.Core.Controllers
         public void TaskMailBot()
         {
             SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
+            // assigning bot token on Slack Socket Client
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            // Telling Slack Socket Client to the bot whose access token was given early
+            client.Connect((connected) => { });
             try
             {
-                // assigning bot token on Slack Socket Client
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
-                MessageReceived messageReceive = new MessageReceived();
-                messageReceive.ok = true;
-                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                // Telling Slack Socket Client to the bot whose access token was given early
-                client.Connect((connected) => { });
-                try
+                // Method will hit when someone send some text in task mail bot
+                client.OnMessageReceived += (message) =>
                 {
-                    // Method will hit when someone send some text in task mail bot
-                    client.OnMessageReceived += (message) =>
+                    var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                    string replyText = string.Empty;
+                    var text = message.text.ToLower();
+                    if (user != null)
                     {
-                        var user = _slackUserDetails.GetByIdAsync(message.user).Result;
-                        string replyText = "";
-                        var text = message.text.ToLower();
-                        if (user != null)
+                        if (text == _stringConstant.TaskMailSubject.ToLower())
                         {
-                            if (text == _stringConstant.TaskMailSubject.ToLower())
-                            {
-                                replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
-                            }
-                            else
-                            {
-                                replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
-                            }
+                            replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                         }
                         else
                         {
-                            replyText = _stringConstant.NoSlackDetails;
+                            replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
                         }
+                    }
+                    else
+                    {
+                        replyText = _stringConstant.NoSlackDetails;
+                    }
                         // Method to send back response to task mail bot
                         client.SendMessage(showMethod, message.channel, replyText);
                 };

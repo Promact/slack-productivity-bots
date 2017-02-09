@@ -38,9 +38,6 @@ namespace Promact.Core.Repository.SlackUserRepository
         #endregion
 
 
-        #endregion
-
-
         #region Public Methods
 
 

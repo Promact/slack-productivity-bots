@@ -8,7 +8,7 @@ namespace Promact.Erp.Core.Controllers
 {
     public class BaseController : ApiController
     {
-        private readonly IStringConstantRepository _stringConstantRepository;
+        public readonly IStringConstantRepository _stringConstantRepository;
         public BaseController(IStringConstantRepository stringConstantRepository)
         {
             _stringConstantRepository = stringConstantRepository;
