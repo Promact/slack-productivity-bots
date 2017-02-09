@@ -211,6 +211,21 @@ namespace Promact.Core.Test
 
 
         /// <summary>
+        /// Method to test user whose slack credentials are not available
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task ScrumInitiateNotUser()
+        {
+            await AddChannelUserAsync();
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+
+            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.SlackChannelIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.SlackUserNotFound, actualString);
+        }
+
+
+        /// <summary>
         /// No slack user found testing
         /// </summary>
         [Fact, Trait("Category", "Required")]
