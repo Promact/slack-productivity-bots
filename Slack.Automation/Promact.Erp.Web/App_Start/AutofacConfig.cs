@@ -16,6 +16,7 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Core.Repository.ScrumRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -70,6 +71,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
+            builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
             builder.RegisterType<HttpClient>().InstancePerDependency();
             builder.RegisterType<HttpClientService>().As<IHttpClientService>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();

@@ -1,49 +1,87 @@
-﻿using System;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
-using Microsoft.Owin.Security.Cookies;
-using Owin;
+﻿using Owin;
 using Promact.Erp.DomainModel.Context;
 using Promact.Erp.DomainModel.Models;
+using Microsoft.Owin.Security.OpenIdConnect;
+using Promact.Erp.Util;
+using Promact.Erp.Util.EnvironmentVariableRepository;
+using Autofac;
+using Promact.Erp.Util.StringConstants;
+using System.IdentityModel.Tokens;
+using Promact.Core.Repository.ExternalLoginRepository;
+using IdentityModel.Client;
+using System.Collections.Generic;
+using Microsoft.Owin.Security.Cookies;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Promact.Erp.Web
 {
     public partial class Startup
     {
+        private IEnvironmentVariableRepository _environmentVariable;
+        private IStringConstantRepository _stringConstantRepository;
+        private IOAuthLoginRepository _oAuthLoginRepository;
+        private string _redirectUrl = null;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
-        public void ConfigureAuth(IAppBuilder app)
+
+        public void ConfigureAuth(IAppBuilder app, IComponentContext context)
         {
+            _environmentVariable = context.Resolve<IEnvironmentVariableRepository>();
+            _oAuthLoginRepository = context.Resolve<IOAuthLoginRepository>();
+            _stringConstantRepository = context.Resolve<IStringConstantRepository>();
+            _redirectUrl = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
+            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
 
-            // Enable the application to use a cookie to store information for the signed in user
-            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
-            // Configure the sign in cookie
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login"),
-                Provider = new CookieAuthenticationProvider
+                AuthenticationType = _stringConstantRepository.AuthenticationType
+            });
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
+            {
+
+                Authority = AppSettingUtil.OAuthUrl,
+                ClientId = _environmentVariable.PromactOAuthClientId,
+                ClientSecret = _environmentVariable.PromactOAuthClientSecret,
+                RedirectUri = _redirectUrl,
+                TokenValidationParameters = new TokenValidationParameters
                 {
-                    // Enables the application to validate the security stamp when the user logs in.
-                    // This is a security feature which is used when you change a password or add an external login to your account.  
-                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-                        validateInterval: TimeSpan.FromMinutes(30),
-                        regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
+                    NameClaimType = _stringConstantRepository.NameClaimType,
+                    RoleClaimType = _stringConstantRepository.RoleClaimType
+                },
+
+                ResponseType = _stringConstantRepository.ResponseType,
+                Scope = _stringConstantRepository.Scope,
+                SignInAsAuthenticationType = _stringConstantRepository.AuthenticationType,
+                AuthenticationType = _stringConstantRepository.AuthenticationTypeOidc,
+                PostLogoutRedirectUri = AppSettingUtil.PromactErpUrl,
+                UseTokenLifetime = true,
+                Notifications = new OpenIdConnectAuthenticationNotifications
+                {
+                    SecurityTokenReceived = async tokenReceived =>
+                    {
+                        var accessToken = tokenReceived.ProtocolMessage.AccessToken;
+                        var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
+                        var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
+                        var user = await userInfoClient.GetAsync(accessToken);
+                        var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
+                        var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);
+                        var refreshToken = response.RefreshToken;
+                        string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
+                        string email = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Email).Value;
+                        await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, refreshToken, userId);
+                    },
+                    AuthenticationFailed = authenticationFailed =>
+                  {
+                      authenticationFailed.Response.Redirect("/"); //redirect to home page.
+                        authenticationFailed.HandleResponse();
+                      return Task.FromResult(0);
+                  },
                 }
-            });            
-            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-
-            // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
-            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
-
-            // Enables the application to remember the second login verification factor such as phone or email.
-            // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
-            // This is similar to the RememberMe option when you log in.
-            app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+            });
         }
     }
 }

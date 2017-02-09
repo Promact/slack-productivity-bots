@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
+using Moq;
 using Promact.Core.Repository.AttachmentRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
@@ -19,6 +21,7 @@ namespace Promact.Core.Test
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
         #region Constructor
@@ -28,6 +31,7 @@ namespace Promact.Core.Test
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
         }
         #endregion
 
@@ -102,7 +106,9 @@ namespace Promact.Core.Test
             var result = await _userManager.CreateAsync(user);
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             var secondResult = await _userManager.AddLoginAsync(user.Id, info);
-            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.Email);
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+             var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.Email);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
         }
 
@@ -169,6 +175,8 @@ namespace Promact.Core.Test
             UserLoginInfo secondInfo = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.SlackChannelIdForTest);
             result = await _userManager.AddLoginAsync(firstUser.Id, firstInfo);
             result = await _userManager.AddLoginAsync(secondUser.Id, secondInfo);
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(secondUser.Email);
             Assert.NotEqual(accessToken, _stringConstant.AccessTokenForTest);
         }

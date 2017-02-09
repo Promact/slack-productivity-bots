@@ -1,5 +1,4 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using System.Threading.Tasks;
 
@@ -29,27 +28,26 @@ namespace Promact.Core.Repository.Client
         /// <param name="leave">Slash Command object</param>
         /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        /// <param name="slackUserId"></param>
-        Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest,string accessToken, string replyText, string slackUserId);
+        /// <param name="userId"></param>
+        Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest,string accessToken, string replyText, string userId);
 
         /// <summary>
         /// Method used to send slack message and email to team leader and management without interactive button
         /// </summary>
-        /// <param name="leave"></param>
-        /// <param name="leaveRequest"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="replyText"></param>
-        /// <param name="slackUserId"></param>
+        /// <param name="leaveRequest">leave details</param>
+        /// <param name="accessToken">User's access token</param>
+        /// <param name="replyText">To be replied text</param>
+        /// <param name="userId">userId of user</param>
         /// <returns></returns>
-        Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string slackUserId);
+        Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId);
 
         /// <summary>
         /// Method to send slack message to user whom leave has been applied by admin
         /// </summary>
-        /// <param name="leaveRequest"></param>
-        /// <param name="managementEmail"></param>
-        /// <param name="replyText"></param>
-        /// <param name="user"></param>
+        /// <param name="leaveRequest">leave details</param>
+        /// <param name="managementEmail">management people email address</param>
+        /// <param name="replyText">To be replied text</param>
+        /// <param name="user">user details</param>
         Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user);
     }
 }

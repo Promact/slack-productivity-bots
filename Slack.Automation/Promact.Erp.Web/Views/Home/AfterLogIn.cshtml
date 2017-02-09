@@ -1,27 +1,18 @@
 ﻿@{
     Layout = null;
 }
-
-@*@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
-{
-    <div>
-        <form asp-controller="Home" asp-action="LogOff">
-            <h1>Leave Management</h1>
-            <h1>You Have Successfully Login with OAuth Server - </h1>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!","")
-            @Html.ActionLink("LogOff", "LogOff")
-        </form>
-    </div>
-}*@
-
+<div>
+    <form asp-controller="Home" asp-action="LogOff">
+        @Html.ActionLink("Log Out", "LogOff")
+    </form>
+</div>
 <head>
     <base href="/">
     <title>Promact</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
-     @*Polyfill(s) for older browsers*@
+    @*Polyfill(s) for older browsers*@
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
     <script src="node_modules/core-js/client/shim.min.js"></script>
@@ -29,15 +20,29 @@
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="systemjs.config.js"></script>
-    <script>
-      System.import('app').catch(function(err){ console.error(err); });
-    </script>
-    </head>
+    @if (@ViewBag.userEmail == "")
+    {
+        <script>
+            System.import('app').catch(function (err) { console.error(err); });
+        </script>
+    }
+</head>
 <body>
-    <my-app>
-        <div class="loader">
-            <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
-        </div>
-    </my-app>
-</body>
+    <div>
+        @if (@ViewBag.userEmail != "")
+        {
+            @Html.ActionLink("Add To Slack", "SlackOAuthAuthorization", "Home")
+            <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
+            <p>Please add user whoes email is @ViewBag.userEmail to slack before proceeding to view reports or use app functionalities in slack</p>
+        }
+        else
+        {
+            <my-app>
+                <div class="loader">
+                    <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
+                </div>
+            </my-app>
+        }
 
+    </div>
+</body>

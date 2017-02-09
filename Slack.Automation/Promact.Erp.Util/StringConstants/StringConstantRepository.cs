@@ -197,21 +197,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userDetails/";
+                return "user/";
             }
         }
         public string TeamLeaderDetailsUrl
         {
             get
             {
-                return "teamLeaderDetails/";
+                return "teamLeaders/";
             }
         }
         public string ManagementDetailsUrl
         {
             get
             {
-                return "managementDetails";
+                return "managements";
             }
         }
         public string OAuthAcessUrl
@@ -734,7 +734,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "User is not in Slack\n";
+                return "User is not in Slack or has not added app to slack yet\n";
+            }
+        }
+        public string NotInSlackOrNotExpectedUser
+        {
+            get
+            {
+                return "User with email id {0} has not logged in with promact yet. Please authenticate with Promact OAuth server to add app to Slack";
             }
         }
         public string PleaseAnswer
@@ -1156,35 +1163,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string ProjectUrl
         {
             get
             {
-                return string.Format("{0}/api/Project/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/project/", AppSettingUtil.OAuthUrl);
             }
         }
         public string UserUrl
         {
             get
             {
-                return string.Format("{0}/api/Users/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl
         {
             get
             {
-                return string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
             }
         }
         public string ClientReturnUrl
         {
             get
             {
-                return string.Format("{0}/Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
+                return string.Format("{0}Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveManagementAuthorizationUrl
@@ -1429,7 +1436,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "casual/leave/";
+                return "leaveAllowed/";
             }
         }
         public string CasualLeaveResponse
@@ -1587,6 +1594,13 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
         public string GroupDetailsResponseText
+        {
+            get
+            {
+                return "{\n    \"ok\": true,\n    \"groups\": [\n        {\n            \"id\": \"G0HJ0SB9R\",\n            \"name\": \"bbit-training-group\",\n            \"is_group\": true,\n            \"created\": 1451628546,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": true,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U051J2RTW\",\n                \"U051J5H4G\",\n                \"U051ZTH8J\",\n                \"U0525M2P1\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0RF4FM09\",\n            \"name\": \"creativecell\",\n            \"is_group\": true,\n            \"created\": 1457515586,\n            \"creator\": \"U051J3RQL\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051J3RQL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LFLT\",\n                \"U0525MNTH\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U05263AL9\",\n                \"U06NVGLPQ\",\n                \"U08GCPE0J\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0MH2SCTG\",\n            \"name\": \"crozi-internal-beta\",\n            \"is_group\": true,\n            \"created\": 1455627169,\n            \"creator\": \"U04K6NL6A\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U051HV8JE\",\n                \"U051J13Q8\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J5H4G\",\n                \"U0525LDMF\",\n                \"U0525M2P1\",\n                \"U0525MNTH\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0L2PBH9N\",\n            \"name\": \"fun-day-2016\",\n            \"is_group\": true,\n            \"created\": 1454416384,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051HV8JE\",\n                \"U051J0GN4\",\n                \"U0525LDMF\",\n                \"U082PJG72\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0FG737TL\",\n            \"name\": \"house-martell\",\n            \"is_group\": true,\n            \"created\": 1448869272,\n            \"creator\": \"U082PJG72\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051J2RTW\",\n                \"U0525LDMF\",\n                \"U0525MFND\",\n                \"U0545BH7Q\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"discussion about olympic 2016\",\n                \"creator\": \"U082PJG72\",\n                \"last_set\": 1448869275\n            }\n        },\n        {\n            \"id\": \"G0Q387150\",\n            \"name\": \"mostcrowdedcube\",\n            \"is_group\": true,\n            \"created\": 1457006375,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G20P4DY8N\",\n            \"name\": \"mpdm-ankit--gourav--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470987087,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @gourav @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            }\n        },\n        {\n            \"id\": \"G2006M214\",\n            \"name\": \"mpdm-ankit--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470822352,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            }\n        },\n        {\n            \"id\": \"G1TPX59C0\",\n            \"name\": \"mpdm-gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1469092626,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            }\n        },\n        {\n            \"id\": \"G0HLD1MBQ\",\n            \"name\": \"mpdm-parth--rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1451912292,\n            \"creator\": \"U0FQH9DB9\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @parth @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            }\n        },\n        {\n            \"id\": \"G0J2SMS4B\",\n            \"name\": \"mpdm-rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1452315477,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            }\n        },\n        {\n            \"id\": \"G24PWMYJ2\",\n            \"name\": \"mpdm-roshni--julie--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1472105114,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U06NVGLPQ\",\n                \"U0525LCJR\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @roshni @julie @siddhartha\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            }\n        },\n        {\n            \"id\": \"G1TQRH34H\",\n            \"name\": \"promact-erp-dev\",\n            \"is_group\": true,\n            \"created\": 1469096642,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0525LCJR\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"only developers\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1469096645\n            }\n        },\n        {\n            \"id\": \"G05207LJY\",\n            \"name\": \"promact-team\",\n            \"is_group\": true,\n            \"created\": 1432703647,\n            \"creator\": \"U05256USX\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051HV8N8\",\n                \"U051HV9KY\",\n                \"U051J094A\",\n                \"U051J0GN4\",\n                \"U051J0M2A\",\n                \"U051J13Q8\",\n                \"U051J17PA\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J44DE\",\n                \"U051J5H4G\",\n                \"U051JE2JW\",\n                \"U051KDCAL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LDMF\",\n                \"U0525LF29\",\n                \"U0525LFLT\",\n                \"U0525LH1B\",\n                \"U0525LLBZ\",\n                \"U0525LW55\",\n                \"U0525M2P1\",\n                \"U0525MFND\",\n                \"U0525MNTH\",\n                \"U0525MXL3\",\n                \"U0525N6FF\",\n                \"U0525N6NB\",\n                \"U0525NC63\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U0526JFLM\",\n                \"U0526N37K\",\n                \"U0545BH7Q\",\n                \"U06CU2VB9\",\n                \"U06NVGLPQ\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U08KM481G\",\n                \"U09G8CUJ3\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\",\n                \"U0U36HKV1\",\n                \"U0VR8DA0Y\",\n                \"U0ZH5UYSJ\",\n                \"U1C74JGTU\",\n                \"U1D6AU01F\",\n                \"U1JBA2Z5G\",\n                \"U1M83P1U0\",\n                \"U1M8GSPPC\",\n                \"U1MVA0H3M\",\n                \"U1MVBJE2X\",\n                \"U1N1CA4C8\",\n                \"U1N1P8X89\",\n                \"U1WTH2LPM\",\n                \"U1Z3M1VNJ\",\n                \"U23EZH2TW\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1T01U11P\",\n            \"name\": \"sci-oauth-dev\",\n            \"is_group\": true,\n            \"created\": 1468914520,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"Team for Slack Custom Integrations + Making OAuth server\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1468914522\n            }\n        },\n        {\n            \"id\": \"G2755U4P6\",\n            \"name\": \"slack-automation-mvc\",\n            \"is_group\": true,\n            \"created\": 1472709560,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"This will show build status and git commits. not meant for discussing anything.\",\n                \"creator\": \"U04KUAFSH\",\n                \"last_set\": 1472709563\n            }\n        },\n        {\n            \"id\": \"G25RU420H\",\n            \"name\": \"slack-integration\",\n            \"is_group\": true,\n            \"created\": 1472451083,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1UPC4057\",\n            \"name\": \"slash-command\",\n            \"is_group\": true,\n            \"created\": 1469441963,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U24QNPAH0\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        }\n    ]\n}\n";
+            }
+        }
+        public string BasicUserDetailsResponseText
         {
             get
             {
@@ -1960,28 +1974,28 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthOneEmployee
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthThreeEmployees
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"nehal\",\"SlackUserId\":\"13b0f2c2f5-4713-a67e-37e50172e148n\",\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListFromOauthThreeEmployeesInActive
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"nehal\",\"SlackUserId\":\"13b0f2c2f5-4713-a67e-37e50172e148n\",\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string ThirdUserSlackUserId
@@ -1996,28 +2010,28 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string EmployeesListInValid
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string InActiveEmployeesList
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string InValidOAuthUsers
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
             }
         }
         public string OAuthUserDetails
@@ -2277,21 +2291,21 @@ namespace Promact.Erp.Util.StringConstants
                 return "MMM dd,yyyy";
             }
         }
-                public string ScrumFirstQuestion
+        public string ScrumFirstQuestion
         {
             get
             {
                 return "What did you do to change the world yesterday?";
             }
         }
-                public string ScrumSecondQuestion
+        public string ScrumSecondQuestion
         {
             get
             {
                 return "How you are going to rock it today?";
             }
         }
-                public string ScrumThirdQuestion
+        public string ScrumThirdQuestion
         {
             get
             {
@@ -2382,14 +2396,14 @@ namespace Promact.Erp.Util.StringConstants
                 return "[{\"id\":1013,\"name\":\"rew\",\"slackChannelName\":\"rew\",\"isActive\":true,\"teamLeaderId\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-01-01\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},{\"Id\":\"2300b67f-69a1-4388-bc3e-56d638a80aaf\",\"FirstName\":\"xyz\",\"LastName\":\"XYZ\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":14.0,\"NumberOfSickLeave\":7.0,\"JoiningDate\":\"2015-01-06T00:00:00\",\"SlackUserName\":\"xyz\",\"Email\":\"xyz@promactinfo.com\",\"Password\":null,\"UserName\":\"xyz@promactinfo.com\",\"UniqueName\":\"xyz-xyz@promactinfo.com\",\"RoleName\":null}]}]";
             }
         }
-                public string ProjectDetailsForEmployeeFromOauth
+        public string ProjectDetailsForEmployeeFromOauth
         {
             get
             {
                 return "[{\"id\":1011,\"name\":\"abc\",\"slackChannelName\":\"abc\",\"isActive\":true,\"teamLeaderId\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-09-12\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},{\"Id\":\"f83860c3-e0b8-4f80-9aa7-82c71eaf50d7\",\"FirstName\":\"grv\",\"LastName\":\"ase=\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":4.0,\"NumberOfSickLeave\":2.0,\"JoiningDate\":\"2016-01-06T00:00:00\",\"SlackUserName\":\"grv\",\"Email\":\"grv@promactinfo.com\",\"Password\":null,\"UserName\":\"grv@promactinfo.com\",\"UniqueName\":\"grv-grv@promactinfo.com\",\"RoleName\":null}]}]";
             }
         }
-                public string TestGroupName
+        public string TestGroupName
         {
             get
             {
@@ -2404,28 +2418,28 @@ namespace Promact.Erp.Util.StringConstants
                 return "01d5e634-f073-49ca-b1b6-c0b04508577b";
             }
         }
-                public string TestAnswer
+        public string TestAnswer
         {
             get
             {
                 return "angular";
             }
         }
-                public string HourLimitExceed
+        public string HourLimitExceed
         {
             get
             {
                 return string.Format("Your daily limit of task is {0} hour. For today you can't add task. Your working hour is exceeded", TaskMailHours);
             }
         }
-                public string StartWorking
+        public string StartWorking
         {
             get
             {
                 return "Just start working";
             }
         }
-                public string HourSpentForTesting
+        public string HourSpentForTesting
         {
             get
             {
@@ -2446,14 +2460,14 @@ namespace Promact.Erp.Util.StringConstants
                 return "applied cl Testing 14-09-2016 14-09-2016 14-09-2016";
             }
         }
-                public string BackDateErrorMessage
+        public string BackDateErrorMessage
         {
             get
             {
                 return "Sorry! You cannot apply leave on back date.";
             }
         }
-                public string InValidDateErrorMessage
+        public string InValidDateErrorMessage
         {
             get
             {
@@ -2832,5 +2846,43 @@ namespace Promact.Erp.Util.StringConstants
                 return "8";
             }
         }
+        public string Scopes
+        {
+            get
+            { return "Scopes"; }
+
+        }
+        public string AuthenticationType
+        {
+            get
+            {
+                return "Cookies";
+            }
+        }
+        public string AuthenticationTypeOidc
+        {
+            get
+            {
+                return "oidc";
+            }
+        }
+
+        public string ResponseType
+        {
+            get
+            {
+                return "code id_token token";
+            }
+        }
+
+        public string Scope { get { return "openid offline_access email profile user_read project_read"; } }
+
+        public string RedirectUrl { get { return "signin-oidc"; } }
+        public string Sub { get { return "sub"; } }
+        public string Email { get { return "email"; } }
+        public string SlackUserID { get { return "slack_user_id"; } }
+        public string RoleClaimType { get { return "role"; } }
+        public string NameClaimType { get { return "name"; } }
+        public string Bearer { get { return "Bearer"; } }
     }
 }
