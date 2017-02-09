@@ -20,11 +20,7 @@ namespace Promact.Core.Repository.BaseRepository
 
         #region Constructor
 
-        public RepositoryBase()
-        {
-
-        }
-
+      
         public RepositoryBase(IRepository<ApplicationUser> applicationUser,
             IAttachmentRepository attachmentRepository)
         {

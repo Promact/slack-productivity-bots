@@ -59,7 +59,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="email"></param>
         /// <param name="refreshToken"></param>
-        /// <param name="slackUserId"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
