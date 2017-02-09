@@ -324,7 +324,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Slack details of user have not been found.";
+                return "Slack details of user have not been found. Please login with Promact and add our app to Slack";
             }
         }
         public string TaskMailDescription

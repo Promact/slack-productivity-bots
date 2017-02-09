@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Xunit;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.StringConstants;
 
 
@@ -14,7 +13,6 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly IRepository<SlackBotUserDetail> _slackBotUserDetailRepository;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         public SlackUserRepositoryTest()
@@ -22,7 +20,6 @@ namespace Promact.Core.Test
             _componentContext = AutofacConfig.RegisterDependancies();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
-            _slackBotUserDetailRepository = _componentContext.Resolve<IRepository<SlackBotUserDetail>>();
             Initialize();
         }
 
@@ -52,19 +49,6 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method to check the functionality of Slack User add method for false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task AddSlackBotUser()
-        {
-            slackUserDetails.IsBot = true;
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            SlackBotUserDetail slackBot = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.Name == slackUserDetails.Name);
-            Assert.Equal(slackBot.Id, 1);
-        }
-
-
-        /// <summary>
         /// Test case to check the functionality of GetbyId method of Slack User Repository for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -86,7 +70,6 @@ namespace Promact.Core.Test
         public async Task SlackUserUpdate()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
@@ -102,43 +85,10 @@ namespace Promact.Core.Test
         public async Task SlackDeletedUserUpdate()
         {
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
             slackUserDetails.Deleted = true;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
-            Assert.Null(slackUser);
-        }
-
-
-        /// <summary>
-        /// Test case to check the functionality of Slack Bot User Update method of Slack User Repository
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackBotUserUpdate()
-        {
-            slackUserDetails.IsBot = true;
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            SlackBotUserDetail slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
-            Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
-        }
-
-
-
-        /// <summary>
-        /// Test case to check the functionality of Slack Bot User Update method of Slack User Repository where the bot user is deleted
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackDeletedBotUserUpdate()
-        {
-            slackUserDetails.IsBot = true;
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
-            slackUserDetails.Deleted = true;
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            SlackBotUserDetail slackUser = await _slackBotUserDetailRepository.FirstOrDefaultAsync(x => x.UserId == _stringConstant.StringIdForTest);
             Assert.Null(slackUser);
         }
 

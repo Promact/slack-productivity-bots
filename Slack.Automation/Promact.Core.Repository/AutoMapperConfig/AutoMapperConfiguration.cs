@@ -30,22 +30,6 @@ namespace Promact.Core.Repository.AutoMapperConfig
                      .ForMember(des => des.FirstName, opt => opt.MapFrom(src => src.Profile.FirstName))
                      .ForMember(des => des.Phone, opt => opt.MapFrom(src => src.Profile.Phone));
 
-
-                cfg.CreateMap<SlackUserDetails, SlackBotUserDetail>()
-                     .ForMember(des => des.Id, opt =>
-                     {
-                         opt.UseDestinationValue();
-                         opt.Ignore();
-                     })
-                     .ForMember(des => des.CreatedOn, opt =>
-                     {
-                         opt.UseDestinationValue();
-                         opt.Ignore();
-                     })
-                     .ForMember(des => des.LastName, opt => opt.MapFrom(src => src.Profile.LastName))
-                     .ForMember(des => des.FirstName, opt => opt.MapFrom(src => src.Profile.FirstName))
-                     .ForMember(des => des.BotId, opt => opt.MapFrom(src => src.Profile.BotId));
-                
             });
             return config.CreateMapper();
         }
