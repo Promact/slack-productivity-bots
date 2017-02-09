@@ -282,8 +282,6 @@
     <Content Include="package.json" />
     <Content Include="bower.json" />
     <Content Include=".bowerrc" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
@@ -323,11 +321,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\jquery-validation\build\release.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.min.js" />
@@ -442,9 +435,6 @@
     <Content Include="Scripts\jquery-validation\src\localization\methods_fi.js" />
     <Content Include="Scripts\jquery-validation\src\localization\methods_nl.js" />
     <Content Include="Scripts\jquery-validation\src\localization\methods_pt.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery\AUTHORS.txt" />
     <Content Include="Scripts\jquery\dist\core.js" />
     <Content Include="Scripts\jquery\dist\jquery.js" />
@@ -1153,8 +1143,6 @@
     <Content Include="Scripts\respond\LICENSE-MIT" />
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Core.Repository\Promact.Core.Repository.csproj">
