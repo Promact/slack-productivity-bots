@@ -75,7 +75,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>Number of casual leave allowed. Object of LeaveAllowed</returns>
-        Task<LeaveAllowed> CasualLeaveAsync(string userId, string accessToken);
+        Task<LeaveAllowed> AllowedLeave(string userId, string accessToken);
 
 
         /// <summary>

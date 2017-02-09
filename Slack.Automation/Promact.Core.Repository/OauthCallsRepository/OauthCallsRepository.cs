@@ -151,7 +151,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>Number of casual leave allowed. Object of LeaveAllowed</returns>
-        public async Task<LeaveAllowed> CasualLeaveAsync(string userId, string accessToken)
+        public async Task<LeaveAllowed> AllowedLeave(string userId, string accessToken)
         {
             LeaveAllowed allowedLeave = new LeaveAllowed();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, userId);
