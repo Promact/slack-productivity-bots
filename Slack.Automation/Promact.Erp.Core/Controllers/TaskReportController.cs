@@ -15,12 +15,10 @@ namespace Promact.Erp.Core.Controllers
     public class TaskReportController : BaseController 
     {
         private readonly ITaskMailRepository _taskMailReport;
-        private readonly IStringConstantRepository _stringConstant;
-        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant) :base(stringConstant)
+        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
+            :base(stringConstant)
         {
             _taskMailReport = taskMailReport;
-            _stringConstant = stringConstant;
-
         }
 
 
@@ -105,7 +103,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
             DateTime createdDate;
-            if (pageType == _stringConstant.NextPage)
+            if (pageType == _stringConstantRepository.NextPage)
             { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
             else
             { createdDate = Convert.ToDateTime(createdOn).AddDays(-1); }

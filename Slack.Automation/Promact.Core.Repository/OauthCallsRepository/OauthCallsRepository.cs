@@ -148,12 +148,12 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>Number of casual leave allowed. Object of LeaveAllowed</returns>
         public async Task<LeaveAllowed> CasualLeaveAsync(string userId, string accessToken)
         {
-            LeaveAllowed casualLeave = new LeaveAllowed();
+            LeaveAllowed allowedLeave = new LeaveAllowed();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, userId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
             if (response != null)

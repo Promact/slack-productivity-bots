@@ -21,7 +21,6 @@ namespace Promact.Erp.Core.Controllers
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
-        private readonly IStringConstantRepository _stringConstant;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
@@ -33,11 +32,13 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstant, ISlackUserRepository slackUserRepository, ILogger logger, IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository)
+        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository, 
+            ISlackUserRepository slackUserRepository, ILogger logger, 
+            IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository,
+            ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository) : base(stringConstantRepository)
         {
             _httpClientService = httpClientService;
             _logger = logger;
-            _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
             _userManager = userManager;
@@ -101,21 +102,21 @@ namespace Promact.Erp.Core.Controllers
             string message = string.Empty;
             var errorMessage = string.Empty;
             try
-            {              
+            {
                 await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
-                message = _stringConstant.SlackAppAdded;
+                message = _stringConstantRepository.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)
             {
-                errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
-                message = _stringConstant.SlackAppError + authEx.Message;
+                errorMessage = string.Format(_stringConstantRepository.ControllerErrorMessageStringFormat, _stringConstantRepository.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
+                message = _stringConstantRepository.SlackAppError + authEx.Message;
             }
 
             _logger.Error(errorMessage);
-            var newUrl = this.Url.Link(_stringConstant.Default, new
+            var newUrl = this.Url.Link(_stringConstantRepository.Default, new
             {
-                Controller = _stringConstant.Home,
-                Action = _stringConstant.SlackAuthorizeAction,
+                Controller = _stringConstantRepository.Home,
+                Action = _stringConstantRepository.SlackAuthorizeAction,
                 message = message
             });
             return Redirect(newUrl);
@@ -186,7 +187,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<IHttpActionResult> SlackEventAsync(SlackEventApiAC slackEvent)
         {
             //slack verification
-            if (slackEvent.Type == _stringConstant.VerificationUrl)
+            if (slackEvent.Type == _stringConstantRepository.VerificationUrl)
             {
                 return Ok(slackEvent.Challenge);
             }
@@ -195,21 +196,21 @@ namespace Promact.Erp.Core.Controllers
             {
                 string eventType = slackEvent.Event.Type;
                 //when a user is added to the slack team
-                if (eventType == _stringConstant.TeamJoin)
+                if (eventType == _stringConstantRepository.TeamJoin)
                 {
                     await _oAuthLoginRepository.SlackEventUpdateAsync(events);
                     eventQueue.Dequeue();
                     return Ok();
                 }
                 //when a user's details are changed
-                else if (eventType == _stringConstant.UserChange)
+                else if (eventType == _stringConstantRepository.UserChange)
                 {
                     await _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
                     eventQueue.Dequeue();
                     return Ok();
                 }
                 //when a public channel is created or renamed or a private channel is renamed
-                else if (eventType == _stringConstant.ChannelCreated || eventType == _stringConstant.ChannelRename || eventType == _stringConstant.GroupRename)
+                else if (eventType == _stringConstantRepository.ChannelCreated || eventType == _stringConstantRepository.ChannelRename || eventType == _stringConstantRepository.GroupRename)
                 {
                     await _oAuthLoginRepository.SlackChannelAddAsync(events);
                     eventQueue.Dequeue();
@@ -223,5 +224,6 @@ namespace Promact.Erp.Core.Controllers
             }
             return null;
         }
+        #endregion
     }
 }

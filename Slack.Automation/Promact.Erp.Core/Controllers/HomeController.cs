@@ -20,19 +20,18 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-
-        private readonly IStringConstantRepository _stringConstant;
         #endregion
 
         #region Constructor
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
+        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, 
+            ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, 
+            IEnvironmentVariableRepository envVariableRepository) : base (stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
-            _stringConstant = stringConstant;
         }
         #endregion
 
@@ -52,7 +51,7 @@ namespace Promact.Erp.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             return View();
         }
@@ -109,10 +108,10 @@ namespace Promact.Erp.Core.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             //BaseUrl of OAuth and clientId of App to be set 
-            string url = string.Format("{0}?clientId={1}", _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
+            string url = string.Format("{0}?clientId={1}", _stringConstantRepository.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
             //make call to the OAuth Server
             return Redirect(url);
         }
@@ -137,11 +136,11 @@ namespace Promact.Erp.Core.Controllers
             if (user != null)
             {
                 await _signInManager.SignInAsync(user, false, false);
-                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             if (user == null)
             {
@@ -150,9 +149,9 @@ namespace Promact.Erp.Core.Controllers
                 {
                     //Signing user with username or email only
                     await _signInManager.SignInAsync(user, false, false);
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                    return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
                 }
-                return RedirectToAction(_stringConstant.SlackAuthorize, _stringConstant.Home, new { message = _stringConstant.UserCouldNotBeAdded });
+                return RedirectToAction(_stringConstantRepository.SlackAuthorize, _stringConstantRepository.Home, new { message = _stringConstantRepository.UserCouldNotBeAdded });
             }
             return View();
         }
@@ -172,7 +171,7 @@ namespace Promact.Erp.Core.Controllers
         {
             //Set the cookie to expire
             Request.GetOwinContext().Authentication.SignOut("Cookies");
-            return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
+            return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);
         }
 
         private IAuthenticationManager AuthenticationManager
@@ -200,13 +199,13 @@ namespace Promact.Erp.Core.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                    return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
                 }
-                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
+                return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);
             }
             catch (HttpRequestException ex)
             {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerSlackOAuthAuthorization, ex.ToString());
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstantRepository.LoggerErrorMessageHomeControllerSlackOAuthAuthorization, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 throw;
             }
