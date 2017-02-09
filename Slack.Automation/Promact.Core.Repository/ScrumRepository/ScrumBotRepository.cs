@@ -208,12 +208,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
             }
-            else //user == null
-            {
-                SlackBotUserDetail botUserDetail = await _slackBotUserDetailDataRepository.FirstOrDefaultAsync(x => x.UserId == slackUserId);
-                if (botUserDetail == null)
-                    replyText = _stringConstant.SlackUserNotFound;
-            }
+           
             return replyText;
         }
 
