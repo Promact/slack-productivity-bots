@@ -385,19 +385,7 @@ namespace Promact.Core.Test
             string compareString = string.Format(_stringConstant.TestQuestion, DateTime.UtcNow.Date.AddDays(-1).ToShortDateString()) + Environment.NewLine;
             Assert.Equal(compareString, msg);
         }
-
-
-        /// <summary>
-        /// Method to test user whose slack credentials are not available
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumInitiateNotUser()
-        {
-            await AddChannelUserAsync();
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.SlackChannelIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            Assert.Equal(_stringConstant.SlackUserNotFound, actualString);
-        }
-
+                       
 
         /// <summary>
         /// Method StartScrum Testing with existing scrum but inactive user
