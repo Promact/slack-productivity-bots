@@ -335,7 +335,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Slack details of user have not been found.";
+                return "Slack details of user have not been found. Please login with Promact and add our app to Slack";
             }
         }
         public string TaskMailDescription
@@ -1270,6 +1270,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Sorry. Something bad happened :face_with_head_bandage: . Please try after sometime.";
+            }
+        }
+        public string ErrorMsgNewPrivateChannel
+        {
+            get
+            {
+                return "Sorry. Something bad happened :face_with_head_bandage: .\nIs this private channel created from an existing private channel ? If yes then this could be the cause of trouble.";
             }
         }
         public string From

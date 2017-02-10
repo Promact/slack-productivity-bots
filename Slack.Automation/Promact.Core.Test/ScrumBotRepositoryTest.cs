@@ -16,6 +16,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Core.Repository.ServiceRepository;
 
+
 namespace Promact.Core.Test
 {
     public class ScrumBotRepositoryTest
@@ -211,6 +212,21 @@ namespace Promact.Core.Test
 
 
         /// <summary>
+        /// Method to test user whose slack credentials are not available
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task ScrumInitiateNotUser()
+        {
+            await AddChannelUserAsync();
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+
+            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.SlackChannelIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.SlackUserNotFound, actualString);
+        }
+
+
+        /// <summary>
         /// No slack user found testing
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -385,7 +401,7 @@ namespace Promact.Core.Test
             string compareString = string.Format(_stringConstant.TestQuestion, DateTime.UtcNow.Date.AddDays(-1).ToShortDateString()) + Environment.NewLine;
             Assert.Equal(compareString, msg);
         }
-                       
+
 
         /// <summary>
         /// Method StartScrum Testing with existing scrum but inactive user
@@ -1598,6 +1614,42 @@ namespace Promact.Core.Test
         }
 
 
+        /// <summary>
+        /// Method AddScrumAnswer Testing (update answer) with only One Answer marked to be asked later but inactive user
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateScrumAnswerInActiveUser()
+        {
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            var userResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
+            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
+            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+
+            UserLoginInfo infor = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, infor);
+
+            await _botQuestionRepository.AddQuestionAsync(question);
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+            _scrumAnswerDataRepository.Insert(scrumAnswer);
+            await _scrumAnswerDataRepository.SaveChangesAsync();
+            await AddChannelUserAsync();
+            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
+
+            string actualMsg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Scrum, _stringConstant.ScrumBotName);
+            string expectedMsg = string.Format(_stringConstant.InActiveInOAuth, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
+            Assert.Equal(expectedMsg, actualMsg);
+        }
+
+        
         /// <summary>
         /// Method AddScrumAnswer Testing with normal conversation on slack channel
         /// </summary>
