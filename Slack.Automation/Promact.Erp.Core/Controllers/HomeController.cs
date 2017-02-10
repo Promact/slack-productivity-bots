@@ -49,6 +49,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
+            _logger.Info("Index:" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
@@ -69,6 +70,7 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public async Task<ActionResult> AfterLogIn()
         {
+            _logger.Info("After Login:");
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
             return View();
         }
