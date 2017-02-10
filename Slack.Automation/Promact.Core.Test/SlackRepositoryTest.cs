@@ -87,6 +87,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForCLAsync()
         {
+            slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -98,15 +99,15 @@ namespace Promact.Core.Test
             PostAsyncMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
-            PostAsyncMethodMocking(secondUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
+            PostAsyncMethodMocking(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString);
             var textTransform = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var textJsonTransform = JsonConvert.SerializeObject(textTransform);
             PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, textJsonTransform, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             MockingUserDetialFromSlackUserId();
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -455,6 +456,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForSLAsync()
         {
+            slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
             await AddSlackThreeUsersAsync();
@@ -466,13 +468,13 @@ namespace Promact.Core.Test
             var replyText = _attachmentRepository.ReplyTextSick(_stringConstant.FirstNameForTest, leave);
             var userTextJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.ManagementFirstForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.FirstNameForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var textJson = JsonConvert.SerializeObject(text);
             PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -512,18 +514,18 @@ namespace Promact.Core.Test
             var replyText = _attachmentRepository.ReplyTextSick(_stringConstant.FirstNameForTest, leave);
             var userTextJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.FirstNameForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var teamLeaderTextJson = JsonConvert.SerializeObject(text);
             PostAsyncMethodMocking(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
             attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            text = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.FirstNameForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var managementTextJson = JsonConvert.SerializeObject(text);
             PostAsyncMethodMocking(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -611,6 +613,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveUpdateSickAsync()
         {
+            slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
             leave.Status = Condition.Approved;
@@ -631,7 +634,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
-            var teamLeaderText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+            var teamLeaderText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.FirstNameForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
             var teamLeaderTextJson = JsonConvert.SerializeObject(teamLeaderText);
             PostAsyncMethodMocking(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString);
             attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
@@ -642,8 +645,8 @@ namespace Promact.Core.Test
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
             _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -1120,7 +1123,7 @@ namespace Promact.Core.Test
             user.SlackUserId = _stringConstant.TeamLeaderSlackId;
 
             slackUser.UserId = _stringConstant.FirstNameForTest;
-            slackUser.Name = _stringConstant.ManagementFirstForTest;
+            slackUser.Name = _stringConstant.FirstNameForTest;
             slackUser.FirstName = _stringConstant.FirstNameForTest;
             slackUser.IsBot = false;
 
