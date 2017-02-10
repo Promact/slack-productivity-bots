@@ -16,6 +16,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Core.Repository.ServiceRepository;
 
+
 namespace Promact.Core.Test
 {
     public class ScrumBotRepositoryTest
