@@ -191,6 +191,7 @@
         string Port { get; }
         string TokenEmpty { get; }
         string ErrorMsg { get; }
+        string ErrorMsgNewPrivateChannel { get; }
         string From { get; }
         string Password { get; }
         string EnableSsl { get; }

@@ -1257,6 +1257,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. Something bad happened :face_with_head_bandage: . Please try after sometime.";
             }
         }
+        public string ErrorMsgNewPrivateChannel
+        {
+            get
+            {
+                return "Sorry. Something bad happened :face_with_head_bandage: .\nIs this private channel created from an existing private channel ? If yes then this could be the cause of trouble.";
+            }
+        }
         public string From
         {
             get
