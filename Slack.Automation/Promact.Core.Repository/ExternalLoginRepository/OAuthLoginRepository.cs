@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Autofac.Extras.NLog;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -30,7 +31,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
-
+        private readonly ILogger _logger;
 
         #endregion
 
@@ -39,7 +40,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetails,
             IRepository<SlackChannelDetails> slackChannelDetails, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
-            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
+            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository, ILogger logger)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -50,6 +51,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _envVariableRepository = envVariableRepository;
             _incomingWebHook = incomingWebHook;
             _slackChannelRepository = slackChannelRepository;
+            _logger = logger;
         }
         #endregion
 
@@ -63,20 +65,28 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
+            _logger.Info("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
             {
+
                 userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
+                _logger.Info("Result:" + result.Succeeded);
+                _logger.Info("Result:" + result.Errors);
             }
             IList<UserLoginInfo> userLoginInformation = await _userManager.GetLoginsAsync(userId);
             if (userLoginInformation.Count > 0)//check already added external oauth detials if it exists so remove it. 
                 await _userManager.RemoveLoginAsync(userId, userLoginInformation[0]);
 
+            _logger.Info("UserLoginInformation Count:" + userLoginInformation.Count);
             //Adding external Oauth details
             UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-            await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
+            var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
+
+            _logger.Info("UserLoginInfo Add:" + success.Succeeded);
+            _logger.Info("UserLoginInfo Add Error:" + success.Errors);
             return userInfo;
         }
 
