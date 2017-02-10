@@ -210,7 +210,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
                         DbFunctions.TruncateTime(x.ScrumDate) == _today);
                 if ((scrum != null && scrum.IsOngoing && !scrum.IsHalted) || ((((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) ||
-                   (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2) ||
+                   (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0) && IsScrumBot(scrumBotId, message)) && messageArray.Length == 2) ||
                     String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
                     String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0))
                 {
@@ -257,6 +257,22 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         #region Private Methods
+
+
+        private bool IsScrumBot(string scrumBotId, string message)
+        {
+            //"<@".Length is 2
+            int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
+            int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
+            if (toIndex > 0 && fromIndex > 1)
+            {
+                //the slack userId is fetched
+                string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                if (String.Compare(applicantId, scrumBotId, StringComparison.Ordinal) == 0)
+                    return true;
+            }
+            return false;
+        }
 
 
         #region Temporary Scrum Details
@@ -1064,7 +1080,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (tempSlackUser != null)
                     {
                         User userDetail = users.FirstOrDefault(x => x.SlackUserId == tempScrumDetails.SlackUserId);
-                     
+
                         if (userDetail == null)
                             // User is either not a member of the project or not in OAuth
                             return string.Format(_stringConstant.UserNotInProject, tempSlackUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
