@@ -1064,8 +1064,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (tempSlackUser != null)
                     {
                         User userDetail = users.FirstOrDefault(x => x.SlackUserId == tempScrumDetails.SlackUserId);
-                        //tempScrumDetails.SlackUserId = applicantId;
-
+                     
                         if (userDetail == null)
                             // User is either not a member of the project or not in OAuth
                             return string.Format(_stringConstant.UserNotInProject, tempSlackUser.Name) + await GetQuestionAsync(scrumId, questions, users, projectId);
