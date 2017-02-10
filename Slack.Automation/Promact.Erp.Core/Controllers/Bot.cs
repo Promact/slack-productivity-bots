@@ -45,8 +45,8 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void TaskMailBot()
         {
-            // assigning bot token on Slack Socket Client
             SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
+            // assigning bot token on Slack Socket Client
             // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
             MessageReceived messageReceive = new MessageReceived();
             messageReceive.ok = true;
@@ -59,11 +59,11 @@ namespace Promact.Erp.Core.Controllers
                 client.OnMessageReceived += (message) =>
                 {
                     var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
-                    string replyText = _stringConstant.EmptyString;
-                    var text = message.text;
+                    string replyText = string.Empty;
+                    var text = message.text.ToLower();
                     if (user != null)
                     {
-                        if (text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
+                        if (text == _stringConstant.TaskMailSubject.ToLower())
                         {
                             replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
                         }
