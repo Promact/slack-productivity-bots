@@ -982,6 +982,7 @@
     <Content Include="Views\Home\AfterLogIn.cshtml" />
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
+    <None Include="Properties\PublishProfiles\Local.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
