@@ -69,7 +69,10 @@ namespace Promact.Erp.Web
                         _logger.Info("Start With SecurityTokenReceived:");
                         var accessToken = tokenReceived.ProtocolMessage.AccessToken;
                         _logger.Info("AccessToken:" + accessToken);
+                        _logger.Info("AppSettingUtil OAuth Url:" + AppSettingUtil.OAuthUrl);
                         var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
+                        _logger.Info("Doc File:" + doc);
+                        _logger.Info("Doc Info:" + doc.Error);
                         _logger.Info("Doc:" + doc.UserInfoEndpoint);
                         var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
                         var user = await userInfoClient.GetAsync(accessToken);
