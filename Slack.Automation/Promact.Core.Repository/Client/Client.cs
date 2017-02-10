@@ -21,7 +21,6 @@ namespace Promact.Core.Repository.Client
     public class Client : IClient
     {
         #region Private Variables
-        private HttpClient _chatUpdateMessage;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly IOauthCallsRepository _oauthCallRepository;
         private readonly IEmailService _emailService;
@@ -31,18 +30,17 @@ namespace Promact.Core.Repository.Client
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
+        private readonly ApplicationUserManager _userManager;
         #endregion
 
         #region Constructor
         public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant,
             IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
-            IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook)
+            IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook,
+            ApplicationUserManager userManager)
         {
-          
-            _chatUpdateMessage = new HttpClient();
             _stringConstant = stringConstant;
-            _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
             _oauthCallRepository = oauthCallRepository;
             _emailService = emailService;
             _attachmentRepository = attachmentRepository;
@@ -51,6 +49,7 @@ namespace Promact.Core.Repository.Client
             _slackUserRepository = slackUserRepository;
             _emailTemplateRepository = emailTemplateRepository;
             _incomingWebHook = incomingWebHook;
+            _userManager = userManager;
         }
         #endregion
 
@@ -153,8 +152,9 @@ namespace Promact.Core.Repository.Client
             }
             foreach (var teamLeader in teamLeaders)
             {
-                SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(teamLeader.SlackUserId);
-                var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                var user = await _userManager.FindByIdAsync(teamLeader.Id);
+                var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                 var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);

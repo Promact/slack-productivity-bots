@@ -8,7 +8,7 @@ namespace Promact.Erp.Core.Controllers
 {
     public abstract class MVCBaseController : Controller
     {
-        private readonly IStringConstantRepository _stringConstantRepository;
+        public readonly IStringConstantRepository _stringConstantRepository;
         public MVCBaseController(IStringConstantRepository stringConstantRepository)
         {
             _stringConstantRepository = stringConstantRepository;

@@ -35,8 +35,6 @@ namespace Promact.Core.Repository.SlackUserRepository
             _stringConstant = stringConstant;
             _mapper = mapper;
         }
-
-
         #endregion
 
 

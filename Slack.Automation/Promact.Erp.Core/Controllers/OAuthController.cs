@@ -16,11 +16,11 @@ namespace Promact.Erp.Core.Controllers
 {
     public class OAuthController : BaseController
     {
+        #region Private Variables
         private static Queue<SlackEventApiAC> eventQueue;
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _logger;
-        private readonly IStringConstantRepository _stringConstant;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
@@ -29,27 +29,32 @@ namespace Promact.Erp.Core.Controllers
         {
             eventQueue = new Queue<SlackEventApiAC>();
         }
-        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstant,
-            ISlackUserRepository slackUserRepository, ILogger logger,
-            IRepository<SlackChannelDetails> slackChannelDetails, ApplicationUserManager userManager,
-            IOAuthLoginRepository oAuthLoginRepository, ISlackChannelRepository slackChannelRepository) : base(stringConstant)
+        #endregion
+
+        #region Constructor
+        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository, 
+            ISlackUserRepository slackUserRepository, ILogger logger, 
+            IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository,
+            ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository) : base(stringConstantRepository)
         {
             _httpClientService = httpClientService;
             _logger = logger;
-            _stringConstant = stringConstant;
             _slackChannelDetails = slackChannelDetails;
             _oAuthLoginRepository = oAuthLoginRepository;
             _userManager = userManager;
             _slackUserRepository = slackUserRepository;
             _slackChannelRepository = slackChannelRepository;
         }
+        #endregion
 
+        #region Private Methods
         /**
-        * @api {get} oAuth/RefreshToken
+        * @api {get} oauth/refreshtoken
         * @apiVersion 1.0.0
-        * @apiName RefreshToken
-        * @apiGroup RefreshToken  
+        * @apiName RefreshTokenAsync
+        * @apiGroup OAuth  
         * @apiParam {string} Name    refreshToken
+        * @apiParam {string} Name    slackUserName
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
@@ -57,12 +62,13 @@ namespace Promact.Erp.Core.Controllers
         *       "ClientId":"dastvgs3rt2031srtgr54dgrf",
         *       "ClientSecret":"frwhklsjelkjsktjlk656f5dyhddvsfdgv",
         *       "RefreshToken":"acjshrkjajjsdfxo",
-        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack"
+        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack",
+        *       "UserId":"JFF414GSDF"
         *   }
         * }
         */
         [HttpGet]
-        [Route("oAuth/RefreshToken")]
+        [Route("oauth/refreshtoken")]
         public async Task<IHttpActionResult> RefreshTokenAsync(string refreshToken, string slackUserName)
         {
             var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
@@ -73,62 +79,115 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} oAuth/SlackRequest
+        * @api {get} oauth/slackoauthrequest
         * @apiVersion 1.0.0
-        * @apiName SlackOAuth
+        * @apiName SlackOAuthAsync
         * @apiGroup SlackOAuth  
         * @apiParam {string} Name    code
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       "Description":"This will add slack user, channel and group in application"
+        *       "Description":"This will add slack user, channel and group in application and redirect to appropriate page and display proper message"
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "error":"This will redirect to appropriate page and display proper error message"
         * }
         */
         [HttpGet]
-        [Route("oAuth/SlackRequest")]
+        [Route("oauth/slackoauthrequest")]
         public async Task<IHttpActionResult> SlackOAuthAsync(string code)
         {
             string message = string.Empty;
             var errorMessage = string.Empty;
             try
-            {              
+            {
                 await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
-                message = _stringConstant.SlackAppAdded;
+                message = _stringConstantRepository.SlackAppAdded;
             }
             catch (SlackAuthorizeException authEx)
             {
-                errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
-                message = _stringConstant.SlackAppError + authEx.Message;
+                errorMessage = string.Format(_stringConstantRepository.ControllerErrorMessageStringFormat, _stringConstantRepository.LoggerErrorMessageOAuthControllerSlackDetailsAdd, authEx.ToString());
+                message = _stringConstantRepository.SlackAppError + authEx.Message;
             }
 
             _logger.Error(errorMessage);
-            var newUrl = this.Url.Link(_stringConstant.Default, new
+            var newUrl = this.Url.Link(_stringConstantRepository.Default, new
             {
-                Controller = _stringConstant.Home,
-                Action = _stringConstant.SlackAuthorizeAction,
+                Controller = _stringConstantRepository.Home,
+                Action = _stringConstantRepository.SlackAuthorizeAction,
                 message = message
             });
             return Redirect(newUrl);
         }
 
         /**
-        * @api {post} slack/eventAlert
+        * @api {post} slack/eventalert
         * @apiVersion 1.0.0
-        * @apiName SlackEvent
-        * @apiGroup SlackEvent  
-        * @apiParam {SlackEventApiAC} Name  slackEvent
+        * @apiName SlackEventAsync
+        * @apiGroup SlackOAuth  
+        * @apiParam {SlackEventApiAC} Name    slackEvent
+        * @apiParamExample {json} Request-Example:
+        * {
+        *       "token":"Jhj5dZrVaK7ZwHHjRyZWjbDl",
+        *       "challenge":"3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
+        *       "type":"url_verification",
+        *       "team_id":"T061EG9RZ",
+        *       "api_app_id":"A0FFV41KK",
+        *       "event_ts":"1465244570.336841",
+        *       "authed_users":"
+                    ["U061F7AUR"]",
+        *       "event":"
+        *       {
+                "type": "reaction_added",
+                "user": "U061F1EUR",
+                "item": 
+                    {
+                        "type": "message",
+                        "channel": "C061EG9SL",
+                        "ts": "1464196127.000002"
+                    },
+                    "reaction": "slightly_smiling_face"
+                },"
+        * }  
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
         *       "Description":"This method will be hit when any event to which slack app has subscribed to is triggered
         * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
+        * }
         */
         [HttpPost]
-        [Route("slack/eventAlert")]
+        [Route("slack/eventalert")]
         public async Task<IHttpActionResult> SlackEventAsync(SlackEventApiAC slackEvent)
         {
             //slack verification
-            if (slackEvent.Type == _stringConstant.VerificationUrl)
+            if (slackEvent.Type == _stringConstantRepository.VerificationUrl)
             {
                 return Ok(slackEvent.Challenge);
             }
@@ -137,21 +196,21 @@ namespace Promact.Erp.Core.Controllers
             {
                 string eventType = slackEvent.Event.Type;
                 //when a user is added to the slack team
-                if (eventType == _stringConstant.TeamJoin)
+                if (eventType == _stringConstantRepository.TeamJoin)
                 {
                     await _oAuthLoginRepository.SlackEventUpdateAsync(events);
                     eventQueue.Dequeue();
                     return Ok();
                 }
                 //when a user's details are changed
-                else if (eventType == _stringConstant.UserChange)
+                else if (eventType == _stringConstantRepository.UserChange)
                 {
                     await _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
                     eventQueue.Dequeue();
                     return Ok();
                 }
                 //when a public channel is created or renamed or a private channel is renamed
-                else if (eventType == _stringConstant.ChannelCreated || eventType == _stringConstant.ChannelRename || eventType == _stringConstant.GroupRename)
+                else if (eventType == _stringConstantRepository.ChannelCreated || eventType == _stringConstantRepository.ChannelRename || eventType == _stringConstantRepository.GroupRename)
                 {
                     await _oAuthLoginRepository.SlackChannelAddAsync(events);
                     eventQueue.Dequeue();
@@ -165,5 +224,6 @@ namespace Promact.Erp.Core.Controllers
             }
             return null;
         }
+        #endregion
     }
 }

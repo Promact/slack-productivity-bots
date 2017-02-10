@@ -16,7 +16,6 @@ namespace Promact.Erp.Util.HttpClient
         public HttpClientService(IStringConstantRepository stringConstant)
         {
             _stringConstant = stringConstant;
-
         }
 
         /// <summary>
@@ -26,6 +25,7 @@ namespace Promact.Erp.Util.HttpClient
         /// <param name="contentUrl"></param>        
         /// <param name="accessToken"></param>
         /// <returns>responseContent</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
         public async Task<string> GetAsync(string baseUrl, string contentUrl, string accessToken)
         {
             try
@@ -40,14 +40,19 @@ namespace Promact.Erp.Util.HttpClient
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 var responseContent = response.Content.ReadAsStringAsync().Result;
-                return responseContent;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return responseContent;
+                }
+                else
+                    throw new Exception(responseContent);
             }
-            catch (Exception ex)
+            catch(HttpRequestException)
             {
-                throw ex;
+                throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
         }
-       
+
 
         /// <summary>
         /// Method to use System.Net.Http.HttpClient's PostAsync method
@@ -56,20 +61,26 @@ namespace Promact.Erp.Util.HttpClient
         /// <param name="contentUrl"></param>        
         /// <param name="accessToken"></param>
         /// <returns>responseString</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
         public async Task<string> PostAsync(string baseUrl, string contentString, string contentHeader)
         {
             try
             {
                 _client = new System.Net.Http.HttpClient();
                 var response = await _client.PostAsync(baseUrl, new StringContent(contentString, Encoding.UTF8, contentHeader));
+                _client.Dispose();
                 var responseString = response.Content.ReadAsStringAsync().Result;
-                return responseString;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return responseString;
+                }
+                else
+                    throw new Exception(responseString);
             }
-            catch (Exception ex)
+            catch (HttpRequestException)
             {
-                throw ex;
+                throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
-
         }
     }
 }

@@ -11,43 +11,43 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-   public class LeaveRequestController : WebApiBaseController
+   public class LeaveRequestController : BaseController
     {
+        #region Private Variables
         private readonly ISlackRepository _slackRepository;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ILogger _logger;
-        private readonly IStringConstantRepository _stringConstant;
-        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, ILogger logger, IStringConstantRepository stringConstant)
+        #endregion
+
+        #region Constructor
+        public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, 
+            ILogger logger, IStringConstantRepository stringConstant) : base(stringConstant)
         {
             _slackRepository = slackRepository;
             _attachmentRepository = attachmentRepository;
             _logger = logger;
-            _stringConstant = stringConstant;
         }
+        #endregion
 
+        #region Public Methods
         /**
-        * @api {post} leaves/slackcall
+        * @api {post} leaverequest/leaveslashcommand
         * @apiVersion 1.0.0
-        * @apiName SlackRequest
-        * @apiGroup LeaveRequest  
-        * @apiParam {string} Name  Token
-        * @apiParam {string} Name  TeamId
-        * @apiParam {string} Name  TeamDomain
-        * @apiParam {string} Name  ChannelId
-        * @apiParam {string} Name  ChannelName
-        * @apiParam {string} Name  UserId
-        * @apiParam {string} Name  Username
-        * @apiParam {string} Name  Command
-        * @apiParam {string} Name  Text
-        * @apiParam {string} Name  ResponseUrl
+        * @apiName SlackRequestAsync
+        * @apiGroup LeaveRequest
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *     "Description":"A message will be send user using incoming webhook"
+        *     "Description":"A message of leave will be send user using incoming webhook"
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 400 BadRequeest 
+        * {
+        *     "error":"A message of error will be send user using incoming webhook"
         * }
         */
         [HttpPost]
-        [Route("leaves/slackcall")]
+        [Route("leaverequest/leaveslashcommand")]
         public async Task<IHttpActionResult> SlackRequestAsync()
         {
             var request = HttpContext.Current.Request.Form;
@@ -60,42 +60,48 @@ namespace Promact.Erp.Core.Controllers
             // If throws any type of error it will give same message in slack by response_url
             catch (Exception ex)
             {
-                _slackRepository.Error(leave);
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
+                await _slackRepository.ErrorAsync(leave.ResponseUrl, ex.Message);
+                var errorMessage = string.Format(_stringConstantRepository.ControllerErrorMessageStringFormat, _stringConstantRepository.LoggerErrorMessageLeaveRequestControllerSlackRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
                 return BadRequest();
             }
         }
 
         /**
-        * @api {post} leaves/slackbuttoncall
+        * @api {post} leaverequest/leaveupdatebyslackbutton
         * @apiVersion 1.0.0
-        * @apiName SlackButtonRequest
-        * @apiGroup SlackButtonRequest    
-        * @apiParam {SlashChatUpdateResponse} Name  leaveResponse
+        * @apiName SlackButtonRequestAsync
+        * @apiGroup LeaveRequest
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *     "Description":"A message will be update in slack using slack chat update method"
+        *     "Description":"A message of leave will be update in slack using slack chat update method"
+        * }
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 400 BadRequest
+        * {
+        *     "error":"A message of error will be update in slack using slack chat update method"
         * }
         */
         [HttpPost]
-        [Route("leaves/slackbuttoncall")]
+        [Route("leaverequest/leaveupdatebyslackbutton")]
         public async Task<IHttpActionResult> SlackButtonRequestAsync()
         {
+            var request = HttpContext.Current.Request.Form;
+            var leaveResponse = _attachmentRepository.SlashChatUpdateResponseTransfrom(request);
             try
             {
-                var request = HttpContext.Current.Request.Form;
-                var leaveResponse = _attachmentRepository.SlashChatUpdateResponseTransfrom(request);
                 await _slackRepository.UpdateLeaveAsync(leaveResponse);
                 return Ok();
             }
             catch (Exception ex)
             {
-                var errorMessage = string.Format(_stringConstant.ControllerErrorMessageStringFormat, _stringConstant.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
+                await _slackRepository.ErrorAsync(leaveResponse.ResponseUrl, ex.Message);
+                var errorMessage = string.Format(_stringConstantRepository.ControllerErrorMessageStringFormat, _stringConstantRepository.LoggerErrorMessageLeaveRequestControllerSlackButtonRequest, ex.ToString());
                 _logger.Error(errorMessage, ex);
-                throw;
+                return BadRequest();
             }
         }
+        #endregion
     }
 }
