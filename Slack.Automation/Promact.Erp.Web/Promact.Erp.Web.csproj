@@ -111,7 +111,10 @@
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.3.308261200\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
@@ -282,8 +285,6 @@
     <Content Include="package.json" />
     <Content Include="bower.json" />
     <Content Include=".bowerrc" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
@@ -323,11 +324,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\jquery-validation\build\release.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.min.js" />
@@ -442,9 +438,6 @@
     <Content Include="Scripts\jquery-validation\src\localization\methods_fi.js" />
     <Content Include="Scripts\jquery-validation\src\localization\methods_nl.js" />
     <Content Include="Scripts\jquery-validation\src\localization\methods_pt.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery\AUTHORS.txt" />
     <Content Include="Scripts\jquery\dist\core.js" />
     <Content Include="Scripts\jquery\dist\jquery.js" />
@@ -1112,7 +1105,6 @@
     <Content Include="Scripts\jquery-validation\LICENSE.md" />
     <Content Include="Scripts\jquery-validation\package.json" />
     <Content Include="Scripts\jquery-validation\README.md" />
-    <Content Include="Scripts\jquery-validation\src\localization\messages_az" />
     <Content Include="Scripts\jquery-validation\validation.jquery.json" />
     <Content Include="Scripts\jquery\.bower.json" />
     <Content Include="Scripts\jquery\bower.json" />
@@ -1153,8 +1145,6 @@
     <Content Include="Scripts\respond\LICENSE-MIT" />
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Core.Repository\Promact.Core.Repository.csproj">
