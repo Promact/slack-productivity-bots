@@ -70,7 +70,9 @@ namespace Promact.Erp.Web
                         var accessToken = tokenReceived.ProtocolMessage.AccessToken;
                         _logger.Info("AccessToken:" + accessToken);
                         _logger.Info("AppSettingUtil OAuth Url:" + AppSettingUtil.OAuthUrl);
-                        var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
+                        var discovery = new DiscoveryClient(AppSettingUtil.OAuthUrl);
+                        discovery.Policy.RequireHttps = false;
+                        var doc = await discovery.GetAsync();
                         _logger.Info("Doc File:" + doc);
                         _logger.Info("Doc Info:" + doc.Error);
                         _logger.Info("Doc:" + doc.UserInfoEndpoint);
