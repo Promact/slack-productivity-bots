@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Promact.Core.Repository.OauthCallsRepository;
+using System.Data.Entity;
 
 namespace Promact.Core.Repository.ScrumReportRepository
 {
@@ -79,14 +80,14 @@ namespace Promact.Core.Repository.ScrumReportRepository
         {
             EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
             //Fetch all the scrum answers for a particular employee
-            List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id)).ToList();
+            List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id && DbFunctions.TruncateTime(x.AnswerDate) == scrumDate)).ToList();
             //Find scrum answers for a particular employee of a particular project on a specific date 
-            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.AnswerDate.Date == scrumDate.Date && x.ScrumId == scrum.Id).ToList();
+            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.ScrumId == scrum.Id).ToList();
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             //Assigning answers to specific scrum questions
             if (!todayScrumAnswers.Any())
             {
-                employeeScrumDetail.Status = _stringConstant.PersonNotAvailable;
+                employeeScrumDetail.Status = string.Format(_stringConstant.PersonNotAvailable, scrumDate.ToString(_stringConstant.FormatForDate));
             }
             foreach (var todayScrumAnswer in todayScrumAnswers)
             {
@@ -182,7 +183,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Getting details of the specific project from Oauth server
             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
             //Getting scrum for a specific project
-            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id);
+            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id && DbFunctions.TruncateTime(x.ScrumDate) == scrumDate);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(_stringConstant.FormatForDate);
             scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
