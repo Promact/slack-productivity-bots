@@ -45,6 +45,7 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void TaskMailBot()
         {
+            _logger.Info("TaskMailAccessToken : " +_environmentVariableRepository.TaskmailAccessToken);
             SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
             // assigning bot token on Slack Socket Client
             // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
@@ -55,29 +56,38 @@ namespace Promact.Erp.Core.Controllers
             client.Connect((connected) => { });
             try
             {
+                _logger.Info("Task mail bot connected");
                 // Method will hit when someone send some text in task mail bot
                 client.OnMessageReceived += (message) =>
                 {
+                    _logger.Info("Task mail bot receive message : " + message.text);
                     var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                    _logger.Info("User : " + user.Name);
                     string replyText = string.Empty;
                     var text = message.text.ToLower();
                     if (user != null)
                     {
                         if (text == _stringConstant.TaskMailSubject.ToLower())
                         {
+                            _logger.Info("Task Mail process start - StartTaskMailAsync");
                             replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
+                            _logger.Info("Task Mail process done : "+ replyText);
                         }
                         else
                         {
+                            _logger.Info("Task Mail process start - QuestionAndAnswerAsync");
                             replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
+                            _logger.Info("Task Mail process done : " + replyText);
                         }
                     }
                     else
                     {
                         replyText = _stringConstant.NoSlackDetails;
+                        _logger.Info("User is null : " + replyText);
                     }
-                        // Method to send back response to task mail bot
-                        client.SendMessage(showMethod, message.channel, replyText);
+                    // Method to send back response to task mail bot
+                    client.SendMessage(showMethod, message.channel, replyText);
+                    _logger.Info("Reply message sended");
                 };
             }
             catch (Exception ex)
