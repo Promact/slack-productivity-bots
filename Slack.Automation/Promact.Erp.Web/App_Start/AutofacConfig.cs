@@ -20,6 +20,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
+using Promact.Core.Repository.TaskMailReportRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Core.Controllers;
 using Promact.Erp.DomainModel.Context;
@@ -83,6 +84,9 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ScrumReportRepository>().As<IScrumReportRepository>();
             builder.RegisterType<EnvironmentVariableRepository>().As<IEnvironmentVariableRepository>();
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
+            builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
+            builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
+            builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();

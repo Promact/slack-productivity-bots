@@ -17,7 +17,7 @@ using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Effort;
 using Promact.Core.Repository.BotQuestionRepository;
-using Moq; 
+using Moq;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.DataRepository;
@@ -32,6 +32,7 @@ using AutoMapper;
 using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.BaseRepository;
+using Promact.Core.Repository.TaskMailReportRepository;
 
 namespace Promact.Core.Test
 {
@@ -68,6 +69,8 @@ namespace Promact.Core.Test
             builder.RegisterType<TaskMailRepository>().As<ITaskMailRepository>();
             builder.RegisterType<BotQuestionRepository>().As<IBotQuestionRepository>();
             builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
+            builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
+            builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
@@ -83,6 +86,11 @@ namespace Promact.Core.Test
             var mockServiceRepositoryObject = mockServiceRepository.Object;
             builder.RegisterInstance(mockServiceRepository).As<Mock<IServiceRepository>>();
             builder.RegisterInstance(mockServiceRepositoryObject).As<IServiceRepository>();
+
+            var httpContext = new Mock<HttpContextBase>();
+            var httpContextObject = httpContext.Object;
+            builder.RegisterInstance(httpContext).As<Mock<HttpContextBase>>();
+            builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
             
             var container = builder.Build();
             return container;
