@@ -1,11 +1,10 @@
-﻿using Promact.Core.Repository.TaskMailRepository;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.StringConstants;
 using System;
+using Promact.Core.Repository.TaskMailReportRepository;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -14,8 +13,8 @@ namespace Promact.Erp.Core.Controllers
     [Authorize]
     public class TaskReportController : BaseController 
     {
-        private readonly ITaskMailRepository _taskMailReport;
-        public TaskReportController(ITaskMailRepository taskMailReport, IStringConstantRepository stringConstant)
+        private readonly ITaskMailReportRepository _taskMailReport;
+        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant)
             :base(stringConstant)
         {
             _taskMailReport = taskMailReport;
