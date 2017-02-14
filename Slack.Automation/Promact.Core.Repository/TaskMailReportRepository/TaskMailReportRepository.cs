@@ -1,4 +1,5 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+﻿using Autofac.Extras.NLog;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.OauthCallsRepository;
@@ -28,6 +29,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -35,7 +37,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             IOauthCallHttpContextRespository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
-            IEmailServiceTemplateRepository emailServiceTemplate)
+            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -47,6 +49,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
+            _logger = logger;
         }
         #endregion
 
@@ -62,6 +65,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             var user = await _userRepository.FirstAsync(x => x.Id == userId);
 
             //getting user information from Promact Oauth Server.
+            _logger.Info("Getting user information from oauth server");
             List<UserRoleAc> userRoleAcList = await _oauthCallsRepository.GetUserRoleAsync(user.Id);
             var userInformation = userRoleAcList.First(x => x.UserName == user.UserName);
             if (userInformation.Role == _stringConstant.RoleAdmin)
