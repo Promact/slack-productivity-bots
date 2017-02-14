@@ -152,16 +152,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         _logger.Info("slackUserDetails UserID" + slackUserDetails.UserId);
                         applicationUser.SlackUserId = slackUserDetails.UserId;
                         _logger.Info("applicationUser UserID" + slackUserDetails.UserId);
-                        await _userManager.UpdateAsync(applicationUser);
+                        _logger.Info("applicationUser SlackUserId" + applicationUser.SlackUserId);
+                        var succeeded = await _userManager.UpdateAsync(applicationUser);
+                        _logger.Info("Update Application User succeeded" + succeeded.Succeeded);
+                        _logger.Info("Update Application User Errors" + succeeded.Errors);
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-
+                        _logger.Info("Add Slack User Id" + slackUserDetails.Id);
                         //the public channels' details
                         string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
                         SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
                         if (channels.Ok)
                         {
+                            _logger.Info("Channels error:" + channels.ErrorMessage);
                             foreach (var channel in channels.Channels)
                             {
+                                _logger.Info("Channel:" + channel);
                                 await AddChannelGroupAsync(channel);
                             }
                         }
@@ -171,10 +176,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         //the public groups' details
                         string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
                         SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
+                        _logger.Info("Groups:" + groups.ErrorMessage);
                         if (groups.Ok)
                         {
                             foreach (var channel in groups.Groups)
                             {
+                                _logger.Info("Group:" + channel);
                                 await AddChannelGroupAsync(channel);
                             }
                         }
