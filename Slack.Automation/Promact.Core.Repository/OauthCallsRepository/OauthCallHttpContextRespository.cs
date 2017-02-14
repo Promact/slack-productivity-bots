@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Autofac.Extras.NLog;
+using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
@@ -22,17 +23,19 @@ namespace Promact.Core.Repository.OauthCallsRepository
         private readonly HttpContextBase _httpContextBase;
         private readonly ApplicationUserManager _userManager;
         private readonly IAttachmentRepository _attachmentRepository;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
         public OauthCallHttpContextRespository(IStringConstantRepository stringConstant, IHttpClientService httpClientService,
-            HttpContextBase httpContextBase, ApplicationUserManager userManager, IAttachmentRepository attachmentRepository)
+            HttpContextBase httpContextBase, ApplicationUserManager userManager, IAttachmentRepository attachmentRepository, ILogger logger)
         {
             _stringConstant = stringConstant;
             _httpClientService = httpClientService;
             _httpContextBase = httpContextBase;
             _userManager = userManager;
             _attachmentRepository = attachmentRepository;
+            _logger=logger;
         }
         #endregion
 
@@ -122,6 +125,9 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             var accessToken = await GetCurrentUserAcceesToken();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.UserRoleUrl);
+            _logger.Info("basedUrl :" + _stringConstant.UserUrl);
+            _logger.Info("requestUrl :" + requestUrl);
+            _logger.Info("accessToken :" + accessToken);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return userRoleListAc;

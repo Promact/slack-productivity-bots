@@ -5,6 +5,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.StringConstants;
 using System;
 using Promact.Core.Repository.TaskMailReportRepository;
+using Autofac.Extras.NLog;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -14,10 +15,12 @@ namespace Promact.Erp.Core.Controllers
     public class TaskReportController : BaseController 
     {
         private readonly ITaskMailReportRepository _taskMailReport;
-        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant)
+        private readonly ILogger _logger;
+        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant, ILogger logger)
             :base(stringConstant)
         {
             _taskMailReport = taskMailReport;
+            _logger = logger;
         }
 
 
@@ -173,6 +176,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("")]
         public async Task<List<TaskMailReportAc>> GetUserInformationAsync()
         {
+            _logger.Info("Get User Information by Id "+ GetUserId(User.Identity));
             return await _taskMailReport.GetUserInformationAsync(GetUserId(User.Identity));
         }
 
