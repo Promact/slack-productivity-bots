@@ -1,7 +1,7 @@
 ﻿using Autofac.Extras.NLog;
 using System.Web.Mvc;
 
-namespace Promact.Erp.Util.ExceptionHandler
+namespace Promact.Erp.Core.ActionFilters
 {
     public class ExceptionLoggerFilter : IExceptionFilter
     {
@@ -39,5 +39,4 @@ namespace Promact.Erp.Util.ExceptionHandler
             public string StackTrace { get; set; }
         }
     }
-
 }

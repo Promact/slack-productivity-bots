@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.NLog;
 using Promact.Erp.Core.Controllers;
-using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Core.ActionFilters;
 using Promact.Erp.Web.App_Start;
 using System;
 using System.Web;
