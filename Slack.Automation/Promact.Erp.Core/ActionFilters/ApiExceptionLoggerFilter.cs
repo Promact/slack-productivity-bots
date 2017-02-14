@@ -7,7 +7,7 @@ namespace Promact.Erp.Core.ActionFilters
 {
     public class ApiExceptionLoggerFilter : IExceptionFilter
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public ApiExceptionLoggerFilter(ILogger logger)
         {
