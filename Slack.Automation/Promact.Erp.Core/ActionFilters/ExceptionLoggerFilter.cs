@@ -5,19 +5,19 @@ namespace Promact.Erp.Core.ActionFilters
 {
     public class ExceptionLoggerFilter : IExceptionFilter
     {
-        private ILogger _iLogger;
+        private readonly ILogger _logger;
 
-        public ExceptionLoggerFilter(ILogger iLogger)
+        public ExceptionLoggerFilter(ILogger logger)
         {
-            _iLogger = iLogger;
+            _logger = logger;
         }
 
         public void OnException(ExceptionContext context)
         {
             var response = GetResponse(context);
 
-            _iLogger.Error("Error: " + response.StackTrace);
-            _iLogger.Error("Error Message: " + response.Message);
+            _logger.Error("Error: " + response.StackTrace);
+            _logger.Error("Error Message: " + response.Message);
         }
 
         private ErrorResponse GetResponse(ExceptionContext context)
