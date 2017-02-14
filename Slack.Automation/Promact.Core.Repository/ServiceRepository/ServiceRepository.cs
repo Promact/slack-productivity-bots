@@ -23,7 +23,9 @@ namespace Promact.Core.Repository.ServiceRepository
         public async Task<string> GerAccessTokenByRefreshToken(string refreshToken)
         {
             //feching access token using refresh token. 
-            var doc = await DiscoveryClient.GetAsync(AppSettingUtil.OAuthUrl);
+            var discovery = new DiscoveryClient(AppSettingUtil.OAuthUrl);
+            discovery.Policy.RequireHttps = false;
+            var doc = await discovery.GetAsync();
             var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
             var requestRefreshToken = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
             return requestRefreshToken.AccessToken;

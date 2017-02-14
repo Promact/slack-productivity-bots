@@ -3,15 +3,14 @@ using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
-using System.Data.Entity;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Autofac.Extras.NLog;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -28,6 +27,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -35,7 +35,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
-            IEmailServiceTemplateRepository emailServiceTemplate)
+            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -47,6 +47,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
+            _logger = logger;
         }
         #endregion
 
@@ -60,10 +61,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
             var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
             bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText);
             // if question text is null or not request to start task mail then only allowed
             if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
+                _logger.Info("Task Mail Bot Module, task mail process start - StartTaskMailAsync");
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 #region Task Mail Details
                 if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
@@ -118,9 +121,12 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
             var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
             // if question text is null then only allowed
             if (string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
+                _logger.Info("Task Mail Bot Module, task mail process start - QuestionAndAnswerAsync");
+                _logger.Info("Task Mail Bot Module, task mail list count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
                 if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
                 {
                     var taskDetails = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
@@ -131,6 +137,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     {
                         // getting next question to be asked to user
                         var nextQuestion = await NextQuestionForTaskMailAsync(previousQuestion.OrderNumber);
+                        _logger.Info("Previous question ordernumber : " +previousQuestion.OrderNumber);
                         switch (previousQuestion.OrderNumber)
                         {
                             #region Your Task
@@ -359,23 +366,31 @@ namespace Promact.Core.Repository.TaskMailRepository
             var user = await _userRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
             if (user != null)
             {
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, User : " + user.Email);
                 // getting access token for that user
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, request for access token from oauth");
                 userAndTaskMailDetailsWithAccessToken.AccessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Accesstoken : " + userAndTaskMailDetailsWithAccessToken.AccessToken);
                 // getting user information from Promact Oauth Server
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, requested for user details from oauth");
                 userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(user.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
                 if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
                 {
+                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, receive user : " + userAndTaskMailDetailsWithAccessToken.User.Email);
                     // checking for previous task mail exist or not for today
                     userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMailRepository.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
                     x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
                     x.CreatedOn.Year == DateTime.UtcNow.Year);
                     if (userAndTaskMailDetailsWithAccessToken.TaskMail != null)
                     {
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail details for today : " + userAndTaskMailDetailsWithAccessToken.TaskMail.CreatedOn);
                         // getting task mail details for started task mail
                         userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetailRepository.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail list have count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
                     }
                     else
                     {
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail not started for today");
                         // if task mail doesnot exist then ask user to start task mail
                         userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
                     }
@@ -408,11 +423,13 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>task mail details</returns>
         private async Task<TaskMail> AddTaskMailAsync(string employeeId)
         {
+            _logger.Info("Task mail module add task mail start");
             TaskMail taskMail = new TaskMail();
             taskMail.CreatedOn = DateTime.UtcNow;
             taskMail.EmployeeId = employeeId;
             _taskMailRepository.Insert(taskMail);
             await _taskMailRepository.SaveChangesAsync();
+            _logger.Info("Task mail module add task mail end");
             return taskMail;
         }
 
@@ -423,6 +440,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>first question statement</returns>
         private async Task<string> AddTaskMailDetailAndGetQuestionStatementAsync(int taskMailId)
         {
+            _logger.Info("Task mail module add task mail details start");
             TaskMailDetails taskMailDetails = new TaskMailDetails();
             // getting first question of task mail type
             var firstQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
@@ -430,6 +448,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             taskMailDetails.QuestionId = firstQuestion.Id;
             _taskMailDetailRepository.Insert(taskMailDetails);
             await _taskMailDetailRepository.SaveChangesAsync();
+            _logger.Info("Task mail module add task mail details end");
             return firstQuestion.QuestionStatement;
         }
 
@@ -440,11 +459,13 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>question</returns>
         private async Task<Question> NextQuestionForTaskMailAsync(QuestionOrder previousQuestionOrder)
         {
+            _logger.Info("Task mail module NextQuestionForTaskMailAsync start");
             var orderValue = (int)previousQuestionOrder;
             var typeValue = (int)BotQuestionType.TaskMail;
             orderValue++;
             // getting question by order number and question type as task mail
             var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
+            _logger.Info("Task mail module NextQuestionForTaskMailAsync end");
             return nextQuestion;
         }
         #endregion
