@@ -325,6 +325,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilters\ExceptionLoggerFilter.cs" />
     <Compile Include="ActionFilters\SampleActionFilter.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\Bot.cs" />
@@ -353,9 +354,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

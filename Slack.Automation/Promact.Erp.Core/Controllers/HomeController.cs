@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Promact.Erp.Util.StringConstants;
 using System.Net.Http;
 
+
 namespace Promact.Erp.Core.Controllers
 {
     public class HomeController : MVCBaseController
@@ -23,9 +24,9 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, 
-            ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, 
-            IEnvironmentVariableRepository envVariableRepository) : base (stringConstant)
+        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
+            ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository,
+            IEnvironmentVariableRepository envVariableRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -49,7 +50,6 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
-            _logger.Info("Index:" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
@@ -70,7 +70,6 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public async Task<ActionResult> AfterLogIn()
         {
-            _logger.Info("After Login:");
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
             return View();
         }
