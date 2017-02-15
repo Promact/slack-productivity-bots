@@ -114,14 +114,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns></returns>
         public async Task AddSlackUserInformationAsync(string code)
         {
-            _logger.Info("Start AddSlackUserInformationAsync:" + code);
             string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
             string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
             SlackOAuthResponse slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
-            _logger.Info("slackOAuth" + slackOAuth);
             _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
             bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
-            _logger.Info("checkUserIncomingWebHookExist" + checkUserIncomingWebHookExist);
             if (!checkUserIncomingWebHookExist)
             {
                 IncomingWebHook slackItem = new IncomingWebHook()
@@ -137,7 +134,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             //get all the slack users of the team
             string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
             SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
-            _logger.Info("slackUsers" + slackUsers.Ok);
             if (slackUsers.Ok)
             {
                 SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackOAuth.UserId);
@@ -145,19 +141,22 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 if (!string.IsNullOrEmpty(slackUserDetails?.Profile?.Email))
                 {
                     //fetch the details of the user who is authenticated with Promact OAuth server with the given slack user's email
+                    _logger.Info("Profile Email" + slackUserDetails.Profile.Email);
                     ApplicationUser applicationUser = await _userManager.FindByEmailAsync(slackUserDetails.Profile.Email);
-                    _logger.Info("ApplicationUser" + applicationUser);
                     if (applicationUser != null)
                     {
                         _logger.Info("slackUserDetails UserID" + slackUserDetails.UserId);
                         applicationUser.SlackUserId = slackUserDetails.UserId;
-                        _logger.Info("applicationUser UserID" + slackUserDetails.UserId);
                         _logger.Info("applicationUser SlackUserId" + applicationUser.SlackUserId);
                         var succeeded = await _userManager.UpdateAsync(applicationUser);
+                        _logger.Info("applicationUser Object:" + JsonConvert.SerializeObject(applicationUser));
                         _logger.Info("Update Application User succeeded" + succeeded.Succeeded);
                         _logger.Info("Update Application User Errors" + succeeded.Errors);
+                        ApplicationUser testApllicationUser = await _userManager.FindByEmailAsync(applicationUser.Email);
+                        _logger.Info("Test Application Slcak UserId" + testApllicationUser.SlackUserId);
+                        _logger.Info("Test ApplicationUser Object:" + JsonConvert.SerializeObject(testApllicationUser));
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-                        _logger.Info("Add Slack User Id" + slackUserDetails.Id);
+                        _logger.Info("Add Slack User Id Done");
                         //the public channels' details
                         string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
                         SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
