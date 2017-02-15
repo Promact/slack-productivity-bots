@@ -154,6 +154,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         _logger.Info("Update Application User Errors" + succeeded.Errors);
                         ApplicationUser testApllicationUser = await _userManager.FindByEmailAsync(applicationUser.Email);
                         _logger.Info("Test Application Slcak UserId" + testApllicationUser.SlackUserId);
+                        _logger.Info("Test ApplicationUser Object:" + JsonConvert.SerializeObject(testApllicationUser));
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
                         _logger.Info("Add Slack User Id Done");
                         //the public channels' details
