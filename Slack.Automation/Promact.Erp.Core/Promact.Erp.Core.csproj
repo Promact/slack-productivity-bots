@@ -325,6 +325,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilters\ApiExceptionLoggerFilter.cs" />
     <Compile Include="ActionFilters\ExceptionLoggerFilter.cs" />
     <Compile Include="ActionFilters\SampleActionFilter.cs" />
     <Compile Include="Controllers\BaseController.cs" />
