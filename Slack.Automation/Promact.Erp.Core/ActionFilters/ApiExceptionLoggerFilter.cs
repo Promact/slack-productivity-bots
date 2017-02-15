@@ -20,11 +20,9 @@ namespace Promact.Erp.Core.ActionFilters
                 HttpActionExecutedContext actionExecutedContext,
                 CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                _logger.Error("Web Service Error Message:" + actionExecutedContext.Exception.Message);
-                _logger.Error("Web Service Error StackTrace:" + actionExecutedContext.Exception.StackTrace);
-            }, cancellationToken);
+            _logger.Error("Web Service Error Message:" + actionExecutedContext.Exception.Message);
+            _logger.Error("Web Service Error StackTrace:" + actionExecutedContext.Exception.StackTrace);
+            return Task.FromResult(0);
         }
     }
 }
