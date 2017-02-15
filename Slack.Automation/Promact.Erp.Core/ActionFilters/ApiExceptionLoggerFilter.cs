@@ -16,13 +16,15 @@ namespace Promact.Erp.Core.ActionFilters
 
         public bool AllowMultiple { get { return true; } }
 
-        public Task ExecuteExceptionFilterAsync(
+        public async Task ExecuteExceptionFilterAsync(
                 HttpActionExecutedContext actionExecutedContext,
                 CancellationToken cancellationToken)
         {
-            _logger.Error("Web Service Error Message:" + actionExecutedContext.Exception.Message);
-            _logger.Error("Web Service Error StackTrace:" + actionExecutedContext.Exception.StackTrace);
-            return Task.FromResult(0);
+            await Task.Factory.StartNew(() =>
+            {
+                _logger.Error("Web Service Error Message:" + actionExecutedContext.Exception.Message);
+                _logger.Error("Web Service Error StackTrace:" + actionExecutedContext.Exception.StackTrace);
+            }, cancellationToken);
         }
     }
 }
