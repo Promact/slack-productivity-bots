@@ -171,17 +171,19 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         }
                         else
                             throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
-
+                        _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                         //the public groups' details
                         string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
                         SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
                         _logger.Info("Groups:" + groups.ErrorMessage);
+                        _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                         if (groups.Ok)
                         {
                             foreach (var channel in groups.Groups)
                             {
                                 _logger.Info("Group:" + channel);
                                 await AddChannelGroupAsync(channel);
+                                _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                             }
                         }
                         else
@@ -220,6 +222,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 slackChannel.Name = slackChannelDetails.Name;
                 await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
             }
+
         }
 
 
@@ -265,8 +268,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task<string> CheckUserSlackInformation(string userId)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
             if (!string.IsNullOrEmpty(user.SlackUserId))
             {
+                _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
                 if (_slackUserDetailsRepository.Any(x => x.UserId == user.SlackUserId))
                     return string.Empty;
             }
