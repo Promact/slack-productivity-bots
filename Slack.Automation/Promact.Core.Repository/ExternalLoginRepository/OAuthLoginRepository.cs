@@ -65,7 +65,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
-            _logger.Info("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
+            _logger.Debug("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
             {
@@ -73,20 +73,20 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
-                _logger.Info("Result:" + result.Succeeded);
-                _logger.Info("Result:" + result.Errors);
+                _logger.Debug("Result:" + result.Succeeded);
+                _logger.Debug("Result:" + result.Errors);
             }
             IList<UserLoginInfo> userLoginInformation = await _userManager.GetLoginsAsync(userId);
             if (userLoginInformation.Count > 0)//check already added external oauth detials if it exists so remove it. 
                 await _userManager.RemoveLoginAsync(userId, userLoginInformation[0]);
 
-            _logger.Info("UserLoginInformation Count:" + userLoginInformation.Count);
+            _logger.Debug("UserLoginInformation Count:" + userLoginInformation.Count);
             //Adding external Oauth details
             UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
             var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
 
-            _logger.Info("UserLoginInfo Add:" + success.Succeeded);
-            _logger.Info("UserLoginInfo Add Error:" + success.Errors);
+            _logger.Debug("UserLoginInfo Add:" + success.Succeeded);
+            _logger.Debug("UserLoginInfo Add Error:" + success.Errors);
             return userInfo;
         }
 
@@ -137,26 +137,26 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             if (slackUsers.Ok)
             {
                 SlackUserDetails slackUserDetails = slackUsers.Members?.Find(x => x.UserId == slackOAuth.UserId);
-                _logger.Info("slackUserDetails" + slackUserDetails.UserId);
+                _logger.Debug("slackUserDetails" + slackUserDetails.UserId);
                 if (!string.IsNullOrEmpty(slackUserDetails?.Profile?.Email))
                 {
                     //fetch the details of the user who is authenticated with Promact OAuth server with the given slack user's email
-                    _logger.Info("Profile Email" + slackUserDetails.Profile.Email);
+                    _logger.Debug("Profile Email" + slackUserDetails.Profile.Email);
                     ApplicationUser applicationUser = await _userManager.FindByEmailAsync(slackUserDetails.Profile.Email);
                     if (applicationUser != null)
                     {
-                        _logger.Info("slackUserDetails UserID" + slackUserDetails.UserId);
+                        _logger.Debug("slackUserDetails UserID" + slackUserDetails.UserId);
                         applicationUser.SlackUserId = slackUserDetails.UserId;
-                        _logger.Info("applicationUser SlackUserId" + applicationUser.SlackUserId);
+                        _logger.Debug("applicationUser SlackUserId" + applicationUser.SlackUserId);
                         var succeeded = await _userManager.UpdateAsync(applicationUser);
-                        _logger.Info("applicationUser Object:" + JsonConvert.SerializeObject(applicationUser));
-                        _logger.Info("Update Application User succeeded" + succeeded.Succeeded);
-                        _logger.Info("Update Application User Errors" + succeeded.Errors);
+                        _logger.Debug("applicationUser Object:" + JsonConvert.SerializeObject(applicationUser));
+                        _logger.Debug("Update Application User succeeded" + succeeded.Succeeded);
+                        _logger.Debug("Update Application User Errors" + succeeded.Errors);
                         ApplicationUser testApllicationUser = await _userManager.FindByEmailAsync(applicationUser.Email);
-                        _logger.Info("Test Application Slcak UserId" + testApllicationUser.SlackUserId);
-                        _logger.Info("Test ApplicationUser Object:" + JsonConvert.SerializeObject(testApllicationUser));
+                        _logger.Debug("Test Application Slcak UserId" + testApllicationUser.SlackUserId);
+                        _logger.Debug("Test ApplicationUser Object:" + JsonConvert.SerializeObject(testApllicationUser));
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-                        _logger.Info("Add Slack User Id Done");
+                        _logger.Debug("Add Slack User Id Done");
                         //the public channels' details
                         string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
                         SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
@@ -176,14 +176,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
                         SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
                         _logger.Info("Groups:" + groups.ErrorMessage);
-                        _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
+                        _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                         if (groups.Ok)
                         {
                             foreach (var channel in groups.Groups)
                             {
                                 _logger.Info("Group:" + channel);
                                 await AddChannelGroupAsync(channel);
-                                _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
+                                _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                             }
                         }
                         else
@@ -268,10 +268,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task<string> CheckUserSlackInformation(string userId)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
+            _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
             if (!string.IsNullOrEmpty(user.SlackUserId))
             {
-                _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
+                _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(user.Email)).SlackUserId);
                 if (_slackUserDetailsRepository.Any(x => x.UserId == user.SlackUserId))
                     return string.Empty;
             }
