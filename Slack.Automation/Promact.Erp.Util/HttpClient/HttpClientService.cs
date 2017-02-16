@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Promact.Erp.Util.StringConstants;
+using Autofac.Extras.NLog;
 
 namespace Promact.Erp.Util.HttpClient
 {
@@ -13,9 +12,11 @@ namespace Promact.Erp.Util.HttpClient
     {
         private System.Net.Http.HttpClient _client;
         private readonly IStringConstantRepository _stringConstant;
-        public HttpClientService(IStringConstantRepository stringConstant)
+        private readonly ILogger _logger;
+        public HttpClientService(IStringConstantRepository stringConstant, ILogger logger)
         {
             _stringConstant = stringConstant;
+            _logger = logger;
         }
 
         /// <summary>
@@ -31,15 +32,20 @@ namespace Promact.Erp.Util.HttpClient
             try
             {
                 _client = new System.Net.Http.HttpClient();
+                _logger.Info("Promact url : " + baseUrl);
                 _client.BaseAddress = new Uri(baseUrl);
                 // Added access token to request header if provided by user
                 if (!String.IsNullOrEmpty(accessToken))
                 {
+                    _logger.Info("Access token is not null" + accessToken);
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_stringConstant.Bearer,accessToken);
                 }
+                _logger.Info("ContentUrl : " + contentUrl);
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 var responseContent = response.Content.ReadAsStringAsync().Result;
+                _logger.Info("Status code : " + response.StatusCode);
+                _logger.Info("Return content : " + responseContent);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return responseContent;
@@ -47,8 +53,9 @@ namespace Promact.Erp.Util.HttpClient
                 else
                     throw new Exception(responseContent);
             }
-            catch(HttpRequestException)
+            catch(HttpRequestException ex)
             {
+                _logger.Error("Error in HttpRequest : " + ex.Message + Environment.NewLine + ex.StackTrace);
                 throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
             }
         }
