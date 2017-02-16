@@ -32,20 +32,20 @@ namespace Promact.Erp.Util.HttpClient
             try
             {
                 _client = new System.Net.Http.HttpClient();
-                _logger.Info("Promact url : " + baseUrl);
+                _logger.Debug("Promact url : " + baseUrl);
                 _client.BaseAddress = new Uri(baseUrl);
                 // Added access token to request header if provided by user
                 if (!String.IsNullOrEmpty(accessToken))
                 {
-                    _logger.Info("Access token is not null" + accessToken);
+                    _logger.Debug("Access token is not null" + accessToken);
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_stringConstant.Bearer,accessToken);
                 }
-                _logger.Info("ContentUrl : " + contentUrl);
+                _logger.Debug("ContentUrl : " + contentUrl);
                 var response = await _client.GetAsync(contentUrl);
                 _client.Dispose();
                 var responseContent = response.Content.ReadAsStringAsync().Result;
-                _logger.Info("Status code : " + response.StatusCode);
-                _logger.Info("Return content : " + responseContent);
+                _logger.Debug("Status code : " + response.StatusCode);
+                _logger.Debug("Return content : " + responseContent);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return responseContent;
