@@ -6,7 +6,9 @@ import { LoaderService } from './shared/loader.service';
     templateUrl: './app/index.html'
 
 })
-    
+
 export class AppComponent {
-    constructor(private loader: LoaderService) { }
+    constructor(private loader: LoaderService) {
+
+    }
 }

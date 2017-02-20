@@ -1,17 +1,38 @@
 ﻿@{
     Layout = null;
 }
-<div>
-    <form asp-controller="Home" asp-action="LogOff">
-        @Html.ActionLink("Log Out", "LogOff")
-    </form>
-</div>
 <head>
     <base href="/">
     <title>Promact</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Index Page</title>
+    <!-- Bootstrap -->
+    <link href="../Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="../Content/vendors/font-awesome/font-awesome.min.css" rel="stylesheet" />
+    <!-- NProgress -->
+    <link href="../Content/vendors/nprogress/nprogress.css" rel="stylesheet" />
+    <!-- iCheck -->
+    <link href="../Content/vendors/iCheck/skins/flat/green.css" rel="stylesheet" />
+    <!-- bootstrap-progressbar -->
+    <link href="../Content/vendors/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" />
+    <!-- JQVMap -->
+    <link href="../Content/vendors/jqvmap/jqvmap.min.css" rel="stylesheet" />
+    <!-- bootstrap-daterangepicker -->
+    <!--<link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">-->
+    <!-- Custom Theme Style -->
+    <link href="../Content/vendors/custom.min.css" rel="stylesheet" />
+
+
     @*Polyfill(s) for older browsers*@
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
@@ -27,22 +48,49 @@
         </script>
     }
 </head>
-<body>
-    <div>
-        @if (@ViewBag.userEmail != "")
-        {
+<body class="nav-md">
+
+    @if (@ViewBag.userEmail != "")
+    {
+        <div>
+            <form asp-controller="Home" asp-action="LogOff">
+                @Html.ActionLink("Log Out", "LogOff")
+            </form>
+        </div>
+
             @Html.ActionLink("Add To Slack", "SlackOAuthAuthorization", "Home")
             <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
             <p>Please add user whoes email is @ViewBag.userEmail to slack before proceeding to view reports or use app functionalities in slack</p>
-        }
-        else
-        {
-            <my-app>
-                <div class="loader">
-                    <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
-                </div>
-            </my-app>
-        }
+    }
+    else
+    {
+        <my-app>
+            <div class="loader">
+                <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
+            </div>
+        </my-app>
+    }
+    <script src="../Scripts/jquery/dist/jquery.min.js"></script>
+    <script src="../Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../Content/vendors/fastclick/fastclick.js"></script>
+    <script src="../Content/vendors/nprogress/nprogress.js"></script>
+    <script src="../Content/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="../Content/vendors/iCheck/icheck.min.js"></script>
+    <script src="../Content/vendors/skycons/skycons.js"></script>
 
-    </div>
+    <script src="../Content/vendors/Flot/jquery.flot.js"></script>
+    <script src="../Content/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="../Content/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="../Content/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="../Content/vendors/Flot/jquery.flot.resize.js"></script>
+
+    <script src="../Content/vendors/float.orderbars/jquery.flot.orderBars.js"></script>
+    <script src="../Content/vendors/float.spline/jquery.flot.spline.min.js"></script>
+    <script src="../Content/vendors/float.curvedlines/curvedLines.js"></script>
+
+    <script src="../Content/vendors/jqvmap/jquery.vmap.js"></script>
+    <script src="../Content/vendors/jqvmap/jquery.vmap.world.js"></script>
+    <script src="../Content/vendors/jqvmap/jquery.vmap.sampledata.js"></script>
+    <script src="../Content/vendors/custom.min.js"></script>
+
 </body>
