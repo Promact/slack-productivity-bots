@@ -5,11 +5,9 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -147,14 +145,52 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return userRoleListAc;
         }
+
+        /// <summary>
+        /// Method to call an api from oAuth server and get whether user is admin or not. - SS
+        /// </summary>
+        /// <returns>true if user has admin role else false</returns>
+        public async Task<bool> CurrentUserIsAdminAsync()
+        {
+            var accessToken = await GetCurrentUserAcceesToken();
+            bool result = false;
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, (await GetCurrentUserDetails()).Id);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            if (response != null)
+            {
+                result = JsonConvert.DeserializeObject<bool>(response);
+            }
+            return result;
+        }
         #endregion
 
         #region Private Method
+        /// <summary>
+        /// Method to get current user access token
+        /// </summary>
+        /// <returns>access token</returns>
         private async Task<string> GetCurrentUserAcceesToken()
         {
-            var claimIdentity = _httpContextBase.User.Identity as ClaimsIdentity;
-            var userName = (await _userManager.FindByIdAsync(claimIdentity.Claims.ToList().Single(x => x.Type == _stringConstant.Sub).Value)).UserName;
+            var userName = (await GetCurrentUserDetails()).UserName;
             return (await _attachmentRepository.UserAccessTokenAsync(userName));
+        }
+
+        /// <summary>
+        /// Method used to get current user details
+        /// </summary>
+        /// <returns>user details</returns>
+        private async Task<ApplicationUser> GetCurrentUserDetails()
+        {
+            return (await _userManager.FindByIdAsync(GetCurrentClaims().Claims.ToList().Single(x => x.Type == _stringConstant.Sub).Value));
+        }
+
+        /// <summary>
+        /// Method used to get current list of claims
+        /// </summary>
+        /// <returns>list of claims</returns>
+        private ClaimsIdentity GetCurrentClaims()
+        {
+            return _httpContextBase.User.Identity as ClaimsIdentity;
         }
         #endregion
     }
