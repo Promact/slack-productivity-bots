@@ -15,9 +15,7 @@ namespace Promact.Erp.Core.ActionFilters
         public void OnException(ExceptionContext context)
         {
             var response = GetResponse(context);
-
-            _logger.Error("Error: " + response.StackTrace);
-            _logger.Error("Error Message: " + response.Message);
+            _logger.Error(response.Message);
         }
 
         private ErrorResponse GetResponse(ExceptionContext context)
