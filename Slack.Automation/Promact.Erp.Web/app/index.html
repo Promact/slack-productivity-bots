@@ -4,6 +4,7 @@
     <h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
     <h3><a routerLink="task" routerLinkActive="active">Task Reports</a></h3>
     <h3><a routerLink="/scrum" routerLinkActive="active">Scrum Reports</a></h3>
+    <h3><a routerLink="/mailsetting" routerLinkActive="active" [hidden]="!userIsAdmin">Mail Setting</a></h3>
 
     <router-outlet></router-outlet>
     

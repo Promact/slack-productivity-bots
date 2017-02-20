@@ -145,7 +145,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api from oAuth server and get whether user is admin or not. - SS
         /// </summary>
-        /// <param name="slackUserId">userId of slack user</param>
+        /// <param name="userId">userId of slack user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>true if user has admin role else false</returns>
         public async Task<bool> UserIsAdminAsync(string userId, string accessToken)

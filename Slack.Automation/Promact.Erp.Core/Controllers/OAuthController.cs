@@ -1,5 +1,6 @@
 ﻿using Autofac.Extras.NLog;
 using Promact.Core.Repository.ExternalLoginRepository;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -25,6 +26,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly ApplicationUserManager _userManager;
+        private readonly IOauthCallHttpContextRespository _oauthCallRepository;
         static OAuthController()
         {
             eventQueue = new Queue<SlackEventApiAC>();
@@ -35,7 +37,8 @@ namespace Promact.Erp.Core.Controllers
         public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository, 
             ISlackUserRepository slackUserRepository, ILogger logger, 
             IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository,
-            ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository) : base(stringConstantRepository)
+            ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository,
+            IOauthCallHttpContextRespository oauthCallRepository) : base(stringConstantRepository)
         {
             _httpClientService = httpClientService;
             _logger = logger;
@@ -44,6 +47,7 @@ namespace Promact.Erp.Core.Controllers
             _userManager = userManager;
             _slackUserRepository = slackUserRepository;
             _slackChannelRepository = slackChannelRepository;
+            _oauthCallRepository = oauthCallRepository;
         }
         #endregion
 
@@ -223,6 +227,24 @@ namespace Promact.Erp.Core.Controllers
                 }
             }
             return null;
+        }
+
+        /**
+        * @api {get} oauth/userIsAdmin
+        * @apiVersion 1.0.0
+        * @apiName CurrentUserIsAdminOrNot
+        * @apiGroup OAuth  
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        * {
+        *       true
+        * }
+        */
+        [HttpGet]
+        [Route("oauth/userIsAdmin")]
+        public async Task<IHttpActionResult> CurrentUserIsAdminOrNot()
+        {
+            return Ok(await _oauthCallRepository.CurrentUserIsAdminAsync());
         }
         #endregion
     }

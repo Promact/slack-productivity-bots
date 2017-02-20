@@ -48,5 +48,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="userId">id of user</param>
         /// <returns>List of user. List of object of UserRoleAc</returns>
         Task<List<UserRoleAc>> GetListOfEmployeeAsync(string userId);
+
+        /// <summary>
+        /// Method to call an api from oAuth server and get whether user is admin or not. - SS
+        /// </summary>
+        /// <returns>true if current user has admin role else false</returns>
+        Task<bool> CurrentUserIsAdminAsync();
     }
 }
