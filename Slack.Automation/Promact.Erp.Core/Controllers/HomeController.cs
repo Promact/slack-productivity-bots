@@ -71,6 +71,7 @@ namespace Promact.Erp.Core.Controllers
         public async Task<ActionResult> AfterLogIn()
         {
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
+            ViewBag.userEmail = string.Empty;
             return View();
         }
 
