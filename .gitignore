@@ -263,3 +263,4 @@ opencoverCoverage.xml
 *.ruleset
 /Slack.Automation/Sonar
 /Slack.Automation/SonarQube/SolutionBinding.sqconfig
+!**/Content/**/*.js
