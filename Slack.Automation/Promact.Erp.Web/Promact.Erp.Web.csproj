@@ -1170,6 +1170,14 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
     <TypeScriptCompile Include="app\enums\taskMailStatus.ts" />
+    <TypeScriptCompile Include="app\Group\group.model.ts" />
+    <TypeScriptCompile Include="app\Group\group.module.ts" />
+    <TypeScriptCompile Include="app\Group\group.routes.ts" />
+    <TypeScriptCompile Include="app\Group\group.service.ts" />
+    <TypeScriptCompile Include="app\Group\group.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupAdd\groupAdd.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupEdit\groupEdit.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupList\groupList.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.ts" />
