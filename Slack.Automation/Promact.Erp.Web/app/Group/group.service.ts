@@ -6,9 +6,7 @@ import { StringConstant } from '../shared/stringConstant';
 @Injectable()
 export class GroupService {
     constructor(private http: Http, private stringConstant: StringConstant) {
-
-
-
+        
     }
 }
 

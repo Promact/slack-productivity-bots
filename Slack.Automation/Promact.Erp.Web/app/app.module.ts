@@ -15,6 +15,7 @@ import { TaskMailModule } from './taskmail/taskMail.module';
 import { LeaveModule } from './leaveReport/leaveReport.module';
 import { ScrumModule } from './ScrumReport/scrumReport.module';
 import { AppComponentService } from './appcomponent.service';
+import { GroupModule  } from './Group/group.module';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { AppComponentService } from './appcomponent.service';
         routing,
         TaskMailModule,
         LeaveModule,
-        ScrumModule
+        ScrumModule,
+        GroupModule
     ],
     bootstrap: [AppComponent],
     providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }]
