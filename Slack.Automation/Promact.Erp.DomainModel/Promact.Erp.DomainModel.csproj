@@ -154,6 +154,10 @@
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
     <Compile Include="ApplicationClass\TaskMailDetailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\GroupEmailMapping.cs" />
+    <Compile Include="Models\MailSetting.cs" />
+    <Compile Include="Models\MailSettingMapping.cs" />
     <Compile Include="Models\TemporaryScrumDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="ApplicationClass\UserAndTaskMailDetailsWithAccessToken.cs" />

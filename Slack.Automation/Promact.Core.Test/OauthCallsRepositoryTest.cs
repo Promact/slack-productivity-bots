@@ -307,6 +307,24 @@ namespace Promact.Core.Test
             var project = await _oauthCallHttpContextRepository.GetProjectDetailsAsync(testProjectId);
             Assert.Equal(2, project.ApplicationUsers.Count);
         }
+
+        [Fact, Trait("Category", "Required")]
+        public async Task CurrentUserIsAdminAsync()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x=>x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(Task.FromResult("true"));
+            var result = await _oauthCallHttpContextRepository.CurrentUserIsAdminAsync();
+            Assert.Equal(true, result);
+        }
+
+        [Fact, Trait("Category", "Required")]
+        public async Task CurrentUserIsAdminForFalseAsync()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            var result = await _oauthCallHttpContextRepository.CurrentUserIsAdminAsync();
+            Assert.Equal(false, result);
+        }
         #endregion
 
         #region Private Method
