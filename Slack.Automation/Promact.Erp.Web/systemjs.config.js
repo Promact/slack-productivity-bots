@@ -11,8 +11,8 @@
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
     'rxjs': 'node_modules/rxjs',
     'jspdf': 'node_modules/jspdf',
-    'jspdf-autotable': 'node_modules/jspdf-autotable'
-    
+    'jspdf-autotable': 'node_modules/jspdf-autotable',
+    'md2': 'node_modules/md2/bundles/md2.umd.js'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
