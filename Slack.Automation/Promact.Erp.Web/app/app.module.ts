@@ -16,6 +16,7 @@ import { LeaveModule } from './leaveReport/leaveReport.module';
 import { ScrumModule } from './ScrumReport/scrumReport.module';
 import { AppComponentService } from './appcomponent.service';
 import { MailSettingComponent } from './shared/mailsetting/mailsetting.component';
+import { Md2Module } from 'md2';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { MailSettingComponent } from './shared/mailsetting/mailsetting.component
         routing,
         TaskMailModule,
         LeaveModule,
-        ScrumModule
+        ScrumModule,
+        Md2Module.forRoot()
     ],
     bootstrap: [AppComponent],
     providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }]
