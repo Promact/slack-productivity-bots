@@ -2,12 +2,8 @@
 
 namespace Promact.Erp.DomainModel.Models
 {
-    public class MailSettingMapping
+    public class MailSettingMapping : ModelBase
     {
-        /// <summary>
-        /// Primary key of MailSettingMapping
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Email of MailSettingMapping
         /// </summary>

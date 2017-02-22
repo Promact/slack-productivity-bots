@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Promact.Erp.DomainModel.Models
 {
-    public class GroupEmailMapping
+    public class GroupEmailMapping : ModelBase
     {
-        /// <summary>
-        /// Primary key of GroupEmailMapping
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Email of GroupEmailMapping
         /// </summary>

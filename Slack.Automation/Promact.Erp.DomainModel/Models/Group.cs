@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Promact.Erp.DomainModel.Models
 {
-    public class Group
+    public class Group : ModelBase
     {
-        /// <summary>
-        /// Primary Key of Group table
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Name of Group
         /// </summary>
@@ -20,10 +16,6 @@ namespace Promact.Erp.DomainModel.Models
         /// Type of Group
         /// </summary>
         public int Type { get; set; }
-        /// <summary>
-        /// Created Date of Group
-        /// </summary>
-        public DateTime CreatedDate { get; set; }
         /// <summary>
         /// Updated Date of Group
         /// </summary>
