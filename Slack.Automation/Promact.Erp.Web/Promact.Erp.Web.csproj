@@ -276,6 +276,13 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\font-lineicons.css" />
+    <Content Include="Content\fonts\line-icons.svg" />
+    <Content Include="Content\images\banner.jpg" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\logo-inverted.png" />
+    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\js\custom.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -321,6 +328,9 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\fonts\line-icons.eot" />
+    <Content Include="Content\fonts\line-icons.ttf" />
+    <Content Include="Content\fonts\line-icons.woff" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

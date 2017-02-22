@@ -1,24 +1,276 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿/* Layout Styles */
+.navbar {
+    background-color: transparent;
+    border-color: transparent;
+    margin-bottom: 0;
+    border: 0; 
+}
+.navbar.navbar-default.affix-top .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.navbar .navbar-brand {
+    background: url('images/logo.png') center center no-repeat;
+    background-size: contain;
+    width: 200px;
+    margin-left: 15px !important;
+}
+.navbar.navbar-default .navbar-toggle {
+    border-color: transparent; 
+}
+.navbar .navbar-collapse {
+    max-height: inherit; 
+}
+.navbar .navbar-nav > li {
+    padding: 15px;
+    cursor: pointer; 
+}
+.navbar .navbar-nav > li > a {
+    display: inline-block;
+    font-size: 13px;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 0 0 5px 0;
+    border-bottom: 2px solid transparent; 
+    opacity: 0.9;
+}
+.navbar .in .navbar-nav > li > a, .navbar .in .navbar-nav > li:hover > a, .navbar .in .navbar-nav > li > a:focus, .navbar .in .navbar-nav > li.active > a, .navbar .in .navbar-nav > li.active > a:hover, .navbar .in .navbar-nav > li.active a:focus {
+    color: #5C3A58;
+}
+.navbar .navbar-nav > li:hover > a, .navbar .navbar-nav > li > a:focus, .navbar.affix .navbar-nav > li:last-child:hover > a {
+    color: #fff;
+    opacity: 1;
+}
+.navbar .navbar-nav > li.active > a, .navbar .navbar-nav > li.active > a:hover, .navbar .navbar-nav > li.active a:focus {
+    color: #fff;
+    border-bottom-color: #EDB524;
+    background-color: transparent; 
+    opacity: 1;
+}
+.navbar.affix {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); 
+}
+.navbar.affix .navbar-brand {
+    background-image: url('images/logo-inverted.png');
+}
+.navbar.affix .navbar-nav > li > a, .navbar.affix .navbar-nav > li > a:focus, .navbar.affix .navbar-nav > li:hover > a, .navbar.affix .navbar-nav > li.active > a, .navbar.affix .navbar-nav > li.active > a:hover, .navbar.affix .navbar-nav > li.active a:focus {
+    color: #5C3A58;
+}
+.content-center {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center; 
+}
+.login-btn {
+    display: inline-block;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: rgba(237, 181, 36, 0.9);
+    padding: 10px 30px;
+    margin-top: 25px; 
+    border-radius: 4px;
+}
+.login-btn:hover {
+    text-decoration: none;
+    color: #fff;
+    background-color: rgba(237, 181, 36, 1);
+}
+.navbar .navbar-nav .btn-area {
+    display: none;
+}
+.navbar.affix .navbar-nav .btn-area {
+    display: inline-block;
+}
+.navbar.affix .navbar-nav .login-btn {
+    margin-top: -4px;
+    padding: 6px 15px 4px;
+    color: #fff;
+}
+.navbar.affix .navbar-nav .login-btn:hover {
+    background-color: rgba(237, 181, 36, 1);
+    color: #fff;
+}
+.navbar.affix + .section-home .login-btn {
+    display: none;
+}
+.highlight {
+    color: #EDB524
+}
+.bold {
+    font-weight: 600;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+/* Home */
+.section-home {
+    height: 100vh;
+    min-height: 200px;
+    padding: 100px 0;
+    background-image: url("images/banner.jpg"); 
+    color: #fff;
+}
+.section-home h1 {
+    font-size: 50px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+.section-home p {
+    font-size: 23px; 
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+/* Section */
+.section {
+    min-height: 50px;
+    padding: 30px 0 80px;
+    position: relative;
+    text-align: center;
+    color: #5C3A58;
+    border-bottom: 1px solid #EEE;
+}
+.section .section-header {
+    margin-top: 30px;
+    margin-bottom: 80px;
+}
+.title-text {
+    font-size: 47px;
+    font-weight: 300;
+}
+.sub-heading {
+    font-size: 19px;
+    line-height: 28px;
+    color: #6f6f6f;
+    font-weight: 300;
+}
+.package-column {
+    border: 1px solid #F0F0F0;
+    background: #F7F7F7;
+    min-height: 280px;
+}
+.package-column .package-title {
+    font-size: 25px;
+    padding: 20px 0 18px;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+.package-column .package-price {
+    background: rgba(171, 172, 179, 0.1);
+    padding: 15px;
+}
+.package-price i {
+    font-size: 60px;
+    color: #FBC213;
+}
+.package-column .package-detail {
+    padding: 30px 13% 50px;
+    min-height: 320px;
+}
+.package-column .package-detail p {
+    font-size: 16px;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+/* Footer */
+.footer {
+    background-color: #5C3A58;
+    color: #fff;
+    padding-bottom: 30px;
+}
+.footer .footer-content {
+    padding: 75px 0 65px;
+}
+.footer .logo-wrapper {
+    margin-bottom: 20px;
+    width: 255px;
+}
+.footer p {
+    font-size: 15px;
+    line-height: 24px;
+    margin-bottom: 15px;
+}
+.footer .footer-title {
+    font-size: 17px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 25px;
+}
+.footer .list-inline {
+    padding-left: 0;
+    list-style: none;
+    text-align: center;
+    margin: 0 auto;
+}
+.footer .list-inline li {
+    padding: 0 15px 15px;
+}
+.footer a {
+    color: #EDB524;
+}
+.footer .socials a:hover {
+    text-decoration: none;
+    opacity: 0.7;
+}
+.footer .list-inline li .icon {
+    color: #FBC213;
+    font-size: 50px;
+}
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+.footer .list-unstyled li {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    line-height: 24px;
+}
+.footer .list-unstyled li .icon {
+    position: absolute;
+    left: 0;
+    color: #FBC213;
+    font-size: 20px;
+}
+.copyright {
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    padding: 0px;
+    font-weight: 300;
+    opacity: 0.4;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .navbar .navbar-collapse {
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); 
+    }
+    .section-home h1 {
+        font-size: 36px;
+    }
+    .section-home p {
+        font-size: 20px;
+    }
+    .section {
+        padding: 0 0 40px;
+    }
+    .section .section-header {
+        margin-bottom: 40px;
+    }
+    .package-column {
+        margin-bottom: 20px;
+    }
+    .footer .footer-content {
+        padding: 50px 0 30px;
+    }
+    .footer .footer-title, .footer .list-inline {
+        text-align: left;
+    }
+    .footer .list-inline li .icon {
+        font-size: 35px;
+    }
+    .copyright {
+        padding: 0 10px;
+    }
 }
