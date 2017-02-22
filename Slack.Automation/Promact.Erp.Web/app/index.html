@@ -10,7 +10,8 @@
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                     <div class="menu_section">
                         <ul class="nav side-menu">
-                            <li><a><i class="fa fa-home"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
+                            <li>
+                                <a><i class="fa fa-home"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="/scrum">Scrum Reports</a></li>
                                     <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
@@ -28,12 +29,6 @@
                                 <ul class="nav child_menu">
                                     <li><a routerLink="leave">Leave Reports</a></li>
                                     <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
-                                </ul>
-                            </li>
-                            <li [hidden]="!userIsAdmin">
-                                <a><i class="fa fa-home"></i> Mail Setting <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a routerLink="/mailsetting">Groups</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -64,12 +59,10 @@
             </div>
         </div>
         <!-- /top navigation -->
-
         <!-- page content -->
         <div class="right_col" role="main">
             <router-outlet></router-outlet>
         </div>
         <!-- /page content -->
-
     </div>
 </div>

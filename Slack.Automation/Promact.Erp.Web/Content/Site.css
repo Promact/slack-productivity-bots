@@ -1,3 +1,9 @@
-﻿.container.body .right_col {
+﻿.base-page {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+}
+.container.body .right_col {
     min-height: 100vh;
 }

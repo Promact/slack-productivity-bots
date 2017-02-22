@@ -266,7 +266,6 @@
     <Content Include="app\index.html" />
     <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
-    <Content Include="app\MailSetting\mailsetting.sendemail\mailsetting.sendmail.html" />
     <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
@@ -1179,11 +1178,6 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
-    <TypeScriptCompile Include="app\MailSetting\mailsetting.component.ts" />
-    <TypeScriptCompile Include="app\MailSetting\mailsetting.module.ts" />
-    <TypeScriptCompile Include="app\MailSetting\mailsetting.routes.ts" />
-    <TypeScriptCompile Include="app\MailSetting\mailsetting.sendemail\mailsetting.sendmail.component.ts" />
-    <TypeScriptCompile Include="app\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />
