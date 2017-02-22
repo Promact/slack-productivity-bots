@@ -50,4 +50,6 @@ export class StringConstant {
     pageType = "PageType";
     role = "role";
     name = "userName";
+    userIsAdmin = 'user/admin';
+    oauthUrl = "oauth/"
 }
