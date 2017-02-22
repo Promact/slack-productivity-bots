@@ -9,7 +9,6 @@ import { Md2Toast } from 'md2';
 import { MailSettingAC } from './mailsettingAC.model';
 import { StringConstant } from '../stringConstant';
 
-
 @Component({
     templateUrl: './app/shared/MailSetting/mailsetting.html',
 })
