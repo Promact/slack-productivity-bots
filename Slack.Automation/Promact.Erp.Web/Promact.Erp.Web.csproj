@@ -275,7 +275,9 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\custom.min.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\font-lineicons.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\line-icons.svg" />
     <Content Include="Content\images\banner.jpg" />
     <Content Include="Content\images\favicon.ico" />
     <Content Include="Content\images\img.jpg" />
@@ -330,6 +332,9 @@
     <Content Include="Content\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\line-icons.eot" />
+    <Content Include="Content\fonts\line-icons.ttf" />
+    <Content Include="Content\fonts\line-icons.woff" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
