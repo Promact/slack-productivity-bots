@@ -69,24 +69,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
             {
-
                 userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
-                _logger.Debug("Result:" + result.Succeeded);
-                _logger.Debug("Result:" + result.Errors);
+
+                //Adding external Oauth details
+                UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
+                var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
             }
-            IList<UserLoginInfo> userLoginInformation = await _userManager.GetLoginsAsync(userId);
-            if (userLoginInformation.Count > 0)//check already added external oauth detials if it exists so remove it. 
-                await _userManager.RemoveLoginAsync(userId, userLoginInformation[0]);
-
-            _logger.Debug("UserLoginInformation Count:" + userLoginInformation.Count);
-            //Adding external Oauth details
-            UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-            var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
-
-            _logger.Debug("UserLoginInfo Add:" + success.Succeeded);
-            _logger.Debug("UserLoginInfo Add Error:" + success.Errors);
             return userInfo;
         }
 

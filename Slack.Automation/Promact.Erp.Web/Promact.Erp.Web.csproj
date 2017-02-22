@@ -272,16 +272,7 @@
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
     <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\css\font-lineicons.css" />
-    <Content Include="Content\fonts\line-icons.svg" />
-    <Content Include="Content\images\banner.jpg" />
-    <Content Include="Content\images\favicon.ico" />
-    <Content Include="Content\images\logo-inverted.png" />
-    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\images\img.jpg" />
     <Content Include="Content\js\custom.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
@@ -324,13 +315,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\fonts\line-icons.eot" />
-    <Content Include="Content\fonts\line-icons.ttf" />
-    <Content Include="Content\fonts\line-icons.woff" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1179,6 +1163,7 @@
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
+    <TypeScriptCompile Include="app\appcomponent.service.ts" />
     <TypeScriptCompile Include="app\enums\taskMailStatus.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.spec.ts" />
