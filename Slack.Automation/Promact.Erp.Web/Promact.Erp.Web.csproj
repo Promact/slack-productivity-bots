@@ -272,6 +272,8 @@
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
     <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
+    <Content Include="Content\css\font-lineicons.css" />
+    <Content Include="Content\fonts\line-icons.svg" />
     <Content Include="Content\images\img.jpg" />
     <Content Include="Content\js\custom.js" />
     <Content Include="Content\Site.css" />
@@ -315,6 +317,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\line-icons.eot" />
+    <Content Include="Content\fonts\line-icons.ttf" />
+    <Content Include="Content\fonts\line-icons.woff" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
