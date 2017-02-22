@@ -1212,6 +1212,7 @@
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.model.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />

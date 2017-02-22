@@ -1,8 +1,8 @@
-﻿export class MailSetting {
+﻿import { Project } from './project.model';
+export class MailSetting {
     Id: number;
     Module: string;
-    ProjectId: number;
-    ProjectName : string
+    Project: Project;    
     To: Array<string>;
     CC: Array<string>;
     SendMail: boolean;
