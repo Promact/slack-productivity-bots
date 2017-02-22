@@ -241,7 +241,7 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("oauth/userIsAdmin")]
+        [Route("oauth/user/admin")]
         public async Task<IHttpActionResult> CurrentUserIsAdminOrNot()
         {
             return Ok(await _oauthCallRepository.CurrentUserIsAdminAsync());
