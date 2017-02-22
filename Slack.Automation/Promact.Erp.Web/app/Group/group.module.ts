@@ -3,7 +3,9 @@ import { SharedModule } from '../shared/shared.module';
 import { groupReportRoutes } from "./group.routes";
 import { GroupComponent } from "./group.component";
 import { GroupAddComponent } from "./GroupAdd/groupAdd.component";
-import { GroupEditComponent } from "./GroupAdd/groupEdit.component";
+import { GroupEditComponent } from "./GroupEdit/groupEdit.component";
+import {  GroupListComponent } from "./GroupList/groupList.component";
+import { GroupService} from "./group.service";
 
 @NgModule({
     imports: [
@@ -13,10 +15,9 @@ import { GroupEditComponent } from "./GroupAdd/groupEdit.component";
     declarations: [
         GroupComponent,
         GroupAddComponent,
-        GroupEditComponent,
-
-
+        GroupListComponent,
+        GroupEditComponent
     ],
-    providers: []
+    providers: [GroupService]
 })
 export class GroupModule { }

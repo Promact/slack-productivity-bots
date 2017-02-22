@@ -1,5 +1,5 @@
-﻿import { Component } from "@anguler/core";
-import { Router } from "@anguler/router";
+﻿import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
 
