@@ -8,6 +8,7 @@ import { LoaderService } from '../../shared/loader.service';
 //import { Md2Toast } from 'md2';
 import { MailSettingAC } from './mailsettingAC.model';
 
+
 @Component({
     templateUrl: './app/shared/MailSetting/mailsetting.html',
 })
