@@ -1,11 +1,11 @@
 ﻿<div>
-    <input type="checkbox" name="SendMail">SendMail<br>
-    <div>
+    <input type="text" [(ngModel)]="Mail" #Mail="ngModel" name="SendMail" /><br>
+    <!--<div>
         <label>Project :</label>
         <select placeholder="Project">
             <option *ngFor="let i of projectList" [value]="i.value">{{i}}</option>
         </select>
     </div>
     
-    <button type="submit">Save</button>
+    <button type="submit">Save</button>-->
 </div>
