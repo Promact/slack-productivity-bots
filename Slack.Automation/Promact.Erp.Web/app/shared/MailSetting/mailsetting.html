@@ -1,11 +1,18 @@
-﻿<div>
-    <input type="text" [(ngModel)]="Mail" #Mail="ngModel" name="SendMail" /><br>
-    <!--<div>
+﻿<form>
+    <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" required>Send Mail<br />
+    <div>
         <label>Project :</label>
-        <select placeholder="Project">
-            <option *ngFor="let i of projectList" [value]="i.value">{{i}}</option>
-        </select>
+        <md2-select [(ngModel)]="mailSetting.Project" name="project" required>
+            <md2-option *ngFor="let project of mailSettinglist" [value]="project">{{project.Name}}</md2-option>
+        </md2-select>
     </div>
-    
-    <button type="submit">Save</button>-->
-</div>
+    <div>
+        <!--<label>To :</label>-->
+        <!--<md2-chips [(ngModel)]="mailSetting.To"
+                   [isRemovable]="true"
+                   [readonly]="false"
+                   placeholder="To">
+        </md2-chips>-->
+    </div>
+    <button type="submit" (click)="addMailSetting(mailSetting)">Save</button>
+</form>
