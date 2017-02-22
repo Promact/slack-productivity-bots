@@ -27,7 +27,8 @@ import { Md2Module } from 'md2';
         TaskMailModule,
         LeaveModule,
         ScrumModule,
-        Md2Module.forRoot()
+        Md2Module.forRoot(),
+        FormsModule
     ],
     bootstrap: [AppComponent],
     providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
