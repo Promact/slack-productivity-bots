@@ -3,7 +3,7 @@
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentellela Alela!</span></a>
+                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Promact ERP</span></a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- sidebar menu -->
@@ -13,18 +13,27 @@
                             <li><a><i class="fa fa-home"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="/scrum">Scrum Reports</a></li>
+                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a><i class="fa fa-home"></i> Task List Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="task">Task Reports</a></li>
+                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a><i class="fa fa-home"></i> Leave Management <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="leave">Leave Reports</a></li>
+                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
+                                </ul>
+                            </li>
+                            <li [hidden]="!userIsAdmin">
+                                <a><i class="fa fa-home"></i> Mail Setting <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a routerLink="/mailsetting">Groups</a></li>
                                 </ul>
                             </li>
                         </ul>
