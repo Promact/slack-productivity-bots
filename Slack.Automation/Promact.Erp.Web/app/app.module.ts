@@ -15,10 +15,11 @@ import { TaskMailModule } from './taskmail/taskMail.module';
 import { LeaveModule } from './leaveReport/leaveReport.module';
 import { ScrumModule } from './ScrumReport/scrumReport.module';
 import { AppComponentService } from './appcomponent.service';
+import { MailSettingComponent } from './shared/mailsetting/mailsetting.component';
 import { EmailHashCode } from './shared/emailHashCode';
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, MailSettingComponent],
     imports: [
         BrowserModule,
         HttpModule,
