@@ -1,6 +1,11 @@
 ﻿<div>
     <input type="checkbox" name="SendMail">SendMail<br>
-
+    <div>
+        <label>Project :</label>
+        <select placeholder="Project">
+            <option *ngFor="let i of projectList" [value]="i.value">{{i}}</option>
+        </select>
+    </div>
+    
     <button type="submit">Save</button>
-    {{loca}}
 </div>
