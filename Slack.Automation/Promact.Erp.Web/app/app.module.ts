@@ -18,6 +18,7 @@ import { AppComponentService } from './appcomponent.service';
 import { MailSettingService } from './shared/MailSetting/mailsetting.service';
 import { EmailHashCode } from './shared/emailHashCode';
 import { MailSettingModule } from './shared/MailSetting/mailsetting.module';
+import { GroupModule  } from './Group/group.module';
 
 @NgModule({
     declarations: [AppComponent],
@@ -29,7 +30,8 @@ import { MailSettingModule } from './shared/MailSetting/mailsetting.module';
         LeaveModule,
         ScrumModule,
         FormsModule,
-        MailSettingModule
+        MailSettingModule,
+        GroupModule
     ],
     bootstrap: [AppComponent],
     providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
