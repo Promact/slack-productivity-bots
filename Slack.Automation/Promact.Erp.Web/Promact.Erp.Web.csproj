@@ -268,6 +268,7 @@
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
     <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
+    <Content Include="app\shared\MailSetting\mailsetting.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
     <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
@@ -1209,7 +1210,8 @@
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.module.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
-    <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.model.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
