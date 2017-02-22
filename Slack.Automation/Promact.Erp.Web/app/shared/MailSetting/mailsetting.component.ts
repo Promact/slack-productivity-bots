@@ -11,18 +11,20 @@ export class MailSettingComponent implements OnInit {
     mailSetting: MailSetting;
     projectList: Array<string>;
     currentLocation: string;
+    SendMail: string;
     constructor() { }
     ngOnInit() {
-        this.projectList = ["hello", "bye"];
+        this.SendMail = "test";
+        //this.projectList = [];
     }
 
-    getCurrentLocationAndProvideModule() {
-        this.currentLocation = window.location.hash;
-        let listofString = this.currentLocation.split('/');
-        return listofString[1];
-    }
+    //getCurrentLocationAndProvideModule() {
+    //    this.currentLocation = window.location.hash;
+    //    let listofString = this.currentLocation.split('/');
+    //    return listofString[1];
+    //}
 
-    addMailSetting(mailSetting: MailSetting) {
-        mailSetting.Module = this.getCurrentLocationAndProvideModule();
-    }
+    //addMailSetting(mailSetting: MailSetting) {
+    //    mailSetting.Module = this.getCurrentLocationAndProvideModule();
+    //}
 }
