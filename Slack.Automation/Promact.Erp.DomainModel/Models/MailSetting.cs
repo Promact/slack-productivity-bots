@@ -27,5 +27,10 @@ namespace Promact.Erp.DomainModel.Models
         /// Updated Date of MailSetting
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
+        /// <summary>
+        /// OAuth server's project's Id
+        /// </summary>
+        [Required]
+        public string ProjectId { get; set; }
     }
 }
