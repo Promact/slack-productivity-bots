@@ -11,6 +11,7 @@ using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
+using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.MailSettingRepository;
@@ -91,6 +92,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<Md5Service>().As<IMd5Service>();
+            builder.RegisterType<GroupRepository>().As<IGroupRepository>();
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
