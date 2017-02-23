@@ -71,4 +71,7 @@ export class StringConstant {
     sickLeave = "7";
     leaveDate = "1/1/16";
     module = "module";
+    oauthUrl = "oauth/";
+    groupUrl = "api/group";
+    
 }
