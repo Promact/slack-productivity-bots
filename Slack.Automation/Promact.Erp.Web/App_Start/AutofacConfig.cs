@@ -28,6 +28,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.HashingMd5;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System.Data.Entity;
@@ -86,6 +87,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
+            builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
