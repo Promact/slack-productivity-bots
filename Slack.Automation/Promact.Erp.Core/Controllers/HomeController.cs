@@ -11,6 +11,7 @@ using Promact.Erp.Util.StringConstants;
 using System.Net.Http;
 using Promact.Erp.Util.HashingMd5;
 using System;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -76,10 +77,12 @@ namespace Promact.Erp.Core.Controllers
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
+            ViewBag.userEmail = string.Empty;
 
             //this for get login user email address.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            ViewBag.EmailHashCode = _md5Service.GetMD5HashData(user.Email.ToLower());
+            EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
+            ViewBag.emailHashCode = emailHaseCodeAC;
             return View();
         }
 
