@@ -43,6 +43,8 @@
     "systemjs": "0.19.40",
     "tslint": "^4.4.2",
     "zone.js": "0.7.4"
+    
+    "md2": "0.0.15"
   },
   "devDependencies": {
     "@types/node": "^7.0.4",

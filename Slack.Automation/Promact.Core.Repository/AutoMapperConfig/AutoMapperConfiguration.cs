@@ -2,6 +2,7 @@
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
+using System.Collections.Generic;
 
 namespace Promact.Core.Repository.AutoMapperConfig
 {
@@ -13,6 +14,8 @@ namespace Promact.Core.Repository.AutoMapperConfig
             {
                 cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>();
                 cfg.CreateMap<MailSetting, MailSettingAC>().ReverseMap();
+                cfg.CreateMap<GroupAC, Group>().ReverseMap();
+               
 
                 cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
                      .ForMember(des => des.Id, opt =>

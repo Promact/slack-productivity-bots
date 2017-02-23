@@ -161,6 +161,8 @@
     <Compile Include="EmailServiceTemplateRepository\IEmailServiceTemplateRepository.cs" />
     <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />
     <Compile Include="ExternalLoginRepository\IOAuthLoginRepository.cs" />
+    <Compile Include="GroupRepository\GroupRepository.cs" />
+    <Compile Include="GroupRepository\IGroupRepository.cs" />
     <Compile Include="LeaveReportRepository\ILeaveReportRepository.cs" />
     <Compile Include="LeaveReportRepository\LeaveReportRepository.cs" />
     <Compile Include="LeaveRequestRepository\ILeaveRequestRepository.cs" />
