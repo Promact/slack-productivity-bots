@@ -41,6 +41,8 @@
     "reflect-metadata": "0.1.8",
     "rxjs": "^5.0.1",
     "systemjs": "0.19.40",
+    
+    "md2": "0.0.15"
     "tslint": "^4.4.2",
     "zone.js": "0.7.4"
   },
