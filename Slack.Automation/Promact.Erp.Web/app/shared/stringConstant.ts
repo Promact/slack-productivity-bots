@@ -72,4 +72,6 @@ export class StringConstant {
     leaveDate = "1/1/16";
     module = "module";
     scrumName = "scrumName";
+   
+    groupUrl = "api/group";
 }
