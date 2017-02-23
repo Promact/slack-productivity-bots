@@ -51,5 +51,6 @@ export class StringConstant {
     role = "role";
     name = "userName";
     userIsAdmin = 'user/admin';
-    oauthUrl = "oauth/"
+    oauthUrl = "oauth/";
+    groupUrl = "api/group";
 }
