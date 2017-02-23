@@ -247,25 +247,5 @@ namespace Promact.Erp.DomainModel.DataRepository
             GC.SuppressFinalize(this);
         }
 
-        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
-        {
-            try
-            {
-                return await dbSet.FirstOrDefaultAsync(predicate);
-
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        /// <summary>
-        /// Method used for delete multipule data from database
-        /// </summary>
-        /// <param name="predicate"></param>
-        public void RemoveRange(Expression<Func<T, bool>> predicate)
-        {
-            dbSet.RemoveRange(dbSet.Where(predicate));
-        }
     }
 }
