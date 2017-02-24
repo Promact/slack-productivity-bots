@@ -280,7 +280,6 @@
     <Content Include="Content\fonts\line-icons.svg" />
     <Content Include="Content\images\banner.jpg" />
     <Content Include="Content\images\favicon.ico" />
-    <Content Include="Content\images\img.jpg" />
     <Content Include="Content\images\logo-inverted.png" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\js\bootstrap.min.js" />
@@ -1210,6 +1209,7 @@
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.module.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
+    <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />

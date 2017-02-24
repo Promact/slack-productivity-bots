@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoaderService } from './shared/loader.service';
 import { AppComponentService } from './appcomponent.service';
+import { EmailHashCode } from './shared/emailHashCode';
 
 @Component({
     selector: 'my-app',
@@ -11,9 +12,11 @@ import { AppComponentService } from './appcomponent.service';
 
 export class AppComponent implements OnInit {
     userIsAdmin = false;
-    constructor(private loader: LoaderService, private httpService: AppComponentService) { }
+    hashCode: string;
+    constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode : EmailHashCode) { }
 
     ngOnInit() {
+        this.hashCode = this.emailHashCode.hashCode;
         this.httpService.getUserIsAdminOrNot().then((result) => {
             this.userIsAdmin = (result === 'true');
         },
