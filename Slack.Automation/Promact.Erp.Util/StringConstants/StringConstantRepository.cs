@@ -141,14 +141,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return string.Format(
-                    "To apply casual leave: /leaves apply cl [Reason(for long reason write in \" \")] [FromDate] [EndDate] [RejoinDate]"+
-                    "{0}To apply sick leave: /leaves apply sl [Reason] [FromDate]"+
+                    "To apply casual leave: /leaves apply cl [Reason(for long reason write in \" \")] [FromDate] [EndDate] [RejoinDate]" +
+                    "{0}To apply sick leave: /leaves apply sl [Reason] [FromDate]" +
                     "{0}To apply sick leave by admin for other: /leaves apply sl [Reason] [FromDate] [username]" +
                     "{0}For leaves list of yours : /leaves list" +
-                    "{0}For leaves list of others : /leaves list [username]"+
+                    "{0}For leaves list of others : /leaves list [username]" +
                     "{0}For leave cancel : /leaves cancel [leave Id number]" +
                     "{0}For sick leave update(only by admin): / leaves update [leave id] [EndDate] [RejoinDate]" +
-                    "{0}For leave status of yours : /leaves status"+
+                    "{0}For leave status of yours : /leaves status" +
                     "{0}For leave status of others : /leaves status [username]" +
                     "{0}For leaves balance: /leaves balance", Environment.NewLine);
             }
@@ -157,7 +157,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order."+
+                return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order." +
                     " For help : /leaves help";
             }
         }
@@ -618,7 +618,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No active employee found for this project.";
+                return "Sorry. No active member found for this project.";
             }
         }
 
@@ -710,7 +710,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Sorry we do not have your slack details."+
+                return string.Format("Sorry we do not have your slack details." +
                     " Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
@@ -761,13 +761,6 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "I am expecting <@{0}> to answer.";
-            }
-        }
-        public string ScrumConcludedButLater
-        {
-            get
-            {
-                return "Scrum wound up for now.\nGood luck team :thumbsup:. \nTo conduct scrum of employees marked as _later_ type *_scrum @username_*";
             }
         }
         public string AllAnswerRecorded
@@ -1240,7 +1233,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Either leave doesn't exist for that user or enter a valid slack username."+
+                return string.Format("Either leave doesn't exist for that user or enter a valid slack username." +
                     " {0}Example :-{0}/leaves status username - for other user{0}/leaves status - for own", Environment.NewLine);
             }
         }
@@ -1486,8 +1479,8 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Sorry you cannot use leave slash command."+
-                    " Either user is not in Promact OAuth or yet u haven't login in promact-slack server."+
+                return string.Format("Sorry you cannot use leave slash command." +
+                    " Either user is not in Promact OAuth or yet u haven't login in promact-slack server." +
                     " Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
@@ -1544,7 +1537,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is not included in the project(of this group in OAuth)\n";
+                return "<@{0}> is not included as a member in the project(of this group in OAuth)\n";
             }
         }
         public string Admin
@@ -1698,7 +1691,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Either you are not in Promact OAuth or you haven't logged in with Promact OAuth."+
+                return string.Format("Either you are not in Promact OAuth or you haven't logged in with Promact OAuth." +
                     " Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
@@ -1860,7 +1853,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(), 
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(),
                     DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
@@ -1868,7 +1861,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(), 
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(),
                     DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
@@ -1883,7 +1876,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(), 
+                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(),
                     DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
@@ -1919,7 +1912,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You are not authorize to apply leave. Only Admin can apply sick leave for other."+
+                return "You are not authorize to apply leave. Only Admin can apply sick leave for other." +
                     " You are not admin. Else ";
             }
         }
@@ -1991,7 +1984,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":false,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
             }
         }
-
+        public string LeaveCommand
+        {
+            get
+            {
+                return "leave <@>";
+            }
+        }
         public string EmployeeDetailsFromOauth
         {
             get
@@ -2380,7 +2379,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is marked as In-active,not added as a user in the project(in OAuth server) or not in OAuth server. Please contact your system administrator.\n ";
+                return "<@{0}> is marked as In-active,not added as a member in the project(in OAuth server) or not in OAuth server. Please contact your system administrator.\n ";
             }
         }
         public string TeamLeaderLogin
@@ -2500,7 +2499,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please check end date and re-join date. End date cannot beyond start date and"+
+                return "Please check end date and re-join date. End date cannot beyond start date and" +
                     " rejoin date cannot beyond and same as end date";
             }
         }
@@ -2515,7 +2514,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("apply cl Testing {0} {1} {2}", DateTime.UtcNow.ToShortDateString(), 
+                return string.Format("apply cl Testing {0} {1} {2}", DateTime.UtcNow.ToShortDateString(),
                     DateTime.UtcNow.AddDays(-3).ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
@@ -2538,7 +2537,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.AddDays(-5).ToShortDateString(), 
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.AddDays(-5).ToShortDateString(),
                     DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
@@ -2547,7 +2546,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(), 
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(),
                     DateTime.UtcNow.AddDays(-3).ToShortDateString());
             }
         }
@@ -2864,7 +2863,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}", 
+                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}",
                     AppSettingUtil.PromactErpUrl);
             }
         }
