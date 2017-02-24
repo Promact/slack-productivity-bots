@@ -125,11 +125,11 @@ namespace Promact.Erp.Core.Controllers
                 {
                     _logger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
                     string replyText = string.Empty;
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
-                        _logger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
-                    }).GetAwaiter().GetResult();
+                    //Task.Run(async () =>
+                    //{
+                    replyText = _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
+                    _logger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+                    //}).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _logger.Debug("Scrum bot sending reply");
@@ -147,6 +147,13 @@ namespace Promact.Erp.Core.Controllers
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
                     _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
+                    client.CloseSocket();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception " + "\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
