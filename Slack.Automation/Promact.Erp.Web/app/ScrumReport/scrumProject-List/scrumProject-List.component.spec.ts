@@ -9,23 +9,27 @@ import { ScrumReportService } from '../scrumReport.service';
 import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
+import { Md2SelectChange } from 'md2';
+import { AppModule } from '../../app.module';
 
 let promise: TestBed;   
 
 describe('ScrumReport Tests', () => {
     class MockLoaderService { }
     class MockRouter { }
+    class MockMd2Select { }
     const routes: Routes = [];
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
                 { provide: Router, useClass: MockRouter },
                 { provide: ScrumReportService, useClass: MockScrumReportService },
                 { provide: StringConstant, useClass: StringConstant },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: LoaderService, useClass: MockLoaderService },
+                { provide: Md2SelectChange, useClass: MockMd2Select }
             ]
         }).compileComponents();
     }));

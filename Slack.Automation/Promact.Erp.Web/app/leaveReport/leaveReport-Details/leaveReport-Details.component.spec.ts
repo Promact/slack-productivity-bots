@@ -10,12 +10,15 @@ import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.servi
 import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
 import { LoaderService } from '../../shared/loader.service';
+import { Md2SelectChange } from 'md2';
+import { AppModule } from '../../app.module';
 
 let promise: TestBed;
 
 describe('LeaveReport Detials Tests', () => {
     const routes: Routes = [];
     class MockLoaderService { }
+    class MockMd2Select { }
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
@@ -26,13 +29,14 @@ describe('LeaveReport Detials Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [LeaveModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 { provide: LeaveReportService, useClass: MockLeaveReportService },
                 { provide: StringConstant, useClass: StringConstant },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: LoaderService, useClass: MockLoaderService },
+                { provide: Md2SelectChange, useClass: MockMd2Select },
             ]
         }).compileComponents();
     }));

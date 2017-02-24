@@ -165,6 +165,8 @@
     <Compile Include="LeaveReportRepository\LeaveReportRepository.cs" />
     <Compile Include="LeaveRequestRepository\ILeaveRequestRepository.cs" />
     <Compile Include="LeaveRequestRepository\LeaveRequestRepository.cs" />
+    <Compile Include="MailSettingRepository\IMailSettingRepository.cs" />
+    <Compile Include="MailSettingRepository\MailSettingRepository.cs" />
     <Compile Include="OauthCallsRepository\IOauthCallHttpContextRespository.cs" />
     <Compile Include="OauthCallsRepository\IOauthCallsRepository.cs" />
     <Compile Include="OauthCallsRepository\OauthCallHttpContextRespository.cs" />

@@ -14,21 +14,21 @@
                                 <a><i class="fa fa-home"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="/scrum">Scrum Reports</a></li>
-                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
+                                    <li><a routerLink="/scrum/mailsetting" [hidden]="!userIsAdmin">Mail Setting</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a><i class="fa fa-home"></i> Task List Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="task">Task Reports</a></li>
-                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
+                                    <li><a routerLink="/task/mailsetting" [hidden]="!userIsAdmin">Mail Setting</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a><i class="fa fa-home"></i> Leave Management <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="leave">Leave Reports</a></li>
-                                    <li><a routerLink="" [hidden]="!userIsAdmin">Mail Setting</a></li>
+                                    <li><a routerLink="/leave/mailsetting" [hidden]="!userIsAdmin">Mail Setting</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -61,8 +61,14 @@
         <!-- /top navigation -->
         <!-- page content -->
         <div class="right_col" role="main">
-            <router-outlet></router-outlet>
+            <router-outlet>
+            </router-outlet>
         </div>
         <!-- /page content -->
+    </div>
+    <div *ngIf="loader.loader">
+        <div class="loader">
+            <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
+        </div>
     </div>
 </div>
