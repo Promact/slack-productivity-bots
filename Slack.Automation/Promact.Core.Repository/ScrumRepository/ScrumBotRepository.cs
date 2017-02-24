@@ -355,12 +355,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>true if active else false</returns>
         private async Task<bool> CheckUserAsync(string slackUserId, List<User> users, string teamLeaderId)
         {
-            User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);
+            User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);   
             if (user == null)
             {
-                ApplicationUser teamLeader = await _applicationUser.FirstOrDefaultAsync(x => x.Id == teamLeaderId && x.SlackUserId == slackUserId);
-                if (teamLeader != null)
-                    return true;
+                return (await _applicationUser.FirstOrDefaultAsync(x => x.Id == teamLeaderId && x.SlackUserId == slackUserId) != null);
             }
             if (user != null && user.IsActive)
                 return true;
