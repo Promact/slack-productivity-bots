@@ -408,10 +408,10 @@ namespace Promact.Core.Test
         {
             await AddChannelUserAsync();
             await UserProjectSetup();
-
             await _botQuestionRepository.AddQuestionAsync(question);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
+
             scrum.ScrumDate = DateTime.UtcNow.Date.AddDays(-1);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
