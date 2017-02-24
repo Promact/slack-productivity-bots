@@ -14,7 +14,13 @@ export class GroupListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loader.loader = true;
+        this.groupService.getListOfGroup().then((result) => {
 
+            this.loader.loader = false;
+        }, err => {
+
+        });
     }
 }
 

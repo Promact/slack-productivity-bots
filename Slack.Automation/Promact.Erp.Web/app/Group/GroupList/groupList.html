@@ -1,10 +1,52 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-	<meta charset="utf-8" />
-</head>
-<body>
-    Helllo
-</body>
-</html>
+﻿<div>
+    <div>
+        <div>
+            <h3></h3>
+        </div>
+        <div>
+            <button md-raised-button class="btn-green custom-btn" (click)="addNewGroup()"> <i class="material-icons m-0">add</i>Add New Group</button>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div>
+        <table class="table-bordered table-user" [md2-data]="users" #md2="Md2DataTable" [md2-page-length]="10">
+            <thead>
+                <tr>
+                    <th md2-sort-field="firstname">First Name</th>
+                    <th md2-sort-field="lastname">Last Name</th>
+                    <th md2-sort-field="email">Email</th>
+                    <th md2-sort-field="status">Status</th>
+                    <th md2-sort-field="numberofcasualleave">Number Of Casual Leave</th>
+                    <th md2-sort-field="numberofsickleave">Number Of Sick Leave</th>
+                    <th md2-sort-field="joiningdate">Joining Date</th>
+                    <th md2-sort-field="action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of md2.data">
+                    <td>{{user.FirstName}}</td>
+                    <td>{{user.LastName}}</td>
+                    <td>{{user.Email}}</td>
+                    <td *ngIf="user.IsActive">Active</td>
+                    <td *ngIf="!user.IsActive">Inactive</td>
+                    <td>{{user.NumberOfCasualLeave}}</td>
+                    <td>{{user.NumberOfSickLeave}}</td>
+                    <td>{{user.JoiningDate |date:"dd/MM/yyyy"}}</td>
+                    <td>
+                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="userDetails(user.Id)">Details</button>
+                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="userDelete(user.Id)">Delete</button>
+                        <button md-raised-button class="custom-btn" (click)="userEdit(user.Id)">Edit</button>
+                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="reSendMail(user)">ReSendMail</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <md2-pagination [md2-rows]="[5,10,15]"></md2-pagination>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
