@@ -29,6 +29,7 @@
     {
         <script>
             System.import('app').catch(function (err) { console.error(err); });
+            var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
         </script>
     }
 </head>
