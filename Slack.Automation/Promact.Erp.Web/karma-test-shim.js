@@ -45,6 +45,11 @@ System.config({
         },
         'jspdf-autotable': {
             defaultExtension: 'js'
+        },
+        'md2': {
+            format: 'cjs',
+            defaultExtension: 'js',
+            main: 'md2.umd.js'
         }
     },
 
@@ -70,7 +75,8 @@ System.config({
         '@angular/common/testing': 'node_modules/@angular/common/bundles/common-testing.umd.js',
         '@angular/http/testing': 'node_modules/@angular/http/bundles/http-testing.umd.js',
         '@angular/router/testing': 'node_modules/@angular/router/bundles/router-testing.umd.js',
-        '@angular/forms/testing': 'node_modules/@angular/forms/bundles/forms-testing.umd.js'
+        '@angular/forms/testing': 'node_modules/@angular/forms/bundles/forms-testing.umd.js',
+        'md2': 'node_modules/md2/bundles'
     }
 });
 

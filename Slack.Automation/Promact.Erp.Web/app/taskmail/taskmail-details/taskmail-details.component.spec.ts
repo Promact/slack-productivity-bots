@@ -13,6 +13,8 @@ import { StringConstant } from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 import { MockRouter } from '../../shared/mock/mock.router';
 import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
+import { Md2SelectChange } from 'md2';
+import { AppModule } from '../../app.module';
 import { TaskMailModel } from '../../taskmail/taskmail.model';
 import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -22,11 +24,11 @@ let stringConstant = new StringConstant();
 
 describe('TaskMail Detials Tests', () => {
     const routes: Routes = [];
-
+    class MockMd2Select { }
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective], 
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true }) 
+            declarations: [RouterLinkStubDirective],
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: ActivatedRouteStub },
@@ -34,7 +36,8 @@ describe('TaskMail Detials Tests', () => {
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
                 { provide: DatePipe, useClass: DatePipe },
-                { provide: LoaderService, useClass: LoaderService }
+                { provide: LoaderService, useClass: LoaderService },
+                { provide: Md2SelectChange, useClass: MockMd2Select }
             ]
         }).compileComponents();
     }));

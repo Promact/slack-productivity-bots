@@ -34,5 +34,10 @@ namespace Promact.Erp.DomainModel.DataRepository
 
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<T> FirstAsync(Expression<Func<T, bool>> predicate);
+        /// <summary>
+        /// Method used for delete multipule data from database
+        /// </summary>
+        /// <param name="predicate"></param>
+        void RemoveRange(Expression<Func<T, bool>> predicate);
     }
 }

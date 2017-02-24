@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { TaskMailComponent } from "./taskmail.component";
 import { TaskMailListComponent } from "./taskmail-list/taskmail-list.component";
 import { TaskMailDetailsComponent } from "./taskmail-details/taskmail-details.component";
-import { MailSettingComponent } from '../shared/mailsetting/mailsetting.component';
+import { MailSettingComponent } from '../shared/MailSetting/mailsetting.component';
 
 const TaskMailRoutes: Routes = [{
     path: "task",

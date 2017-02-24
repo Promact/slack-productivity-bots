@@ -23,6 +23,6 @@ namespace Promact.Erp.DomainModel.Models
         /// OAuth server's project's Id
         /// </summary>
         [Required]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
     }
 }

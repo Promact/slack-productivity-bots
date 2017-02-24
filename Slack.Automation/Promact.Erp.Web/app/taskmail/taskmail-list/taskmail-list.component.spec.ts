@@ -12,24 +12,29 @@ import { TaskMailListComponent } from './taskmail-list.component';
 import { TaskMailModule } from '../../taskmail/taskMail.module';
 import { MockRouter } from '../../shared/mock/mock.router';
 import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
+import { Md2SelectChange } from 'md2';
+import { AppModule } from '../../app.module';
+
 import { TaskMailModel } from '../../taskmail/taskmail.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 let promise: TestBed;
 
 let stringConstant = new StringConstant();
 describe('Task Mail Report List Tests', () => {
-   const routes: Routes = [];
+    const routes: Routes = [];
+    class MockMd2Select { }
    beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective], 
-            imports: [TaskMailModule, RouterModule.forRoot(routes, { useHash: true })  
+            declarations: [RouterLinkStubDirective],
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })  
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: ActivatedRouteStub },
                 { provide: TaskService, useClass: MockTaskMailService },
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: Router, useClass: MockRouter },
-                { provide: LoaderService, useClass: LoaderService }
+                { provide: LoaderService, useClass: LoaderService },
+                { provide: Md2SelectChange, useClass: MockMd2Select }
             ]
         }).compileComponents();
     }));
