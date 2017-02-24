@@ -1,18 +1,35 @@
-﻿<form>
-    <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" required>Send Mail<br />
+﻿<form #mailSettingForm="ngForm">
+    <input type="hidden" [(ngModel)]="mailSetting.Id" #id="ngModel" name="id"/>
+    <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail">Send Mail<br />
     <div>
         <label>Project :</label>
-        <md2-select [(ngModel)]="mailSetting.Project" name="project" required>
-            <md2-option *ngFor="let project of mailSettinglist" [value]="project">{{project.Name}}</md2-option>
+        <md2-select [(ngModel)]="mailSetting.Project" #project="ngModel" name="project" required (change)="getMailSettingDetailsByProjectId(mailSetting.Project.Id)">
+            <md2-option *ngFor="let project of listOfProject" [value]="project">{{project.Name}}</md2-option>
         </md2-select>
+        <div [hidden]="!(project.touched && project.invalid)" class="error">Required</div>
     </div>
     <div>
-        <!--<label>To :</label>-->
-        <!--<md2-chips [(ngModel)]="mailSetting.To"
+        <label>To :</label>
+        <md2-chips [(ngModel)]="mailSetting.To"
+                   #listofTO="ngModel"
+                   name="listofTO"
+                   placeholder="To"
                    [isRemovable]="true"
-                   [readonly]="false"
-                   placeholder="To">
-        </md2-chips>-->
+                   [readonly]="!projectSelected" required>
+        </md2-chips>
     </div>
-    <button type="submit" (click)="addMailSetting(mailSetting)">Save</button>
+    <div>
+        <label>CC :</label>
+        <md2-chips [(ngModel)]="mailSetting.CC"
+                   #listofCC="ngModel"
+                   name="listofCC"
+                   placeholder="CC"
+                   [isRemovable]="true"
+                   [readonly]="!projectSelected" required>
+        </md2-chips>
+    </div>
+    <div [hidden]="!showButton">
+        <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="IsToUpdate" [disabled]="!mailSettingForm.form.valid">Save</button>
+        <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!IsToUpdate" [disabled]="!mailSettingForm.form.valid">Update</button>
+    </div>
 </form>

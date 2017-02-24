@@ -33,6 +33,7 @@ using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.TaskMailReportRepository;
+using Promact.Core.Repository.MailSettingRepository;
 
 namespace Promact.Core.Test
 {
@@ -71,6 +72,7 @@ namespace Promact.Core.Test
             builder.RegisterType<ServiceRepository>().As<IServiceRepository>();
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
+            builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
