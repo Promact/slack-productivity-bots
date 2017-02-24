@@ -127,6 +127,7 @@
     <Compile Include="ApplicationClass\LeaveAllowed.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
     <Compile Include="ApplicationClass\LeaveReportDetails.cs" />
+    <Compile Include="ApplicationClass\MailSettingAC.cs" />
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />

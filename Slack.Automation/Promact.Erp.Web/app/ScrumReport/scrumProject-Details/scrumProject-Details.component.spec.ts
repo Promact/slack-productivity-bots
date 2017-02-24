@@ -11,6 +11,8 @@ import { MockScrumReportService } from '../../shared/mock/mock.scrumReport.servi
 import { Observable } from 'rxjs/Observable';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
+import { Md2SelectChange } from 'md2';
+import { AppModule } from '../../app.module';
 
 let promise: TestBed;
 
@@ -18,6 +20,7 @@ let promise: TestBed;
 describe('ScrumReport Tests', () => {
     const routes: Routes = [];
     class MockLoaderService { }
+    class MockMd2Select { }
     class MockActivatedRoute extends ActivatedRoute {
         constructor() {
             super();
@@ -28,12 +31,13 @@ describe('ScrumReport Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [ScrumModule, RouterModule.forRoot(routes, { useHash: true })],
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 { provide: ScrumReportService, useClass: MockScrumReportService },
                 { provide: StringConstant, useClass: StringConstant },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: LoaderService, useClass: MockLoaderService },
+                { provide: Md2SelectChange, useClass: MockMd2Select }
             ]
         }).compileComponents();
     }));

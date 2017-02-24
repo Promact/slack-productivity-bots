@@ -425,6 +425,9 @@
         string RoleClaimType { get; }
         string NameClaimType { get; }
         string Bearer { get; }
-
+        string TaskModule { get; }
+        string ScrumModule { get; }
+        string LeaveModule { get; }
+        string Management { get; }
     }
 }
