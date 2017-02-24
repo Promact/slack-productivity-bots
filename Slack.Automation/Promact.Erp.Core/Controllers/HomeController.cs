@@ -9,7 +9,9 @@ using System.Web;
 using System.Web.Mvc;
 using Promact.Erp.Util.StringConstants;
 using System.Net.Http;
-
+using Promact.Erp.Util.HashingMd5;
+using System;
+using Promact.Erp.DomainModel.ApplicationClass;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -21,18 +23,20 @@ namespace Promact.Erp.Core.Controllers
         private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+        private readonly IMd5Service _md5Service;
         #endregion
 
         #region Constructor
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
             ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository,
-            IEnvironmentVariableRepository envVariableRepository) : base(stringConstant)
+            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
+            _md5Service = md5Service;
         }
         #endregion
 
@@ -70,7 +74,14 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public async Task<ActionResult> AfterLogIn()
         {
-            ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(GetUserId(User.Identity));
+            string userId = GetUserId(User.Identity);
+            //for check login user is already added in slack 
+            ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
+
+            //this for get login user email address and encrypt hash code.
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
+            ViewBag.emailHashCode = emailHaseCodeAC;
             return View();
         }
 
