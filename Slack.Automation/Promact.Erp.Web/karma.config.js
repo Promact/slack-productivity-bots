@@ -69,7 +69,8 @@ module.exports = function (config) {
 
         coverageReporter: {
             reporters: [
-                { type: 'lcov', subdir: '.', file: 'lcov.info' }]
+            { type: 'lcovonly', subdir: 'lcov' },
+            { type: 'cobertura', subdir: 'cobertura' }]
         },
 
         // proxied base paths
