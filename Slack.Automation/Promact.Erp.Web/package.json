@@ -17,7 +17,7 @@
     "tsc:w": "tsc -w",
     "typings": "typings",
     "webdriver:update": "webdriver-manager update",
-    "ci": "codecov < coverage/cobertura/cobertura-coverage.xml"
+    "codecov": "codecov < coverage/cobertura/cobertura-coverage.xml"
   },
   "keywords": [],
   "author": "",
