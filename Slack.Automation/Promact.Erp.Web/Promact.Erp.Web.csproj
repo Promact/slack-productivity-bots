@@ -280,7 +280,6 @@
     <Content Include="Content\fonts\line-icons.svg" />
     <Content Include="Content\images\banner.jpg" />
     <Content Include="Content\images\favicon.ico" />
-    <Content Include="Content\images\img.jpg" />
     <Content Include="Content\images\logo-inverted.png" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\js\bootstrap.min.js" />
