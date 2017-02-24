@@ -121,7 +121,6 @@
         string GoodDay { get; }
         string Time { get; }
         string PleaseAnswer { get; }
-        string ScrumConcludedButLater { get; }
         string AllAnswerRecorded { get; }
         string NotLaterYet { get; }
         string SendTaskMailConfirmationErrorMessage { get; }
@@ -349,6 +348,7 @@
         string LeaveWrongCommandForBackDateSL { get; }
         string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
         string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
+        string LeaveCommand { get; }
 
         #endregion
 
