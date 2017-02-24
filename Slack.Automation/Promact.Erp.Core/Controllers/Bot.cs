@@ -120,19 +120,19 @@ namespace Promact.Erp.Core.Controllers
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
             {
-                _logger.Info("Scrum bot got message :" + message);
+                _logger.Debug("Scrum bot got message :" + message);
                 try
                 {
-                    _logger.Info("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
+                    _logger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
                     string replyText = string.Empty;
                     Task.Run(async () =>
                     {
                         replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
-                        _logger.Info("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+                        _logger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
                     }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Info("Scrum bot sending reply");
+                        _logger.Debug("Scrum bot sending reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }

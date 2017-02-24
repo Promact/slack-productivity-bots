@@ -211,10 +211,10 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
                         DbFunctions.TruncateTime(x.ScrumDate) == _today);
-                if ((scrum != null && scrum.IsOngoing && !scrum.IsHalted) || ((((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) ||
-                   (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0) && IsScrumBot(scrumBotId, message)) && messageArray.Length == 2) ||
-                    String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
-                    String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0))
+                if (await IsScrumStartLeaveCommandAsync(scrumBotId, message, messageArray)
+                   || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                   || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
+                   || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
                 {
                     replyText = _stringConstant.SlackUserNotFound;
                 }
@@ -347,7 +347,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
-        /// Check whether the user with the given slack id is ative or not - JJ
+        /// Check whether the user with the given slack id is active or not - JJ
         /// </summary>
         /// <param name="slackUserId"></param>
         /// <param name="users"></param>
@@ -370,22 +370,34 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
-        /// checks whether the applicant is scrum bot - JJ
+        /// Checks whether the command is a valid scrum start or scrum leave command - JJ
         /// </summary>
         /// <param name="scrumBotId"></param>
         /// <param name="message"></param>
-        /// <returns>true if it is scrum bot else false</returns>
-        private bool IsScrumBot(string scrumBotId, string message)
+        /// <returns>true if it is a valid command else false</returns>
+        private async Task<bool> IsScrumStartLeaveCommandAsync(string scrumBotId, string message, string[] messageArray)
         {
-            //"<@".Length is 2
-            int indexFrom = message.IndexOf("<@", StringComparison.Ordinal) + 2;
-            int indexTo = message.LastIndexOf(">", StringComparison.Ordinal);
-            if (indexTo > 0 && indexFrom > 1)
+            if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
             {
-                //the slack userId is fetched
-                string applicantId = message.Substring(indexFrom, indexTo - indexFrom);
-                if (String.Compare(applicantId, scrumBotId, StringComparison.Ordinal) == 0)
-                    return true;
+                //"<@".Length is 2
+                int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
+                int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
+                if (toIndex > 0 && fromIndex > 1)
+                {
+                    //the slack userId is fetched
+                    string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                    if (String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
+                        //fetch the user of the given userId
+                        SlackUserDetailAc applicantDetailsAc = await _slackUserDetailRepository.GetByIdAsync(applicantId);
+                        return applicantDetailsAc != null ? true : false;
+                    }
+                    else
+                    {
+                        if (String.Compare(applicantId, scrumBotId, StringComparison.Ordinal) == 0)
+                            return true;
+                    }
+                }
             }
             return false;
         }

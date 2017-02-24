@@ -618,7 +618,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No active employee found for this project.";
+                return "Sorry. No active member found for this project.";
             }
         }
 
@@ -761,13 +761,6 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "I am expecting <@{0}> to answer.";
-            }
-        }
-        public string ScrumConcludedButLater
-        {
-            get
-            {
-                return "Scrum wound up for now.\nGood luck team :thumbsup:. \nTo conduct scrum of employees marked as _later_ type *_scrum @username_*";
             }
         }
         public string AllAnswerRecorded
@@ -1991,7 +1984,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":false,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
             }
         }
-
+        public string LeaveCommand
+        {
+            get
+            {
+                return "leave <@>";
+            }
+        }
         public string EmployeeDetailsFromOauth
         {
             get
