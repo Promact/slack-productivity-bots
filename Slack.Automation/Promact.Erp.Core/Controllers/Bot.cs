@@ -150,6 +150,13 @@ namespace Promact.Erp.Core.Controllers
                     client.CloseSocket();
                     throw ex;
                 }
+                catch (Exception ex)
+                {
+                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception " + "\n" + ex.StackTrace);
+                    client.CloseSocket();
+                    throw ex;
+                }
             };
         }
         #endregion
