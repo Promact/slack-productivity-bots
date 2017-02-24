@@ -45,7 +45,7 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void TaskMailBot()
         {
-            _logger.Info("TaskMailAccessToken : " +_environmentVariableRepository.TaskmailAccessToken);
+            _logger.Info("TaskMailAccessToken : " + _environmentVariableRepository.TaskmailAccessToken);
             SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.TaskmailAccessToken);
             // assigning bot token on Slack Socket Client
             // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
@@ -71,7 +71,7 @@ namespace Promact.Erp.Core.Controllers
                         {
                             _logger.Info("Task Mail process start - StartTaskMailAsync");
                             replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
-                            _logger.Info("Task Mail process done : "+ replyText);
+                            _logger.Info("Task Mail process done : " + replyText);
                         }
                         else
                         {
@@ -123,15 +123,16 @@ namespace Promact.Erp.Core.Controllers
                 _logger.Info("Scrum bot got message :" + message);
                 try
                 {
-                    _logger.Info("Scrum bot got message, inside try");
+                    _logger.Info("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
                     string replyText = string.Empty;
                     Task.Run(async () =>
                     {
                         replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
+                        _logger.Info("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
                     }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Info("Scrum bot got reply");
+                        _logger.Info("Scrum bot sending reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
