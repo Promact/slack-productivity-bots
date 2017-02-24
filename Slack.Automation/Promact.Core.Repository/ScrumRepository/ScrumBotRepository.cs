@@ -349,9 +349,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <summary>
         /// Check whether the user with the given slack id is active or not - JJ
         /// </summary>
-        /// <param name="slackUserId"></param>
-        /// <param name="users"></param>
-        /// <param name="teamLeaderId"></param>
+        /// <param name="slackUserId">slack user Id of the interacting user</param>
+        /// <param name="users">List of users of the project</param>
+        /// <param name="teamLeaderId">Id of the team leader of the project</param>
         /// <returns>true if active else false</returns>
         private async Task<bool> CheckUserAsync(string slackUserId, List<User> users, string teamLeaderId)
         {
@@ -372,9 +372,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <summary>
         /// Checks whether the command is a valid scrum start or scrum leave command - JJ
         /// </summary>
-        /// <param name="scrumBotId"></param>
-        /// <param name="message"></param>
-        /// <returns>true if it is a valid command else false</returns>
+        /// <param name="scrumBotId">Slack Id of the scrum bot</param>
+        /// <param name="message">the actual message</param>
+        /// <param name="messageArray">message divided by space</param>
+        /// <returns>true if it is a valid start or leave command else false</returns>
         private async Task<bool> IsScrumStartLeaveCommandAsync(string scrumBotId, string message, string[] messageArray)
         {
             if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
