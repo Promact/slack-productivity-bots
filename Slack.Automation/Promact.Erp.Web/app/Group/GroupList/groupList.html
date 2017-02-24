@@ -4,12 +4,12 @@
             <h3></h3>
         </div>
         <div>
-            <button md-raised-button class="btn-green custom-btn" (click)="addNewGroup()"> <i class="material-icons m-0">add</i>Add New Group</button>
+            <button md-raised-button class="btn-green custom-btn" (click)="addNewGroup()">Add New Group</button>
         </div>
     </div>
     <div class="clearfix"></div>
     <div>
-        <table class="table-bordered table-user" [md2-data]="users" #md2="Md2DataTable" [md2-page-length]="10">
+        <table class="table-bordered table-user" [md2-data]="groupList" #md2="Md2DataTable" [md2-page-length]="10">
             <thead>
                 <tr>
                     <th md2-sort-field="firstname">First Name</th>
@@ -23,20 +23,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of md2.data">
-                    <td>{{user.FirstName}}</td>
-                    <td>{{user.LastName}}</td>
-                    <td>{{user.Email}}</td>
-                    <td *ngIf="user.IsActive">Active</td>
-                    <td *ngIf="!user.IsActive">Inactive</td>
-                    <td>{{user.NumberOfCasualLeave}}</td>
-                    <td>{{user.NumberOfSickLeave}}</td>
-                    <td>{{user.JoiningDate |date:"dd/MM/yyyy"}}</td>
+                <tr *ngFor="let group of md2.data">
+                    <td>{{group.Name}}</td>
+                    <td>{{group.Type}}</td>
                     <td>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="userDetails(user.Id)">Details</button>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="userDelete(user.Id)">Delete</button>
-                        <button md-raised-button class="custom-btn" (click)="userEdit(user.Id)">Edit</button>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="reSendMail(user)">ReSendMail</button>
+                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="">Edit</button>
+                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="">Delete</button>
                     </td>
                 </tr>
             </tbody>
