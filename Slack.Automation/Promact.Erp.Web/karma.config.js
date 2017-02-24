@@ -35,6 +35,10 @@ module.exports = function (config) {
                   { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
                   { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
 
+                  //md2
+                  { pattern: 'node_modules/md2/**/*.js', included: false, watched: true },
+                  { pattern: 'node_modules/md2/**/*.js.map', included: false, watched: true },
+
                   'karma-test-shim.js',
 
                    // paths loaded via module imports
@@ -42,7 +46,8 @@ module.exports = function (config) {
                   { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
                   { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: true },
 
-                  // Our built application code
+                  
+                  // Our built application code                  
                   { pattern: 'app/**/*.ts', included: false, watched: true },
                   { pattern: 'app/**/*.js', included: false, watched: true },
                   { pattern: 'app/**/*.js.map', included: false, watched: true },
@@ -59,7 +64,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            "**/app/*spec.js": "coverage"
+            "**/app/**/*spec.js": "coverage"
         },
 
         // test results reporter to use

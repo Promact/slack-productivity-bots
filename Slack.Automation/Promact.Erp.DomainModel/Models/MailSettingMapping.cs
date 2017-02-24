@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Promact.Erp.DomainModel.Models
 {
@@ -7,6 +8,7 @@ namespace Promact.Erp.DomainModel.Models
         /// <summary>
         /// Email of MailSettingMapping
         /// </summary>
+        [StringLength(50)]
         public string Email { get; set; }
         /// <summary>
         /// IsTo of MailSettingMapping, true if is TO else false for CC

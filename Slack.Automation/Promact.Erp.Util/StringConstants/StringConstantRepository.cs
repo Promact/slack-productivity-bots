@@ -2933,5 +2933,9 @@ namespace Promact.Erp.Util.StringConstants
         public string RoleClaimType { get { return "role"; } }
         public string NameClaimType { get { return "name"; } }
         public string Bearer { get { return "Bearer"; } }
+        public string TaskModule { get { return "task"; } }
+        public string LeaveModule { get { return "leave"; } }
+        public string ScrumModule { get { return "scrum"; } }
+        public string Management { get { return "Management"; } }
     }
 }
