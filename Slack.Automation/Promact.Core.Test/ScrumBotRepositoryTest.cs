@@ -521,7 +521,7 @@ namespace Promact.Core.Test
             await _scrumDataRepository.SaveChangesAsync();
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            string compareString = string.Format(_stringConstant.InActiveInOAuth, _stringConstant.TestUser) + _stringConstant.NoProjectFound;
+            string compareString =  _stringConstant.NoProjectFound;
             Assert.Equal(compareString, actualString);
         }
 
@@ -1069,7 +1069,7 @@ namespace Promact.Core.Test
             await _scrumAnswerDataRepository.SaveChangesAsync();
             await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.StringIdForTest, 0, question.Id);
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
-            string expectedString = string.Format(_stringConstant.InActiveInOAuth, _stringConstant.UserNameForTest) + _stringConstant.ProjectInActive;
+            string expectedString = _stringConstant.ProjectInActive;
             Assert.Equal(expectedString, actualString);
         }
 
