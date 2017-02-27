@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.NLog;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using NLog;
 using Promact.Core.Repository.SlackChannelRepository;
@@ -13,7 +12,6 @@ using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -32,7 +30,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         #endregion
 
