@@ -61,16 +61,16 @@ namespace Promact.Core.Repository.MailSettingRepository
                 List<string> listOfCC = new List<string>();
                 mailSetting = _mapper.Map<MailSetting, MailSettingAC>(mailSettingDetails);
                 var mailSettingMappingList = (await _mailSettingMappingDataRepository.FetchAsync(x => x.MailSettingId == mailSettingDetails.Id)).ToList();
-                var To = mailSettingMappingList.FindAll(x => x.IsTo == true);
-                var CC = mailSettingMappingList.FindAll(x => x.IsTo == false);
-                foreach (var to in To)
+                var listOfMailSettingTo = mailSettingMappingList.FindAll(x => x.IsTo);
+                var listOfMailSettingCC = mailSettingMappingList.FindAll(x => !x.IsTo);
+                foreach (var to in listOfMailSettingTo)
                 {
                     if (to.GroupId == null)
                         listOfTo.Add(to.Email);
                     else
                         listOfTo.Add((await _groupDataRepository.FirstOrDefaultAsync(x => x.Id == to.GroupId)).Name);
                 }
-                foreach (var cc in CC)
+                foreach (var cc in listOfMailSettingCC)
                 {
                     if (cc.GroupId == null)
                         listOfCC.Add(cc.Email);
@@ -113,7 +113,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// Method to get list of groups from group table
         /// </summary>
         /// <returns>list of group</returns>
-        public async Task<List<string>> GetListOfGroupsAsync()
+        public async Task<List<string>> GetListOfGroupsNameAsync()
         {
             List<string> listOfGroupNames = new List<string>();
             var listOfGroups = await _groupDataRepository.GetAll().ToListAsync();
