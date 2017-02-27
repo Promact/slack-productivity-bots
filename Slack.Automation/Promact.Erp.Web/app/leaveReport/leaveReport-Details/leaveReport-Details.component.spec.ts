@@ -97,7 +97,29 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
+//    beforeEach(async(() => {
+//        this.promise = TestBed.configureTestingModule({
+//            declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
+//            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+//            ],
+//            providers: [
+//                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+//                { provide: LeaveReportService, useClass: MockLeaveReportService },
+//                { provide: StringConstant, useClass: StringConstant },
+//                { provide: LoaderService, useClass: MockLoaderService },
+//                { provide: Md2SelectChange, useClass: MockMd2Select },
+//            ]
+//        }).compileComponents();
+//    }));
 
+//    it('Shows details of leave report for an employee on initialization', fakeAsync(() => {
+//        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+//        let leaveReportDetailsComponent = fixture.componentInstance;
+//        let result = leaveReportDetailsComponent.ngOnInit();
+//        tick();
+//        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+//    }));
+//});
 
 class MockLeaveReport extends LeaveReport {
     constructor() {
