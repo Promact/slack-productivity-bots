@@ -103,7 +103,7 @@ namespace Promact.Core.Test
             _groupDataRepository.Insert(teamLeaderGroup);
             _groupDataRepository.Insert(managementGroup);
             await _groupDataRepository.SaveChangesAsync();
-            var result = await _mailSettingRepository.GetListOfGroupsAsync();
+            var result = await _mailSettingRepository.GetListOfGroupsNameAsync();
             Assert.True(result.Any());
         }
 
