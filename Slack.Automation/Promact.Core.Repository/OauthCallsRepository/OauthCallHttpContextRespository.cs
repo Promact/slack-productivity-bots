@@ -33,7 +33,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             _httpContextBase = httpContextBase;
             _userManager = userManager;
             _attachmentRepository = attachmentRepository;
-            _logger=logger;
+            _logger = logger;
         }
         #endregion
 

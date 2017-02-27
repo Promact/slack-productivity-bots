@@ -621,7 +621,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. No active member found for this project.";
             }
         }
-
         public string Unrecognized
         {
             get
@@ -629,12 +628,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry :worried: I don't know who you are. Please contact your administrator";
             }
         }
-
         public string NoProjectFound
         {
             get
             {
-                return "No active project found for this channel.";
+                return "No active project with an active team leader found for this channel.";
             }
         }
         public string ScrumComplete

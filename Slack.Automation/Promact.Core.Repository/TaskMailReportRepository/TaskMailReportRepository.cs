@@ -1,5 +1,4 @@
-﻿using Autofac.Extras.NLog;
-using NLog;
+﻿using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
@@ -30,7 +29,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
