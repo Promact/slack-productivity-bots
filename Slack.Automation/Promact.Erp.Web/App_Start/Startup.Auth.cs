@@ -45,8 +45,8 @@ namespace Promact.Erp.Web
             {
 
                 Authority = AppSettingUtil.OAuthUrl,
-                ClientId = _environmentVariable.PromactOAuthClientId,
-                ClientSecret = _environmentVariable.PromactOAuthClientSecret,
+                ClientId = "KN0KJCV4KJA9HE3",
+                ClientSecret = "ALbj9aak26wRHUmSh8xj8GFYzRiVBC",
                 RedirectUri = _redirectUrl,
                 TokenValidationParameters = new TokenValidationParameters
                 {
@@ -70,7 +70,7 @@ namespace Promact.Erp.Web
                         var doc = await discovery.GetAsync();
                         var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
                         var user = await userInfoClient.GetAsync(accessToken);
-                        var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
+                        var tokenClient = new TokenClient(doc.TokenEndpoint, "KN0KJCV4KJA9HE3", "ALbj9aak26wRHUmSh8xj8GFYzRiVBC");
                         var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);      
                         var refreshToken = response.RefreshToken;
                         string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
