@@ -6,6 +6,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/mailsetting")]
     public class MailSettingController : BaseController
     {
