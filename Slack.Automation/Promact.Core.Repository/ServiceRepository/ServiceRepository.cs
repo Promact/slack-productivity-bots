@@ -26,7 +26,7 @@ namespace Promact.Core.Repository.ServiceRepository
             var discovery = new DiscoveryClient(AppSettingUtil.OAuthUrl);
             discovery.Policy.RequireHttps = false;
             var doc = await discovery.GetAsync();
-            var tokenClient = new TokenClient(doc.TokenEndpoint, "KN0KJCV4KJA9HE3", "ALbj9aak26wRHUmSh8xj8GFYzRiVBC");
+            var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
             var requestRefreshToken = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
             return requestRefreshToken.AccessToken;
         }
