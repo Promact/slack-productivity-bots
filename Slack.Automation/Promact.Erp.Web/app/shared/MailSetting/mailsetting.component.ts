@@ -31,6 +31,7 @@ export class MailSettingComponent implements OnInit {
         this.currentModule = listofString[1];
         this.showButton = false;
         this.groupList = new Array<string>();
+        this.mailSettingAC = new MailSettingAC;
     }
 
     ngOnInit() {
@@ -42,7 +43,6 @@ export class MailSettingComponent implements OnInit {
 
     addMailSetting(mailSetting: MailSetting) {
         this.loader.loader = true;
-        this.mailSettingAC = new MailSettingAC;
         this.mailSettingAC.CC = mailSetting.CC;
         this.mailSettingAC.ProjectId = mailSetting.Project.Id;
         this.mailSettingAC.Module = this.currentModule;
@@ -57,7 +57,6 @@ export class MailSettingComponent implements OnInit {
 
     updateMailSetting(mailSetting: MailSetting) {
         this.loader.loader = true;
-        this.mailSettingAC = new MailSettingAC;
         this.mailSettingAC.CC = mailSetting.CC;
         this.mailSettingAC.ProjectId = mailSetting.Project.Id;
         this.mailSettingAC.Module = this.currentModule;

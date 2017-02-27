@@ -30,7 +30,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// Method to get list of groups from group table
         /// </summary>
         /// <returns>list of group</returns>
-        Task<List<string>> GetListOfGroupsAsync();
+        Task<List<string>> GetListOfGroupsNameAsync();
 
         /// <summary>
         /// Method to update mail setting configuration
