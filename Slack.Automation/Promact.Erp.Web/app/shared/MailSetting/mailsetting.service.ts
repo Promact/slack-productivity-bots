@@ -3,12 +3,13 @@ import { Http, Headers } from "@angular/http";
 import 'rxjs/add/operator/toPromise';
 import { MailSetting } from './mailsetting.model';
 import { MailSettingAC } from './mailsettingAC.model';
+import { StringConstant } from '../stringConstant';
 
 @Injectable()
 export class MailSettingService {
     private mailSettingUrl = 'api/mailsetting';
     private headers = new Headers({ 'Content-Type': 'application/json' });
-    constructor(private http: Http) {
+    constructor(private http: Http, private stringConstant: StringConstant) {
     }
 
     /*This service used for add new mail setting*
@@ -26,7 +27,7 @@ export class MailSettingService {
   * @param id
   */
     getProjectByIdAndModule(id: number, module: string) {
-        return this.http.get(this.mailSettingUrl + "/project/" + id + "/" + module)
+        return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.project + this.stringConstant.slash + id + this.stringConstant.slash + module)
             .map(res => res.json())
             .toPromise();
     }
@@ -35,7 +36,7 @@ export class MailSettingService {
     *
     */
     getAllProjects() {
-        return this.http.get(this.mailSettingUrl + "/project")
+        return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.project)
             .map(res => res.json()).toPromise();
     }
 
@@ -54,7 +55,7 @@ export class MailSettingService {
     * @param consumerAppsAc
     */
     getListOfGroups() {
-        return this.http.get(this.mailSettingUrl + "/group")
+        return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.group)
             .map(res => res.json()).toPromise();
     }
 }

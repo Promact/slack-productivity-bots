@@ -41,7 +41,8 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of project</returns>
         public async Task<List<ProjectAc>> GetAllProjectAsync()
         {
-            return (await _oauthCallRepository.GetAllProjectsAsync());
+            var projects = (await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x=>x.IsActive == true);
+            return (projects);
         }
 
         /// <summary>
