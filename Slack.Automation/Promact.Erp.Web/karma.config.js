@@ -59,17 +59,19 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            "**/app/*spec.js": "coverage"
+            '**/app/**/!(*spec).js': ['coverage']
         },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'coverage', 'coveralls'],
+        reporters: ['progress', 'coverage'],
 
         coverageReporter: {
             reporters: [
-                { type: 'lcov', subdir: '.', file: 'lcov.info' }]
+            { type: 'html', subdir: 'html' },
+            { type: 'lcovonly', subdir: 'lcov' },
+            { type: 'cobertura', subdir: 'cobertura' }]
         },
 
         // proxied base paths
@@ -115,7 +117,6 @@ module.exports = function (config) {
             'karma-jasmine',
             'karma-chrome-launcher',
             'karma-coverage',
-            'karma-coveralls'
         ],
 
     })
