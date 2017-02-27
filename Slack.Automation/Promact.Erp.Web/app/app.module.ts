@@ -33,7 +33,7 @@ import { EmailHashCode } from './shared/emailHashCode';
         FormsModule
     ],
     bootstrap: [AppComponent],
-    providers: [StringConstant, AppComponentService, MailSettingService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [StringConstant, AppComponentService, MailSettingService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
 })
 
 export class AppModule { }
