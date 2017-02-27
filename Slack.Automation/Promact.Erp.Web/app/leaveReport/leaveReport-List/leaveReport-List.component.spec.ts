@@ -10,15 +10,17 @@ import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.servi
 import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportListComponent } from './leaveReport-List.component';
 import { LoaderService } from '../../shared/loader.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
+import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
 
-//let promise: TestBed;
+let promise: TestBed;
 
 
-//describe('LeaveReport List Tests', () => {
-//    class MockRouter { }
-//    class MockLoaderService { }
-//    class MockMd2Select { }
-//    const routes: Routes = [];
+describe('LeaveReport List Tests', () => {
+    class MockRouter { }
+    class MockLoaderService { }
 
     const routes: Routes = [];
 
@@ -36,23 +38,25 @@ import { LoaderService } from '../../shared/loader.service';
         }).compileComponents();
     }));
 
-    it('Shows list of leaveReports on initialization', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-            let leaveReportListComponent = fixture.componentInstance;
-            let result = leaveReportListComponent.ngOnInit();
-            expect(leaveReportListComponent.leaveReports.length).toBe(1);
-            done();
-        });
+
+    it('Shows list of leaveReports on initialization', () => {
+        let mockLeaveReports = new Array<MockLeaveReport>();
+        let mockLeaveReport = new MockLeaveReport();
+        mockLeaveReport.EmployeeId = "abc";
+        mockLeaveReport.EmployeeUserName = "abc@abc.com";
+        mockLeaveReport.EmployeeName = "abc";
+        mockLeaveReport.TotalSickLeave = 7;
+        mockLeaveReport.TotalCasualLeave = 14;
+        mockLeaveReports.push(mockLeaveReport);
+
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        let result = leaveReportListComponent.getLeaveReports();
+        expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
-//    it('Shows list of leaveReports on initialization', fakeAsync(() => {
-//        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-//        let leaveReportListComponent = fixture.componentInstance;
-//        let result = leaveReportListComponent.ngOnInit();
-//        tick();
-//        expect(leaveReportListComponent.leaveReports.length).toBe(1);
-//    }));
 
     it('Shows list of leaveReports on initialization but no reports', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
