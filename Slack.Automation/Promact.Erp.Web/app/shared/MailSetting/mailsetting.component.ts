@@ -5,7 +5,7 @@ import { NgModule } from "@angular/core";
 import { Project } from './project.model';
 import { MailSettingService } from './mailsetting.service';
 import { LoaderService } from '../../shared/loader.service';
-//import { Md2Toast } from 'md2';
+import { Md2Toast } from 'md2';
 import { MailSettingAC } from './mailsettingAC.model';
 
 @Component({
@@ -24,7 +24,7 @@ export class MailSettingComponent implements OnInit {
     projectSelected: boolean;
 
     constructor(private httpService: MailSettingService, private loader: LoaderService, private router: Router,
-        /*private toaster: Md2Toast*/) {
+        private toaster: Md2Toast) {
         let currentLocation = window.location.hash;
         let listofString = currentLocation.split('/');
         this.currentModule = listofString[1];
@@ -48,7 +48,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.SendMail = mailSetting.SendMail;
         this.mailSettingAC.To = mailSetting.To;
         this.httpService.addMailSetting(this.mailSettingAC).then((result) => {
-            //this.toaster.show('Mail Setting of' + this.currentModule + 'successfully added');
+            this.toaster.show('Mail Setting of' + this.currentModule + 'successfully added');
             this.router.navigate(['/']);
         })
         this.loader.loader = false;
@@ -64,7 +64,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.To = mailSetting.To;
         this.mailSettingAC.Id = mailSetting.Id;
         this.httpService.updateMailSetting(this.mailSettingAC).then((result) => {
-            //this.toaster.show('Mail Setting of' + this.currentModule + 'successfully updated');
+            this.toaster.show('Mail Setting of' + this.currentModule + 'successfully updated');
             this.router.navigate(['/']);
             this.loader.loader = false;
         });
