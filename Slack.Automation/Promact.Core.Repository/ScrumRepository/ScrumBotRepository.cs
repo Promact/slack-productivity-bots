@@ -15,6 +15,7 @@ using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.BaseRepository;
+using Autofac.Extras.NLog;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -37,6 +38,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IMapper _mapper;
         private readonly DateTime _today;
+        private readonly ILogger _logger;
 
 
         #endregion
@@ -46,8 +48,9 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<TemporaryScrumDetails> tempScrumDetailsDataRepository,
-            IRepository<ScrumAnswer> scrumAnswerDataRepository, IRepository<Scrum> scrumDataRepository,
-            IRepository<Question> questionDataRepository, IRepository<SlackUserDetails> slackUserDetailsDataRepository,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository, ILogger logger,
+            IRepository<Scrum> scrumDataRepository, IRepository<Question> questionDataRepository,
+            IRepository<SlackUserDetails> slackUserDetailsDataRepository,
             ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
             ISlackUserRepository slackUserDetailRepository, IStringConstantRepository stringConstant,
             IBotQuestionRepository botQuestionRepository, IMapper mapper,
@@ -56,6 +59,7 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             _tempScrumDetailsDataRepository = tempScrumDetailsDataRepository;
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
+            _logger = logger;
             _scrumDataRepository = scrumDataRepository;
             _questionDataRepository = questionDataRepository;
             _slackUserDetailRepository = slackUserDetailRepository;
@@ -143,6 +147,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 if (String.Compare(message, _stringConstant.ScrumHelp, StringComparison.OrdinalIgnoreCase) == 0) //when the message obtained is "scrum help"
                 {
+                    _logger.Debug("Scrum help message");
                     replyText = string.Format(_stringConstant.ScrumHelpMessage, scrumBotId);
                 }
                 else if (slackChannelDetail != null)
@@ -151,11 +156,13 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
                         String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
+                        _logger.Debug("Scrum command is :" + message);
                         replyText = await ScrumAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
                     }
                     //a particular user is on leave. command would be like "leave <@userId>"
                     else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
                     {
+                        _logger.Debug("Scrum command is leave or start");
                         //"<@".Length is 2
                         int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
                         int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
@@ -163,8 +170,10 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             //the slack userId is fetched
                             string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                            _logger.Debug("Scrum command is leave or start. User mentioned is :" + applicantId);
                             if (String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0)
                             {
+                                _logger.Debug("Scrum command is leave");
                                 //fetch the user of the given userId
                                 SlackUserDetailAc applicantDetailsAc = await _slackUserDetailRepository.GetByIdAsync(applicantId);
                                 replyText = applicantDetailsAc != null ? await LeaveAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, slackUserDetail.UserId, applicantDetailsAc.Name, applicantId) : _stringConstant.NotAUser;
@@ -172,19 +181,27 @@ namespace Promact.Core.Repository.ScrumRepository
                             else
                             {
                                 if (String.Compare(applicantId, scrumBotId, StringComparison.Ordinal) == 0)
+                                {
+                                    _logger.Debug("Scrum command is start");
                                     replyText = await ScrumAsync(slackChannelId, slackChannelDetail.Name, slackUserDetail.Name, messageArray[0].ToLower(), slackUserDetail.UserId);
+                                }
                                 else
+                                {
+                                    _logger.Debug("Invalid start command");
                                     replyText = string.Format(_stringConstant.InValidStartCommand, scrumBotId);
+                                }
                             }
                         }
                         else //when command would be like "leave <@>"
                         {
+                            _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
                             replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
                                 message, slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
                         }
                     }
                     else  //all other texts
                     {
+                        _logger.Debug("AddScrumAnswerAsync method");
                         replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
                             slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
                     }
@@ -195,6 +212,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
                         String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
                     {
+                        _logger.Debug("AddChannelManuallyAsync method");
                         replyText = await AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
                     }
                     //If any of the commands which scrum bot recognizes is encountered
@@ -203,6 +221,7 @@ namespace Promact.Core.Repository.ScrumRepository
                              String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
                              String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
+                        _logger.Debug("Channel is not in our db so give instruction to add channel");
                         replyText = _stringConstant.ChannelAddInstruction;
                     }
                 }
@@ -216,6 +235,7 @@ namespace Promact.Core.Repository.ScrumRepository
                    || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
                    || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
                 {
+                    _logger.Debug("Slack user is not in our db.");
                     replyText = _stringConstant.SlackUserNotFound;
                 }
             }
@@ -355,7 +375,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>true if active else false</returns>
         private async Task<bool> CheckUserAsync(string slackUserId, List<User> users, string teamLeaderId)
         {
-            User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);   
+            User user = users.FirstOrDefault(x => x.SlackUserId == slackUserId);
             if (user == null)
             {
                 return (await _applicationUser.FirstOrDefaultAsync(x => x.Id == teamLeaderId && x.SlackUserId == slackUserId) != null);
@@ -563,12 +583,9 @@ namespace Promact.Core.Repository.ScrumRepository
                                     returnMessage = _stringConstant.ScrumCannotBeHalted + Environment.NewLine + returnMessage;
                                 break;
 
-                            case ScrumStatus.NoEmployee:
-                                returnMessage = ReplyStatusofScrumToClient(scrumStatus);
-                                break;
                             //for all other status of the scrum
                             default:
-                                returnMessage = string.Format(_stringConstant.InActiveInOAuth, slackUserName) + ReplyStatusofScrumToClient(scrumStatus);
+                                returnMessage = ReplyStatusofScrumToClient(scrumStatus);
                                 break;
                         }
                         return returnMessage;

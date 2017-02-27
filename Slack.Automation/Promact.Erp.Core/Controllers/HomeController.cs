@@ -23,7 +23,7 @@ namespace Promact.Erp.Core.Controllers
 
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         private readonly IMd5Service _md5Service;
         #endregion
