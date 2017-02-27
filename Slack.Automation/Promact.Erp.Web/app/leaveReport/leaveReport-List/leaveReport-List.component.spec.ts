@@ -77,7 +77,16 @@ describe('LeaveReport List Tests', () => {
         expect(leaveReportListComponent.exportDataToPdf).toHaveBeenCalled();
     });
 
-  
+    //it('Downloads report of leave reports on export to pdf', () => done => {
+    //    this.promise.then(() => {
+    //        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+    //        let leaveReportListComponent = fixture.componentInstance;
+    //        leaveReportListComponent.exportDataToPdf();
+    //        console.log(leaveReportListComponent.leaveReports.push());
+    //        expect(leaveReportListComponent.exportDataToPdf).toBe();
+    //    });
+    //});
+
 
 });
 
