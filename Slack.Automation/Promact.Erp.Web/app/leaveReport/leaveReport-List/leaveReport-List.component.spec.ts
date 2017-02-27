@@ -65,6 +65,11 @@ describe('LeaveReport List Tests', () => {
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
+class MockLeaveReport extends LeaveReport {
+    constructor() {
+        super();
+    }
+}
 
     it('Shows list of leaveReports on initialization but no reports', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();

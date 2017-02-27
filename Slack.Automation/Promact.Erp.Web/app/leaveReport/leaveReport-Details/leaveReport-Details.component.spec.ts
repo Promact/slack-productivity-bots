@@ -77,13 +77,7 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
-    it('Shows details of leave report for an employee on initialization', () => {
-        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
-        let mockLeaveReportDetail = new MockLeaveReportDetails();
-        mockLeaveReportDetail.EmployeeUserName = "abc@abc.com";
-        mockLeaveReportDetail.EmployeeName = "abc";
-        mockLeaveReportDetail.LeaveFrom = "1/1/16";
-        mockLeaveReportDetails.push(mockLeaveReportDetail);
+//let promise: TestBed;
 
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
