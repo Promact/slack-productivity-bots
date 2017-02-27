@@ -1221,8 +1221,8 @@
     <TypeScriptCompile Include="app\shared\mock\mock.appcomponent.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.mailsetting.service.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.md2toast.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
-    <TypeScriptCompile Include="app\shared\mock\mock.selectchange.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.routerLink.ts" />
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />

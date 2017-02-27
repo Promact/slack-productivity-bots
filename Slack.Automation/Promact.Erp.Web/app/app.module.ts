@@ -18,6 +18,7 @@ import { AppComponentService } from './appcomponent.service';
 import { MailSettingComponent } from './shared/MailSetting/mailsetting.component';
 import { Md2Module } from 'md2';
 import { MailSettingService } from './shared/MailSetting/mailsetting.service';
+import { EmailHashCode } from './shared/emailHashCode';
 
 @NgModule({
     declarations: [AppComponent, MailSettingComponent],
@@ -32,7 +33,7 @@ import { MailSettingService } from './shared/MailSetting/mailsetting.service';
         FormsModule
     ],
     bootstrap: [AppComponent],
-    providers: [StringConstant, AppComponentService, MailSettingService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }]
+    providers: [StringConstant, AppComponentService, MailSettingService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
 })
 
 export class AppModule { }

@@ -90,6 +90,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
+            builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
