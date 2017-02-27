@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of project</returns>
         public async Task<List<ProjectAc>> GetAllProjectAsync()
         {
-            var projects = (await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x=>x.IsActive == true);
+            var projects = (await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x => x.IsActive == true);
             return (projects);
         }
 
@@ -98,15 +98,14 @@ namespace Promact.Core.Repository.MailSettingRepository
                 var mailSettingMapping = await MailSettingMappingGeneratorAsync(to, true, mailSetting.Id);
                 mailSettingMapping.CreatedOn = DateTime.UtcNow;
                 _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-                await _mailSettingMappingDataRepository.SaveChangesAsync();
             }
             foreach (var cc in mailSettingAC.CC)
             {
                 var mailSettingMapping = await MailSettingMappingGeneratorAsync(cc, false, mailSetting.Id);
                 mailSettingMapping.CreatedOn = DateTime.UtcNow;
                 _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-                await _mailSettingMappingDataRepository.SaveChangesAsync();
             }
+            await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
 
         /// <summary>
@@ -116,12 +115,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         public async Task<List<string>> GetListOfGroupsNameAsync()
         {
             List<string> listOfGroupNames = new List<string>();
-            var listOfGroups = await _groupDataRepository.GetAll().ToListAsync();
-            foreach (var group in listOfGroups)
-            {
-                listOfGroupNames.Add(group.Name);
-            }
-            return listOfGroupNames;
+            return (await _groupDataRepository.GetAll().ToListAsync()).Select(x=>x.Name).ToList();
         }
 
         /// <summary>
@@ -131,27 +125,26 @@ namespace Promact.Core.Repository.MailSettingRepository
         public async Task UpdateMailSettingAsync(MailSettingAC mailSettingAC)
         {
             var previousMailSetting = await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.Id == mailSettingAC.Id);
-            var previousMailSettingCreatedDateTime = (await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.Id == mailSettingAC.Id)).CreatedOn;
             var previousMailSettingMappingCreatedDateTime = (await _mailSettingMappingDataRepository.FirstOrDefaultAsync(x => x.MailSettingId == mailSettingAC.Id)).CreatedOn;
             previousMailSetting.SendMail = mailSettingAC.SendMail;
             previousMailSetting.UpdatedDate = DateTime.UtcNow;
             _mailSettingDataRepository.Update(previousMailSetting);
-            _mailSettingMappingDataRepository.RemoveRange(x => x.MailSettingId == mailSettingAC.Id);
             await _mailSettingDataRepository.SaveChangesAsync();
+            if (_mailSettingMappingDataRepository.Any(x => x.MailSettingId == mailSettingAC.Id))
+                _mailSettingMappingDataRepository.RemoveRange(x => x.MailSettingId == mailSettingAC.Id);
             foreach (var to in mailSettingAC.To)
             {
                 var mailSettingMapping = await MailSettingMappingGeneratorAsync(to, true, mailSettingAC.Id);
                 mailSettingMapping.CreatedOn = previousMailSettingMappingCreatedDateTime;
                 _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-                await _mailSettingMappingDataRepository.SaveChangesAsync();
             }
             foreach (var cc in mailSettingAC.CC)
             {
                 var mailSettingMapping = await MailSettingMappingGeneratorAsync(cc, false, mailSettingAC.Id);
                 mailSettingMapping.CreatedOn = previousMailSettingMappingCreatedDateTime;
                 _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-                await _mailSettingMappingDataRepository.SaveChangesAsync();
             }
+            await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
         #endregion
 
