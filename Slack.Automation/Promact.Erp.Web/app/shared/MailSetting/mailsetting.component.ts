@@ -21,7 +21,6 @@ export class MailSettingComponent implements OnInit {
     showButton: boolean;
     mailSettingAC: MailSettingAC;
     currentModule: string;
-    lists: any;
     projectSelected: boolean;
 
     constructor(private httpService: MailSettingService, private loader: LoaderService, private router: Router,
@@ -49,7 +48,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.SendMail = mailSetting.SendMail;
         this.mailSettingAC.To = mailSetting.To;
         this.httpService.addMailSetting(this.mailSettingAC).then((result) => {
-            this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + this.stringConstant.added);
+            this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + ' ' + this.stringConstant.added);
             this.router.navigate(['/']);
         })
         this.loader.loader = false;
@@ -64,7 +63,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.To = mailSetting.To;
         this.mailSettingAC.Id = mailSetting.Id;
         this.httpService.updateMailSetting(this.mailSettingAC).then((result) => {
-            this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + this.stringConstant.updated);
+            this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + ' ' + this.stringConstant.updated);
             this.router.navigate(['/']);
             this.loader.loader = false;
         });
