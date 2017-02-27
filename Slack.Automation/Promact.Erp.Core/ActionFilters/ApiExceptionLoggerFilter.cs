@@ -22,8 +22,7 @@ namespace Promact.Erp.Core.ActionFilters
         {
             await Task.Factory.StartNew(() =>
             {
-                _logger.Error("Web Service Error Message:" + actionExecutedContext.Exception.Message);
-                _logger.Error("Web Service Error StackTrace:" + actionExecutedContext.Exception.StackTrace);
+               _logger.Error(actionExecutedContext.Exception);
             }, cancellationToken);
         }
     }
