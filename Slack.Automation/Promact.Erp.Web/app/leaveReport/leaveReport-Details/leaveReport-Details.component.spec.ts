@@ -11,6 +11,11 @@ import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
 import { LoaderService } from '../../shared/loader.service';
 
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
+import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
+
 let promise: TestBed;
 
 describe('LeaveReport Detials Tests', () => {
@@ -37,19 +42,48 @@ describe('LeaveReport Detials Tests', () => {
         }).compileComponents();
     }));
 
-    it('Shows details of leave report for an employee on initialization', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
-            let leaveReportDetailsComponent = fixture.componentInstance;
-            let result = leaveReportDetailsComponent.ngOnInit();
-            expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
-            done();
-        });
+
+    it('Shows details of leave report for an employee on initialization but there are no leave reports', () => {
+        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+        let leaveReportDetailsComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReportDetail").and.returnValue(new BehaviorSubject(mockLeaveReportDetails).asObservable());
+        let result = leaveReportDetailsComponent.getLeaveReportDetail();
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(0);
+    });
+
+
+    it('Shows details of leave report for an employee on initialization', () => {
+        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
+        let mockLeaveReportDetail = new MockLeaveReportDetails();
+        mockLeaveReportDetail.EmployeeUserName = "abc@abc.com";
+        mockLeaveReportDetail.EmployeeName = "abc";
+        mockLeaveReportDetail.LeaveFrom = "1/1/16";
+        mockLeaveReportDetails.push(mockLeaveReportDetail);
+
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+        let leaveReportDetailsComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReportDetail").and.returnValue(new BehaviorSubject(mockLeaveReportDetails).asObservable());
+        let result = leaveReportDetailsComponent.getLeaveReportDetail();
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
     });
 
 });
 
 
+class MockLeaveReport extends LeaveReport {
+    constructor() {
+        super();
+    }
+}
+
+class MockLeaveReportDetails extends LeaveReportDetail {
+    constructor() {
+        super();
+    }
+}
 
 
 
