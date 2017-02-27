@@ -145,14 +145,14 @@ namespace Promact.Erp.Core.Controllers
                 catch (HttpRequestException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed " + ex.InnerException + "\n" + ex.StackTrace);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException + "\nStack trace :\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
                 catch (Exception ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception " + "\n" + ex.StackTrace);
+                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException + "\nStack trace :\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }

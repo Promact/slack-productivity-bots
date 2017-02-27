@@ -583,12 +583,9 @@ namespace Promact.Core.Repository.ScrumRepository
                                     returnMessage = _stringConstant.ScrumCannotBeHalted + Environment.NewLine + returnMessage;
                                 break;
 
-                            case ScrumStatus.NoEmployee:
-                                returnMessage = ReplyStatusofScrumToClient(scrumStatus);
-                                break;
                             //for all other status of the scrum
                             default:
-                                returnMessage = string.Format(_stringConstant.InActiveInOAuth, slackUserName) + ReplyStatusofScrumToClient(scrumStatus);
+                                returnMessage = ReplyStatusofScrumToClient(scrumStatus);
                                 break;
                         }
                         return returnMessage;
