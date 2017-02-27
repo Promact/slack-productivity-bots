@@ -1,4 +1,5 @@
 ﻿using Autofac.Extras.NLog;
+using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
@@ -29,7 +30,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
-        private readonly ILogger _logger;
+        private readonly Logger _logger;
         #endregion
 
         #region Constructor
@@ -37,7 +38,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             IOauthCallHttpContextRespository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
-            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
+            IEmailServiceTemplateRepository emailServiceTemplate)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -49,7 +50,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
-            _logger = logger;
+            _logger = LogManager.GetLogger("TaskReportModule");
         }
         #endregion
 
@@ -78,6 +79,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
                 TaskMailReportAc taskMailReportAc = new TaskMailReportAc(userRole.UserId, userRole.Role, userRole.Name, userEmail: userRole.UserName);
                 taskMailReportAcList.Add(taskMailReportAc);
             }
+            _logger.Debug("Task Report List");
             return taskMailReportAcList;
         }
 

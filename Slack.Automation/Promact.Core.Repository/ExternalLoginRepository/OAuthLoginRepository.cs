@@ -1,6 +1,7 @@
 ﻿using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -31,7 +32,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
-        private readonly ILogger _logger;
+        private readonly Logger _logger;
 
         #endregion
 
@@ -40,7 +41,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
-            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository, ILogger logger)
+            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -51,7 +52,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _envVariableRepository = envVariableRepository;
             _incomingWebHookRepository = incomingWebHook;
             _slackChannelRepository = slackChannelRepository;
-            _logger = logger;
+            _logger = LogManager.GetLogger("AuthenticationModule");
         }
         #endregion
 
