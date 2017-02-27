@@ -48,7 +48,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.SendMail = mailSetting.SendMail;
         this.mailSettingAC.To = mailSetting.To;
         this.httpService.addMailSetting(this.mailSettingAC).then((result) => {
-            this.toaster.show('Mail Setting of' + this.currentModule + 'successfully added');
+            this.toaster.show('Mail Setting of ' + this.currentModule + ' successfully added');
             this.router.navigate(['/']);
         })
         this.loader.loader = false;
@@ -64,7 +64,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.To = mailSetting.To;
         this.mailSettingAC.Id = mailSetting.Id;
         this.httpService.updateMailSetting(this.mailSettingAC).then((result) => {
-            this.toaster.show('Mail Setting of' + this.currentModule + 'successfully updated');
+            this.toaster.show('Mail Setting of ' + this.currentModule + ' successfully updated');
             this.router.navigate(['/']);
             this.loader.loader = false;
         });
