@@ -106,7 +106,6 @@ describe('LeaveReport Detials Tests', () => {
         expect(leaveReportDetailsComponent.exportDataToPdf).toHaveBeenCalled();
     });
 
-});
 
 
 class MockLeaveReport extends LeaveReport {
