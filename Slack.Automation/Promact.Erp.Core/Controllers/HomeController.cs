@@ -1,4 +1,3 @@
-using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
@@ -12,6 +11,7 @@ using System.Net.Http;
 using Promact.Erp.Util.HashingMd5;
 using System;
 using Promact.Erp.DomainModel.ApplicationClass;
+using NLog;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -20,22 +20,24 @@ namespace Promact.Erp.Core.Controllers
         #region Private Variables
         private readonly ApplicationSignInManager _signInManager;
         private readonly ApplicationUserManager _userManager;
-        private readonly ILogger _logger;
+
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+        private readonly Logger _logger;
+
         private readonly IMd5Service _md5Service;
         #endregion
 
         #region Constructor
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
-            ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository,
+            ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
             IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
+            _logger= LogManager.GetLogger("AuthenticationModule");
             _md5Service = md5Service;
         }
         #endregion
@@ -54,8 +56,10 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
+             _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
+                _logger.Info("User is Authenticated");
                 return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             return View();
