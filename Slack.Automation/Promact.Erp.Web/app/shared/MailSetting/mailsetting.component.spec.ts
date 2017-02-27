@@ -14,6 +14,7 @@ import { MockMailSettingService } from '../mock/mock.mailsetting.service';
 import { MailSettingComponent } from './mailsetting.component';
 import { MailSetting } from './mailsetting.model';
 import { Md2SelectChange } from 'md2';
+import { MockToast } from '../mock/mock.md2toast';
 let promise: TestBed;
 
 describe('Mail Setiings Component Test', () => {
@@ -33,6 +34,7 @@ describe('Mail Setiings Component Test', () => {
                 { provide: MailSettingService, useClass: MockMailSettingService },
                 { provide: LoaderService, useClass: MockLoaderService },
                 { provide: Md2SelectChange, useClass: MockMd2Select },
+                { provide: Md2Toast, useClass: MockToast }
             ]
         }).compileComponents();
     }));
