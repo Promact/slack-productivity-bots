@@ -104,8 +104,7 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void Scrum()
         {
-            string botToken = _environmentVariableRepository.ScrumBotToken;
-            SlackSocketClient client = new SlackSocketClient(botToken);//scrumBot
+            SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.ScrumBotToken);//scrumBot
 
             // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
             MessageReceived messageReceive = new MessageReceived();
