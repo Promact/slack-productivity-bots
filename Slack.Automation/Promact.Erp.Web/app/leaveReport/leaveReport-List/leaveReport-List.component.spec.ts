@@ -10,6 +10,10 @@ import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.servi
 import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportListComponent } from './leaveReport-List.component';
 import { LoaderService } from '../../shared/loader.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
+import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
 
 let promise: TestBed;
 
@@ -34,31 +38,70 @@ describe('LeaveReport List Tests', () => {
         }).compileComponents();
     }));
 
-    it('Shows list of leaveReports on initialization', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-            let leaveReportListComponent = fixture.componentInstance;
-            let result = leaveReportListComponent.ngOnInit();
-            expect(leaveReportListComponent.leaveReports.length).toBe(1);
-            done();
-        });
+
+    it('Shows list of leaveReports on initialization', () => {
+        let mockLeaveReports = new Array<MockLeaveReport>();
+        let mockLeaveReport = new MockLeaveReport();
+        mockLeaveReport.EmployeeId = "abc";
+        mockLeaveReport.EmployeeUserName = "abc@abc.com";
+        mockLeaveReport.EmployeeName = "abc";
+        mockLeaveReport.TotalSickLeave = 7;
+        mockLeaveReport.TotalCasualLeave = 14;
+        mockLeaveReports.push(mockLeaveReport);
+
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        let result = leaveReportListComponent.getLeaveReports();
+        expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
 
-    it('Downloads report of leave reports on export to pdf', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-            let leaveReportListComponent = fixture.componentInstance;
-            leaveReportListComponent.exportDataToPdf();
-            console.log(leaveReportListComponent.leaveReports.push());
-            expect(leaveReportListComponent.exportDataToPdf).toBe();
-        });
+    it('Shows list of leaveReports on initialization but no reports', () => {
+        let mockLeaveReports = new Array<MockLeaveReport>();
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        let result = leaveReportListComponent.getLeaveReports();
+        expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
+
+    it('Downloads report of leave reports on export to pdf', () => {
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "exportDataToPdf");
+        expect(leaveReportListComponent.exportDataToPdf).toHaveBeenCalled();
+    });
+
+    //it('Downloads report of leave reports on export to pdf', () => done => {
+    //    this.promise.then(() => {
+    //        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+    //        let leaveReportListComponent = fixture.componentInstance;
+    //        leaveReportListComponent.exportDataToPdf();
+    //        console.log(leaveReportListComponent.leaveReports.push());
+    //        expect(leaveReportListComponent.exportDataToPdf).toBe();
+    //    });
+    //});
+
 
 });
 
 
 
+class MockLeaveReport extends LeaveReport {
+    constructor() {
+        super();
+    }
+}
+
+class MockLeaveReportDetails extends LeaveReportDetail {
+    constructor() {
+        super();
+    }
+}
 
 
 
