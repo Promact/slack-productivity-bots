@@ -58,5 +58,4 @@ export class StringConstant {
     updated = "updated";
     project = "project";
     group = "group";
-    slash = "/";
 }
