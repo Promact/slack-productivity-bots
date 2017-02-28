@@ -1,4 +1,4 @@
-﻿using Autofac.Extras.NLog;
+﻿using NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -17,6 +17,7 @@ namespace Promact.Erp.Core.Controllers
         #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
+        private readonly ILogger _scrumlogger;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IScrumBotRepository _scrumBotRepository;
@@ -25,14 +26,16 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
+
         public Bot(ITaskMailRepository taskMailRepository,
-           ISlackUserRepository slackUserDetailsRepository, ILogger logger,
+           ISlackUserRepository slackUserDetailsRepository,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
            IEnvironmentVariableRepository environmentVariableRepository)
         {
             _taskMailRepository = taskMailRepository;
             _slackUserDetailsRepository = slackUserDetailsRepository;
-            _logger = logger;
+            _logger = LogManager.GetLogger("TaskBotModule");
+            _scrumlogger = LogManager.GetLogger("ScrumBotModule");
             _stringConstant = stringConstant;
             _scrumBotRepository = scrumBotRepository;
             _environmentVariableRepository = environmentVariableRepository;
@@ -119,40 +122,43 @@ namespace Promact.Erp.Core.Controllers
             // Method will be called when someone sends message
             client.OnMessageReceived += (message) =>
             {
-                _logger.Debug("Scrum bot got message :" + message);
+                _scrumlogger.Debug("Scrum bot got message :" + message);
                 try
                 {
-                    _logger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
+                    _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
                     string replyText = string.Empty;
                     Task.Run(async () =>
                     {
                         replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
-                        _logger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+                        _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
                     }).GetAwaiter().GetResult();
                     if (!String.IsNullOrEmpty(replyText))
                     {
-                        _logger.Debug("Scrum bot sending reply");
+                        _scrumlogger.Debug("Scrum bot sending reply");
                         client.SendMessage(showMethod, message.channel, replyText);
                     }
                 }
                 catch (TaskCanceledException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException + "\n" + ex.StackTrace);
+                    _scrumlogger.Trace(ex.StackTrace);
+                    _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
                     client.CloseSocket();
                     throw ex;
                 }
                 catch (HttpRequestException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException + "\nStack trace :\n" + ex.StackTrace);
+                    _scrumlogger.Trace(ex.StackTrace);
+                    _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
                     client.CloseSocket();
                     throw ex;
                 }
                 catch (Exception ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                    _logger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException + "\nStack trace :\n" + ex.StackTrace);
+                    _scrumlogger.Trace(ex.StackTrace);
+                    _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
                     client.CloseSocket();
                     throw ex;
                 }
