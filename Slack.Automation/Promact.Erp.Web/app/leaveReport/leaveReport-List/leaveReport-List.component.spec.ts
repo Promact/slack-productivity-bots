@@ -39,6 +39,14 @@ describe('LeaveReport List Tests', () => {
     }));
 
 
+    it('Shows list of leaveReports', () => {
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component  
+        let leaveReportListComponent = fixture.componentInstance;
+        let result = leaveReportListComponent.ngOnInit();
+        expect(leaveReportListComponent.leaveReports.length).toBe(1);
+    });
+    
+
     it('Shows list of leaveReports on initialization', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();
@@ -68,17 +76,26 @@ describe('LeaveReport List Tests', () => {
         expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
 
+   
     it('Downloads report of leave reports on export to pdf', () => {
+        let mockLeaveReports = new Array<MockLeaveReport>();
+        let mockLeaveReport = new MockLeaveReport();
+        mockLeaveReport.EmployeeId = "abc";
+        mockLeaveReport.EmployeeUserName = "abc@abc.com";
+        mockLeaveReport.EmployeeName = "abc";
+        mockLeaveReport.TotalSickLeave = 7;
+        mockLeaveReport.TotalCasualLeave = 14;
+        mockLeaveReports.push(mockLeaveReport);
+
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
         let leaveReportListComponent = fixture.componentInstance;
-        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportListComponent, "exportDataToPdf");
-        let result = leaveReportListComponent.exportDataToPdf();
-        expect(leaveReportListComponent.exportDataToPdf).toHaveBeenCalled();
+        leaveReportListComponent.leaveReports = mockLeaveReports;
+        leaveReportListComponent.exportDataToPdf();
+        console.log(leaveReportListComponent.leaveReports.push());
+        expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
   
-
 });
 
 
@@ -89,17 +106,9 @@ class MockLeaveReport extends LeaveReport {
     }
 }
 
+
 class MockLeaveReportDetails extends LeaveReportDetail {
     constructor() {
         super();
     }
 }
-
-
-
-
-
-
-
-
-
