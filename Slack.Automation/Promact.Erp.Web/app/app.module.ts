@@ -15,20 +15,25 @@ import { TaskMailModule } from './taskmail/taskMail.module';
 import { LeaveModule } from './leaveReport/leaveReport.module';
 import { ScrumModule } from './ScrumReport/scrumReport.module';
 import { AppComponentService } from './appcomponent.service';
+import { MailSettingComponent } from './shared/MailSetting/mailsetting.component';
+import { Md2Module } from 'md2';
+import { MailSettingService } from './shared/MailSetting/mailsetting.service';
 import { EmailHashCode } from './shared/emailHashCode';
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, MailSettingComponent],
     imports: [
         BrowserModule,
         HttpModule,
         routing,
         TaskMailModule,
         LeaveModule,
-        ScrumModule
+        ScrumModule,
+        Md2Module.forRoot(),
+        FormsModule
     ],
     bootstrap: [AppComponent],
-    providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
+    providers: [StringConstant, AppComponentService, MailSettingService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
 })
 
 export class AppModule { }

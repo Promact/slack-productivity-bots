@@ -11,17 +11,16 @@ import { EmailHashCode } from './shared/emailHashCode';
 })
 
 export class AppComponent implements OnInit {
-    userIsAdmin = false;
+    userIsAdmin: boolean;
     hashCode: string;
-    constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode : EmailHashCode) { }
+    constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode: EmailHashCode) {
+        this.userIsAdmin = false;
+    }
 
     ngOnInit() {
         this.hashCode = this.emailHashCode.hashCode;
-        this.httpService.getUserIsAdminOrNot().then((result) => {
+        this.httpService.getUserIsAdminOrNot().subscribe((result) => {
             this.userIsAdmin = (result === 'true');
-        },
-            err => {
-                this.userIsAdmin = false;
-      });
+        });
     }
 }

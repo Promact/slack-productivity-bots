@@ -10,6 +10,6 @@ export class AppComponentService {
     /*This service used for get user is Admin or not.*
     */
     getUserIsAdminOrNot() {
-        return this.http.get(this.stringConstant.oauthUrl + this.stringConstant.userIsAdmin).map(res => res.text()).toPromise();
+        return this.http.get(this.stringConstant.oauthUrl + this.stringConstant.userIsAdmin).map(res => res.json());
     }
 }

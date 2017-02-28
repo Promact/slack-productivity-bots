@@ -14,7 +14,7 @@ export class ScrumProjectListComponent implements OnInit {
     errorMessage: string;
     noProject: string;
 
-    constructor(private scrumReportService: ScrumReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService) { }
+    constructor(private scrumReportService: ScrumReportService, private stringConstant: StringConstant, private loader: LoaderService) { }
 
     ngOnInit() {
         this.getScrumProjects();            

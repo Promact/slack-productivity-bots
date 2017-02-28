@@ -52,5 +52,12 @@ export class StringConstant {
     role = "role";
     name = "userName";
     userIsAdmin = 'user/admin';
-    oauthUrl = "oauth/"
+    oauthUrl = "oauth/";
+    mailSettingOf = "Mail Setting of";
+    successfully = "successfully";
+    added = "added";
+    updated = "updated";
+    project = "project";
+    group = "group";
+    module = "module";
 }

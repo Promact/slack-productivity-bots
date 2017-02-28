@@ -9,7 +9,7 @@ namespace Promact.Erp.DomainModel.Models
         /// Email of GroupEmailMapping
         /// </summary>
         [Required]
-        [StringLength(25)]
+        [StringLength(50)]
         public string Email { get; set; }
         /// <summary>
         /// Foreign key "GroupId" of GroupEmailMapping from Group
