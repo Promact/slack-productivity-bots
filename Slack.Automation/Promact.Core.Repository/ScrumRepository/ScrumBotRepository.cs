@@ -15,7 +15,7 @@ using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.BaseRepository;
-using Autofac.Extras.NLog;
+using NLog;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -48,7 +48,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<TemporaryScrumDetails> tempScrumDetailsDataRepository,
-            IRepository<ScrumAnswer> scrumAnswerDataRepository, ILogger logger,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository,
             IRepository<Scrum> scrumDataRepository, IRepository<Question> questionDataRepository,
             IRepository<SlackUserDetails> slackUserDetailsDataRepository,
             ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
@@ -59,7 +59,7 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             _tempScrumDetailsDataRepository = tempScrumDetailsDataRepository;
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
-            _logger = logger;
+            _logger = LogManager.GetLogger("ScrumBotModule"); 
             _scrumDataRepository = scrumDataRepository;
             _questionDataRepository = questionDataRepository;
             _slackUserDetailRepository = slackUserDetailRepository;
