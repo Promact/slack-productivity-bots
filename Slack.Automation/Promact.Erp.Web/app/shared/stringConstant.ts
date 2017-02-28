@@ -34,6 +34,7 @@ export class StringConstant {
     medium = "medium";
     userId = "1";
     userName = "test";
+    userEmail = "test@test.com";
     createdOn = "10-09-2016";
     comment = "test Comment";
     description = "test Description";
