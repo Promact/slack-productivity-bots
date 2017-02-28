@@ -72,20 +72,12 @@ describe('LeaveReport List Tests', () => {
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
         let leaveReportListComponent = fixture.componentInstance;
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportService, "exportDataToPdf");
+        spyOn(leaveReportListComponent, "exportDataToPdf");
+        let result = leaveReportListComponent.exportDataToPdf();
         expect(leaveReportListComponent.exportDataToPdf).toHaveBeenCalled();
     });
 
-    //it('Downloads report of leave reports on export to pdf', () => done => {
-    //    this.promise.then(() => {
-    //        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-    //        let leaveReportListComponent = fixture.componentInstance;
-    //        leaveReportListComponent.exportDataToPdf();
-    //        console.log(leaveReportListComponent.leaveReports.push());
-    //        expect(leaveReportListComponent.exportDataToPdf).toBe();
-    //    });
-    //});
-
+  
 
 });
 
