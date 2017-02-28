@@ -66,7 +66,6 @@ export class StringConstant {
     ProjectCreationDate = "1/1/16";
     projectName = "aaaa";
     module = "module";
-    oauthUrl = "oauth/";
     groupUrl = "api/group";
     staticGroup = "StaticGroup";
     groupName = "name";
