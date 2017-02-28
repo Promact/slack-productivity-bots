@@ -1,44 +1,55 @@
 ﻿<div>
     <div>
         <div>
-            <h3></h3>
-        </div>
-        <div>
-            <button md-raised-button class="btn-green custom-btn" (click)="addNewGroup()">Add New Group</button>
+            <button class="btn-green custom-btn" (click)="addNewGroup()">Add New Group</button>
         </div>
     </div>
     <div class="clearfix"></div>
     <div>
-        <table class="table-bordered table-user" [md2-data]="groupList" #md2="Md2DataTable" [md2-page-length]="10">
+        <table>
             <thead>
                 <tr>
-                    <th md2-sort-field="firstname">First Name</th>
-                    <th md2-sort-field="lastname">Last Name</th>
-                    <th md2-sort-field="email">Email</th>
-                    <th md2-sort-field="status">Status</th>
-                    <th md2-sort-field="numberofcasualleave">Number Of Casual Leave</th>
-                    <th md2-sort-field="numberofsickleave">Number Of Sick Leave</th>
-                    <th md2-sort-field="joiningdate">Joining Date</th>
-                    <th md2-sort-field="action">Action</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let group of md2.data">
+                <tr *ngFor="let group of groupList">
                     <td>{{group.Name}}</td>
                     <td>{{group.Type}}</td>
                     <td>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="">Edit</button>
-                        <button md-raised-button class="btn-green custom-btn mr-5" (click)="">Delete</button>
+                        <button class="btn-green custom-btn" (click)="editGroup(group.Id)">Edit</button>
+                        <button class="btn-green custom-btn" (click)="delteGroupPopup(group.Id)">Delete</button>
                     </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--<table [md2Data]="groupList"
+               #dataTable="md2DataTable"
+               [rowsPerPage]="10"
+               [(activePage)]="activePage">
+            <thead>
+                <tr>
+                    <th md2SortBy="name">Name</th>
+                    <th md2SortBy="type">Type</th>
+                    <th md2SortBy="action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let group of dataTable.data">
+                    <td>{{group.Name}}</td>
+                    <td>{{group.Type}}</td>
+                    <td> </td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="9">
-                        <md2-pagination [md2-rows]="[5,10,15]"></md2-pagination>
+                    <td colspan="4">
+                        <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
                     </td>
                 </tr>
             </tfoot>
-        </table>
+        </table>-->
     </div>
 </div>

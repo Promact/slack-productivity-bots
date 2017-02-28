@@ -11,6 +11,7 @@ import { GroupModel } from '../group.model';
 })
 export class GroupListComponent implements OnInit {
     groupList: Array<GroupModel>;
+    groupId: number;
     constructor(private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService) {
 
     }
@@ -29,5 +30,13 @@ export class GroupListComponent implements OnInit {
         this.router.navigate(['/group/add']);
     }
 
+    editGroup(id: number) {
+        this.router.navigate(['/group/edit', id]);
+    }
+
+    delteGroupPopup(id: number) {
+    }
+
+    deleteGroup() { }
 }
 

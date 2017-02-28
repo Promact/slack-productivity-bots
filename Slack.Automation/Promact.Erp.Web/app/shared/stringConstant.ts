@@ -74,4 +74,7 @@ export class StringConstant {
     scrumName = "scrumName";
     oauthUrl = "oauth/";
     groupUrl = "api/group";
+    staticGroup = "StaticGroup";
+    groupName = "name";
+    groupId = "id";
 }

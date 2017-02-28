@@ -15,6 +15,7 @@ namespace Promact.Erp.DomainModel.Models
         /// Foreign key "GroupId" of GroupEmailMapping from Group
         /// </summary>
         public int GroupId { get; set; }
+
         [ForeignKey("GroupId")]
         public virtual Group Group { get; set; }
     }
