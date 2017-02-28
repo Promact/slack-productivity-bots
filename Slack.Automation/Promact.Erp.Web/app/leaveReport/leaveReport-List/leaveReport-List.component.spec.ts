@@ -1,10 +1,10 @@
 ﻿declare let describe, it, beforeEach, expect;
-import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
+import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
-import { LeaveModule } from '../../leaveReport/leaveReport.module';
+import { AppModule } from '../../../app/app.module';
 import { LeaveReportService } from '../leaveReport.service';
 import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { StringConstant } from '../../shared/stringConstant';
@@ -14,31 +14,31 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
 import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
-
+import { MockRouter } from '../../shared/mock/mock.router';
+import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 let promise: TestBed;
 
 
 describe('LeaveReport List Tests', () => {
-    class MockRouter { }
-    class MockLoaderService { }
+      class MockLoaderService { }
 
     const routes: Routes = [];
 
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [LeaveModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
                 { provide: Router, useClass: MockRouter },
                 { provide: LeaveReportService, useClass: MockLeaveReportService },
                 { provide: StringConstant, useClass: StringConstant },
-                { provide: LoaderService, useClass: MockLoaderService }
+                { provide: LoaderService, useClass: LoaderService }
             ]
         }).compileComponents();
     }));
 
-
+       
     it('Shows list of leaveReports', () => {
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component  
         let leaveReportListComponent = fixture.componentInstance;
@@ -97,7 +97,6 @@ describe('LeaveReport List Tests', () => {
 
   
 });
-
 
 
 class MockLeaveReport extends LeaveReport {
