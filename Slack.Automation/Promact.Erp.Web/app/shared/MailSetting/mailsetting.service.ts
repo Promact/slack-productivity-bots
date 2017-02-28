@@ -18,8 +18,7 @@ export class MailSettingService {
      */
     addMailSetting(mailSetting: MailSettingAC) {
         return this.http
-            .post(this.mailSettingUrl, JSON.stringify(mailSetting), { headers: this.headers })
-            .toPromise();
+            .post(this.mailSettingUrl, JSON.stringify(mailSetting), { headers: this.headers });
     }
 
   /*This service used for get project details by id.*
@@ -28,8 +27,7 @@ export class MailSettingService {
   */
     getProjectByIdAndModule(id: number, module: string) {
         return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.project + this.stringConstant.slash + id + this.stringConstant.slash + module)
-            .map(res => res.json())
-            .toPromise();
+            .map(res => res.json());
     }
 
     /*This service used for get list of projects.*
@@ -37,7 +35,7 @@ export class MailSettingService {
     */
     getAllProjects() {
         return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.project)
-            .map(res => res.json()).toPromise();
+            .map(res => res.json());
     }
 
     /*This service used for update new mail setting*
@@ -46,8 +44,7 @@ export class MailSettingService {
     */
     updateMailSetting(mailSetting: MailSettingAC) {
         return this.http
-            .put(this.mailSettingUrl, JSON.stringify(mailSetting), { headers: this.headers })
-            .toPromise();
+            .put(this.mailSettingUrl, JSON.stringify(mailSetting), { headers: this.headers });
     }
 
     /*This service used for getting list of Groups*
@@ -56,6 +53,6 @@ export class MailSettingService {
     */
     getListOfGroups() {
         return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.group)
-            .map(res => res.json()).toPromise();
+            .map(res => res.json());
     }
 }

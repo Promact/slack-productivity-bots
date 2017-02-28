@@ -1,5 +1,5 @@
 ﻿declare let describe, it, beforeEach, expect;
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -10,12 +10,15 @@ import { AppModule } from './app.module';
 import { MockAppComponentService } from './shared/mock/mock.appcomponent.service';
 import { AppComponent } from './app.component';
 import { Md2SelectChange } from 'md2';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { EmailHashCode } from './shared/emailHashCode';
+import { Project } from './shared/MailSetting/project.model';
 let promise: TestBed;
 
 describe('AppComponent Test', () => {
     class MockRouter { }
     class MockLoaderService { }
+    class MockEmailHash { }
     const routes: Routes = [];
 
     beforeEach(async(() => {
@@ -24,20 +27,28 @@ describe('AppComponent Test', () => {
             imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
-                { provide: Router, useClass: MockRouter },
-                { provide: AppComponentService, useClass: MockAppComponentService },
+                { provide: EmailHashCode, useClass: MockEmailHash },
                 { provide: LoaderService, useClass: MockLoaderService },
             ]
         }).compileComponents();
     }));
 
-    it('User is admin', () => done => {
-        this.promise.then(() => {
+    it('User is admin', () => {
             let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
             let appComponent = fixture.componentInstance;
-            let result = appComponent.ngOnInit();
+            let appService = fixture.debugElement.injector.get(AppComponentService);
+            let result = "true";
+            spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject(result).asObservable());
+            appComponent.ngOnInit();
             expect(appComponent.userIsAdmin).toBe(true);
-            done();
-        });
+    });
+    it('User is not admin', () => {
+        let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
+        let appComponent = fixture.componentInstance;
+        let appService = fixture.debugElement.injector.get(AppComponentService);
+        let result = "false";
+        spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject(result).asObservable());
+        appComponent.ngOnInit();
+        expect(appComponent.userIsAdmin).toBe(false);
     });
 })
