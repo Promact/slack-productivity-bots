@@ -41,8 +41,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of project</returns>
         public async Task<List<ProjectAc>> GetAllProjectAsync()
         {
-            var projects = (await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x => x.IsActive == true);
-            return (projects);
+            return ((await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x => x.IsActive));
         }
 
         /// <summary>
@@ -114,7 +113,6 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of group</returns>
         public async Task<List<string>> GetListOfGroupsNameAsync()
         {
-            List<string> listOfGroupNames = new List<string>();
             return (await _groupDataRepository.GetAll().ToListAsync()).Select(x=>x.Name).ToList();
         }
 

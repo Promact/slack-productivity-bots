@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 import { MailSetting } from './mailsetting.model';
 import { MailSettingAC } from './mailsettingAC.model';
 import { StringConstant } from '../stringConstant';
+import { URLSearchParams } from '@angular/http';
 
 @Injectable()
 export class MailSettingService {
@@ -26,7 +27,9 @@ export class MailSettingService {
   * @param id
   */
     getProjectByIdAndModule(id: number, module: string) {
-        return this.http.get(this.mailSettingUrl + this.stringConstant.slash + this.stringConstant.project + this.stringConstant.slash + id + this.stringConstant.slash + module)
+        let params = new URLSearchParams();
+        params.set(this.stringConstant.module, module);
+        return this.http.get(this.mailSettingUrl + this.stringConstant.slash + id, { search: params })
             .map(res => res.json());
     }
 

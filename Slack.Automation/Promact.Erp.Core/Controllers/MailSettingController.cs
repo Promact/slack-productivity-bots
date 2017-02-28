@@ -79,7 +79,7 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("project/{projectId}/{module}")]
+        [Route("{projectId}")]
         public async Task<IHttpActionResult> GetMailSettingDetailsByProjectIdAsync(int projectId, string module)
         {
             return Ok(await _mailSettingRepository.GetMailSettingDetailsByProjectIdAsync(projectId, module));

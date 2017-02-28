@@ -59,4 +59,5 @@ export class StringConstant {
     updated = "updated";
     project = "project";
     group = "group";
+    module = "module";
 }
