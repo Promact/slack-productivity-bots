@@ -65,7 +65,8 @@
     "systemjs": "0.19.43",
     "tslint": "^4.4.2",
     "typescript": "~2.0.10",
-    "typings": "2.0.0"
+    "typings": "2.0.0",
+    "codecov": "1.0.1"
   },
   "repository": {}
 }
