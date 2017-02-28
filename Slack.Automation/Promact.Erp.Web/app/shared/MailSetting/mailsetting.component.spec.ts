@@ -1,5 +1,5 @@
 ﻿declare let describe, it, beforeEach, expect;
-import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
+import { async, inject, TestBed, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -15,6 +15,7 @@ import { MailSettingComponent } from './mailsetting.component';
 import { MailSetting } from './mailsetting.model';
 import { Md2SelectChange } from 'md2';
 import { MockToast } from '../mock/mock.md2toast';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 let promise: TestBed;
 
 describe('Mail Setiings Component Test', () => {
@@ -30,8 +31,6 @@ describe('Mail Setiings Component Test', () => {
             imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
-                { provide: Router, useClass: MockRouter },
-                { provide: MailSettingService, useClass: MockMailSettingService },
                 { provide: LoaderService, useClass: MockLoaderService },
                 { provide: Md2SelectChange, useClass: MockMd2Select },
                 { provide: Md2Toast, useClass: MockToast }
@@ -39,86 +38,84 @@ describe('Mail Setiings Component Test', () => {
         }).compileComponents();
     }));
 
-    it('OnInit', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let result = mailSettingComponent.ngOnInit();
-            expect(mailSettingComponent.groupList.length).toBe(1);
-            done();
-        });
-    });
+    it('OnInit', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let groupList = Array<string>();
+        groupList = ["hello"];
+        let listOfProject: Array<Project>;
+        listOfProject = [new Project()];
+        spyOn(mailService, "getListOfGroups").and.returnValue(new BehaviorSubject(groupList).asObservable());
+        spyOn(mailService, "getAllProjects").and.returnValue(new BehaviorSubject(listOfProject).asObservable());
+        mailSettingComponent.ngOnInit();
+        tick();
+        expect(mailSettingComponent.groupList.length).toBe(1);
+        expect(mailSettingComponent.listOfProject.length).toBe(1);
+        expect(mailSettingComponent.projectSelected).toBe(false);
+    }));
 
-    it('addMailSetting', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.addMailSetting(mailSetting);
-            expect(mailSettingComponent.currentModule).toBe("");
-            done();
-        });
-    });
+    it('addMailSetting', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let router = fixture.debugElement.injector.get(Router);
+        let mailSetting = new MailSetting();
+        mailSetting.Project = new Project();
+        spyOn(mailService, "addMailSetting").and.returnValue(new BehaviorSubject({}).asObservable());
+        spyOn(router, "navigate");
+        mailSettingComponent.addMailSetting(mailSetting);
+        tick();
+        expect(router.navigate).toHaveBeenCalled();
+    }));
 
-    it('updateMailSetting', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.updateMailSetting(mailSetting);
-            expect(mailSettingComponent.currentModule).tobe("");
-            done();
-        });
-    });
+    it('updateMailSetting', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let router = fixture.debugElement.injector.get(Router);
+        let mailSetting = new MailSetting();
+        mailSetting.Project = new Project();
+        spyOn(mailService, "updateMailSetting").and.returnValue(new BehaviorSubject({}).asObservable());
+        spyOn(router, "navigate");
+        mailSettingComponent.updateMailSetting(mailSetting);
+        tick();
+        expect(router.navigate).toHaveBeenCalled();
+    }));
 
-    it('getAllProject', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.getAllProject();
-            expect(mailSettingComponent.listOfProject).tobe(1);
-            done();
-        });
-    });
+    it('getAllProject', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let listOfProject: Array<Project>;
+        listOfProject = [new Project()];
+        spyOn(mailService, "getAllProjects").and.returnValue(new BehaviorSubject(listOfProject).asObservable());
+        mailSettingComponent.getAllProject();
+        tick();
+        expect(mailSettingComponent.listOfProject.length).toBe(1);
+    }));
 
-    it('getMailSettingDetailsByProjectId', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.getMailSettingDetailsByProjectId(1);
-            expect(mailSettingComponent.mailSetting.Id).tobe(1);
-            done();
-        });
-    });
+    it('getMailSettingDetailsByProjectId', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let mailSetting: MailSetting = new MailSetting;
+        mailSetting.Id = 1;
+        spyOn(mailService, "getProjectByIdAndModule").and.returnValue(new BehaviorSubject(mailSetting).asObservable());
+        mailSettingComponent.getMailSettingDetailsByProjectId(1);
+        tick();
+        expect(mailSettingComponent.mailSetting.Id).toBe(1);
+    }));
 
-    it('getMailSettingDetailsByProjectId', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.getMailSettingDetailsByProjectId(1);
-            expect(mailSettingComponent.mailSetting.Id).tobe(1);
-            expect(mailSettingComponent.IsToUpdate).tobe(false);
-            done();
-        });
-    });
-
-    it('getGroups', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
-            let mailSettingComponent = fixture.componentInstance;
-            let mailSetting: MailSetting = new MailSetting;
-            mailSetting.Id = 1;
-            let result = mailSettingComponent.getGroups();
-            expect(mailSettingComponent.groupList.length).tobe(1);
-            done();
-        });
-    });
+    it('getGroups', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        let mailService = fixture.debugElement.injector.get(MailSettingService);
+        let groupList = Array<string>();
+        groupList = ["hello"];
+        spyOn(mailService, "getListOfGroups").and.returnValue(new BehaviorSubject(groupList).asObservable());
+        mailSettingComponent.getGroups();
+        tick();
+        expect(mailSettingComponent.groupList.length).toBe(1);
+    }));
 })

@@ -19,34 +19,35 @@ import { TaskMailModel } from '../../taskmail/taskmail.model';
 import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-let promise: TestBed;
-let stringConstant = new StringConstant();
+//let promise: TestBed;
+//let stringConstant = new StringConstant();
 
-describe('TaskMail Detials Tests', () => {
-    const routes: Routes = [];
-    class MockMd2Select { }
-    beforeEach(async(() => {
-        this.promise = TestBed.configureTestingModule({
-            declarations: [RouterLinkStubDirective],
-            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) 
-            ],
-            providers: [
-                { provide: ActivatedRoute, useClass: ActivatedRouteStub },
-                { provide: TaskService, useClass: MockTaskMailService },
-                { provide: StringConstant, useClass: StringConstant },
-                { provide: Router, useClass: MockRouter },
-                { provide: DatePipe, useClass: DatePipe },
-                { provide: LoaderService, useClass: LoaderService },
-                { provide: Md2SelectChange, useClass: MockMd2Select }
-            ]
-        }).compileComponents();
-    }));
+//describe('TaskMail Detials Tests', () => {
+//    const routes: Routes = [];
+//    class MockMd2Select { }
+//    beforeEach(async(() => {
+//        this.promise = TestBed.configureTestingModule({
+//            declarations: [RouterLinkStubDirective],
+//            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) 
+//            ],
+//            providers: [
+//                { provide: ActivatedRoute, useClass: ActivatedRouteStub },
+//                { provide: TaskService, useClass: MockTaskMailService },
+//                { provide: StringConstant, useClass: StringConstant },
+//                { provide: Router, useClass: MockRouter },
+//                { provide: DatePipe, useClass: DatePipe },
+//                { provide: LoaderService, useClass: LoaderService },
+//                { provide: Md2SelectChange, useClass: MockMd2Select }
+//            ]
+//        }).compileComponents();
+//    }));
 
-    it("should be defined", () => {
-        let fixture = TestBed.createComponent(TaskMailDetailsComponent);             
-        let taskMailDetailsComponent = fixture.componentInstance;
-        expect(taskMailDetailsComponent).toBeDefined();
-    });
+//    it("should be defined", fakeAsync(() => {
+//            let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+//            let taskMailDetailsComponent = fixture.componentInstance;
+//            tick();
+//            expect(taskMailDetailsComponent).toBeDefined();
+//        }));
 
 
     it('Shows list of taskMail Details', () => {

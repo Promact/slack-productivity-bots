@@ -47,7 +47,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.Module = this.currentModule;
         this.mailSettingAC.SendMail = mailSetting.SendMail;
         this.mailSettingAC.To = mailSetting.To;
-        this.httpService.addMailSetting(this.mailSettingAC).then((result) => {
+        this.httpService.addMailSetting(this.mailSettingAC).subscribe((result) => {
             this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + ' ' + this.stringConstant.added);
             this.router.navigate(['/']);
         })
@@ -62,7 +62,7 @@ export class MailSettingComponent implements OnInit {
         this.mailSettingAC.SendMail = mailSetting.SendMail;
         this.mailSettingAC.To = mailSetting.To;
         this.mailSettingAC.Id = mailSetting.Id;
-        this.httpService.updateMailSetting(this.mailSettingAC).then((result) => {
+        this.httpService.updateMailSetting(this.mailSettingAC).subscribe((result) => {
             this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + ' ' + this.stringConstant.updated);
             this.router.navigate(['/']);
             this.loader.loader = false;
@@ -70,7 +70,7 @@ export class MailSettingComponent implements OnInit {
     };
 
     getAllProject() {
-        this.httpService.getAllProjects().then((result) => {
+        this.httpService.getAllProjects().subscribe((result) => {
             this.listOfProject = result;
         });
         this.loader.loader = false;
@@ -79,7 +79,7 @@ export class MailSettingComponent implements OnInit {
     getMailSettingDetailsByProjectId(Id: number) {
         this.loader.loader = true;
         this.projectSelected = true;
-        this.httpService.getProjectByIdAndModule(Id, this.currentModule).then((result) => {
+        this.httpService.getProjectByIdAndModule(Id, this.currentModule).subscribe((result) => {
             this.selectedMailSetting = result;
             this.mailSetting.CC = this.selectedMailSetting.CC;
             this.mailSetting.To = this.selectedMailSetting.To;
@@ -98,7 +98,7 @@ export class MailSettingComponent implements OnInit {
     }
 
     getGroups() {
-        this.httpService.getListOfGroups().then((result) => {
+        this.httpService.getListOfGroups().subscribe((result) => {
             this.groupList = result;
         });
     };

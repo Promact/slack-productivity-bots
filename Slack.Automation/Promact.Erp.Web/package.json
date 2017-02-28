@@ -30,7 +30,7 @@
     "@angular/http": "~2.4.8",
     "@angular/platform-browser": "~2.4.8",
     "@angular/platform-browser-dynamic": "~2.4.8",
-    "@angular/router": "~3.4.0",
+    "@angular/router": "3.4.8",
     "angular2-in-memory-web-api": "0.0.21",
     "bootstrap": "3.3.7",
     "codelyzer": "1.0.0-beta.3",
