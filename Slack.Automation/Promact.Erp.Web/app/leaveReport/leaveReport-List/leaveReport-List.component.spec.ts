@@ -47,6 +47,14 @@ describe('LeaveReport List Tests', () => {
     });
     
 
+    it('Shows list of leaveReports', () => {
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component  
+        let leaveReportListComponent = fixture.componentInstance;
+        let result = leaveReportListComponent.ngOnInit();
+        expect(leaveReportListComponent.leaveReports.length).toBe(1);
+    });
+    
+
     it('Shows list of leaveReports on initialization', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();

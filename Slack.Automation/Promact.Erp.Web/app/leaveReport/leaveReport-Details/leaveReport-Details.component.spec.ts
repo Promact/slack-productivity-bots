@@ -56,7 +56,7 @@ describe('LeaveReport Detials Tests', () => {
         mockLeaveReportDetail.EmployeeName = "abc";
         mockLeaveReportDetail.LeaveFrom = "1/1/16";
         mockLeaveReportDetails.push(mockLeaveReportDetail);
-
+       
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
         leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
@@ -77,8 +77,25 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
-//let promise: TestBed;
+    it('Downloads report of leave reports on export to pdf', () => {
+        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
+        let mockLeaveReportDetail = new MockLeaveReportDetails();
+        mockLeaveReportDetail.EmployeeUserName = "abc@abc.com";
+        mockLeaveReportDetail.EmployeeName = "abc";
+        mockLeaveReportDetail.LeaveFrom = "1/1/16";
+        mockLeaveReportDetails.push(mockLeaveReportDetail);
 
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+        let leaveReportDetailsComponent = fixture.componentInstance;
+        leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
+        leaveReportDetailsComponent.exportDataToPdf();
+        console.log(leaveReportDetailsComponent.leaveReportDetail.push());
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+    });
+
+
+    it('Shows details of leave report for an employee on initialization but there are no leave reports', () => {
+        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
@@ -87,6 +104,7 @@ describe('LeaveReport Detials Tests', () => {
         expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
 
     });
+
 
     
 });
