@@ -54,15 +54,26 @@ import { LoaderService } from '../../shared/loader.service';
 //        expect(leaveReportListComponent.leaveReports.length).toBe(1);
 //    }));
 
-    it('Downloads report of leave reports on export to pdf', () => done => {
-        this.promise.then(() => {
-            let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
-            let leaveReportListComponent = fixture.componentInstance;
-            leaveReportListComponent.exportDataToPdf();
-            console.log(leaveReportListComponent.leaveReports.push());
-            expect(leaveReportListComponent.exportDataToPdf).toBe();
-        });
+    it('Shows list of leaveReports on initialization but no reports', () => {
+        let mockLeaveReports = new Array<MockLeaveReport>();
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        let result = leaveReportListComponent.getLeaveReports();
+        expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
+
+    it('Downloads report of leave reports on export to pdf', () => {
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let leaveReportListComponent = fixture.componentInstance;
+        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
+        spyOn(leaveReportListComponent, "exportDataToPdf");
+        let result = leaveReportListComponent.exportDataToPdf();
+        expect(leaveReportListComponent.exportDataToPdf).toHaveBeenCalled();
+    });
+
+  
 
 });
 
