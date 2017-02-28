@@ -26,6 +26,7 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
+
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetailsRepository,
            IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
