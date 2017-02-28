@@ -59,7 +59,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/mailsetting/project/{projectId}/{module}
+        * @api {get} api/mailsetting/{projectId}
         * @apiVersion 1.0.0
         * @apiName GetMailSettingDetailsByProjectIdAsync
         * @apiGroup MailSetting

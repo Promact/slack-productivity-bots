@@ -29,7 +29,7 @@
         </md2-chips>
     </div>
     <div [hidden]="!showButton">
-        <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="IsToUpdate" [disabled]="!mailSettingForm.form.valid">Save</button>
-        <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!IsToUpdate" [disabled]="!mailSettingForm.form.valid">Update</button>
+        <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="isToUpdate" [disabled]="!mailSettingForm.form.valid">Save</button>
+        <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!isToUpdate" [disabled]="!mailSettingForm.form.valid">Update</button>
     </div>
 </form>

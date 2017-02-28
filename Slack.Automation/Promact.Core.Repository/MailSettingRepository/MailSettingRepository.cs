@@ -67,14 +67,14 @@ namespace Promact.Core.Repository.MailSettingRepository
                     if (to.GroupId == null)
                         listOfTo.Add(to.Email);
                     else
-                        listOfTo.Add((await _groupDataRepository.FirstOrDefaultAsync(x => x.Id == to.GroupId)).Name);
+                        listOfTo.Add((await _groupDataRepository.FirstAsync(x => x.Id == to.GroupId)).Name);
                 }
                 foreach (var cc in listOfMailSettingCC)
                 {
                     if (cc.GroupId == null)
                         listOfCC.Add(cc.Email);
                     else
-                        listOfCC.Add((await _groupDataRepository.FirstOrDefaultAsync(x => x.Id == cc.GroupId)).Name);
+                        listOfCC.Add((await _groupDataRepository.FirstAsync(x => x.Id == cc.GroupId)).Name);
                 }
                 mailSetting.To = listOfTo;
                 mailSetting.CC = listOfCC;
@@ -122,8 +122,8 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <param name="mailSettingAC">mail setting details</param>
         public async Task UpdateMailSettingAsync(MailSettingAC mailSettingAC)
         {
-            var previousMailSetting = await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.Id == mailSettingAC.Id);
-            var previousMailSettingMappingCreatedDateTime = (await _mailSettingMappingDataRepository.FirstOrDefaultAsync(x => x.MailSettingId == mailSettingAC.Id)).CreatedOn;
+            var previousMailSetting = await _mailSettingDataRepository.FirstAsync(x => x.Id == mailSettingAC.Id);
+            var previousMailSettingMappingCreatedDateTime = (await _mailSettingMappingDataRepository.FirstAsync(x => x.MailSettingId == mailSettingAC.Id)).CreatedOn;
             previousMailSetting.SendMail = mailSettingAC.SendMail;
             previousMailSetting.UpdatedDate = DateTime.UtcNow;
             _mailSettingDataRepository.Update(previousMailSetting);
@@ -160,7 +160,7 @@ namespace Promact.Core.Repository.MailSettingRepository
             mailSettingMapping.MailSettingId = mailSettingId;
             mailSettingMapping.IsTo = isTo;
             if (_groupDataRepository.Any(x => x.Name == type))
-                mailSettingMapping.GroupId = (await _groupDataRepository.FirstOrDefaultAsync(x => x.Name == type)).Id;
+                mailSettingMapping.GroupId = (await _groupDataRepository.FirstAsync(x => x.Name == type)).Id;
             else
                 mailSettingMapping.Email = type;
             return mailSettingMapping;

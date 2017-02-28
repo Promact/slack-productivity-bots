@@ -16,7 +16,7 @@ export class MailSettingComponent implements OnInit {
     mailSetting: MailSetting = new MailSetting;
     listOfProject: Array<Project>;
     groupList: Array<string>;
-    IsToUpdate: boolean;
+    isToUpdate: boolean;
     selectedMailSetting: MailSetting = new MailSetting;
     showButton: boolean;
     mailSettingAC: MailSettingAC;
@@ -87,10 +87,10 @@ export class MailSettingComponent implements OnInit {
             this.mailSetting.Module = this.selectedMailSetting.Module;
             this.mailSetting.SendMail = this.selectedMailSetting.SendMail;
             if (this.selectedMailSetting.Id === 0) {
-                this.IsToUpdate = false;
+                this.isToUpdate = false;
             }
             else {
-                this.IsToUpdate = true;
+                this.isToUpdate = true;
             }
         });
         this.showButton = true;
