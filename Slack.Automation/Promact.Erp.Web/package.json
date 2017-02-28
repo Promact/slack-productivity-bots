@@ -16,7 +16,8 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
-    "webdriver:update": "webdriver-manager update"
+    "webdriver:update": "webdriver-manager update",
+    "codecov": "codecov < coverage/cobertura/cobertura-coverage.xml"
   },
   "keywords": [],
   "author": "",
@@ -64,7 +65,8 @@
     "systemjs": "0.19.40",
     "tslint": "3.15.1",
     "typescript": "2.0.8",
-    "typings": "2.0.0"
+    "typings": "2.0.0",
+    "codecov.io": "0.1.6"
   },
   "repository": {}
 }

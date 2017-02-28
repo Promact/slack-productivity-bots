@@ -13,6 +13,9 @@ import { StringConstant } from '../../shared/stringConstant';
 import { TaskMailDetailsComponent } from './taskmail-details.component';
 import { MockRouter } from '../../shared/mock/mock.router';
 import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
+import { TaskMailModel } from '../../taskmail/taskmail.model';
+import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 let promise: TestBed;
 let stringConstant = new StringConstant();
@@ -42,7 +45,17 @@ describe('TaskMail Detials Tests', () => {
         expect(taskMailDetailsComponent).toBeDefined();
     });
 
-    it('Shows details of task mail report for an employee on initialization', () => {
+
+    it('Shows list of taskMail Details', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component  
+        let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+        activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };          
+        let taskMailDetailsComponent = fixture.componentInstance;
+        let result = taskMailDetailsComponent.ngOnInit();
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+     it('Shows details of task mail report for an employee on initialization For Admin', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); 
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
         activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };
@@ -51,24 +64,64 @@ describe('TaskMail Detials Tests', () => {
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
-    it('Shows details of task mail report for an employee on Privious Date', () => {
+     
+    it('Shows details of task mail report for an employee on initialization For Teamleader', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+        let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+        activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleTeamLeader, UserName: stringConstant.userName };
+        let taskMailDetailsComponent = fixture.componentInstance;
+        taskMailDetailsComponent.getTaskMailDetails();
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Privious Date For Admin', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);       
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious(stringConstant.userName, stringConstant.userId, stringConstant.RoleAdmin, stringConstant.createdOn);
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
-    it('Shows details of task mail report for an employee on Next Date', () => {
+    it('Shows details of task mail report for an employee on Privious Date For Teamleader', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+        let taskMailDetailsComponent = fixture.componentInstance;
+        taskMailDetailsComponent.getTaskMailPrevious(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Next Date for Admin', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);          
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailNext(stringConstant.userName, stringConstant.userId, stringConstant.RoleAdmin, stringConstant.createdOn);
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     });
 
-    it('Shows details of task mail report for an employee on Selected Date', () => {
+    it('Shows details of task mail report for an employee on Next Date for Teamleader', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+        let taskMailDetailsComponent = fixture.componentInstance;
+        taskMailDetailsComponent.getTaskMailNext(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Selected Date for Admin', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);            
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate(stringConstant.userName, stringConstant.userId, stringConstant.RoleAdmin, stringConstant.createdOn, stringConstant.createdOn);
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+    it('Shows details of task mail report for an employee on Selected Date for Teamleader', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+        let taskMailDetailsComponent = fixture.componentInstance;
+        taskMailDetailsComponent.getTaskMailForSelectedDate(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn, stringConstant.createdOn);
+        expect(taskMailDetailsComponent.taskMail.length).toBe(1);
+    });
+
+    it('should be rediration to taskmail details', () => {
+        let fixture = TestBed.createComponent(TaskMailDetailsComponent);
+        let taskMailDetailsComponent = fixture.componentInstance;
+        let router = fixture.debugElement.injector.get(Router);
+        spyOn(router, "navigate");
+        taskMailDetailsComponent.getTaskMailList();
+        expect(router.navigate).toHaveBeenCalled();
     });
 });
