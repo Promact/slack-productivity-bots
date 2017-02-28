@@ -65,6 +65,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterApiControllers(typeof(LeaveRequestController).Assembly);
             builder.RegisterApiControllers(typeof(LeaveReportController).Assembly);
             builder.RegisterApiControllers(typeof(ScrumReportController).Assembly);
+            builder.RegisterApiControllers(typeof(GroupController).Assembly);
 
             // register repositories
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));

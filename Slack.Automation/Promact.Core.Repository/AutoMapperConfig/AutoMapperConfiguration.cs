@@ -13,8 +13,7 @@ namespace Promact.Core.Repository.AutoMapperConfig
             MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<SlackUserDetails, SlackUserDetailAc>();
-                cfg.CreateMap<GroupAC, Group>().ReverseMap();
-                cfg.CreateMap<List<GroupAC>, List<Group>>().ReverseMap();
+                cfg.CreateMap<GroupAC, Group>().ReverseMap();    
                 cfg.CreateMap<MailSetting, MailSettingAC>().ReverseMap();
                 cfg.CreateMap<GroupAC, Group>().ReverseMap();
               

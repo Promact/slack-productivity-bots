@@ -34,15 +34,15 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <param name="groupAC">pass groupAC</param>
         /// <returns>Primary key(Id)</returns>
-        public async Task<int> AddGroup(GroupAC groupAC)
+        public async Task<int> AddGroupAsync(GroupAC groupAC)
         {
             Group group = new Group();
             group = _mapper.Map(groupAC, group);
             group.CreatedOn = DateTime.UtcNow;
             _groupRepository.Insert(group);
-            int id = await _groupRepository.SaveChangesAsync();
-            await AddGroupEmailMapping(groupAC.Emails, id);
-            return id;
+            await _groupRepository.SaveChangesAsync();
+            await AddGroupEmailMapping(groupAC.Emails, group.Id);
+            return group.Id;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <param name="groupAC">pass groupAC</param>
         /// <returns>Primary key(Id)</returns>
-        public async Task<int> UpdateGroup(GroupAC groupAC)
+        public async Task<int> UpdateGroupAsync(GroupAC groupAC)
         {
             Group group = _groupRepository.GetById(groupAC.Id);
             group.Name = groupAC.Name;
@@ -67,23 +67,25 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <param name="id">passs group id</param>
         /// <returns>GroupAC object</returns>
-        public async Task<GroupAC> GetGroupById(int id)
+        public async Task<GroupAC> GetGroupByIdAsync(int id)
         {
-            Group group = await _groupRepository.FirstOrDefaultAsync(x => x.Id == id);
+            Group group = (await _groupRepository.FirstOrDefaultAsync(x => x.Id == id));
             if (group != null)
             {
                 GroupAC groupAc = new GroupAC();
+                List<string> listOfEmails = new List<string>();
                 groupAc = _mapper.Map(group, groupAc);
                 foreach (var groupEmailMapping in group.GroupEmailMapping)
                 {
-                    groupAc.Emails.Add(groupEmailMapping.Email);
+                    listOfEmails.Add(groupEmailMapping.Email);
                 }
+                groupAc.Emails = listOfEmails;
                 return groupAc;
             }
             else
                 throw new GroupNotFound();
         }
-        
+
         /// <summary>
         /// This method used for check group name is already exists or not.
         /// </summary>
@@ -91,7 +93,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="isUpdate">pass group id When check group name is exists at update time
         /// other wise pass 0</param>
         /// <returns></returns>
-        public async Task<bool> CheckGroupNameIsExists(string groupName, int groupId)
+        public async Task<bool> CheckGroupNameIsExistsAsync(string groupName, int groupId)
         {
             if (groupId == 0)
                 return (await _groupRepository.FirstOrDefaultAsync(x => x.Name == groupName) != null);
@@ -103,15 +105,14 @@ namespace Promact.Core.Repository.GroupRepository
         /// This method used for get list of group. - an
         /// </summary>
         /// <returns>list of group</returns>
-        public async Task<List<GroupAC>> GetListOfGroupAC()
+        public async Task<List<GroupAC>> GetListOfGroupACAsync()
         {
-            List<GroupAC> listOfGroupAc = new List<GroupAC>();
-            List<Group> listOfGroup =  await _groupRepository.GetAll().ToListAsync();
-            return _mapper.Map(listOfGroup, listOfGroupAc);
+            List<GroupAC> groupAc = new List<GroupAC>();
+            List<Group> listOfGroup = await _groupRepository.GetAll().ToListAsync();
+            return _mapper.Map(listOfGroup, groupAc);
         }
 
         #endregion
-
 
         #region Private Method(s)
 

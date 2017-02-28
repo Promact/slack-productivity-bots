@@ -1,0 +1,25 @@
+﻿<div>
+    <div class="form-group">
+        <div>
+            <button md-raised-button class="btn-green custom-btn" (click)="backToGroupList()">Back</button>
+        </div>
+        <div class="clearfix"></div>
+        <div class="half-width">
+            <label>Name:</label>
+            <input type="text" [(ngModel)]="groupModel.Name"  (blur)="checkGroupName(groupModel.Name)">
+        </div>
+        <div class="half-width">
+            <label>Emails:</label>
+            <md2-chips [(ngModel)]="groupModel.Emails"
+                       [isRemovable]="true"
+                       [readonly]="false"
+                       placeholder="Emails"
+                       [allowedPattern]="validPattern"
+                       [isAutoComplete]="false">
+            </md2-chips>
+        </div>
+        <div>
+            <button md-raised-button class="btn-green custom-btn" (click)="addGroup(groupModel)">Submit</button>
+        </div>
+    </div>
+</div>
