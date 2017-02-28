@@ -140,24 +140,24 @@ namespace Promact.Erp.Core.Controllers
                 catch (TaskCanceledException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
-                    _scrumlogger.Trace("\nStack trace :\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
                 catch (HttpRequestException ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
-                    _scrumlogger.Trace("\nStack trace :\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
                 catch (Exception ex)
                 {
                     client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
-                    _scrumlogger.Trace("\nStack trace :\n" + ex.StackTrace);
                     client.CloseSocket();
                     throw ex;
                 }
