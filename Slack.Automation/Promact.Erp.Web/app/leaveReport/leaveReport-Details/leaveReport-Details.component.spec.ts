@@ -4,18 +4,16 @@ import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
-import { LeaveModule } from '../../leaveReport/leaveReport.module';
+import { AppModule } from '../../../app/app.module';
 import { LeaveReportService } from '../leaveReport.service';
 import { MockLeaveReportService } from '../../shared/mock/mock.leaveReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { LeaveReportDetailsComponent } from './leaveReport-Details.component';
 import { LoaderService } from '../../shared/loader.service';
-
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List.model';
 import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
-
 let promise: TestBed;
 
 describe('LeaveReport Detials Tests', () => {
@@ -31,7 +29,7 @@ describe('LeaveReport Detials Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective], //Declaration of mock routerLink used on page.
-            imports: [LeaveModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
+            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true }) //Set LocationStrategy for component. 
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
@@ -58,7 +56,7 @@ describe('LeaveReport Detials Tests', () => {
         mockLeaveReportDetail.EmployeeName = "abc";
         mockLeaveReportDetail.LeaveFrom = "1/1/16";
         mockLeaveReportDetails.push(mockLeaveReportDetail);
-       
+
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
         leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
@@ -96,9 +94,8 @@ describe('LeaveReport Detials Tests', () => {
 
     });
 
-
-
-
+    
+});
 class MockLeaveReport extends LeaveReport {
     constructor() {
         super();
