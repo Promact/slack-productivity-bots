@@ -263,6 +263,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\Group\GroupAdd\groupAdd.html" />
+    <Content Include="app\Group\GroupEdit\groupEdit.html" />
     <Content Include="app\Group\GroupList\groupList.html" />
     <Content Include="app\index.html" />
     <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />

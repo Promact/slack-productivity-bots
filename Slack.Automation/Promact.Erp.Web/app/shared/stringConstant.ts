@@ -68,5 +68,7 @@ export class StringConstant {
     module = "module";
     oauthUrl = "oauth/";
     groupUrl = "api/group";
-    
+    staticGroup = "StaticGroup";
+    groupName = "name";
+    groupId = "id";
 }
