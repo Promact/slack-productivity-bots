@@ -56,7 +56,7 @@ describe('LeaveReport Detials Tests', () => {
         mockLeaveReportDetail.EmployeeName = "abc";
         mockLeaveReportDetail.LeaveFrom = "1/1/16";
         mockLeaveReportDetails.push(mockLeaveReportDetail);
-       
+
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
         leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
