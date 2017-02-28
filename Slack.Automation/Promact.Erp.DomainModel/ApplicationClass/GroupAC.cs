@@ -12,7 +12,7 @@ namespace Promact.Erp.DomainModel.ApplicationClass
 
         public string Name { get; set; }
 
-        public string Type { get; set; }
+        public int Type { get; set; }
 
         public List<string> Emails { get; set; }
     }

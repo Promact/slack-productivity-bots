@@ -52,8 +52,8 @@ export class GroupService {
      * @param groupName
      * @param id
      */
-    checkGroupNameIsExists(groupName: string, id: number) {
-        return this.http.get(this.stringConstant.groupUrl + '/' + groupName + '/' + id).map(res => res.json())
+    checkGroupNameIsExists(name: string, id: number) {
+        return this.http.get(this.stringConstant.groupUrl + '/available/' + name + '/' + id).map(res => res.json())
             .toPromise();
     }
 

@@ -1,6 +1,6 @@
 ﻿export class GroupModel {
     Id: number;
     Name: string;
-    Type: string;
+    Type: number;
     Emails: Array<string>;
 }

@@ -6,7 +6,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-    [RoutePrefix("api/[controller]")]
+    [RoutePrefix("api/group")]
     [Authorize]
     public class GroupController : BaseController
     {
@@ -28,7 +28,7 @@ namespace Promact.Erp.Core.Controllers
         /**
         * @api {get} api/group
         * @apiVersion 1.0.0
-        * @apiName GetListOfGroup
+        * @apiName GetListOfGroupAsync
         * @apiGroup Group    
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
@@ -50,15 +50,15 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpGet]
         [Route("")]
-        public async Task<IHttpActionResult> GetListOfGroup()
+        public async Task<IHttpActionResult> GetListOfGroupAsync()
         {
-            return Ok(await _groupRepository.GetListOfGroupAC());
+            return Ok(await _groupRepository.GetListOfGroupACAsync());
         }
 
         /**
         * @api {post} api/group
         * @apiVersion 1.0.0
-        * @apiName InsertGroup
+        * @apiName InsertGroupAsync
         * @apiGroup Group   
         * @apiParam {object} groupAC   
         * @apiParamExample
@@ -76,15 +76,15 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> InsertGroup(GroupAC groupAC)
+        public async Task<IHttpActionResult> InsertGroupAsync(GroupAC groupAC)
         {
-            return Ok(await _groupRepository.AddGroup(groupAC));
+            return Ok(await _groupRepository.AddGroupAsync(groupAC));
         }
 
         /**
         * @api {get} api/group/:id
         * @apiVersion 1.0.0
-        * @apiName GetGroupById
+        * @apiName GetGroupByIdAsync
         * @apiGroup Group   
         * @apiParam {int} id   
         * @apiSuccessExample {json} Success-Response:
@@ -99,16 +99,16 @@ namespace Promact.Erp.Core.Controllers
         * }   
         */
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IHttpActionResult> GetGroupById(int id)
+        [Route("{id:int}")]
+        public async Task<IHttpActionResult> GetGroupByIdAsync(int id)
         {
-            return Ok(await _groupRepository.GetGroupById(id));
+            return Ok(await _groupRepository.GetGroupByIdAsync(id));
         }
 
         /**
         * @api {put} api/group/:id
         * @apiVersion 1.0.0
-        * @apiName UpdateGroup
+        * @apiName UpdateGroupAsync
         * @apiGroup Group   
         * @apiParam {int,object} id,GroupAC   
         * @apiParamExample
@@ -126,16 +126,16 @@ namespace Promact.Erp.Core.Controllers
         */
         [HttpPut]
         [Route("{id}")]
-        public async Task<IHttpActionResult> UpdateGroup(int id, GroupAC groupAC)
+        public async Task<IHttpActionResult> UpdateGroupAsync(int id, GroupAC groupAC)
         {
             groupAC.Id = id;
-            return Ok(await _groupRepository.UpdateGroup(groupAC));
+            return Ok(await _groupRepository.UpdateGroupAsync(groupAC));
         }
 
         /**
-       * @api {put} api/group/available/:groupName/:groupId
+       * @api {put} api/group/available/:groupName/:available/id
        * @apiVersion 1.0.0
-       * @apiName CheckCheckGroupNameIsExists
+       * @apiName CheckCheckGroupNameIsExistsAsync
        * @apiGroup Group   
        * @apiParam {int,int} groupName,groupId   
        * @apiParamExample
@@ -150,10 +150,10 @@ namespace Promact.Erp.Core.Controllers
        * }   
        */
         [HttpGet]
-        [Route("/available/{id}")]
-        public async Task<IHttpActionResult> CheckCheckGroupNameIsExists(string groupName, int groupId)
+        [Route("available/{name}/{id:int}")]
+        public async Task<IHttpActionResult> CheckCheckGroupNameIsExistsAsync(string name, int id)
         {
-            return Ok(await _groupRepository.CheckGroupNameIsExists(groupName, groupId));
+            return Ok(await _groupRepository.CheckGroupNameIsExistsAsync(name, id));
         }
 
         #endregion

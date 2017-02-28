@@ -21,6 +21,6 @@ namespace Promact.Erp.DomainModel.Models
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
 
-        public ICollection<GroupEmailMapping> GroupEmailMapping { get; set; }
+        public virtual ICollection<GroupEmailMapping> GroupEmailMapping { get; set; }
     }
 }
