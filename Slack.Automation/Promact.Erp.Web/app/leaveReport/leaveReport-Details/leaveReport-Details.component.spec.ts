@@ -97,15 +97,6 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
-    it('Downloads report of leave reports on export to pdf', () => {
-        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
-        let leaveReportDetailsComponent = fixture.componentInstance;
-        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportDetailsComponent, "exportDataToPdf");
-        let result = leaveReportDetailsComponent.exportDataToPdf();
-        expect(leaveReportDetailsComponent.exportDataToPdf).toHaveBeenCalled();
-    });
-
 
 
 class MockLeaveReport extends LeaveReport {
