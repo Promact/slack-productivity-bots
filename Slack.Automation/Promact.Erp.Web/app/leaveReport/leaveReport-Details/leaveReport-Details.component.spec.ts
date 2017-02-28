@@ -43,6 +43,31 @@ describe('LeaveReport Detials Tests', () => {
     }));
 
 
+    it('Shows list of leave reports Details', () => {
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component  
+        let taskMailDetailsComponent = fixture.componentInstance;
+        let result = taskMailDetailsComponent.ngOnInit();
+        expect(taskMailDetailsComponent.leaveReportDetail.length).toBe(0);
+    });
+
+
+    it('Downloads report of leave reports on export to pdf', () => {
+        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
+        let mockLeaveReportDetail = new MockLeaveReportDetails();
+        mockLeaveReportDetail.EmployeeUserName = "abc@abc.com";
+        mockLeaveReportDetail.EmployeeName = "abc";
+        mockLeaveReportDetail.LeaveFrom = "1/1/16";
+        mockLeaveReportDetails.push(mockLeaveReportDetail);
+       
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+        let leaveReportDetailsComponent = fixture.componentInstance;
+        leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
+        leaveReportDetailsComponent.exportDataToPdf();
+        console.log(leaveReportDetailsComponent.leaveReportDetail.push());
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+    });
+
+
     it('Shows details of leave report for an employee on initialization but there are no leave reports', () => {
         let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
@@ -68,17 +93,9 @@ describe('LeaveReport Detials Tests', () => {
         spyOn(leaveReportService, "getLeaveReportDetail").and.returnValue(new BehaviorSubject(mockLeaveReportDetails).asObservable());
         let result = leaveReportDetailsComponent.getLeaveReportDetail();
         expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+
     });
 
-
-    it('Downloads report of leave reports on export to pdf', () => {
-        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
-        let leaveReportDetailsComponent = fixture.componentInstance;
-        let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportDetailsComponent, "exportDataToPdf");
-        let result = leaveReportDetailsComponent.exportDataToPdf();
-        expect(leaveReportDetailsComponent.exportDataToPdf).toHaveBeenCalled();
-    });
 
 
 
