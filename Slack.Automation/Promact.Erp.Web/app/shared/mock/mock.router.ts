@@ -24,6 +24,12 @@ export class MockRouter {
     serializeUrl() {
         return "test";
     }
+    hooks = {
+        beforePreactivation: null,
+        afterPreactivation: null
+    };
+    initialNavigation() {
+    };
 
     private subject = new BehaviorSubject(this.testParams);
     events = this.subject.asObservable();

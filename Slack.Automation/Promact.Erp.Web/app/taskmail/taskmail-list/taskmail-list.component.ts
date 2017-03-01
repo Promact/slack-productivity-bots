@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import {Router, ActivatedRoute } from '@angular/router';
+import {Router } from '@angular/router';
 import { TaskService }   from '../taskmail.service';
 import { TaskMailModel } from '../taskmail.model';
 import { TaskMailStatus } from '../../enums/TaskMailStatus';
