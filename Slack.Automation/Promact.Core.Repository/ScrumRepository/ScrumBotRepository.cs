@@ -59,7 +59,7 @@ namespace Promact.Core.Repository.ScrumRepository
         {
             _tempScrumDetailsDataRepository = tempScrumDetailsDataRepository;
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
-            _logger = LogManager.GetLogger("ScrumBotModule"); 
+            _logger = LogManager.GetLogger("ScrumBotModule");
             _scrumDataRepository = scrumDataRepository;
             _questionDataRepository = questionDataRepository;
             _slackUserDetailRepository = slackUserDetailRepository;
@@ -90,6 +90,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>reply message</returns>      
         public async Task<string> ProcessMessagesAsync(string slackUserId, string slackChannelId, string message, string scrumBotId)
         {
+            _logger.Info(_today);
             string replyText = string.Empty;
             SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(slackUserId);
             SlackChannelDetails slackChannelDetail = await _slackChannelRepository.GetByIdAsync(slackChannelId);
@@ -230,6 +231,7 @@ namespace Promact.Core.Repository.ScrumRepository
             {
                 Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
                         DbFunctions.TruncateTime(x.ScrumDate) == _today);
+                _logger.Info(scrum?.ScrumDate);
                 if (await IsScrumStartLeaveCommandAsync(scrumBotId, message, messageArray)
                    || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
                    || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
@@ -429,8 +431,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>Object of Scrum</returns>
         private async Task<Scrum> GetScrumAsync(string slackChannelId)
         {
-            return await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-                         DbFunctions.TruncateTime(x.ScrumDate) == _today);
+            var scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
+                        DbFunctions.TruncateTime(x.ScrumDate) == _today);
+            _logger.Info(scrum?.ScrumDate);
+            return scrum;
         }
 
 
@@ -1024,6 +1028,7 @@ namespace Promact.Core.Repository.ScrumRepository
             if (!isOngoing)
                 await RemoveTemporaryScrumDetailsAsync(scrumId);
             Scrum scrum = await _scrumDataRepository.FirstAsync(x => x.Id == scrumId);
+            _logger.Info(scrum?.ScrumDate);
             scrum.IsOngoing = isOngoing;
             scrum.IsHalted = isHalted;
             _scrumDataRepository.Update(scrum);
@@ -1259,6 +1264,7 @@ namespace Promact.Core.Repository.ScrumRepository
                             && DbFunctions.TruncateTime(x.ScrumDate) == _today);
                             if (scrum != null)
                             {
+                                _logger.Info(scrum?.ScrumDate);
                                 if (!scrum.IsHalted)
                                     return scrum.IsOngoing ? ScrumStatus.OnGoing : ScrumStatus.Completed;
                                 //scrum is halted                              
