@@ -13,6 +13,7 @@ import { AppModule } from '../../app.module';
 import { TestConnection } from '../../shared/mock/test.connection';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ScrumProject } from './scrumProject-List.model';
+import { MailSettingModule } from '../../shared/MailSetting/mailsetting.module';
 let promise: TestBed;
 
 describe('ScrumReport Tests', () => {
@@ -21,8 +22,9 @@ describe('ScrumReport Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })],
+            imports: [ScrumModule, MailSettingModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
+                { provide: ScrumReportService, useClass: MockScrumReportService },    
                 { provide: StringConstant, useClass: StringConstant },
                 { provide: LoaderService, useClass: LoaderService },
             ]

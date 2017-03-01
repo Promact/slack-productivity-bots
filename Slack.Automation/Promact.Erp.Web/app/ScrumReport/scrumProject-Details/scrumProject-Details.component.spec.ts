@@ -15,6 +15,7 @@ import { AppModule } from '../../app.module';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ScrumDetails } from '../../ScrumReport/scrumProject-Details/scrumProject-Details.model';
 import { EmployeeScrumAnswers } from '../../ScrumReport/scrumProject-Details/scrumProject-EmployeeScrumDetails.model';
+import { MailSettingModule } from '../../shared/MailSetting/mailsetting.module';
 
 let promise: TestBed;
 let stringConstant = new StringConstant();
@@ -24,7 +25,7 @@ describe('ScrumReport Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })],
+            imports: [ScrumModule,MailSettingModule, RouterModule.forRoot(routes, { useHash: true })],
             providers: [
                 { provide: ScrumReportService, useClass: MockScrumReportService },
                 { provide: StringConstant, useClass: StringConstant },

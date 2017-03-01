@@ -18,6 +18,8 @@ import { TaskMailDetailsModel } from '../../taskmail/taskmaildetails.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Md2Toast } from 'md2';
 import { AppModule } from '../../app.module';
+import { MailSettingModule } from '../../shared/MailSetting/mailsetting.module';
+
 let promise: TestBed;
 let stringConstant = new StringConstant();
 
@@ -27,7 +29,7 @@ describe('TaskMail Detials Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })
+            imports: [TaskMailModule, MailSettingModule, RouterModule.forRoot(routes, { useHash: true })
             ],
             providers: [
                 { provide: ActivatedRoute, useClass: ActivatedRouteStub },

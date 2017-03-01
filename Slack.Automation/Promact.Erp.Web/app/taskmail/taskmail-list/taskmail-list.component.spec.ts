@@ -1,4 +1,5 @@
-﻿declare var describe, it, beforeEach, expect;
+﻿
+declare var describe, it, beforeEach, expect;
 import { async, inject, TestBed, ComponentFixture, fakeAsync } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Observable } from 'rxjs/Observable';
@@ -15,7 +16,9 @@ import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 import { TaskMailModel } from '../../taskmail/taskmail.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Md2Toast, Md2SelectChange } from 'md2';
-import { AppModule } from '../../app.module';
+import { MockSelectChange } from '../../shared/mock/mock.md2selectchange';
+import { MailSettingModule } from '../../shared/MailSetting/mailsetting.module';
+
 let promise: TestBed;
 
 let stringConstant = new StringConstant();
@@ -24,7 +27,7 @@ describe('Task Mail Report List Tests', () => {
     beforeEach(async(() => {
         this.promise = TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
-            imports: [AppModule, RouterModule.forRoot(routes, { useHash: true })
+            imports: [TaskMailModule, MailSettingModule, RouterModule.forRoot(routes, { useHash: true })
             ],
             providers: [
                 { provide: TaskService, useClass: MockTaskMailService },
@@ -32,6 +35,7 @@ describe('Task Mail Report List Tests', () => {
                 { provide: Router, useClass: MockRouter },
                 { provide: LoaderService, useClass: LoaderService },
                 { provide: Md2Toast, useClass: Md2Toast },
+                { provide: Md2SelectChange, useClass: MockSelectChange }
             ]
         }).compileComponents();
     }));
