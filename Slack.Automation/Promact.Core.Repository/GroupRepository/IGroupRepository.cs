@@ -29,7 +29,7 @@ namespace Promact.Core.Repository.GroupRepository
         Task<GroupAC> GetGroupByIdAsync(int id);
 
         /// <summary>
-        /// This method used for check group name is already exists or not.
+        /// This method used for check group name is already exists or not. -an
         /// </summary>
         /// <param name="groupName">passs group name</param>
         /// <param name="groupId">pass group id When check group name is exists at update time
@@ -42,5 +42,12 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <returns>list of group</returns>
         Task<List<GroupAC>> GetListOfGroupACAsync();
-    }
+
+        /// <summary>
+        /// This mehod used for delete group by id. -an
+        /// </summary>
+        /// <param name="id">pass group id</param>
+        /// <returns>true</returns>
+        Task<bool> DeleteGroupById(int id);
+     }
 }

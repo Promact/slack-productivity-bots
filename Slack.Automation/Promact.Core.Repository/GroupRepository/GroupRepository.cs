@@ -112,6 +112,18 @@ namespace Promact.Core.Repository.GroupRepository
             return _mapper.Map(listOfGroup, groupAc);
         }
 
+        /// <summary>
+        /// This mehod used for delete group by id. -an
+        /// </summary>
+        /// <param name="id">pass group id</param>
+        /// <returns>true</returns>
+        public async Task<bool> DeleteGroupById(int id)
+        {
+            _groupRepository.Delete(id);
+            await _groupRepository.SaveChangesAsync();
+            return true;
+        }
+
         #endregion
 
         #region Private Method(s)
