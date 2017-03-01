@@ -59,5 +59,10 @@ export class StringConstant {
     updated = "updated";
     project = "project";
     group = "group";
+    getLeaveReports = "getLeaveReports";
+    getLeaveReportDetail = "getLeaveReportDetail";
+    casualLeave = "14";
+    sickLeave = "7";
+    leaveDate = "1/1/16";
     module = "module";
 }
