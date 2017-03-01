@@ -68,5 +68,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>true if user has admin role else false</returns>
         Task<bool> UserIsAdminAsync(string userId, string accessToken);
+
+        /// <summary>
+        /// Method to get list of projects from oauth-server for an user
+        /// </summary>
+        /// <param name="userId">userId of user</param>
+        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
+        /// <returns></returns>
+        Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserId(string userId, string accessToken);
     }
 }
