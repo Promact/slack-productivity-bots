@@ -35,6 +35,7 @@ using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.TaskMailReportRepository;
 using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
+using Promact.Core.Repository.GroupRepository;
 
 namespace Promact.Core.Test
 {
@@ -75,6 +76,7 @@ namespace Promact.Core.Test
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
+            builder.RegisterType<GroupRepository>().As<IGroupRepository>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
@@ -95,7 +97,7 @@ namespace Promact.Core.Test
             var httpContextObject = httpContext.Object;
             builder.RegisterInstance(httpContext).As<Mock<HttpContextBase>>();
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
-            
+
             var container = builder.Build();
             return container;
 
