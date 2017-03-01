@@ -159,6 +159,24 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return result;
         }
+
+        /// <summary>
+        /// Method to get list of projects from oauth-server for an user
+        /// </summary>
+        /// <param name="userId">userId of user</param>
+        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
+        /// <returns></returns>
+        public async Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserId(string userId, string accessToken)
+        {
+            List<ProjectAc> projects = new List<ProjectAc>();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, userId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
+            }
+            return projects;
+        }
         #endregion
     }
 }
