@@ -59,5 +59,11 @@ export class StringConstant {
     updated = "updated";
     project = "project";
     group = "group";
+    Answer1 = "abc";
+    Answer2 = "abc2";
+    Answer3 = "no";
+    EmployeeName = "xyz";
+    ProjectCreationDate = "1/1/16";
+    projectName = "aaaa";
     module = "module";
 }
