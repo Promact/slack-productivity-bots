@@ -25,7 +25,7 @@ let stringConstant = new StringConstant();
 describe('Task Mail Report List Tests', () => {
     const routes: Routes = [];
     beforeEach(async(() => {
-        this.promise = TestBed.configureTestingModule({
+        TestBed.configureTestingModule({
             declarations: [RouterLinkStubDirective],
             imports: [TaskMailModule, MailSettingModule, RouterModule.forRoot(routes, { useHash: true })
             ],
@@ -47,13 +47,10 @@ describe('Task Mail Report List Tests', () => {
     }));
 
     it('Shows list of TaskReports on initialization', fakeAsync(()  => {
-        this.promise.then(() => {
             let fixture = TestBed.createComponent(TaskMailListComponent); //Create instance of component            
             let taskMailListComponent = fixture.componentInstance;
             let result = taskMailListComponent.ngOnInit();
             expect(taskMailListComponent.taskMailUsers.length).toBe(1);
-            
-        });
     }));
 
     it('Shows list of taskmailReport on initialization for Admin', fakeAsync(() => {
