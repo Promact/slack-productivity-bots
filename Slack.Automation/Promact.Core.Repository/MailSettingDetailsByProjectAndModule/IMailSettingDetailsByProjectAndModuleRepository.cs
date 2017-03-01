@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
 {
-    public interface IMailSettingDetailsByProjectAndModule
+    public interface IMailSettingDetailsByProjectAndModuleRepository
     {
         /// <summary>
         /// Method used to get mail setting for a module by projectId
@@ -12,7 +12,7 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
         /// <param name="projectId">project Id</param>
         /// <param name="module">mail setting module</param>
         /// <returns>mail setting details</returns>
-        Task<MailSettingAC> GetMailSetting(int projectId, string module);
+        Task<MailSettingAC> GetMailSettingAsync(int projectId, string module);
 
         /// <summary>
         /// Method used to delete duplicate string in a list

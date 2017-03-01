@@ -57,6 +57,14 @@ namespace Promact.Core.Test
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private ApplicationUser updaterUser = new ApplicationUser();
         private readonly Mock<IServiceRepository> _mockServiceRepository;
+        private readonly IRepository<MailSetting> _mailSettingDataRepository;
+        private readonly IRepository<MailSettingMapping> _mailSettingMappingDataRepository;
+        private readonly IRepository<Group> _groupDataRepository;
+        private readonly IRepository<GroupEmailMapping> _groupEmailMappingDataRepository;
+        MailSetting mailSetting = new MailSetting();
+        MailSettingMapping mailSettingMapping = new MailSettingMapping();
+        Group group = new Group();
+        GroupEmailMapping groupEmailMapping = new GroupEmailMapping();
         #endregion
 
         #region Constructor
@@ -76,6 +84,10 @@ namespace Promact.Core.Test
             _mockEmail = _componentContext.Resolve<Mock<IEmailService>>();
             _incomingWebHookRepository = _componentContext.Resolve<IRepository<IncomingWebHook>>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
+            _mailSettingDataRepository = _componentContext.Resolve<IRepository<MailSetting>>();
+            _mailSettingMappingDataRepository = _componentContext.Resolve<IRepository<MailSettingMapping>>();
+            _groupDataRepository = _componentContext.Resolve<IRepository<Group>>();
+            _groupEmailMappingDataRepository = _componentContext.Resolve<IRepository<GroupEmailMapping>>();
             Initialize();
         }
         #endregion
@@ -87,6 +99,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForCLAsync()
         {
+            await AddGroup();
+            await AddMailSetting();
+            List<ProjectAc> listOfProject = new List<ProjectAc>();
+            listOfProject.Add(new ProjectAc() { Id = 1 });
+            var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
@@ -156,7 +175,8 @@ namespace Promact.Core.Test
             EmailApplication email = new EmailApplication();
             email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
             email.From = _stringConstant.TeamLeaderEmailForTest;
-            email.To = _stringConstant.EmailForTest;
+            email.To = new List<string>();
+            email.To.Add(_stringConstant.EmailForTest);
             email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
             _mockEmail.Setup(x => x.Send(email));
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
@@ -200,7 +220,8 @@ namespace Promact.Core.Test
             EmailApplication email = new EmailApplication();
             email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
             email.From = _stringConstant.TeamLeaderEmailForTest;
-            email.To = _stringConstant.EmailForTest;
+            email.To = new List<string>();
+            email.To.Add(_stringConstant.EmailForTest);
             email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
             _mockEmail.Setup(x => x.Send(email));
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
@@ -456,6 +477,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForSLAsync()
         {
+            await AddGroup();
+            await AddMailSetting();
+            List<ProjectAc> listOfProject = new List<ProjectAc>();
+            listOfProject.Add(new ProjectAc() { Id = 1 });
+            var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
@@ -777,6 +805,13 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveApplyForCLForEmailErrorAsync()
         {
+            await AddGroup();
+            await AddMailSetting();
+            List<ProjectAc> listOfProject = new List<ProjectAc>();
+            listOfProject.Add(new ProjectAc() { Id = 1 });
+            var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             await AddThreeUserIncomingWebHookAsync();
             SmtpException ex = new SmtpException();
             await AddUser();
@@ -1096,7 +1131,8 @@ namespace Promact.Core.Test
             EmailApplication email = new EmailApplication();
             email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
             email.From = _stringConstant.TeamLeaderEmailForTest;
-            email.To = _stringConstant.EmailForTest;
+            email.To = new List<string>();
+            email.To.Add(_stringConstant.EmailForTest);
             email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
             _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws(ex);
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
@@ -1193,6 +1229,19 @@ namespace Promact.Core.Test
 
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+
+            mailSetting.CreatedOn = DateTime.UtcNow;
+            mailSetting.Module = _stringConstant.LeaveModule;
+            mailSetting.ProjectId = 1;
+            mailSetting.SendMail = true;
+            mailSettingMapping.CreatedOn = DateTime.UtcNow;
+            mailSettingMapping.Email = _stringConstant.EmailForTest;
+            mailSettingMapping.IsTo = true;
+            group.CreatedOn = DateTime.UtcNow;
+            group.Name = _stringConstant.TeamLeader;
+            group.Type = 1;
+            groupEmailMapping.CreatedOn = DateTime.UtcNow;
+            groupEmailMapping.Email = _stringConstant.Email;
         }
         #endregion
 
@@ -1305,7 +1354,8 @@ namespace Promact.Core.Test
         {
             email.Body = body;
             email.Subject = _stringConstant.EmailSubject;
-            email.To = _stringConstant.TeamLeaderEmailForTest;
+            email.To = new List<string>();
+            email.To.Add(_stringConstant.TeamLeaderEmailForTest);
             _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>()));
         }
 
@@ -1334,6 +1384,30 @@ namespace Promact.Core.Test
             _incomingWebHookRepository.Insert(secondUserIncomingWebHook);
             _incomingWebHookRepository.Insert(thirdUserIncomingWebHook);
             await _incomingWebHookRepository.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Method to add mail setting
+        /// </summary>
+        private async Task AddMailSetting()
+        {
+            _mailSettingDataRepository.Insert(mailSetting);
+            await _mailSettingDataRepository.SaveChangesAsync();
+            mailSettingMapping.MailSettingId = mailSetting.Id;
+            _mailSettingMappingDataRepository.Insert(mailSettingMapping);
+            await _mailSettingMappingDataRepository.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Method to add group
+        /// </summary>
+        private async Task AddGroup()
+        {
+            _groupDataRepository.Insert(group);
+            await _groupDataRepository.SaveChangesAsync();
+            groupEmailMapping.GroupId = group.Id;
+            _groupEmailMappingDataRepository.Insert(groupEmailMapping);
+            await _groupEmailMappingDataRepository.SaveChangesAsync();
         }
         #endregion
     }

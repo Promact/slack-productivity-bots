@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
 {
-    public class MailSettingDetailsByProjectAndModule : IMailSettingDetailsByProjectAndModule
+    public class MailSettingDetailsByProjectAndModuleRepository : IMailSettingDetailsByProjectAndModuleRepository
     {
         #region Private Variables
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
@@ -16,7 +16,7 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
         #endregion
 
         #region Constructor
-        public MailSettingDetailsByProjectAndModule(IRepository<MailSetting> mailSettingDataRepository,
+        public MailSettingDetailsByProjectAndModuleRepository(IRepository<MailSetting> mailSettingDataRepository,
             IRepository<MailSettingMapping> mailSettingMappingDataRepository, IRepository<GroupEmailMapping> groupEmailMappingDataRepository)
         {
             _mailSettingDataRepository = mailSettingDataRepository;
@@ -32,7 +32,7 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
         /// <param name="projectId">project Id</param>
         /// <param name="module">mail setting module</param>
         /// <returns>mail setting details</returns>
-        public async Task<MailSettingAC> GetMailSetting(int projectId, string module)
+        public async Task<MailSettingAC> GetMailSettingAsync(int projectId, string module)
         {
             MailSettingAC mailSetting = new MailSettingAC();
             mailSetting.To = new List<string>();
