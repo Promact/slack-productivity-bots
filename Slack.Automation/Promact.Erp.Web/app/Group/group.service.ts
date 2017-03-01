@@ -57,5 +57,14 @@ export class GroupService {
             .toPromise();
     }
 
+    /*This service used for delete group by id.*
+     * 
+     * @param id
+     */
+    deleteGroupById(id: number) {
+        return this.http.delete(this.stringConstant.groupUrl + '/delete' + '/' + id).map(res => res.json())
+            .toPromise();
+    }
+
 }
 

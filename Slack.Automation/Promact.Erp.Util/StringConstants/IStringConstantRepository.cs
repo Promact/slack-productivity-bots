@@ -429,5 +429,7 @@
         string ScrumModule { get; }
         string LeaveModule { get; }
         string Management { get; }
+        string TestEmail { get ; } 
+        string SecondTestEmail { get ; } 
     }
 }

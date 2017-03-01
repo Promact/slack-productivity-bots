@@ -161,6 +161,7 @@
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="BotQuestionRepositoryTest.cs" />
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableTestRepository.cs" />
+    <Compile Include="GroupRepositoryTest.cs" />
     <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
     <Compile Include="MailSettingRepositoryTest.cs" />
