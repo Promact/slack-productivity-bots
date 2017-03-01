@@ -76,7 +76,7 @@ describe('LeaveReport List Tests', () => {
         expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
 
-
+   
     it('Downloads report of leave reports on export to pdf', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();
