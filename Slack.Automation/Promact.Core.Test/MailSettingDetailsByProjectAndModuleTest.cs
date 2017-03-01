@@ -49,7 +49,7 @@ namespace Promact.Core.Test
         {
             await AddGroup();
             await AddMailSetting();
-            var result = await _mailSettingDetailsRepository.GetMailSetting(1, _stringConstant.TaskModule);
+            var result = await _mailSettingDetailsRepository.GetMailSettingAsync(1, _stringConstant.TaskModule);
             Assert.True(result.SendMail);
         }
 
@@ -63,7 +63,7 @@ namespace Promact.Core.Test
             mailSettingMapping.Email = null;
             mailSettingMapping.GroupId = group.Id;
             await AddMailSetting();
-            var result = await _mailSettingDetailsRepository.GetMailSetting(1, _stringConstant.TaskModule);
+            var result = await _mailSettingDetailsRepository.GetMailSettingAsync(1, _stringConstant.TaskModule);
             Assert.True(result.SendMail);
         }
 
@@ -76,7 +76,7 @@ namespace Promact.Core.Test
             await AddGroup();
             mailSettingMapping.IsTo = false;
             await AddMailSetting();
-            var result = await _mailSettingDetailsRepository.GetMailSetting(1, _stringConstant.TaskModule);
+            var result = await _mailSettingDetailsRepository.GetMailSettingAsync(1, _stringConstant.TaskModule);
             Assert.True(result.SendMail);
         }
 
@@ -91,7 +91,7 @@ namespace Promact.Core.Test
             mailSettingMapping.Email = null;
             mailSettingMapping.GroupId = group.Id;
             await AddMailSetting();
-            var result = await _mailSettingDetailsRepository.GetMailSetting(1, _stringConstant.TaskModule);
+            var result = await _mailSettingDetailsRepository.GetMailSettingAsync(1, _stringConstant.TaskModule);
             Assert.True(result.SendMail);
         }
 
