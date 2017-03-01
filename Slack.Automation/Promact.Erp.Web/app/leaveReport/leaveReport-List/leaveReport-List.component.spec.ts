@@ -1,5 +1,5 @@
 ﻿declare let describe, it, beforeEach, expect;
-import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -17,7 +17,7 @@ import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveRe
 import { MockRouter } from '../../shared/mock/mock.router';
 import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 let promise: TestBed;
-
+let stringConstant = new StringConstant();
 
 describe('LeaveReport List Tests', () => {
       class MockLoaderService { }
@@ -58,17 +58,17 @@ describe('LeaveReport List Tests', () => {
     it('Shows list of leaveReports on initialization', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();
-        mockLeaveReport.EmployeeId = "abc";
-        mockLeaveReport.EmployeeUserName = "abc@abc.com";
-        mockLeaveReport.EmployeeName = "abc";
-        mockLeaveReport.TotalSickLeave = 7;
-        mockLeaveReport.TotalCasualLeave = 14;
+        mockLeaveReport.EmployeeId = stringConstant.userId;
+        mockLeaveReport.EmployeeUserName = stringConstant.userName;
+        mockLeaveReport.EmployeeName = stringConstant.userEmail;
+        mockLeaveReport.TotalSickLeave = parseInt(stringConstant.sickLeave);
+        mockLeaveReport.TotalCasualLeave = parseInt(stringConstant.casualLeave);
         mockLeaveReports.push(mockLeaveReport);
 
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
         let leaveReportListComponent = fixture.componentInstance;
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        spyOn(leaveReportService, stringConstant.getLeaveReports).and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
         let result = leaveReportListComponent.getLeaveReports();
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
@@ -84,7 +84,7 @@ class MockLeaveReport extends LeaveReport {
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
         let leaveReportListComponent = fixture.componentInstance;
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
-        spyOn(leaveReportService, "getLeaveReports").and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
+        spyOn(leaveReportService, stringConstant.getLeaveReports).and.returnValue(new BehaviorSubject(mockLeaveReports).asObservable());
         let result = leaveReportListComponent.getLeaveReports();
         expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
@@ -93,11 +93,11 @@ class MockLeaveReport extends LeaveReport {
     it('Downloads report of leave reports on export to pdf', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();
-        mockLeaveReport.EmployeeId = "abc";
-        mockLeaveReport.EmployeeUserName = "abc@abc.com";
-        mockLeaveReport.EmployeeName = "abc";
-        mockLeaveReport.TotalSickLeave = 7;
-        mockLeaveReport.TotalCasualLeave = 14;
+        mockLeaveReport.EmployeeId = stringConstant.userId;
+        mockLeaveReport.EmployeeUserName = stringConstant.userEmail;
+        mockLeaveReport.EmployeeName = stringConstant.userEmail;
+        mockLeaveReport.TotalSickLeave = parseInt(stringConstant.sickLeave);
+        mockLeaveReport.TotalCasualLeave = parseInt(stringConstant.casualLeave);
         mockLeaveReports.push(mockLeaveReport);
 
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
