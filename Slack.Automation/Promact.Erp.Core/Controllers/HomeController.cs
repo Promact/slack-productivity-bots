@@ -81,8 +81,7 @@ namespace Promact.Erp.Core.Controllers
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
-            ViewBag.userEmail = string.Empty;
-
+            
             //this for get login user email address and encrypt hash code.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
