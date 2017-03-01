@@ -78,7 +78,7 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
-    it('Downloads report of leave reports on export to pdf', () => {
+    it('Shows details of leave report for an employee on initialization', () => {
         let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
         let mockLeaveReportDetail = new MockLeaveReportDetails();
         mockLeaveReportDetail.EmployeeUserName = stringConstant.userEmail;
@@ -86,17 +86,6 @@ describe('LeaveReport Detials Tests', () => {
         mockLeaveReportDetail.LeaveFrom = stringConstant.leaveDate;
         mockLeaveReportDetails.push(mockLeaveReportDetail);
 
-        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
-        let leaveReportDetailsComponent = fixture.componentInstance;
-        leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
-        leaveReportDetailsComponent.exportDataToPdf();
-        console.log(leaveReportDetailsComponent.leaveReportDetail.push());
-        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
-    });
-
-
-    it('Shows details of leave report for an employee on initialization but there are no leave reports', () => {
-        let mockLeaveReportDetails = new Array<MockLeaveReportDetails>();
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
         let leaveReportDetailsComponent = fixture.componentInstance;
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
@@ -107,7 +96,6 @@ describe('LeaveReport Detials Tests', () => {
     });
 
 
-    
 });
 class MockLeaveReport extends LeaveReport {
     constructor() {
@@ -120,7 +108,3 @@ class MockLeaveReportDetails extends LeaveReportDetail {
         super();
     }
 }
-
-
-
-

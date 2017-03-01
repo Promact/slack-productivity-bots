@@ -20,7 +20,7 @@ let promise: TestBed;
 let stringConstant = new StringConstant();
 
 describe('LeaveReport List Tests', () => {
-      class MockLoaderService { }
+    class MockLoaderService { }
 
     const routes: Routes = [];
 
@@ -38,14 +38,6 @@ describe('LeaveReport List Tests', () => {
         }).compileComponents();
     }));
 
-       
-    it('Shows list of leaveReports', () => {
-        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component  
-        let leaveReportListComponent = fixture.componentInstance;
-        let result = leaveReportListComponent.ngOnInit();
-        expect(leaveReportListComponent.leaveReports.length).toBe(1);
-    });
-    
 
     it('Shows list of leaveReports', () => {
         let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component  
@@ -53,7 +45,7 @@ describe('LeaveReport List Tests', () => {
         let result = leaveReportListComponent.ngOnInit();
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
-    
+
 
     it('Shows list of leaveReports on initialization', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
@@ -73,11 +65,6 @@ describe('LeaveReport List Tests', () => {
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
-class MockLeaveReport extends LeaveReport {
-    constructor() {
-        super();
-    }
-}
 
     it('Shows list of leaveReports on initialization but no reports', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
@@ -89,7 +76,7 @@ class MockLeaveReport extends LeaveReport {
         expect(leaveReportListComponent.leaveReports.length).toBe(0);
     });
 
-   
+
     it('Downloads report of leave reports on export to pdf', () => {
         let mockLeaveReports = new Array<MockLeaveReport>();
         let mockLeaveReport = new MockLeaveReport();
@@ -108,7 +95,7 @@ class MockLeaveReport extends LeaveReport {
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
 
-  
+
 });
 
 
