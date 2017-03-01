@@ -31,7 +31,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         private readonly ILogger _logger;
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
-        private readonly IMailSettingDetailsByProjectAndModule _mailSettingDetails;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
         #endregion
 
         #region Constructor
@@ -40,7 +40,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
-            IMailSettingDetailsByProjectAndModule mailSettingDetails)
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -310,10 +310,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     EmailApplication email = new EmailApplication();
                                                     email.To = new List<string>();
                                                     email.CC = new List<string>();
-                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserId(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
+                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
                                                     foreach (var projectId in listOfprojectRelatedToUser)
                                                     {
-                                                        var mailsetting = await _mailSettingDetails.GetMailSetting(projectId, _stringConstant.TaskModule);
+                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule);
                                                         email.To.AddRange(mailsetting.To);
                                                         email.CC.AddRange(mailsetting.CC);
                                                     }

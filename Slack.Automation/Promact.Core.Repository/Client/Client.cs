@@ -32,7 +32,7 @@ namespace Promact.Core.Repository.Client
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
         private readonly ApplicationUserManager _userManager;
-        private readonly IMailSettingDetailsByProjectAndModule _mailSettingDetails;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
         #endregion
 
         #region Constructor
@@ -40,7 +40,7 @@ namespace Promact.Core.Repository.Client
             IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
             IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook,
-            ApplicationUserManager userManager, IMailSettingDetailsByProjectAndModule mailSettingDetails)
+            ApplicationUserManager userManager, IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _stringConstant = stringConstant;
             _oauthCallRepository = oauthCallRepository;
@@ -150,10 +150,10 @@ namespace Promact.Core.Repository.Client
             EmailApplication email = new EmailApplication();
             email.To = new List<string>();
             email.CC = new List<string>();
-            var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserId(userId, accessToken)).Select(x => x.Id).ToList();
+            var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
             foreach (var projectId in listOfprojectRelatedToUser)
             {
-                var mailsetting = await _mailSettingDetails.GetMailSetting(projectId, _stringConstant.LeaveModule);
+                var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule);
                 email.To.AddRange(mailsetting.To);
                 email.CC.AddRange(mailsetting.CC);
             }

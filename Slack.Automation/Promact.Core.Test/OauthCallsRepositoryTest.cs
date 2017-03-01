@@ -308,6 +308,9 @@ namespace Promact.Core.Test
             Assert.Equal(2, project.ApplicationUsers.Count);
         }
 
+        /// <summary>
+        /// Method to check the CurrentUserIsAdminAsync
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task CurrentUserIsAdminAsync()
         {
@@ -318,12 +321,29 @@ namespace Promact.Core.Test
             Assert.Equal(true, result);
         }
 
+        /// <summary>
+        /// Method to check the CurrentUserIsAdminAsync for false
+        /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task CurrentUserIsAdminForFalseAsync()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             var result = await _oauthCallHttpContextRepository.CurrentUserIsAdminAsync();
             Assert.Equal(false, result);
+        }
+
+        /// <summary>
+        /// Method to check GetListOfProjectsEnrollmentOfUserByUserIdAsync
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetListOfProjectsEnrollmentOfUserByUserIdAsync()
+        {
+            var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            var result = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(_stringConstant.StringIdForTest, _stringConstant.AccessTokenForTest);
+            Assert.NotEqual(result.Count, 0);
         }
         #endregion
 

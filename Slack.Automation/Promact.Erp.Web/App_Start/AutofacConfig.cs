@@ -92,7 +92,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<Md5Service>().As<IMd5Service>();
-            builder.RegisterType<MailSettingDetailsByProjectAndModule>().As<IMailSettingDetailsByProjectAndModule>();
+            builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
