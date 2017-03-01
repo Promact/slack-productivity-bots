@@ -126,16 +126,14 @@ namespace Promact.Erp.Core.Controllers
                 try
                 {
                     _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                    string replyText = string.Empty;
-                    Task.Run(async () =>
-                    {
-                        replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
-                        _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
-                    }).GetAwaiter().GetResult();
+                    string replyText = _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
+                    _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+
                     if (!String.IsNullOrEmpty(replyText))
                     {
                         _scrumlogger.Debug("Scrum bot sending reply");
                         client.SendMessage(showMethod, message.channel, replyText);
+                        _scrumlogger.Debug("Scrum bot sent reply");
                     }
                 }
                 catch (TaskCanceledException ex)
