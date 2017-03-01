@@ -15,7 +15,10 @@
                    name="listofTO"
                    placeholder="To"
                    [isRemovable]="true"
-                   [readonly]="!projectSelected" required>
+                   [readonly]="!projectSelected"
+                   [isAutoComplete]="true"
+                   [autocompleteDataList]="groupList"
+                   autocomplete-item-text="data" required>
         </md2-chips>
     </div>
     <div>
@@ -25,7 +28,10 @@
                    name="listofCC"
                    placeholder="CC"
                    [isRemovable]="true"
-                   [readonly]="!projectSelected">
+                   [readonly]="!projectSelected"
+                   [isAutoComplete]="true"
+                   [autocompleteDataList]="groupList"
+                   autocomplete-item-text="data">
         </md2-chips>
     </div>
     <div [hidden]="!showButton">
