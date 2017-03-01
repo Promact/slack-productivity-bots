@@ -2937,5 +2937,7 @@ namespace Promact.Erp.Util.StringConstants
         public string LeaveModule { get { return "leave"; } }
         public string ScrumModule { get { return "scrum"; } }
         public string Management { get { return "Management"; } }
+        public string TestEmail { get { return "ankit@promactinfo.com"; } }
+        public string SecondTestEmail { get { return "test@promactinfo.com"; } }
     }
 }

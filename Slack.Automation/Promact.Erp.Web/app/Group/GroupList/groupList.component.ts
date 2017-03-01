@@ -4,6 +4,8 @@ import { LoaderService } from '../../shared/loader.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { GroupService } from '../group.service';
 import { GroupModel } from '../group.model';
+import { Md2Toast } from 'md2';
+
 
 @Component({
     templateUrl: './app/Group/GroupList/GroupList.html',
@@ -12,7 +14,7 @@ import { GroupModel } from '../group.model';
 export class GroupListComponent implements OnInit {
     groupList: Array<GroupModel>;
     groupId: number;
-    constructor(private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService) {
+    constructor(private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast) {
 
     }
 
@@ -34,9 +36,25 @@ export class GroupListComponent implements OnInit {
         this.router.navigate(['/group/edit', id]);
     }
 
-    delteGroupPopup(id: number) {
+    delteGroupPopup(id: number, popup) {
+        this.groupId = id;
+        popup.open();
     }
 
-    deleteGroup() { }
+    deleteGroup(popup) {
+        this.loader.loader = true;
+        this.groupService.deleteGroupById(this.groupId).then((result) => {
+            this.toast.show("Group deleted sucessfully.");
+            this.ngOnInit();
+            this.loader.loader = false;
+            popup.close();
+        }, err => {
+
+        });
+    }
+
+    closeDeletePopup(popup) {
+        popup.close();
+    }
 }
 

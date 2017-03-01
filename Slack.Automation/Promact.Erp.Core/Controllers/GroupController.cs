@@ -156,6 +156,15 @@ namespace Promact.Erp.Core.Controllers
             return Ok(await _groupRepository.CheckGroupNameIsExistsAsync(name, id));
         }
 
+
+
+        [HttpDelete]
+        [Route("delete/{id:int}")]
+        public async Task<IHttpActionResult> DeleteGroupByIdAsync(int id)
+        {
+            return Ok(await _groupRepository.DeleteGroupById(id));
+        }
+
         #endregion
     }
 }

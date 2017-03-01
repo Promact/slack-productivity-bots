@@ -10,46 +10,26 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Type</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let group of groupList">
                     <td>{{group.Name}}</td>
-                    <td>{{group.Type}}</td>
                     <td>
-                        <button class="btn-green custom-btn" (click)="editGroup(group.Id)">Edit</button>
-                        <button class="btn-green custom-btn" (click)="delteGroupPopup(group.Id)">Delete</button>
+                        <button class="btn-green custom-btn" (click)="editGroup(group.Id)" [disabled]="!(group.Type == 2)">Edit</button>
+                        <button class="btn-green custom-btn" (click)="delteGroupPopup(group.Id,confirm)" [disabled]="!(group.Type == 2)">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!--<table [md2Data]="groupList"
-               #dataTable="md2DataTable"
-               [rowsPerPage]="10"
-               [(activePage)]="activePage">
-            <thead>
-                <tr>
-                    <th md2SortBy="name">Name</th>
-                    <th md2SortBy="type">Type</th>
-                    <th md2SortBy="action">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let group of dataTable.data">
-                    <td>{{group.Name}}</td>
-                    <td>{{group.Type}}</td>
-                    <td> </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">
-                        <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>-->
     </div>
+    <md2-dialog #confirm>
+        <md2-dialog-title>Delete Confirmation</md2-dialog-title>
+        Are you sure you want to delete?
+        <md2-dialog-footer>
+            <button button="primary" (click)="deleteGroup(confirm)">Ok</button>
+            <button button (click)="closeDeletePopup(confirm)">Cancel</button>
+        </md2-dialog-footer>
+    </md2-dialog>
 </div>
