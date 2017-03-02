@@ -1,5 +1,5 @@
 ﻿declare var describe, it, beforeEach, expect;
-import { async, inject, TestBed, ComponentFixture, fakeAsync } from '@angular/core/testing';
+import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -56,6 +56,7 @@ describe('TaskMail Detials Tests', () => {
         activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };
         let taskMailDetailsComponent = fixture.componentInstance;
         let result = taskMailDetailsComponent.ngOnInit();
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -65,6 +66,7 @@ describe('TaskMail Detials Tests', () => {
         activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -75,6 +77,7 @@ describe('TaskMail Detials Tests', () => {
         activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleTeamLeader, UserName: stringConstant.userName };
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -82,6 +85,7 @@ describe('TaskMail Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious(stringConstant.userName, stringConstant.userId, stringConstant.RoleAdmin, stringConstant.createdOn);
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -89,6 +93,7 @@ describe('TaskMail Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailPrevious(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn);
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -103,6 +108,7 @@ describe('TaskMail Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailNext(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn);
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -110,6 +116,7 @@ describe('TaskMail Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate(stringConstant.userName, stringConstant.userId, stringConstant.RoleAdmin, stringConstant.createdOn, stringConstant.createdOn);
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -117,6 +124,7 @@ describe('TaskMail Detials Tests', () => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailForSelectedDate(stringConstant.userName, stringConstant.userId, stringConstant.RoleTeamLeader, stringConstant.createdOn, stringConstant.createdOn);
+        tick();
         expect(taskMailDetailsComponent.taskMail.length).toBe(1);
     }));
 
@@ -126,6 +134,7 @@ describe('TaskMail Detials Tests', () => {
         let router = fixture.debugElement.injector.get(Router);
         spyOn(router, "navigate");
         taskMailDetailsComponent.getTaskMailList();
+        tick();
         expect(router.navigate).toHaveBeenCalled();
     }));
 });
