@@ -7,7 +7,6 @@ import { RouterLinkStubDirective } from './shared/mock/mock.routerLink';
 import { LoaderService } from './shared/loader.service';
 import { AppComponentService } from './appcomponent.service';
 import { AppModule } from './app.module';
-import { MockAppComponentService } from './shared/mock/mock.appcomponent.service';
 import { AppComponent } from './app.component';
 import { Md2SelectChange } from 'md2';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
