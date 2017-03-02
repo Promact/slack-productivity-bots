@@ -317,8 +317,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                         email.To.AddRange(mailsetting.To);
                                                         email.CC.AddRange(mailsetting.CC);
                                                     }
-                                                    email.To = _mailSettingDetails.DeleteTheDuplicateString(email.To);
-                                                    email.CC = _mailSettingDetails.DeleteTheDuplicateString(email.CC);
+                                                    email.To = email.To.Distinct().ToList();
+                                                    email.CC = email.CC.Distinct().ToList();
                                                     email.From = userAndTaskMailDetailsWithAccessToken.User.Email;
                                                     email.Subject = _stringConstant.TaskMailSubject;
                                                     // transforming task mail details to template page and getting as string

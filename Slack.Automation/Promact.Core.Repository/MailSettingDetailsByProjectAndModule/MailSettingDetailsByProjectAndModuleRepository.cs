@@ -71,22 +71,6 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
             }
             return mailSetting;
         }
-
-        /// <summary>
-        /// Method used to delete duplicate string in a list
-        /// </summary>
-        /// <param name="listOfString">list of string</param>
-        /// <returns>list of string</returns>
-        public List<string> DeleteTheDuplicateString(List<string> listOfString)
-        {
-            List<string> newListOfString = new List<string>();
-            foreach (var value in listOfString)
-            {
-                if (!newListOfString.Contains(value))
-                    newListOfString.Add(value);
-            }
-            return newListOfString;
-        }
         #endregion
     }
 }

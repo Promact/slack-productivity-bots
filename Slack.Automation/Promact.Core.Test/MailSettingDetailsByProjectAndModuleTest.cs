@@ -4,7 +4,6 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -93,20 +92,6 @@ namespace Promact.Core.Test
             await AddMailSetting();
             var result = await _mailSettingDetailsRepository.GetMailSettingAsync(1, _stringConstant.TaskModule);
             Assert.True(result.SendMail);
-        }
-
-        /// <summary>
-        /// Test cases to check the method DeleteTheDuplicateString
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void DeleteTheDuplicateString()
-        {
-            List<string> listOfString = new List<string>();
-            listOfString.Add(_stringConstant.Email);
-            listOfString.Add(_stringConstant.Email);
-            listOfString.Add(_stringConstant.Admin);
-            var result = _mailSettingDetailsRepository.DeleteTheDuplicateString(listOfString);
-            Assert.Equal(result.Count, 2);
         }
         #endregion
 

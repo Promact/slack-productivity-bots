@@ -13,12 +13,5 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
         /// <param name="module">mail setting module</param>
         /// <returns>mail setting details</returns>
         Task<MailSettingAC> GetMailSettingAsync(int projectId, string module);
-
-        /// <summary>
-        /// Method used to delete duplicate string in a list
-        /// </summary>
-        /// <param name="listOfString">list of string</param>
-        /// <returns>list of string</returns>
-        List<string> DeleteTheDuplicateString(List<string> listOfString);
     }
 }

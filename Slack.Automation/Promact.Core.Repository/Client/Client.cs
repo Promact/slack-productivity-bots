@@ -157,14 +157,15 @@ namespace Promact.Core.Repository.Client
                 email.To.AddRange(mailsetting.To);
                 email.CC.AddRange(mailsetting.CC);
             }
-            email.To = _mailSettingDetails.DeleteTheDuplicateString(email.To);
-            email.CC = _mailSettingDetails.DeleteTheDuplicateString(email.CC);
-            var teamLeaders = await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
-            var management = await _oauthCallRepository.GetManagementUserNameAsync(accessToken);
-            var userDetail = await _oauthCallRepository.GetUserByUserIdAsync(userId, accessToken);
-            foreach (var teamLeader in teamLeaders)
+            email.To = email.To.Distinct().ToList();
+            email.CC = email.CC.Distinct().ToList();
+            var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x=>x.Id).ToList();
+            var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x=>x.Id);
+            var userEmail = (await _userManager.FindByIdAsync(userId)).Email;
+            teamLeaderIds.AddRange(managementIds);
+            foreach (var teamLeaderId in teamLeaderIds)
             {
-                var user = await _userManager.FindByIdAsync(teamLeader.Id);
+                var user = await _userManager.FindByIdAsync(teamLeaderId);
                 var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                 var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
@@ -185,7 +186,7 @@ namespace Promact.Core.Repository.Client
                     // creating email templates corresponding to leave applied for casual leave
                     email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
                 }
-                email.From = userDetail.Email;
+                email.From = userEmail;
                 email.Subject = _stringConstant.EmailSubject;
                 _emailService.Send(email);
             }
