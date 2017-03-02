@@ -1,6 +1,5 @@
-﻿
-declare var describe, it, beforeEach, expect;
-import { async, inject, TestBed, ComponentFixture, fakeAsync } from '@angular/core/testing';
+﻿declare var describe, it, beforeEach, expect;
+import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -46,17 +45,20 @@ describe('Task Mail Report List Tests', () => {
         expect(taskMailListComponent).toBeDefined();
     }));
 
-    it('Shows list of TaskReports on initialization', fakeAsync(()  => {
-            let fixture = TestBed.createComponent(TaskMailListComponent); //Create instance of component            
-            let taskMailListComponent = fixture.componentInstance;
-            let result = taskMailListComponent.ngOnInit();
-            expect(taskMailListComponent.taskMailUsers.length).toBe(1);
+    it('Shows list of TaskReports on initialization', fakeAsync(() => {
+        let fixture = TestBed.createComponent(TaskMailListComponent); //Create instance of component            
+        let taskMailListComponent = fixture.componentInstance;
+        let result = taskMailListComponent.ngOnInit();
+        tick();
+        expect(taskMailListComponent.taskMailUsers.length).toBe(1);
     }));
+
 
     it('Shows list of taskmailReport on initialization for Admin', fakeAsync(() => {
         let fixture = TestBed.createComponent(TaskMailListComponent);
         let taskMailListComponent = fixture.componentInstance;
         taskMailListComponent.getListOfEmployee();
+        tick();
         expect(taskMailListComponent.taskMailUsers.length).toBe(1);
     }));
 
@@ -73,6 +75,7 @@ describe('Task Mail Report List Tests', () => {
         spyOn(taskService, "getListOfEmployee").and.returnValue(new BehaviorSubject(mockTaskMailModels).asObservable());
         spyOn(router, "navigate");
         taskMailListComponent.getListOfEmployee();
+        tick();
         expect(router.navigate).toHaveBeenCalled();
     }));
     it('Shows list of taskmailReport on initialization for TeamLeader', fakeAsync(() => {
@@ -88,6 +91,7 @@ describe('Task Mail Report List Tests', () => {
         spyOn(taskService, "getListOfEmployee").and.returnValue(new BehaviorSubject(mockTaskMailModels).asObservable());
         spyOn(router, "navigate");
         taskMailListComponent.getListOfEmployee();
+        tick();
         expect(router.navigate).toHaveBeenCalled();
     }));
 
@@ -97,6 +101,7 @@ describe('Task Mail Report List Tests', () => {
         let router = fixture.debugElement.injector.get(Router);
         spyOn(router, "navigate");
         taskMailListComponent.taskmailDetails(stringConstant.userId, stringConstant.userName, stringConstant.userEmail);
+        tick();
         expect(router.navigate).toHaveBeenCalled();
     }));
 });
