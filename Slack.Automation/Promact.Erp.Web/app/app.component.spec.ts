@@ -13,10 +13,10 @@ import { Md2SelectChange } from 'md2';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { EmailHashCode } from './shared/emailHashCode';
 import { Project } from './shared/MailSetting/project.model';
+import { StringConstant } from './shared/stringconstant';
 let promise: TestBed;
 
 describe('AppComponent Test', () => {
-    class MockRouter { }
     class MockLoaderService { }
     class MockEmailHash { }
     const routes: Routes = [];
@@ -37,8 +37,7 @@ describe('AppComponent Test', () => {
             let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
             let appComponent = fixture.componentInstance;
             let appService = fixture.debugElement.injector.get(AppComponentService);
-            let result = "true";
-            spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject(result).asObservable());
+            spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
             appComponent.ngOnInit();
             expect(appComponent.userIsAdmin).toBe(true);
     });
@@ -46,8 +45,7 @@ describe('AppComponent Test', () => {
         let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
         let appComponent = fixture.componentInstance;
         let appService = fixture.debugElement.injector.get(AppComponentService);
-        let result = "false";
-        spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject(result).asObservable());
+        spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: false }).asObservable());
         appComponent.ngOnInit();
         expect(appComponent.userIsAdmin).toBe(false);
     });
