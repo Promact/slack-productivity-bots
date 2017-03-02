@@ -81,4 +81,10 @@ export class StringConstant {
     testGroupName = "testGroupName";
     navigate = "navigate";
     id = '1';
+    getListOfGroups = "getListOfGroups";
+    getAllProjects = "getAllProjects";
+    addMailSetting = "addMailSetting";
+    updateMailSetting = "updateMailSetting";
+    getProjectByIdAndModule = "getProjectByIdAndModule";
+    testGroupList = ["hello"];
 }
