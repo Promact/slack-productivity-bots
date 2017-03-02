@@ -7,7 +7,7 @@
         <label>Name:</label>
         <input type="text" [(ngModel)]="groupModel.Name" name="groupName" #groupName="ngModel" (blur)="checkGroupName(groupModel.Name)" required>
         <div [hidden]="!(groupName.touched && !groupName.valid && groupName.errors.required)" class="error">Name is required</div>
-        <div [hidden]="!(isExistsGroupName)" class="error">Group name is already exists</div>
+        <div [hidden]="!(isExistsGroupName)" class="error">Group name already exists</div>
     </div>
     <div class="half-width">
         <label>Emails:</label>

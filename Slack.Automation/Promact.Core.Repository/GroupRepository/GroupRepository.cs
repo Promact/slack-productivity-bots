@@ -6,6 +6,7 @@ using Promact.Erp.Util.ExceptionHandler;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.GroupRepository
@@ -108,7 +109,7 @@ namespace Promact.Core.Repository.GroupRepository
         public async Task<List<GroupAC>> GetListOfGroupACAsync()
         {
             List<GroupAC> groupAc = new List<GroupAC>();
-            List<Group> listOfGroup = await _groupRepository.GetAll().ToListAsync();
+            List<Group> listOfGroup = await _groupRepository.GetAll().OrderByDescending(x=>x.CreatedOn).ToListAsync();
             return _mapper.Map(listOfGroup, groupAc);
         }
 
