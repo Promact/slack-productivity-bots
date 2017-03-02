@@ -56,28 +56,9 @@ namespace Promact.Core.Repository.MailSettingRepository
             var mailSettingDetails = await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.Module == module);
             if (mailSettingDetails != null)
             {
-                List<string> listOfTo = new List<string>();
-                List<string> listOfCC = new List<string>();
                 mailSetting = _mapper.Map<MailSetting, MailSettingAC>(mailSettingDetails);
-                var mailSettingMappingList = (await _mailSettingMappingDataRepository.FetchAsync(x => x.MailSettingId == mailSettingDetails.Id)).ToList();
-                var listOfMailSettingTo = mailSettingMappingList.FindAll(x => x.IsTo);
-                var listOfMailSettingCC = mailSettingMappingList.FindAll(x => !x.IsTo);
-                foreach (var to in listOfMailSettingTo)
-                {
-                    if (to.GroupId == null)
-                        listOfTo.Add(to.Email);
-                    else
-                        listOfTo.Add((await _groupDataRepository.FirstAsync(x => x.Id == to.GroupId)).Name);
-                }
-                foreach (var cc in listOfMailSettingCC)
-                {
-                    if (cc.GroupId == null)
-                        listOfCC.Add(cc.Email);
-                    else
-                        listOfCC.Add((await _groupDataRepository.FirstAsync(x => x.Id == cc.GroupId)).Name);
-                }
-                mailSetting.To = listOfTo;
-                mailSetting.CC = listOfCC;
+                mailSetting.To = await GetListOfEmailByMailSettingAsync(true, mailSetting.Id);
+                mailSetting.CC = await GetListOfEmailByMailSettingAsync(false, mailSetting.Id);
             }
             return mailSetting;
         }
@@ -92,18 +73,8 @@ namespace Promact.Core.Repository.MailSettingRepository
             mailSetting.CreatedOn = DateTime.UtcNow;
             _mailSettingDataRepository.Insert(mailSetting);
             await _mailSettingDataRepository.SaveChangesAsync();
-            foreach (var to in mailSettingAC.To)
-            {
-                var mailSettingMapping = await MailSettingMappingGeneratorAsync(to, true, mailSetting.Id);
-                mailSettingMapping.CreatedOn = DateTime.UtcNow;
-                _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-            }
-            foreach (var cc in mailSettingAC.CC)
-            {
-                var mailSettingMapping = await MailSettingMappingGeneratorAsync(cc, false, mailSetting.Id);
-                mailSettingMapping.CreatedOn = DateTime.UtcNow;
-                _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-            }
+            await AddMailSettingMappingAsync(mailSettingAC.To, true, mailSetting.Id, DateTime.UtcNow);
+            await AddMailSettingMappingAsync(mailSettingAC.CC, false, mailSetting.Id, DateTime.UtcNow);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
 
@@ -130,18 +101,8 @@ namespace Promact.Core.Repository.MailSettingRepository
             await _mailSettingDataRepository.SaveChangesAsync();
             if (_mailSettingMappingDataRepository.Any(x => x.MailSettingId == mailSettingAC.Id))
                 _mailSettingMappingDataRepository.RemoveRange(x => x.MailSettingId == mailSettingAC.Id);
-            foreach (var to in mailSettingAC.To)
-            {
-                var mailSettingMapping = await MailSettingMappingGeneratorAsync(to, true, mailSettingAC.Id);
-                mailSettingMapping.CreatedOn = previousMailSettingMappingCreatedDateTime;
-                _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-            }
-            foreach (var cc in mailSettingAC.CC)
-            {
-                var mailSettingMapping = await MailSettingMappingGeneratorAsync(cc, false, mailSettingAC.Id);
-                mailSettingMapping.CreatedOn = previousMailSettingMappingCreatedDateTime;
-                _mailSettingMappingDataRepository.Insert(mailSettingMapping);
-            }
+            await AddMailSettingMappingAsync(mailSettingAC.To, true, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
+            await AddMailSettingMappingAsync(mailSettingAC.CC, false, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
         #endregion
@@ -164,6 +125,45 @@ namespace Promact.Core.Repository.MailSettingRepository
             else
                 mailSettingMapping.Email = type;
             return mailSettingMapping;
+        }
+
+        /// <summary>
+        /// Method to insert list of mail setting mapping
+        /// </summary>
+        /// <param name="listOfMailSettingEmail">list of email</param>
+        /// <param name="isTo">boolean value is To</param>
+        /// <param name="mailSettingId">mail setting Id</param>
+        /// <param name="createdOn">created on date</param>
+        /// <returns></returns>
+        private async Task AddMailSettingMappingAsync(List<string> listOfMailSettingEmail, bool isTo, int mailSettingId, DateTime createdOn)
+        {
+            foreach (var email in listOfMailSettingEmail)
+            {
+                var mailSettingMapping = await MailSettingMappingGeneratorAsync(email, isTo, mailSettingId);
+                mailSettingMapping.CreatedOn = createdOn;
+                _mailSettingMappingDataRepository.Insert(mailSettingMapping);
+            }
+        }
+
+        /// <summary>
+        /// Method to get list of email by mail setting 
+        /// </summary>
+        /// <param name="isTo">boolean value of isTo</param>
+        /// <param name="mailSettingId">mail setting Id</param>
+        /// <returns></returns>
+        private async Task<List<string>> GetListOfEmailByMailSettingAsync(bool isTo, int mailSettingId)
+        {
+            List<string> listOfEmail = new List<string>();
+            var listOfMailSetting = (await _mailSettingMappingDataRepository.FetchAsync(x => x.MailSettingId == mailSettingId)).ToList();
+            listOfMailSetting = listOfMailSetting.FindAll(x => x.IsTo == isTo);
+            foreach (var to in listOfMailSetting)
+            {
+                if (to.GroupId == null)
+                    listOfEmail.Add(to.Email);
+                else
+                    listOfEmail.Add((await _groupDataRepository.FirstAsync(x => x.Id == to.GroupId)).Name);
+            }
+            return listOfEmail;
         }
         #endregion
     }
