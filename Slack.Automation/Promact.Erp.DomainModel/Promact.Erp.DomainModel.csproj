@@ -156,6 +156,7 @@
     <Compile Include="ApplicationClass\TaskMailDetailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\EmailHashCodeAC.cs" />
+    <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />

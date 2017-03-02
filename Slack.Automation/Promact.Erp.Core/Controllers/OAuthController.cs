@@ -3,6 +3,7 @@ using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
+using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -237,14 +238,18 @@ namespace Promact.Erp.Core.Controllers
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
-        *       true
+        *       "FirstName : "Siddhartha",
+        *       "IsAdmin" : true
         * }
         */
         [HttpGet]
         [Route("oauth/user/admin")]
         public async Task<IHttpActionResult> CurrentUserIsAdminOrNot()
         {
-            return Ok(await _oauthCallRepository.CurrentUserIsAdminAsync());
+            UserAdminBasicDetailsAC userDetails = new UserAdminBasicDetailsAC();
+            userDetails.FirstName = (await _oauthCallRepository.GetUserByEmployeeIdAsync(GetUserId(User.Identity))).FirstName;
+            userDetails.IsAdmin = await _oauthCallRepository.CurrentUserIsAdminAsync();
+            return Ok(userDetails);
         }
         #endregion
     }
