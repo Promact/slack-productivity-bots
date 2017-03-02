@@ -14,8 +14,10 @@ import { TestConnection } from '../../shared/mock/test.connection';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ScrumProject } from './scrumProject-List.model';
 import { MailSettingModule } from '../../shared/MailSetting/mailsetting.module';
+
 let promise: TestBed;
 
+let stringConstant = new StringConstant();
 describe('ScrumReport Tests', () => {
     const routes: Routes = [];
 
@@ -39,7 +41,7 @@ describe('ScrumReport Tests', () => {
         let mockScrumProjects = new Array<ScrumProject>();
         let scrumProject: ScrumProject;
         scrumProject = new ScrumProject();
-        scrumProject.Name = "aaaa";
+        scrumProject.Name = stringConstant.scrumName;
         mockScrumProjects.push(scrumProject);
         spyOn(scrumService, "getScrumProjects").and.returnValue(new BehaviorSubject(mockScrumProjects).asObservable());
         let result = scrumProjectListComponent.ngOnInit();
@@ -55,7 +57,7 @@ describe('ScrumReport Tests', () => {
         let mockScrumProjects = new Array<ScrumProject>();
         let scrumProject: ScrumProject;
         scrumProject = new ScrumProject();
-        scrumProject.Name = "aaaa";
+        scrumProject.Name = stringConstant.scrumName;
         mockScrumProjects.push(scrumProject);
         spyOn(scrumService, "getScrumProjects").and.returnValue(new BehaviorSubject(mockScrumProjects).asObservable());
         let result = scrumProjectListComponent.getScrumProjects();
