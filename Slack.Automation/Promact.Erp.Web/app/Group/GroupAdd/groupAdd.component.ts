@@ -7,7 +7,7 @@ import { GroupModel } from '../group.model';
 import { Md2Toast } from 'md2';
 
 @Component({
-    templateUrl: './app/Group/GroupAdd/groupAdd.html',
+    templateUrl: './app/Group/GroupAdd/groupAdd.html'
 })
 export class GroupAddComponent implements OnInit {
     groupModel: GroupModel;
@@ -20,7 +20,6 @@ export class GroupAddComponent implements OnInit {
     }
 
     ngOnInit() {
-
     }
 
     addGroup(groupModel: GroupModel) {

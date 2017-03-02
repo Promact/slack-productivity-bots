@@ -8,9 +8,9 @@ import { Md2Toast } from 'md2';
 
 
 @Component({
-    templateUrl: './app/Group/GroupList/GroupList.html',
-    providers: [StringConstant]
+    templateUrl: './app/Group/GroupList/groupList.html'
 })
+
 export class GroupListComponent implements OnInit {
     groupList: Array<GroupModel>;
     groupId: number;

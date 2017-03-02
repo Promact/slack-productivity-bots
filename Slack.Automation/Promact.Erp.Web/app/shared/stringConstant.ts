@@ -77,4 +77,8 @@ export class StringConstant {
     staticGroup = "StaticGroup";
     groupName = "name";
     groupId = "id";
+    emails = ["test@promactinfo.com", "test@gmail.com"];
+    testGroupName = "testGroupName";
+    navigate = "navigate";
+    id = '1';
 }
