@@ -1533,6 +1533,7 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.module.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.routes.ts" />
@@ -1548,6 +1549,7 @@
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.spec.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.spec.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.module.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
@@ -1556,6 +1558,7 @@
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.spec.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.model.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.module.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
@@ -1584,6 +1587,7 @@
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.mailsetting.service.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.md2selectchange.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.md2toast.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
@@ -1597,6 +1601,7 @@
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmaildetails.model.ts" />
     <TypeScriptCompile Include="app\taskmail\taskMail.module.ts" />

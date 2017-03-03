@@ -13,6 +13,7 @@ import { EmailHashCode } from './shared/emailHashCode';
 export class AppComponent implements OnInit {
     userIsAdmin: boolean;
     hashCode: string;
+    username: string;
     constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode: EmailHashCode) {
         this.userIsAdmin = false;
     }
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this.hashCode = this.emailHashCode.hashCode;
         this.httpService.getUserIsAdminOrNot().subscribe((result) => {
-            this.userIsAdmin = (result === 'true');
+            this.userIsAdmin = result.IsAdmin;
+            this.username = result.FirstName;
         });
     }
 }
