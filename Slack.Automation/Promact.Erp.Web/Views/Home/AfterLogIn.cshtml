@@ -16,7 +16,10 @@
     <link href="../../Content/css/font-awesome.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="../../Content/css/custom.min.css" rel="stylesheet">
+    <link href="../../Content/css/green.css" rel="stylesheet" />
     <link href="../../Content/Site.css" rel="stylesheet">
+    <link href="../../Content/css/erp-custom.css" rel="stylesheet" />
+
     @*Polyfill(s) for older browsers*@
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
@@ -25,6 +28,17 @@
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="systemjs.config.js"></script>
+    <!-- jQuery -->
+    <script src="../../Content/js/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="../../Content/js/bootstrap.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../Content/js/custom.js"></script>
+    <script src="../../Content/js/theme/moment/min/moment.min.js"></script>
+    <!-- Theme Scripts -->
+    @Scripts.Render("~/bundles/themejs")
+
+
     @if (@ViewBag.userEmail == "")
     {
         <script>
@@ -32,6 +46,8 @@
             var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
         </script>
     }
+
+    @*@Scripts.Render("~/Content/css")*@
 </head>
 
 @if (@ViewBag.userEmail != "")
@@ -56,13 +72,8 @@ else
                 <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
             </div>
         </my-app>
-        <!-- jQuery -->
-        <script src="../../Content/js/jquery.min.js"></script>
-        <!-- Bootstrap -->
-        <script src="../../Content/js/bootstrap.min.js"></script>
-        <!-- Custom Theme Scripts -->
-        <script src="../../Content/js/custom.js"></script>
-
+  
+       
     </body>
 }
 
