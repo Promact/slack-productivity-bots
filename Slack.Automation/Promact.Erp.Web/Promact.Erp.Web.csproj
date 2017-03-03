@@ -289,6 +289,8 @@
     <Content Include="Content\js\bootstrap.min.js" />
     <Content Include="Content\js\custom.js" />
     <Content Include="Content\js\jquery.min.js" />
+    <Content Include="Content\js\switchery.js" />
+    <Content Include="Content\js\theme\custom.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
