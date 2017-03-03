@@ -24,18 +24,7 @@ namespace Promact.Erp.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css",
-                       "~/Content/css/erp-custom.css",
-                       "~/Content/js/theme/bootstrap-daterangepicker/daterangepicker.css"
-                      ));
-
-            bundles.Add(new ScriptBundle("~/bundles/themejs").Include(
-                     "~/Content/js/icheck.js",
-                     "~/Content/js/switchery.js",
-                "~/Content/js/theme/bootstrap-daterangepicker/daterangepicker.js",
-                "~/Content/js/theme/custom.js"
-
-               ));
+                      "~/Content/site.css"));
         }
     }
 }

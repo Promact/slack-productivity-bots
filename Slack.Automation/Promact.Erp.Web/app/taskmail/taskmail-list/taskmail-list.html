@@ -1,54 +1,28 @@
 ﻿<div class="taskmail-list">
-    <div class="page-title">
-        <div class="title_left">
-            <h3>Task Mail List</h3>
+    <div class="card-title-block d-flex">
+        <div class="title items">
+            <h3>Task Mail</h3>
+        </div>
+        <div class="items text-right">
+
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-                <div class="x_content">
-                    <table [md2Data]="taskMailUsers"
-                           #md2="md2DataTable"
-                           [rowsPerPage]="10"
-                           [(activePage)]="activePage">
-                        <thead>
-                            <tr>
-                                <th md2SortBy="name">Name</th>
-                                <th md2SortBy="action">Action</th>
-                               
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let taskMailUser of md2.data">
-                                <td>{{taskMailUser.UserName}}</td>
-                                <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)" type="button" class="btn btn-primary btn-sm"><i class="fa fa-envelope"> </i> Task Mail</button></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4">
-                                    <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <!--<table id="datatable" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let taskMailUser of taskMailUsers">   
-                                <td>{{taskMailUser.UserName}}</td>
-                                <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)" type="button" class="btn btn-primary btn-sm"><i class="fa fa-envelope"> </i> Task Mail</button></td>
-                            </tr>
-                        </tbody>
-                    </table>-->
-                </div>
-            </div>
-        </div>
+    
+    <div class="table-sm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let taskMailUser of taskMailUsers">
+                    <td>{{taskMailUser.UserName}}</td>
+                    <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)">Task Mail</button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
+
