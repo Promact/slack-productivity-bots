@@ -124,7 +124,6 @@
     <Compile Include="ApplicationClass\EmailApplication.cs" />
     <Compile Include="ApplicationClass\EmployeeScrumDetails.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
-    <Compile Include="ApplicationClass\EnumGroupType.cs" />
     <Compile Include="ApplicationClass\GroupAC.cs" />
     <Compile Include="ApplicationClass\LeaveAllowed.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
@@ -159,6 +158,7 @@
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\EmailHashCodeAC.cs" />
     <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />
+    <Compile Include="ApplicationClass\UserEmailListAc.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />

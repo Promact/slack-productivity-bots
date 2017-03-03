@@ -1,10 +1,17 @@
 ﻿using Autofac;
+using Microsoft.AspNet.Identity;
+using Moq;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
+using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using Xunit;
 
 namespace Promact.Core.Test
@@ -19,6 +26,10 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IGroupRepository _groupRepository;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly Mock<IHttpClientService> _mockHttpClient;
+        private readonly ApplicationUserManager _userManager;
+        private readonly Mock<HttpContextBase> _mockHttpContextBase;
+        private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
         #region Constructor
@@ -28,6 +39,10 @@ namespace Promact.Core.Test
             _componentContext = AutofacConfig.RegisterDependancies();
             _groupRepository = _componentContext.Resolve<IGroupRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
+            _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
+            _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
         }
 
         #endregion
@@ -147,8 +162,40 @@ namespace Promact.Core.Test
             Assert.Equal(isDeleted, true);
         }
 
-        #endregion
 
+        /// <summary>
+        /// This test case used for add Dynamic Group 
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task AddDynamicGroup()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
+            await _groupRepository.AddDynamicGroupAsync();
+            List<GroupAC> listOfGroupAC = await _groupRepository.GetListOfGroupACAsync();
+            Assert.NotEqual(listOfGroupAC.Count, 0);
+        }
+
+
+        /// <summary>
+        /// This test case for update Dynamic Group
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateDynamicGroup()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
+            await _groupRepository.AddDynamicGroupAsync();
+            await _groupRepository.AddDynamicGroupAsync();
+            List<GroupAC> listOfGroupAC = await _groupRepository.GetListOfGroupACAsync();
+            Assert.NotEqual(listOfGroupAC.Count, 0);
+        }
+
+        #endregion
 
         #region Private Method
 
@@ -168,6 +215,29 @@ namespace Promact.Core.Test
             return await _groupRepository.AddGroupAsync(group);
         }
 
+
+        /// </summary>
+        /// <returns></returns>
+        private async Task CreateUserAndMockingHttpContextToReturnAccessToken()
+        {
+            var user = new ApplicationUser()
+            {
+                Id = _stringConstant.StringIdForTest,
+                UserName = _stringConstant.EmailForTest,
+                Email = _stringConstant.EmailForTest
+            };
+            await _userManager.CreateAsync(user);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.AddLoginAsync(user.Id, info);
+            Claim claim = new Claim(_stringConstant.Sub, _stringConstant.StringIdForTest);
+            var mockClaims = new Mock<ClaimsIdentity>();
+            IList<Claim> claims = new List<Claim>();
+            claims.Add(claim);
+            mockClaims.Setup(x => x.Claims).Returns(claims);
+            _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
+            var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+        }
         #endregion
 
     }

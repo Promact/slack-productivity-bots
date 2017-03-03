@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
+using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -16,15 +18,19 @@ namespace Promact.Core.Repository.GroupRepository
         #region Private Variables
         private readonly IRepository<Group> _groupRepository;
         private readonly IRepository<GroupEmailMapping> _groupEmailMappingRepository;
+        private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
+        private readonly IStringConstantRepository _stringConstantRepository;
         private readonly IMapper _mapper;
         #endregion
 
         #region Constructor
-        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository)
+        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository, IOauthCallHttpContextRespository oauthCallsRepository, IStringConstantRepository stringConstantRepository)
         {
             _groupRepository = groupRepository;
             _mapper = mapper;
+            _oauthCallsRepository = oauthCallsRepository;
             _groupEmailMappingRepository = groupEmailMappingRepository;
+            _stringConstantRepository = stringConstantRepository;
         }
         #endregion
 
@@ -109,7 +115,7 @@ namespace Promact.Core.Repository.GroupRepository
         public async Task<List<GroupAC>> GetListOfGroupACAsync()
         {
             List<GroupAC> groupAc = new List<GroupAC>();
-            List<Group> listOfGroup = await _groupRepository.GetAll().OrderByDescending(x=>x.CreatedOn).ToListAsync();
+            List<Group> listOfGroup = await _groupRepository.GetAll().OrderByDescending(x => x.CreatedOn).ToListAsync();
             return _mapper.Map(listOfGroup, groupAc);
         }
 
@@ -123,6 +129,24 @@ namespace Promact.Core.Repository.GroupRepository
             _groupRepository.Delete(id);
             await _groupRepository.SaveChangesAsync();
             return true;
+        }
+
+        /// <summary>
+        /// This method used for added dynamic group. -an
+        /// </summary>
+        /// <returns></returns>
+        public async Task AddDynamicGroupAsync()
+        {
+            UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
+            if (userEmailListAc != null)
+            {
+                //create team leader group
+                await InsertDynamicGroup(_stringConstantRepository.TeamLeaderGroup, userEmailListAc.TeamLeader);
+                //create team member group
+                await InsertDynamicGroup(_stringConstantRepository.TeamMembersGroup, userEmailListAc.TamMemeber);
+                //create managment group
+                await InsertDynamicGroup(_stringConstantRepository.ManagementGroup, userEmailListAc.Management);
+            }
         }
 
         #endregion
@@ -148,6 +172,34 @@ namespace Promact.Core.Repository.GroupRepository
 
             }
 
+        }
+
+        /// <summary>
+        /// This method used for add dynamic group.
+        /// </summary>
+        /// <param name="groupName">pass group name</param>
+        /// <param name="listOfEmails">pass list of email</param>
+        /// <returns></returns>
+        private async Task InsertDynamicGroup(string groupName, List<string> listOfEmails)
+        {
+            var group = await _groupRepository.FirstOrDefaultAsync(x => x.Name == groupName && x.Type == 1);
+            if (group == null) //added group
+            {
+                Group newGroup = new Group();
+                newGroup.Name = groupName;
+                newGroup.Type = 1;
+                newGroup.CreatedOn = DateTime.UtcNow;
+                _groupRepository.Insert(newGroup);
+                await _groupRepository.SaveChangesAsync();
+                if (listOfEmails.Count > 0)
+                    await AddGroupEmailMapping(listOfEmails, newGroup.Id);
+
+            }//update group
+            else
+            {
+                _groupEmailMappingRepository.RemoveRange(x => x.GroupId == group.Id);
+                await AddGroupEmailMapping(listOfEmails, group.Id);
+            }
         }
 
         #endregion

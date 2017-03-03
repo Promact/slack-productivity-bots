@@ -49,5 +49,12 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="id">pass group id</param>
         /// <returns>true</returns>
         Task<bool> DeleteGroupById(int id);
-     }
+
+
+        /// <summary>
+        /// This method used for added dynamic group. -an
+        /// </summary>
+        /// <returns></returns>
+        Task AddDynamicGroupAsync();
+    }
 }
