@@ -31,13 +31,7 @@
                                     <li *ngIf="userIsAdmin"><a routerLink="/leave/mailsetting">Mail Setting</a></li>
                                 </ul>
                             </li>
-                            <li>
-                                <a><i class="fa fa-home"></i>Group<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a routerLink="group">List Of Goup</a></li>
-                                </ul>
-                            </li>
-                            <li *ngIf="!userIsAdmin">
+                            <li *ngIf="userIsAdmin">
                                 <a routerLink="group"><i class="fa fa-home"></i>Group</a>
                             </li>
                            

@@ -24,9 +24,9 @@ namespace Promact.Erp.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalFilters.Filters.Add(new ExceptionLoggerFilter(container.Resolve<ILogger>()));
             GlobalConfiguration.Configuration.Filters.Add(new ApiExceptionLoggerFilter(container.Resolve<ILogger>()));
-            //Bot bot = container.Resolve<Bot>();
-            //bot.Scrum();
-            //bot.TaskMailBot();
+            Bot bot = container.Resolve<Bot>();
+            bot.Scrum();
+            bot.TaskMailBot();
         }
 
     }

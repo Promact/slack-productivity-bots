@@ -12,6 +12,7 @@ using Promact.Erp.Util.HashingMd5;
 using System;
 using Promact.Erp.DomainModel.ApplicationClass;
 using NLog;
+using Promact.Core.Repository.GroupRepository;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -23,6 +24,7 @@ namespace Promact.Erp.Core.Controllers
 
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
+        private readonly IGroupRepository _groupRepository;
         private readonly ILogger _logger;
 
         private readonly IMd5Service _md5Service;
@@ -31,14 +33,15 @@ namespace Promact.Erp.Core.Controllers
         #region Constructor
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
             ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
-            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service) : base(stringConstant)
+            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
-            _logger= LogManager.GetLogger("AuthenticationModule");
+            _logger = LogManager.GetLogger("AuthenticationModule");
             _md5Service = md5Service;
+            _groupRepository = groupRepository;
         }
         #endregion
 
@@ -56,7 +59,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
-             _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
+            _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
                 _logger.Info("User is Authenticated");
@@ -81,11 +84,11 @@ namespace Promact.Erp.Core.Controllers
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
-            
             //this for get login user email address and encrypt hash code.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
             ViewBag.emailHashCode = emailHaseCodeAC;
+            await _groupRepository.AddDynamicGroupAsync();
             return View();
         }
 
