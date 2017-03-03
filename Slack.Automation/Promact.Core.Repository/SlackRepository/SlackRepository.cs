@@ -91,9 +91,10 @@ namespace Promact.Core.Repository.SlackRepository
                     await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
                     // Used to send email to the user about leave updation
                     EmailApplication email = new EmailApplication();
+                    email.To = new List<string>();
                     email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
                     email.From = updaterUser.Email;
-                    email.To = user.Email;
+                    email.To.Add(user.Email);
                     email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
                     replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
                     leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,

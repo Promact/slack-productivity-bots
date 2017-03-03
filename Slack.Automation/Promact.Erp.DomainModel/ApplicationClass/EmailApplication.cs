@@ -26,6 +26,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Email to
         /// </summary>
-        public string To { get; set; }
+        public List<string> To { get; set; }
+
+        /// <summary>
+        /// Email cc
+        /// </summary>
+        public List<string> CC { get; set; }
     }
 }

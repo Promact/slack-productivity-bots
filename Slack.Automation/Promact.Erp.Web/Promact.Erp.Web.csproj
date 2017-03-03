@@ -1221,7 +1221,6 @@
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
-    <TypeScriptCompile Include="app\shared\mock\mock.appcomponent.service.ts" />
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.spec.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
@@ -1234,7 +1233,6 @@
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
-    <TypeScriptCompile Include="app\shared\mock\mock.appcomponent.service.ts" />
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.spec.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
@@ -1242,7 +1240,6 @@
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
-    <TypeScriptCompile Include="app\shared\mock\mock.appcomponent.service.ts" />
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.mailsetting.service.ts" />

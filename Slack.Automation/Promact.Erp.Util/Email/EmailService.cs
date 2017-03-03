@@ -24,6 +24,7 @@ namespace Promact.Erp.Util.Email
 
         #endregion
 
+        #region Public Method
         /// <summary>
         /// Method used to send e-mails
         /// </summary>
@@ -36,7 +37,16 @@ namespace Promact.Erp.Util.Email
                 _logger.Debug("Email send from : " + email.From);
                 message.From = new MailAddress(email.From);
                 _logger.Debug("Email send to : " + email.To);
-                message.To.Add(new MailAddress(email.To));
+                foreach (var to in email.To)
+                {
+                    _logger.Debug("Email send to : " + to);
+                    message.To.Add(new MailAddress(to));
+                }
+                foreach (var cc in email.CC)
+                {
+                    _logger.Debug("Email send cc : " + cc);
+                    message.CC.Add(new MailAddress(cc));
+                }
                 _logger.Debug("Email send subject : " + email.Subject);
                 message.Subject = email.Subject;
                 _logger.Debug("Email send body is null : " + string.IsNullOrEmpty(email.Body));
@@ -66,6 +76,7 @@ namespace Promact.Erp.Util.Email
                 throw ex;
             }
         }
+        #endregion
     }
 }
 

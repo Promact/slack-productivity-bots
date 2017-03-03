@@ -11,6 +11,8 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Autofac.Extras.NLog;
+using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
+using System.Collections.Generic;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -28,6 +30,8 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         private readonly ILogger _logger;
+        private readonly IRepository<MailSetting> _mailSettingDataRepository;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
         #endregion
 
         #region Constructor
@@ -35,7 +39,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
-            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger)
+            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -48,6 +53,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             _userManager = userManager;
             _emailServiceTemplate = emailServiceTemplate;
             _logger = logger;
+            _mailSettingDataRepository = mailSettingDataRepository;
+            _mailSettingDetails = mailSettingDetails;
         }
         #endregion
 
@@ -137,7 +144,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     {
                         // getting next question to be asked to user
                         var nextQuestion = await NextQuestionForTaskMailAsync(previousQuestion.OrderNumber);
-                        _logger.Info("Previous question ordernumber : " +previousQuestion.OrderNumber);
+                        _logger.Info("Previous question ordernumber : " + previousQuestion.OrderNumber);
                         switch (previousQuestion.OrderNumber)
                         {
                             #region Your Task
@@ -301,23 +308,26 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             case SendEmailConfirmation.yes:
                                                 {
                                                     EmailApplication email = new EmailApplication();
+                                                    email.To = new List<string>();
+                                                    email.CC = new List<string>();
+                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
+                                                    foreach (var projectId in listOfprojectRelatedToUser)
+                                                    {
+                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule, userAndTaskMailDetailsWithAccessToken.User.Id);
+                                                        email.To.AddRange(mailsetting.To);
+                                                        email.CC.AddRange(mailsetting.CC);
+                                                    }
+                                                    email.To = email.To.Distinct().ToList();
+                                                    email.CC = email.CC.Distinct().ToList();
                                                     email.From = userAndTaskMailDetailsWithAccessToken.User.Email;
                                                     email.Subject = _stringConstant.TaskMailSubject;
                                                     // transforming task mail details to template page and getting as string
                                                     email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetailsWithAccessToken.TaskList);
                                                     // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    // getting team leader list
-                                                    var teamLeaders = await _oauthCallsRepository.GetTeamLeaderUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
-                                                    // getting managemnt list
-                                                    var managements = await _oauthCallsRepository.GetManagementUserNameAsync(userAndTaskMailDetailsWithAccessToken.AccessToken);
-                                                    teamLeaders.AddRange(managements);
-                                                    foreach (var teamLeader in teamLeaders)
-                                                    {
-                                                        email.To = teamLeader.Email;
-                                                        // Email send 
+                                                    // Email send 
+                                                    if (email.To.Any())
                                                         _emailService.Send(email);
-                                                    }
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:

@@ -1068,7 +1068,6 @@ namespace Promact.Core.Test
         /// <summary>
         /// Private method to create a user add login info and mocking of Identity and return access token
         /// </summary>
-        /// <returns></returns>
         private async Task CreateUserAndMockingHttpContextToReturnAccessToken()
         {
             var user = new ApplicationUser()
