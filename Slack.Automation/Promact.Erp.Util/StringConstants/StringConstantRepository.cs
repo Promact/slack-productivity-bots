@@ -1270,11 +1270,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. Something bad happened :face_with_head_bandage: .\nIs this private channel created from an existing private channel ? If yes then this could be the cause of trouble.";
             }
         }
-        public string From
+        public string Username
         {
             get
             {
-                return "From";
+                return "Username";
             }
         }
         public string Password

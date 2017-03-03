@@ -191,7 +191,7 @@
         string TokenEmpty { get; }
         string ErrorMsg { get; }
         string ErrorMsgNewPrivateChannel { get; }
-        string From { get; }
+        string Username { get; }
         string Password { get; }
         string EnableSsl { get; }
         string IncomingWebHookUrl { get; }

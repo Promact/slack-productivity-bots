@@ -75,11 +75,11 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
             }
         }
 
-        public string From
+        public string Username
         {
             get
             {
-                return GetVariables(_stringConstant.From);
+                return GetVariables(_stringConstant.Username);
             }
         }
 
