@@ -58,7 +58,7 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
         }
 
 
-        public string From
+        public string Username
         {
             get
             {
