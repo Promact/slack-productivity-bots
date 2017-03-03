@@ -14,66 +14,66 @@
                             <input type="hidden" [(ngModel)]="mailSetting.Id" #id="ngModel" name="id" />
                         </div>
 
-                            <div class="form-group">
-                                <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" data-parsley-mincheck="2" required class="flat" /> Send Mail
-                            </div>
-                            <!-- <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail">Send Mail<br />-->
+                        <div class="form-group">
+                            <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" data-parsley-mincheck="2" required class="flat" /> Send Mail
+                        </div>
+                        <!-- <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail">Send Mail<br />-->
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
 
-                                        <md2-select placeholder="Project" [(ngModel)]="mailSetting.Project" #project="ngModel" name="project" required (change)="getMailSettingDetailsByProjectId(mailSetting.Project.Id)">
-                                            <md2-option *ngFor="let project of listOfProject" [value]="project">{{project.Name}}</md2-option>
-                                        </md2-select>
-                                        <div [hidden]="!(project.touched && project.invalid)" class="error">Required</div>
-                                    </div>
+                                    <md2-select placeholder="Project" [(ngModel)]="mailSetting.Project" #project="ngModel" name="project" required (change)="getMailSettingDetailsByProjectId(mailSetting.Project.Id)">
+                                        <md2-option *ngFor="let project of listOfProject" [value]="project">{{project.Name}}</md2-option>
+                                    </md2-select>
+                                    <div [hidden]="!(project.touched && project.invalid)" class="error">Required</div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
 
-                                        <md2-chips [(ngModel)]="mailSetting.To"
-                                                   #listofTO="ngModel"
-                                                   name="listofTO"
-                                                   placeholder="To"
-                                                   [isRemovable]="true"
-                                                   [readonly]="!projectSelected"
-                                                   [isAutoComplete]="true"
-                                                   [autocompleteDataList]="groupList"
-                                                   autocomplete-item-text="data" required>
-                                        </md2-chips>
-                                    </div>
+                                    <md2-chips [(ngModel)]="mailSetting.To"
+                                               #listofTO="ngModel"
+                                               name="listofTO"
+                                               placeholder="To"
+                                               [isRemovable]="true"
+                                               [readonly]="!projectSelected"
+                                               [isAutoComplete]="true"
+                                               [autocompleteDataList]="groupList"
+                                               autocomplete-item-text="data" required>
+                                    </md2-chips>
                                 </div>
                             </div>
+                        </div>
 
 
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <md2-chips [(ngModel)]="mailSetting.CC"
-                                                   #listofCC="ngModel"
-                                                   name="listofCC"
-                                                   placeholder="CC"
-                                                   [isRemovable]="true"
-                                                   [readonly]="!projectSelected"
-                                                   [isAutoComplete]="true"
-                                                   [autocompleteDataList]="groupList"
-                                                   autocomplete-item-text="data">
-                                        </md2-chips>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <md2-chips [(ngModel)]="mailSetting.CC"
+                                               #listofCC="ngModel"
+                                               name="listofCC"
+                                               placeholder="CC"
+                                               [isRemovable]="true"
+                                               [readonly]="!projectSelected"
+                                               [isAutoComplete]="true"
+                                               [autocompleteDataList]="groupList"
+                                               autocomplete-item-text="data">
+                                    </md2-chips>
                                 </div>
                             </div>
+                        </div>
 
 
-                            <div [hidden]="!showButton">
-                                <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Save</button>
-                                <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!isToUpdate" class="btn btn-primary" [disabled]="!mailSettingForm.form.valid">Update</button>
-                            </div>
-</form>
+                        <div [hidden]="!showButton">
+                            <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Save</button>
+                            <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!isToUpdate" class="btn btn-primary" [disabled]="!mailSettingForm.form.valid">Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
