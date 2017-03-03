@@ -41,6 +41,7 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of project</returns>
         public async Task<List<ProjectAc>> GetAllProjectAsync()
         {
+            // returns list of project which are active
             return ((await _oauthCallRepository.GetAllProjectsAsync()).FindAll(x => x.IsActive));
         }
 
@@ -53,11 +54,14 @@ namespace Promact.Core.Repository.MailSettingRepository
         public async Task<MailSettingAC> GetMailSettingDetailsByProjectIdAsync(int projectId, string module)
         {
             MailSettingAC mailSetting = new MailSettingAC();
+            // check mail setting for project and module is exist or not
             var mailSettingDetails = await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.Module == module);
             if (mailSettingDetails != null)
             {
                 mailSetting = _mapper.Map<MailSetting, MailSettingAC>(mailSettingDetails);
+                // get list of To
                 mailSetting.To = await GetListOfEmailByMailSettingAsync(true, mailSetting.Id);
+                // get list of CC
                 mailSetting.CC = await GetListOfEmailByMailSettingAsync(false, mailSetting.Id);
             }
             return mailSetting;
@@ -73,7 +77,9 @@ namespace Promact.Core.Repository.MailSettingRepository
             mailSetting.CreatedOn = DateTime.UtcNow;
             _mailSettingDataRepository.Insert(mailSetting);
             await _mailSettingDataRepository.SaveChangesAsync();
+            // add list of To
             await AddMailSettingMappingAsync(mailSettingAC.To, true, mailSetting.Id, DateTime.UtcNow);
+            // add list of CC
             await AddMailSettingMappingAsync(mailSettingAC.CC, false, mailSetting.Id, DateTime.UtcNow);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
@@ -84,7 +90,8 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <returns>list of group</returns>
         public async Task<List<string>> GetListOfGroupsNameAsync()
         {
-            return (await _groupDataRepository.GetAll().ToListAsync()).Select(x=>x.Name).ToList();
+            // return list of group name
+            return (await _groupDataRepository.GetAll().ToListAsync()).Select(x => x.Name).ToList();
         }
 
         /// <summary>
@@ -93,15 +100,19 @@ namespace Promact.Core.Repository.MailSettingRepository
         /// <param name="mailSettingAC">mail setting details</param>
         public async Task UpdateMailSettingAsync(MailSettingAC mailSettingAC)
         {
+            // mail setting details to be updated
             var previousMailSetting = await _mailSettingDataRepository.FirstAsync(x => x.Id == mailSettingAC.Id);
+            // mail setting mapping created date, to be updated
             var previousMailSettingMappingCreatedDateTime = (await _mailSettingMappingDataRepository.FirstAsync(x => x.MailSettingId == mailSettingAC.Id)).CreatedOn;
             previousMailSetting.SendMail = mailSettingAC.SendMail;
             previousMailSetting.UpdatedDate = DateTime.UtcNow;
             _mailSettingDataRepository.Update(previousMailSetting);
             await _mailSettingDataRepository.SaveChangesAsync();
-            if (_mailSettingMappingDataRepository.Any(x => x.MailSettingId == mailSettingAC.Id))
-                _mailSettingMappingDataRepository.RemoveRange(x => x.MailSettingId == mailSettingAC.Id);
+            // removed all previous mail setting mapping
+            _mailSettingMappingDataRepository.RemoveRange(x => x.MailSettingId == mailSettingAC.Id);
+            // add list of To
             await AddMailSettingMappingAsync(mailSettingAC.To, true, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
+            // add list of CC
             await AddMailSettingMappingAsync(mailSettingAC.CC, false, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
@@ -120,6 +131,7 @@ namespace Promact.Core.Repository.MailSettingRepository
             MailSettingMapping mailSettingMapping = new MailSettingMapping();
             mailSettingMapping.MailSettingId = mailSettingId;
             mailSettingMapping.IsTo = isTo;
+            // check whether mail setting for To or CC is group type or not
             if (_groupDataRepository.Any(x => x.Name == type))
                 mailSettingMapping.GroupId = (await _groupDataRepository.FirstAsync(x => x.Name == type)).Id;
             else
@@ -158,6 +170,7 @@ namespace Promact.Core.Repository.MailSettingRepository
             listOfMailSetting = listOfMailSetting.FindAll(x => x.IsTo == isTo);
             foreach (var to in listOfMailSetting)
             {
+                // check if group Id is null or not, if not null then its group details else email address
                 if (to.GroupId == null)
                     listOfEmail.Add(to.Email);
                 else

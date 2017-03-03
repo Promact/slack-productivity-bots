@@ -345,6 +345,21 @@ namespace Promact.Core.Test
             var result = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(_stringConstant.StringIdForTest, _stringConstant.AccessTokenForTest);
             Assert.NotEqual(result.Count, 0);
         }
+
+        /// <summary>
+        /// Method to check GetAllTeamMemberByProjectIdAsync
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetAllTeamMemberByProjectIdAsync()
+        {
+            var responseProjects = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, 1);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            var result = await _oauthCallsRepository.GetAllTeamMemberByProjectIdAsync(1, _stringConstant.AccessTokenForTest);
+            Assert.NotEqual(result.Count, 0);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest), Times.Once);
+        }
         #endregion
 
         #region Private Method

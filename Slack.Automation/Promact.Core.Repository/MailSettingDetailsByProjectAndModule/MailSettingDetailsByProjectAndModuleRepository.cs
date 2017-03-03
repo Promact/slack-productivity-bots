@@ -50,6 +50,7 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
             MailSettingAC mailSetting = new MailSettingAC();
             mailSetting.To = new List<string>();
             mailSetting.CC = new List<string>();
+            // check mail setting for module and project is exist or not
             if (_mailSettingDataRepository.Any(x => x.ProjectId == projectId && x.Module == module))
             {
                 var mailSettingDetails = await _mailSettingDataRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.SendMail && x.Module == module);
@@ -84,33 +85,33 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
             {
                 foreach (var mailSetingMapping in mailSettingMappings)
                 {
+                    // if mail setting have email 
                     if (!string.IsNullOrEmpty(mailSetingMapping.Email))
                         emails.Add(mailSetingMapping.Email);
+                    // if mail setting have mapping of group
                     else
                     {
+                        // to get name of group
                         var groupName = (await _groupDataRepository.FirstAsync(x => x.Id == mailSetingMapping.GroupId)).Name;
+                        // to get access token of user
                         var accessToken = await _attachmentRepository.UserAccessTokenAsync((await _userManager.FindByIdAsync(userId)).UserName);
                         switch (groupName)
                         {
+                            // Dynamic group - Team Leader
                             case "Team Leader":
-                                {
                                     emails.AddRange((await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x => x.Email));
-                                }
                                 break;
+                            // Dynamic group - Management
                             case "Management":
-                                {
                                     emails.AddRange((await _groupEmailMappingDataRepository.FetchAsync(x => x.GroupId == mailSetingMapping.GroupId)).Select(x => x.Email));
-                                }
                                 break;
+                            // Dynamic group - Team Members
                             case "Team Members":
-                                {
-                                    emails.AddRange((await _oauthCallRepository.GetAllTeamMemberByProjectId(projectId, accessToken)).Select(x => x.Email));
-                                }
+                                    emails.AddRange((await _oauthCallRepository.GetAllTeamMemberByProjectIdAsync(projectId, accessToken)).Select(x => x.Email));
                                 break;
+                            // Static group
                             default:
-                                {
                                     emails.AddRange((await _groupEmailMappingDataRepository.FetchAsync(x => x.GroupId == mailSetingMapping.GroupId)).Select(x => x.Email));
-                                }
                                 break;
                         }
                     }

@@ -184,7 +184,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="projectId">project Id</param>
         /// <param name="accessToken">access token</param>
         /// <returns></returns>
-        public async Task<List<User>> GetAllTeamMemberByProjectId(int projectId, string accessToken)
+        public async Task<List<User>> GetAllTeamMemberByProjectIdAsync(int projectId, string accessToken)
         {
             List<User> teamMembers = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, projectId);
