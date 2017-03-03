@@ -10,11 +10,12 @@ using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Linq;
+using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 
 namespace Promact.Core.Repository.Client
 {
@@ -31,6 +32,7 @@ namespace Promact.Core.Repository.Client
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
         private readonly ApplicationUserManager _userManager;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
         #endregion
 
         #region Constructor
@@ -38,7 +40,7 @@ namespace Promact.Core.Repository.Client
             IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
             IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook,
-            ApplicationUserManager userManager)
+            ApplicationUserManager userManager, IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _stringConstant = stringConstant;
             _oauthCallRepository = oauthCallRepository;
@@ -50,6 +52,7 @@ namespace Promact.Core.Repository.Client
             _emailTemplateRepository = emailTemplateRepository;
             _incomingWebHook = incomingWebHook;
             _userManager = userManager;
+            _mailSettingDetails = mailSettingDetails;
         }
         #endregion
 
@@ -124,11 +127,12 @@ namespace Promact.Core.Repository.Client
             if (incomingWebHook != null)
                 await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
             EmailApplication email = new EmailApplication();
+            email.To = new List<string>();
             // creating email templates corresponding to leave applied
             email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
             email.From = managementEmail;
             email.Subject = _stringConstant.EmailSubject;
-            email.To = user.Email;
+            email.To.Add(user.Email);
             _emailService.Send(email);
         }
         #endregion
@@ -143,16 +147,25 @@ namespace Promact.Core.Repository.Client
         /// <param name="attachment">Attachment to be send to team leader and management</param>
         private async Task GetAttachmentAndSendToTLAndManagementAsync(string userId, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
         {
-            var teamLeaders = await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken);
-            var management = await _oauthCallRepository.GetManagementUserNameAsync(accessToken);
-            var userDetail = await _oauthCallRepository.GetUserByUserIdAsync(userId, accessToken);
-            foreach (var user in management)
+            EmailApplication email = new EmailApplication();
+            email.To = new List<string>();
+            email.CC = new List<string>();
+            var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
+            foreach (var projectId in listOfprojectRelatedToUser)
             {
-                teamLeaders.Add(user);
+                var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule, userId);
+                email.To.AddRange(mailsetting.To);
+                email.CC.AddRange(mailsetting.CC);
             }
-            foreach (var teamLeader in teamLeaders)
+            email.To = email.To.Distinct().ToList();
+            email.CC = email.CC.Distinct().ToList();
+            var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x=>x.Id).ToList();
+            var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x=>x.Id);
+            var userEmail = (await _userManager.FindByIdAsync(userId)).Email;
+            teamLeaderIds.AddRange(managementIds);
+            foreach (var teamLeaderId in teamLeaderIds)
             {
-                var user = await _userManager.FindByIdAsync(teamLeader.Id);
+                var user = await _userManager.FindByIdAsync(teamLeaderId);
                 var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                 var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                 //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
@@ -160,7 +173,9 @@ namespace Promact.Core.Repository.Client
                 var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
                 if (incomingWebHook != null)
                     await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
-                EmailApplication email = new EmailApplication();
+            }
+            if (email.To.Any())
+            {
                 if (leaveRequest.EndDate != null)
                 {
                     // creating email templates corresponding to leave applied for casual leave
@@ -171,9 +186,8 @@ namespace Promact.Core.Repository.Client
                     // creating email templates corresponding to leave applied for casual leave
                     email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
                 }
-                email.From = userDetail.Email;
+                email.From = userEmail;
                 email.Subject = _stringConstant.EmailSubject;
-                email.To = teamLeader.Email;
                 _emailService.Send(email);
             }
         }

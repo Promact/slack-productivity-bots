@@ -163,6 +163,7 @@
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableTestRepository.cs" />
     <Compile Include="LeaveReportRepositoryTest.cs" />
     <Compile Include="LeaveRequestRepositoryTest.cs" />
+    <Compile Include="MailSettingDetailsByProjectAndModuleTest.cs" />
     <Compile Include="MailSettingRepositoryTest.cs" />
     <Compile Include="OAuthLoginRepositoryTest.cs" />
     <Compile Include="OauthCallsRepositoryTest.cs" />

@@ -159,6 +159,42 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return result;
         }
+
+        /// <summary>
+        /// Method to get list of projects from oauth-server for an user
+        /// </summary>
+        /// <param name="userId">userId of user</param>
+        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
+        /// <returns></returns>
+        public async Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId, string accessToken)
+        {
+            List<ProjectAc> projects = new List<ProjectAc>();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, userId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
+            }
+            return projects;
+        }
+
+        /// <summary>
+        /// Method to get list of team member by project Id
+        /// </summary>
+        /// <param name="projectId">project Id</param>
+        /// <param name="accessToken">access token</param>
+        /// <returns></returns>
+        public async Task<List<User>> GetAllTeamMemberByProjectIdAsync(int projectId, string accessToken)
+        {
+            List<User> teamMembers = new List<User>();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, projectId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                teamMembers = JsonConvert.DeserializeObject<List<User>>(response);
+            }
+            return teamMembers;
+        }
         #endregion
     }
 }
