@@ -177,6 +177,24 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return projects;
         }
+
+        /// <summary>
+        /// Method to get list of team member by project Id
+        /// </summary>
+        /// <param name="projectId">project Id</param>
+        /// <param name="accessToken">access token</param>
+        /// <returns></returns>
+        public async Task<List<User>> GetAllTeamMemberByProjectId(int projectId, string accessToken)
+        {
+            List<User> teamMembers = new List<User>();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, projectId);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            if(response != null)
+            {
+                teamMembers = JsonConvert.DeserializeObject<List<User>>(response);
+            }
+            return teamMembers;
+        }
         #endregion
     }
 }

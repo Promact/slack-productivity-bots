@@ -313,7 +313,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
                                                     foreach (var projectId in listOfprojectRelatedToUser)
                                                     {
-                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule);
+                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule, userAndTaskMailDetailsWithAccessToken.User.Id);
                                                         email.To.AddRange(mailsetting.To);
                                                         email.CC.AddRange(mailsetting.CC);
                                                     }

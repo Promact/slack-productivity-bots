@@ -153,7 +153,7 @@ namespace Promact.Core.Repository.Client
             var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
             foreach (var projectId in listOfprojectRelatedToUser)
             {
-                var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule);
+                var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule, userId);
                 email.To.AddRange(mailsetting.To);
                 email.CC.AddRange(mailsetting.CC);
             }

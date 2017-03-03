@@ -11,7 +11,8 @@ namespace Promact.Core.Repository.MailSettingDetailsByProjectAndModule
         /// </summary>
         /// <param name="projectId">project Id</param>
         /// <param name="module">mail setting module</param>
+        /// <param name="userId">user's user Id</param>
         /// <returns>mail setting details</returns> 
-        Task<MailSettingAC> GetMailSettingAsync(int projectId, string module);
+        Task<MailSettingAC> GetMailSettingAsync(int projectId, string module, string userId);
     }
 }

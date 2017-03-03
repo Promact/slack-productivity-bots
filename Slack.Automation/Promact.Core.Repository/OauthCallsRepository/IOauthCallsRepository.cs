@@ -76,5 +76,13 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns></returns>
         Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId, string accessToken);
+
+        /// <summary>
+        /// Method to get list of team member by project Id
+        /// </summary>
+        /// <param name="projectId">project Id</param>
+        /// <param name="accessToken">access token</param>
+        /// <returns></returns>
+        Task<List<User>> GetAllTeamMemberByProjectId(int projectId, string accessToken);
     }
 }
