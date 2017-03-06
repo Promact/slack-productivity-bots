@@ -114,19 +114,13 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             _scrumDataRepository.Delete(scrum.Id);
                             int scrumDelete = await _scrumDataRepository.SaveChangesAsync();
-                            if (scrumDelete == 1)
-                                replyText += "scrum has been deleted\n";
-                            else
-                                replyText += "scrum has not been deleted\n";
+                            replyText += "scrum has been deleted\n";
                             TemporaryScrumDetails temp = _tempScrumDetailsDataRepository.FirstOrDefault(x => x.ScrumId == scrum.Id);
                             if (temp != null)
                             {
                                 _tempScrumDetailsDataRepository.Delete(temp.Id);
                                 int deleteTemp = await _tempScrumDetailsDataRepository.SaveChangesAsync();
-                                if (deleteTemp == 1)
-                                    replyText += "temp data has been deleted\n";
-                                else
-                                    replyText += "temp data has not been deleted\n";
+                                replyText += "temp data has been deleted\n";
                             }
                         }
                         else
