@@ -1,40 +1,78 @@
-﻿<div>
+﻿<div class="scrum-details">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Scrum Details</h3>
+        </div>
 
-    <h2><u>Scrum Details</u></h2>
-    <h3>Scrum Date: {{scrumDate}}</h3>
-
-</div>
-
-<div *ngFor="let employeeScrumDetail of employeeScrumAnswers">
-    <h4><u>Employee Name :{{employeeScrumDetail.EmployeeName}}</u></h4>
-    <div *ngIf="!employeeScrumDetail.Status">
-        <h5>What did you do yesterday?</h5>
-
-        <ul *ngFor="let answer of employeeScrumDetail.Answer1">
-            <li>{{answer}}</li>
-        </ul>
-
-        <h5>What will you do today?</h5>
-        <ul *ngFor="let answer of employeeScrumDetail.Answer2">
-            <li>{{answer}}</li>
-        </ul>
-
-
-        <h5>Any Roadblock?</h5>
-        <ul *ngFor="let answer of employeeScrumDetail.Answer3">
-            <li>{{answer}}</li>
-        </ul>
+        <div class="title_right">
+            <div class="form-group pull-right ">
+                <button (click)="goBack()" class="btn btn-back btn-primary btn-sm"><i class="fa fa-arrow-left"></i>Back</button>
+            </div>
+        </div>
     </div>
-    <div *ngIf="employeeScrumDetail.Status">{{employeeScrumDetail.Status}}</div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+
+                    <div class="form-group row m-0">
+                        <label class="control-label">Scrum Date:</label>
+                        <p> {{scrumDate}}</p>
+                    </div>
+                    <div *ngFor="let employeeScrumDetail of employeeScrumAnswers">
+                        <div class="form-group row m-0">
+                            <label class="control-label">Employee Name :</label>
+                            <p>{{employeeScrumDetail.EmployeeName}}</p>
+                        </div>
 
 
+                        <div class="scrum-que-ans" *ngIf="!employeeScrumDetail.Status">
+                            <div class="x_title clearfix">
+                                <h2>Scrum Queries</h2>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                            <div class="que-block">
+                                <h5>1. What did you do yesterday?</h5>
+                                <ul *ngFor="let answer of employeeScrumDetail.Answer1">
+                                    <li>{{answer}}</li>
+                                </ul>
+                            </div>
+
+                            <div class="que-block">
+                                <h5>2. What will you do today?</h5>
+                                <ul *ngFor="let answer of employeeScrumDetail.Answer2">
+                                    <li>{{answer}}</li>
+                                </ul>
+                            </div>
+
+
+                            <div class="que-block">
+                                <h5>3. Any Roadblock?</h5>
+                                <ul *ngFor="let answer of employeeScrumDetail.Answer3">
+                                    <li>{{answer}}</li>
+                                </ul>
+                            </div>
+
+                            
+                        </div>
+                   
+                        <div class="alert alert-info">
+                            <p *ngIf="employeeScrumDetail.Status">{{employeeScrumDetail.Status}}</p>
+                        </div>
+                     </div>
+
+                    <div>
+                        <button class="btn btn-primary" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
+                        <button class="btn btn-primary" (click)="getScrumDetailsToday()">Today</button>
+                        <input class="form-control" type="date" [(ngModel)]="date" name="date" min="{{projectCreationDate}}" max="{{maxDate}}">
+                        <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<br />
-<div>
-    <button (click)="goBack()">Back</button>
-    <button [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
-    <button (click)="getScrumDetailsToday()">Today</button>
-    <input type="date" [(ngModel)]="date" name="date" min="{{projectCreationDate}}" max="{{maxDate}}">
-    <button [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
-</div>
