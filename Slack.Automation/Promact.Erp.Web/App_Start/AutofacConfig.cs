@@ -18,7 +18,7 @@ using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Core.Repository.ScrumRepository;
-using Promact.Core.Repository.ServiceRepository;
+using Promact.Core.Repository.ServiceRepository; 
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
