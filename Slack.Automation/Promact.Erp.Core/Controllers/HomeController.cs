@@ -19,18 +19,19 @@ namespace Promact.Erp.Core.Controllers
     public class HomeController : MVCBaseController
     {
         #region Private Variables
+
         private readonly ApplicationSignInManager _signInManager;
         private readonly ApplicationUserManager _userManager;
-
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IGroupRepository _groupRepository;
         private readonly ILogger _logger;
-
         private readonly IMd5Service _md5Service;
+
         #endregion
 
         #region Constructor
+
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
             ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
             IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository) : base(stringConstant)
@@ -43,6 +44,7 @@ namespace Promact.Erp.Core.Controllers
             _md5Service = md5Service;
             _groupRepository = groupRepository;
         }
+
         #endregion
 
         #region Public Methods
@@ -59,6 +61,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
+            _logger.Info("Index: Today " + DateTime.Today+"\n Today's Date :"+ DateTime.Today.Date);
             _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
@@ -81,6 +84,7 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public async Task<ActionResult> AfterLogIn()
         {
+            _logger.Info("AfterLogIn: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
@@ -107,6 +111,7 @@ namespace Promact.Erp.Core.Controllers
        */
         public ActionResult SlackAuthorize(string message)
         {
+            _logger.Info("SlackAuthorize: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             ViewBag.Message = message;
             return View();
         }
