@@ -133,15 +133,15 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-       * @api {put} api/group/available/:groupName/:available/id
+       * @api {put} api/group/available/:name/:id
        * @apiVersion 1.0.0
-       * @apiName CheckCheckGroupNameIsExistsAsync
+       * @apiName CheckGroupNameIsExistsAsync
        * @apiGroup Group   
-       * @apiParam {int,int} groupName,groupId   
+       * @apiParam {int,int} name,id   
        * @apiParamExample
        *       {
-       *         "groupName":"Group1"
-       *         "groupId":"1"
+       *         "name":"Group1"
+       *         "id":"1"
        *       }
        * @apiSuccessExample {json} Success-Response:
        * HTTP/1.1 200 OK 
@@ -151,7 +151,7 @@ namespace Promact.Erp.Core.Controllers
        */
         [HttpGet]
         [Route("available/{name}/{id:int}")]
-        public async Task<IHttpActionResult> CheckCheckGroupNameIsExistsAsync(string name, int id)
+        public async Task<IHttpActionResult> CheckGroupNameIsExistsAsync(string name, int id)
         {
             return Ok(await _groupRepository.CheckGroupNameIsExistsAsync(name, id));
         }
@@ -177,7 +177,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("delete/{id:int}")]
         public async Task<IHttpActionResult> DeleteGroupByIdAsync(int id)
         {
-            return Ok(await _groupRepository.DeleteGroupById(id));
+            return Ok(await _groupRepository.DeleteGroupByIdAsync(id));
         }
 
 
@@ -196,7 +196,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("email")]
         public async Task<IHttpActionResult> GetActiveUserEmailList()
         {
-            return Ok(await _groupRepository.GetActiveUserEmailList());
+            return Ok(await _groupRepository.GetActiveUserEmailListAsync());
         }
 
         #endregion

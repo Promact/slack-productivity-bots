@@ -48,7 +48,7 @@ namespace Promact.Core.Repository.GroupRepository
             group.CreatedOn = DateTime.UtcNow;
             _groupRepository.Insert(group);
             await _groupRepository.SaveChangesAsync();
-            await AddGroupEmailMapping(groupAC.Emails, group.Id);
+            await AddGroupEmailMappingAsync(groupAC.Emails, group.Id);
             return group.Id;
         }
 
@@ -65,7 +65,7 @@ namespace Promact.Core.Repository.GroupRepository
             _groupRepository.Update(group);
             await _groupRepository.SaveChangesAsync();
             _groupEmailMappingRepository.RemoveRange(x => x.GroupId == groupAC.Id);
-            await AddGroupEmailMapping(groupAC.Emails, groupAC.Id);
+            await AddGroupEmailMappingAsync(groupAC.Emails, groupAC.Id);
             return groupAC.Id;
         }
 
@@ -83,7 +83,7 @@ namespace Promact.Core.Repository.GroupRepository
                 List<string> listOfEmails = new List<string>();
                 groupAc = _mapper.Map(group, groupAc);
                 //get active user email list
-                List<string> listOfActiveUserEmail = await GetActiveUserEmailList();
+                List<string> listOfActiveUserEmail = await GetActiveUserEmailListAsync();
                 List<GroupEmailMapping> groupEmailMappings = group.GroupEmailMapping.ToList();
                 foreach (var groupEmailMapping in groupEmailMappings)
                 {
@@ -108,7 +108,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="groupName">passs group name</param>
         /// <param name="isUpdate">pass group id When check group name is exists at update time
         /// other wise pass 0</param>
-        /// <returns></returns>
+        /// <returns>group name is exists then retrun true or false</returns></returns>
         public async Task<bool> CheckGroupNameIsExistsAsync(string groupName, int groupId)
         {
             if (groupId == 0)
@@ -133,7 +133,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <param name="id">pass group id</param>
         /// <returns>true</returns>
-        public async Task<bool> DeleteGroupById(int id)
+        public async Task<bool> DeleteGroupByIdAsync(int id)
         {
             _groupRepository.Delete(id);
             await _groupRepository.SaveChangesAsync();
@@ -150,11 +150,11 @@ namespace Promact.Core.Repository.GroupRepository
             if (userEmailListAc != null)
             {
                 //create team leader group
-                await InsertDynamicGroup(_stringConstantRepository.TeamLeaderGroup, userEmailListAc.TeamLeader);
+                await InsertDynamicGroupAsync(_stringConstantRepository.TeamLeaderGroup, userEmailListAc.TeamLeader);
                 //create team member group
-                await InsertDynamicGroup(_stringConstantRepository.TeamMembersGroup, userEmailListAc.TamMemeber);
+                await InsertDynamicGroupAsync(_stringConstantRepository.TeamMembersGroup, userEmailListAc.TamMemeber);
                 //create managment group
-                await InsertDynamicGroup(_stringConstantRepository.ManagementGroup, userEmailListAc.Management);
+                await InsertDynamicGroupAsync(_stringConstantRepository.ManagementGroup, userEmailListAc.Management);
             }
         }
 
@@ -162,7 +162,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// This method used for get active user email list. - an
         /// </summary>
         /// <returns>list of active user email list</returns>
-        public async Task<List<string>> GetActiveUserEmailList()
+        public async Task<List<string>> GetActiveUserEmailListAsync()
         {
             UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
             List<string> listOfEmails = new List<string>();
@@ -182,7 +182,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="listOfEmails">pass list of emails</param>
         /// <param name="groupId">pass group id</param>
         /// <returns></returns>
-        private async Task AddGroupEmailMapping(List<string> listOfEmails, int groupId)
+        private async Task AddGroupEmailMappingAsync(List<string> listOfEmails, int groupId)
         {
             foreach (var email in listOfEmails)
             {
@@ -203,7 +203,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="groupName">pass group name</param>
         /// <param name="listOfEmails">pass list of email</param>
         /// <returns></returns>
-        private async Task InsertDynamicGroup(string groupName, List<string> listOfEmails)
+        private async Task InsertDynamicGroupAsync(string groupName, List<string> listOfEmails)
         {
             var group = await _groupRepository.FirstOrDefaultAsync(x => x.Name == groupName && x.Type == 1);
             if (group == null) //added group
@@ -215,13 +215,13 @@ namespace Promact.Core.Repository.GroupRepository
                 _groupRepository.Insert(newGroup);
                 await _groupRepository.SaveChangesAsync();
                 if (listOfEmails.Count > 0)
-                    await AddGroupEmailMapping(listOfEmails, newGroup.Id);
+                    await AddGroupEmailMappingAsync(listOfEmails, newGroup.Id);
 
             }//update group
             else
             {
                 _groupEmailMappingRepository.RemoveRange(x => x.GroupId == group.Id);
-                await AddGroupEmailMapping(listOfEmails, group.Id);
+                await AddGroupEmailMappingAsync(listOfEmails, group.Id);
             }
         }
 

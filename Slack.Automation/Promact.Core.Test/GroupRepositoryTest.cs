@@ -161,7 +161,7 @@ namespace Promact.Core.Test
         public async Task DeleteGroupByIdAsync()
         {
             int id = await CreateGroupAsync();
-            bool isDeleted = await _groupRepository.DeleteGroupById(id);
+            bool isDeleted = await _groupRepository.DeleteGroupByIdAsync(id);
             Assert.Equal(isDeleted, true);
         }
 
@@ -201,7 +201,7 @@ namespace Promact.Core.Test
         public async Task GetActiveUserEmailList()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
-            List<string> listOfActiveEmail = await _groupRepository.GetActiveUserEmailList();
+            List<string> listOfActiveEmail = await _groupRepository.GetActiveUserEmailListAsync();
             Assert.NotEqual(listOfActiveEmail.Count, 0);
         }
 

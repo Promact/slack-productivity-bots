@@ -34,7 +34,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <param name="groupName">passs group name</param>
         /// <param name="groupId">pass group id When check group name is exists at update time
         /// other wise pass 0</param>
-        /// <returns></returns>
+        /// <returns>group name is exists then retrun true or false</returns>
         Task<bool> CheckGroupNameIsExistsAsync(string groupName, int groupId);
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <param name="id">pass group id</param>
         /// <returns>true</returns>
-        Task<bool> DeleteGroupById(int id);
+        Task<bool> DeleteGroupByIdAsync(int id);
 
 
         /// <summary>
@@ -61,6 +61,6 @@ namespace Promact.Core.Repository.GroupRepository
         /// This method used for get active user email list. - an
         /// </summary>
         /// <returns>list of active user email list</returns>
-        Task<List<string>> GetActiveUserEmailList();
+        Task<List<string>> GetActiveUserEmailListAsync();
     }
 }
