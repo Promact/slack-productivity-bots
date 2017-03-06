@@ -75,7 +75,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// Method to assign scrum answers for a specific date to a particular employee
         /// </summary>
         /// <param name="scrum"></param>
-        /// <param name="scrumDate"></param>
+        /// <param name="scrumDate"></param> 
         /// <param name="user"></param>
         /// <returns>object with scrum answers for an employee</returns>
         private async Task<EmployeeScrumDetails> AssignAnswersAsync(Scrum scrum, DateTime scrumDate, User user)
