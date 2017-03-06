@@ -72,4 +72,19 @@ export class StringConstant {
     leaveDate = "1/1/16";
     module = "module";
     scrumName = "scrumName";
+   
+    groupUrl = "api/group";
+    staticGroup = "StaticGroup";
+    groupName = "name";
+    groupId = "id";
+    emails = ["test@promactinfo.com", "test@gmail.com"];
+    testGroupName = "testGroupName";
+    navigate = "navigate";
+    id = '1';
+    getListOfGroups = "getListOfGroups";
+    getAllProjects = "getAllProjects";
+    addMailSetting = "addMailSetting";
+    updateMailSetting = "updateMailSetting";
+    getProjectByIdAndModule = "getProjectByIdAndModule";
+    testGroupList = ["hello"];
 }

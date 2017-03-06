@@ -24,7 +24,7 @@ namespace Promact.Erp.DomainModel.DataRepository
         /// <returns></returns>
         public IQueryable<T> GetAll()
         {
-            return dbSet.AsQueryable(); ;
+            return dbSet.AsQueryable();
         }
 
         /// <summary>
@@ -44,7 +44,6 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Insert(T entity)
         {
             dbSet.Add(entity);
-          //  db.SaveChanges();
         }
 
         /// <summary>
@@ -54,7 +53,15 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Delete(int? id)
         {
             dbSet.Remove(dbSet.Find(id));
-         //   db.SaveChanges();
+        }
+
+        /// <summary>
+        /// Method used for delete multipule data from database 
+        /// </summary>
+        /// <param name="predicate"></param>
+        public void RemoveRange(Expression<Func<T, bool>> predicate)
+        {
+            dbSet.RemoveRange(dbSet.Where(predicate));
         }
 
         /// <summary>
@@ -64,16 +71,8 @@ namespace Promact.Erp.DomainModel.DataRepository
         public void Update(T entity)
         {
             db.Entry(entity).State = EntityState.Modified;
-        //    db.SaveChanges();
         }
 
-        ///// <summary>
-        ///// Method use to save changes in database
-        ///// </summary>
-        //public void Save()
-        //{
-        //    db.SaveChanges();
-        //}
 
 
         /// <summary>
@@ -206,6 +205,24 @@ namespace Promact.Erp.DomainModel.DataRepository
             }
         }
 
+        /// <summary>
+        /// Method fetches the first or default item from the datacontext based on the the supplied function.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            try
+            {
+                return await dbSet.FirstOrDefaultAsync(predicate);
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         private bool disposed = false;
 
         /// <summary>
@@ -230,25 +247,5 @@ namespace Promact.Erp.DomainModel.DataRepository
             GC.SuppressFinalize(this);
         }
 
-        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
-        {
-            try
-            {
-                return await dbSet.FirstOrDefaultAsync(predicate);
-
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        /// <summary>
-        /// Method used for delete multipule data from database
-        /// </summary>
-        /// <param name="predicate"></param>
-        public void RemoveRange(Expression<Func<T, bool>> predicate)
-        {
-            dbSet.RemoveRange(dbSet.Where(predicate));
-        }
     }
 }

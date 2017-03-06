@@ -162,6 +162,21 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return result;
         }
+
+        /// <summary>
+        /// This method used for get list of user emails based on role. -an
+        /// </summary>
+        /// <returns>list of teamleader ,managment and employee email</returns>
+        public async Task<UserEmailListAc> GetUserEmailListBasedOnRoleAsync()
+        {
+            var accessToken = await GetCurrentUserAcceesToken();
+            UserEmailListAc userEmailListAc = new UserEmailListAc(); 
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, accessToken);
+            if (response != null)
+                userEmailListAc = JsonConvert.DeserializeObject<UserEmailListAc>(response);
+            return userEmailListAc;
+        }
+
         #endregion
 
         #region Private Method
