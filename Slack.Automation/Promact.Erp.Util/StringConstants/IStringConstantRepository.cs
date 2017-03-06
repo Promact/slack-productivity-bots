@@ -429,5 +429,6 @@
         string ScrumModule { get; }
         string LeaveModule { get; }
         string Management { get; }
+        string DetailsAndSlashForUrl { get; }
     }
 }
