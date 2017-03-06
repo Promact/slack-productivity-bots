@@ -18,17 +18,18 @@ namespace Promact.Erp.Core.Controllers
     public class HomeController : MVCBaseController
     {
         #region Private Variables
+
         private readonly ApplicationSignInManager _signInManager;
         private readonly ApplicationUserManager _userManager;
-
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly ILogger _logger;
-
         private readonly IMd5Service _md5Service;
+
         #endregion
 
         #region Constructor
+
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
             ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
             IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service) : base(stringConstant)
@@ -37,9 +38,10 @@ namespace Promact.Erp.Core.Controllers
             _signInManager = signInManager;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
-            _logger= LogManager.GetLogger("AuthenticationModule");
+            _logger = LogManager.GetLogger("AuthenticationModule");
             _md5Service = md5Service;
         }
+
         #endregion
 
         #region Public Methods
@@ -56,7 +58,8 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
-             _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
+            _logger.Info("Index: Today " + DateTime.Today+"\n Today's Date :"+ DateTime.Today.Date);
+            _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
                 _logger.Info("User is Authenticated");
@@ -78,10 +81,11 @@ namespace Promact.Erp.Core.Controllers
         [Authorize]
         public async Task<ActionResult> AfterLogIn()
         {
+            _logger.Info("AfterLogIn: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
-            
+
             //this for get login user email address and encrypt hash code.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
@@ -104,6 +108,7 @@ namespace Promact.Erp.Core.Controllers
        */
         public ActionResult SlackAuthorize(string message)
         {
+            _logger.Info("SlackAuthorize: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             ViewBag.Message = message;
             return View();
         }
