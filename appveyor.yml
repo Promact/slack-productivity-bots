@@ -6,7 +6,7 @@ platform: Any CPU
 environment:
  nodejs_version: "0.12"
  COVERALLS_REPO_TOKEN:
-   secure: IzBCZbWnAF8/KBbmUT7D7L8kzbEkFsvEeKPY2I0C537SeYlruZUCDR19I2kSdb5A
+   secure: CT1HunQBUOPdicUugJooNj2m2elDC8PNM6fbGBjpo62ngQJX4t3300ckQDdXn8El
 cache:
 - "%LOCALAPPDATA%\\Yarn"
 - "%APPVEYOR_BUILD_FOLDER%\\Slack.Automation\\packages"
