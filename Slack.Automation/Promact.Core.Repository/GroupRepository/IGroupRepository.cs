@@ -1,5 +1,4 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.DomainModel.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

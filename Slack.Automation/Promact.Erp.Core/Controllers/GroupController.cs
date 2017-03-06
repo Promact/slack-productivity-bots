@@ -155,7 +155,7 @@ namespace Promact.Erp.Core.Controllers
         * }  
         */
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IHttpActionResult> UpdateGroupAsync(int id, GroupAC groupAC)
         {
             if (ModelState.IsValid)
@@ -167,11 +167,11 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-       * @api {put} api/group/available/:name/:id
+       * @api {put} api/group/available/:id
        * @apiVersion 1.0.0
        * @apiName CheckGroupNameIsExistsAsync
        * @apiGroup Group   
-       * @apiParam {int,int} name,id   
+       * @apiParam {int} id   
        * @apiParamExample
        *       {
        *         "name":"Group1"
@@ -184,7 +184,7 @@ namespace Promact.Erp.Core.Controllers
        * }   
        */
         [HttpGet]
-        [Route("available/{name}/{id:int}")]
+        [Route("available/{id:int}")]
         public async Task<IHttpActionResult> CheckGroupNameIsExistsAsync(string name, int id)
         {
             return Ok(await _groupRepository.CheckGroupNameIsExistsAsync(name, id));

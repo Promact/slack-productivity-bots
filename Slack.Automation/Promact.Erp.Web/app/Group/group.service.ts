@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from "@angular/http";
+import { Http, Headers, RequestOptions, Response, URLSearchParams } from "@angular/http";
 import { Observable } from 'rxjs/Rx';
 import { StringConstant } from '../shared/stringConstant';
 import { GroupModel } from './group.model';
@@ -42,7 +42,8 @@ export class GroupService {
      * @param groupModel
      */
     updateGroup(groupModel: GroupModel) {
-        return this.http.put(this.stringConstant.groupUrl + '/' + groupModel.Id, JSON.stringify(groupModel), { headers: this.headers })
+        let id = + groupModel.Id;//convert to int 
+        return this.http.put(this.stringConstant.groupUrl + '/' + id, JSON.stringify(groupModel), { headers: this.headers })
             .toPromise();
 
     }
@@ -53,7 +54,9 @@ export class GroupService {
      * @param id
      */
     checkGroupNameIsExists(name: string, id: number) {
-        return this.http.get(this.stringConstant.groupUrl + '/available/' + name + '/' + id).map(res => res.json())
+        let params = new URLSearchParams();
+        params.set(this.stringConstant.groupName, name);
+        return this.http.get(this.stringConstant.groupUrl + '/available/' + id, { search: params }).map(res => res.json())
             .toPromise();
     }
 
