@@ -28,12 +28,12 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetailsToday() {
-        this.Date = new Date().toDateString();
+        this.Date = new Date().toJSON();
         this.getScrumDetails(this.Date);
     }
 
     getScrumDetailsYesterday(date: string) {
-        let yesterday = new Date((new Date(date)).valueOf() - 1000 * 60 * 60 * 24).toDateString();  //subtracting milliseconds in a day
+        let yesterday = new Date((new Date(date)).valueOf() - 1000 * 60 * 60 * 24).toJSON();  //subtracting milliseconds in a day
         this.Date = yesterday;
         this.getScrumDetails(this.Date);
     }
