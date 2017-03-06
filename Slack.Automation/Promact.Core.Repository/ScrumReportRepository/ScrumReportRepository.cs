@@ -79,7 +79,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="user"></param>
         /// <returns>object with scrum answers for an employee</returns>
         private async Task<EmployeeScrumDetails> AssignAnswersAsync(Scrum scrum, DateTime scrumDate, User user)
-        {
+        { 
             EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
             //Fetch all the scrum answers for a particular employee
             List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id && DbFunctions.TruncateTime(x.AnswerDate) == DbFunctions.TruncateTime(scrumDate))).ToList();
