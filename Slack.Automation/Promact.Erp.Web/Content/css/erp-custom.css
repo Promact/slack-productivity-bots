@@ -1,0 +1,39 @@
+﻿.title h3{margin:18px 0;}
+.m-0{margin-right:0;margin-left:0;}
+.m-15{margin:15px 0;}
+ .table-bordered>thead>tr>th{vertical-align:middle;}
+md2-chips .md2-chips-container {box-shadow:  none !important;}
+.mail-settings .form-group{margin-bottom:20px;}
+.mail-settings .chip-input-form {width:100%;}
+.mail-settings input[type=checkbox]{vertical-align:middle;margin:0;}
+.mail-settings .btn{width:100px;}
+ md2-option.md2-selected ,md2-select:focus:not(.md2-select-disabled) .md2-select-trigger ,.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder{color:#169F85!important;}
+ md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{border-color:#169F85!important;}
+.md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
+.taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 7px;text-align:right}
+.taskmail-details table{margin:30px 0;}
+.taskmail-details  .tsk-view  label{float:left;padding-right:10px;width:104px;text-align:right}
+.taskmail-details .btn-back , .leave-report-details .btn-back , .scrum-details .btn-back , .leave-report-details .btn-back{padding:6px 15px;font-size:14px;}
+.taskmail-details .btn-back .fa-arrow-left , .leave-report-details .btn-back .fa-arrow-left  , .scrum-details .btn-back .fa-arrow-left{font-size: 13px;padding: 0px 5px 0px 0px;vertical-align: middle;margin-top:-1px;}
+.leave-report .alert-info , .scrum-details .alert-info {color: #31708f !important;background-color: #d9edf7 !important;border-color: #bce8f1 !important;padding:8px;}
+.leave-report .alert-info p , .scrum-details .alert-info p{font-size:15px;}
+.leave-report  .btn .fa , .leave-report-details .btn .fa{padding-right:7px;}
+.leave-report table{margin:30px 0;}
+.scrum-project .x_content h2{margin:0;}
+.scrum-project td.scrum-name{text-transform:capitalize;}
+.scrum-details .control-label{float:left;padding-right:10px;margin:0;}
+.scrum-details .form-group p{margin:0;}
+.scrum-details .scrum-que-ans ul {padding:0;list-style-type:none;}
+.scrum-details .scrum-que-ans h5{margin-bottom:4px;font-weight:bold;font-size:13px;}
+.scrum-details .scrum-que-ans ul li{padding-left:17px;}
+.scrum-details .scrum-que-ans .que-block{margin-bottom:20px;}
+.scrum-details input[type="date"]{display: inline-block;width: 26%;margin: 0 15px;}
+.scrum-details .scrum-que-ans{margin-top:15px;}
+.scrum-details .alert-info{margin:20px 0;}
+
+.after-login-nav {float: right;background: #EDEDED;border-bottom: 1px solid #D9DEE4;margin-bottom: 10px;width: 100%;padding:15px;}
+.after-login-nav a{float:right;font-size:18px;}
+.base-body .text-center{text-align:center;}
+#content  a {background: url(https://platform.slack-edge.com/img/add_to_slack.png) no-repeat 50% center;display: block;width: 100%;height: 55px;color:transparent;}
+#content p{font-size: 20px;margin: 28px 0;}
+#content p span{color:#73879C;}

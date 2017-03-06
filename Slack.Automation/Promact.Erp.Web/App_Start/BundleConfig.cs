@@ -30,9 +30,9 @@ namespace Promact.Erp.Web
                       ));
             
             bundles.Add(new ScriptBundle("~/bundles/themejs").Include(
-                     "~/Content/js/icheck.js",
-                     "~/Content/js/switchery.js",
-                "~/Content/js/theme/custom.js"
+                     "~/Content/js/icheck.js"
+                 
+        
 
                ));
         }
