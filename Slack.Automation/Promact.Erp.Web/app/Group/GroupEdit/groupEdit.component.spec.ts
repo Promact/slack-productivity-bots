@@ -49,12 +49,35 @@ describe('Group Edit Component Test', () => {
         expect(groupEditComponent.groupModel).not.toBeNull();
     }));
 
+    it("ng OnInit Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+        activatedRoute.testParams = { id: stringConstant.id };
+        let groupEditComponent = fixture.componentInstance;
+        let name = stringConstant.groupName;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "getGroupbyId").and.returnValue(Promise.reject(""));
+        groupEditComponent.ngOnInit();
+        tick();
+        expect(name).toBe(stringConstant.groupName);
+    }));
+
     it("check GroupName Already Exists", fakeAsync(() => {
         let fixture = TestBed.createComponent(GroupEditComponent);
         let groupEditComponent = fixture.componentInstance;
         groupEditComponent.checkGroupName(stringConstant.testGroupName);
         tick();
         expect(groupEditComponent.isExistsGroupName).toBe(true);
+    }));
+
+    it("check GroupName Already Exists Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let groupEditComponent = fixture.componentInstance;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "checkGroupNameIsExists").and.returnValue(Promise.reject(""));
+        groupEditComponent.checkGroupName(stringConstant.testGroupName);
+        tick();
+        expect(stringConstant.testGroupName).toBe(stringConstant.testGroupName);
     }));
 
     it("check GroupName Already Not Exists", fakeAsync(() => {
@@ -84,6 +107,23 @@ describe('Group Edit Component Test', () => {
         groupModel.Emails = stringConstant.emails;
         groupModel.Name = stringConstant.testGroupName;
         groupModel.Type = 2;
+        groupEditComponent.updateGroup(groupModel);
+        tick();
+        expect(groupModel.Name).toBe(stringConstant.testGroupName);
+    }));
+
+    it("Update Group Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let groupEditComponent = fixture.componentInstance;
+        let toast = fixture.debugElement.injector.get(Md2Toast);
+        let router = fixture.debugElement.injector.get(Router);
+        spyOn(router, stringConstant.navigate);
+        let groupModel = new GroupModel();
+        groupModel.Emails = stringConstant.emails;
+        groupModel.Name = stringConstant.testGroupName;
+        groupModel.Type = 2;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "updateGroup").and.returnValue(Promise.reject(""));
         groupEditComponent.updateGroup(groupModel);
         tick();
         expect(groupModel.Name).toBe(stringConstant.testGroupName);

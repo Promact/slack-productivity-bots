@@ -60,6 +60,23 @@ describe('Group Add Component Test', () => {
         expect(groupModel.Name).toBe(stringConstant.testGroupName);
     }));
 
+    it("ng OnInit Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupAddComponent);
+        let groupAddComponent = fixture.componentInstance;
+        let toast = fixture.debugElement.injector.get(Md2Toast);
+        let router = fixture.debugElement.injector.get(Router);
+        spyOn(router, stringConstant.navigate);
+        let groupModel = new GroupModel();
+        groupModel.Emails = stringConstant.emails;
+        groupModel.Name = stringConstant.testGroupName;
+        groupModel.Type = 2;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "addGroup").and.returnValue(Promise.reject(""));
+        groupAddComponent.addGroup(groupModel);
+        tick();
+        expect(groupModel).not.toBeNull();
+    }));
+
     it("back To GroupList", () => {
         let fixture = TestBed.createComponent(GroupAddComponent);
         let groupAddComponent = fixture.componentInstance;
@@ -68,6 +85,16 @@ describe('Group Add Component Test', () => {
         groupAddComponent.backToGroupList();
         expect(router.navigate).toHaveBeenCalled();
     });
+
+    it("check GroupName Already Exists Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupAddComponent);
+        let groupAddComponent = fixture.componentInstance;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "checkGroupNameIsExists").and.returnValue(Promise.reject(""));
+        groupAddComponent.checkGroupName(stringConstant.testGroupName);
+        tick();
+        expect(stringConstant.testGroupName).toBe(stringConstant.testGroupName);
+    }));
 
     it("check GroupName Already Exists", fakeAsync(() => {
         let fixture = TestBed.createComponent(GroupAddComponent);

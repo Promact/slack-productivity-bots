@@ -47,6 +47,17 @@ describe('Group List Component Test', () => {
         expect(groupListComponent.groupList).not.toBeNull();
     }));
 
+    it("ngOnInit Error", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupListComponent); //Create instance of component            
+        let groupListComponent = fixture.componentInstance;
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        let name = stringConstant.groupName;
+        spyOn(groupService, "getListOfGroup").and.returnValue(Promise.reject(""));
+        groupListComponent.ngOnInit();
+        tick();
+        expect(name).toBe(stringConstant.groupName);
+    }));
+
     it("add New", () => {
         let fixture = TestBed.createComponent(GroupListComponent); //Create instance of component            
         let groupListComponent = fixture.componentInstance;
@@ -80,6 +91,16 @@ describe('Group List Component Test', () => {
         let fixture = TestBed.createComponent(GroupListComponent); //Create instance of component            
         let groupListComponent = fixture.componentInstance;
         let popup = fixture.debugElement.injector.get(Md2Dialog);
+        groupListComponent.deleteGroup(popup);
+        expect(groupListComponent.groupList).toEqual(undefined);
+    });
+
+    it("delete Group", () => {
+        let fixture = TestBed.createComponent(GroupListComponent); //Create instance of component            
+        let groupListComponent = fixture.componentInstance;
+        let popup = fixture.debugElement.injector.get(Md2Dialog);
+        let groupService = fixture.debugElement.injector.get(GroupService);
+        spyOn(groupService, "deleteGroupById").and.returnValue(Promise.reject(""));
         groupListComponent.deleteGroup(popup);
         expect(groupListComponent.groupList).toEqual(undefined);
     });
