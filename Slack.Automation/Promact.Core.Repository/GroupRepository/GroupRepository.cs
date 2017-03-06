@@ -84,12 +84,16 @@ namespace Promact.Core.Repository.GroupRepository
                 groupAc = _mapper.Map(group, groupAc);
                 //get active user email list
                 List<string> listOfActiveUserEmail = await GetActiveUserEmailList();
-                foreach (var groupEmailMapping in group.GroupEmailMapping)
+                List<GroupEmailMapping> groupEmailMappings = group.GroupEmailMapping.ToList();
+                foreach (var groupEmailMapping in groupEmailMappings)
                 {
-                    if(listOfActiveUserEmail.Contains(groupEmailMapping.Email)) //check email is active or not.
+                    if (listOfActiveUserEmail.Contains(groupEmailMapping.Email)) //check email is active or not.
                         listOfEmails.Add(groupEmailMapping.Email);
                     else
+                    {
                         _groupEmailMappingRepository.Delete(groupEmailMapping.Id);
+                         await _groupEmailMappingRepository.SaveChangesAsync();
+                    }
                 }
                 groupAc.Emails = listOfEmails;
                 return groupAc;

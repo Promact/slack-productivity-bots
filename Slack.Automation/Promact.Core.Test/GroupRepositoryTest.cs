@@ -56,6 +56,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task AddGroupAsync()
         {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
             int id = await CreateGroupAsync();
             var group = await _groupRepository.GetGroupByIdAsync(id);
             Assert.NotNull(group);
@@ -69,6 +70,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task UpdateGroupAsync()
         {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
             int id = await CreateGroupAsync();
             var group = await _groupRepository.GetGroupByIdAsync(id);
             GroupAC newGroupAC = new GroupAC();
@@ -90,6 +92,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task GetGroupByIdAsync()
         {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
             int id = await CreateGroupAsync();
             var group = await _groupRepository.GetGroupByIdAsync(id);
             Assert.NotNull(group);
@@ -171,8 +174,6 @@ namespace Promact.Core.Test
         public async Task AddDynamicGroup()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
-            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
             await _groupRepository.AddDynamicGroupAsync();
             List<GroupAC> listOfGroupAC = await _groupRepository.GetListOfGroupACAsync();
             Assert.NotEqual(listOfGroupAC.Count, 0);
@@ -187,8 +188,6 @@ namespace Promact.Core.Test
         public async Task UpdateDynamicGroup()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
-            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
             await _groupRepository.AddDynamicGroupAsync();
             await _groupRepository.AddDynamicGroupAsync();
             List<GroupAC> listOfGroupAC = await _groupRepository.GetListOfGroupACAsync();
@@ -202,8 +201,6 @@ namespace Promact.Core.Test
         public async Task GetActiveUserEmailList()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
-            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
             List<string> listOfActiveEmail = await _groupRepository.GetActiveUserEmailList();
             Assert.NotEqual(listOfActiveEmail.Count, 0);
         }
@@ -250,6 +247,9 @@ namespace Promact.Core.Test
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
+
         }
         #endregion
 

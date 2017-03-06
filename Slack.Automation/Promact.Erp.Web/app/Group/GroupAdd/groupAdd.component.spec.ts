@@ -37,13 +37,13 @@ describe('Group Add Component Test', () => {
         expect(groupAddComponent).toBeDefined();
     });
 
-    //it("ng OnInit", fakeAsync(() => {
-    //    let fixture = TestBed.createComponent(GroupAddComponent);
-    //    let groupAddComponent = fixture.componentInstance;
-    //    groupAddComponent.ngOnInit();
-    //    tick();
-    //    expect(groupAddComponent.listOfActiveEmail).not.toBeNull();
-    //}));
+    it("Ng OnInit", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupAddComponent);
+        let groupAddComponent = fixture.componentInstance;
+        groupAddComponent.ngOnInit();
+        tick();
+        expect(groupAddComponent.listOfActiveEmail).not.toBeNull();
+    }));
 
     it("Add Group", fakeAsync(() => {
         let fixture = TestBed.createComponent(GroupAddComponent);
@@ -84,5 +84,5 @@ describe('Group Add Component Test', () => {
         tick();
         expect(groupAddComponent.isExistsGroupName).toBe(false);
     }));
-    
+
 });
