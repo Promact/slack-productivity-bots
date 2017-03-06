@@ -31,7 +31,6 @@ using Autofac.Extras.NLog;
 using AutoMapper;
 using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.ServiceRepository;
-using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.TaskMailReportRepository;
 using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
@@ -80,6 +79,8 @@ namespace Promact.Core.Test
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
             builder.RegisterInstance(emailServiceMockObject).As<IEmailService>();
             builder.RegisterType<EmailServiceTemplateRepository>().As<IEmailServiceTemplateRepository>();
+            builder.RegisterType<GroupRepository>().As<IGroupRepository>();
+            builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             var iLoggerMock = new Mock<ILogger>();
             var iLoggerMockObject = iLoggerMock.Object;
             builder.RegisterInstance(iLoggerMock).As<Mock<ILogger>>();
@@ -95,6 +96,7 @@ namespace Promact.Core.Test
             var httpContextObject = httpContext.Object;
             builder.RegisterInstance(httpContext).As<Mock<HttpContextBase>>();
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
+
 
             var container = builder.Build();
             return container;
