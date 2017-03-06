@@ -1,5 +1,6 @@
 ﻿using Promact.Core.Repository.GroupRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringConstants;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -72,13 +73,23 @@ namespace Promact.Erp.Core.Controllers
         * HTTP/1.1 200 OK 
         * {
         *    "Id" : "1"
-        * }   
+        * }
+        * @apiError BadRequest
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 400 Bad Request 
+        * {
+        *    "error": "Problems parsing JSON object"
+        * }     
         */
         [HttpPost]
         [Route("")]
         public async Task<IHttpActionResult> InsertGroupAsync(GroupAC groupAC)
         {
-            return Ok(await _groupRepository.AddGroupAsync(groupAC));
+            if (ModelState.IsValid)
+            {
+                return Ok(await _groupRepository.AddGroupAsync(groupAC));
+            }
+            return BadRequest();
         }
 
         /**
@@ -96,13 +107,26 @@ namespace Promact.Erp.Core.Controllers
         *         "Type":"StaticGroup"
         *         "Emails" : [{ankit@promactinfo.com},{bhanvadia@gmail.com}]
         *       }
-        * }   
+        * } 
+        * @apiError GroupNotFound
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 404 Not Found 
+        * {
+        *   "error": "GroupNotFound"
+        * }  
         */
         [HttpGet]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> GetGroupByIdAsync(int id)
         {
-            return Ok(await _groupRepository.GetGroupByIdAsync(id));
+            try
+            {
+                return Ok(await _groupRepository.GetGroupByIdAsync(id));
+            }
+            catch (GroupNotFound)
+            {
+                return NotFound();
+            }
         }
 
         /**
@@ -122,14 +146,24 @@ namespace Promact.Erp.Core.Controllers
         * HTTP/1.1 200 OK 
         * {
         *     "Id" : "1"
-        * }   
+        * }
+        * @apiError BadRequest
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 400 Bad Request 
+        * {
+        *    "error": "Problems parsing JSON object"
+        * }  
         */
         [HttpPut]
         [Route("{id}")]
         public async Task<IHttpActionResult> UpdateGroupAsync(int id, GroupAC groupAC)
         {
-            groupAC.Id = id;
-            return Ok(await _groupRepository.UpdateGroupAsync(groupAC));
+            if (ModelState.IsValid)
+            {
+                groupAC.Id = id;
+                return Ok(await _groupRepository.UpdateGroupAsync(groupAC));
+            }
+            return BadRequest();
         }
 
         /**

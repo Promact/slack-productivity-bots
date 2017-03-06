@@ -59,7 +59,7 @@ namespace Promact.Core.Repository.GroupRepository
         /// <returns>Primary key(Id)</returns>
         public async Task<int> UpdateGroupAsync(GroupAC groupAC)
         {
-            Group group = _groupRepository.GetById(groupAC.Id);
+            Group group = await _groupRepository.FirstAsync(x => x.Id == groupAC.Id);
             group.Name = groupAC.Name;
             group.UpdatedDate = DateTime.UtcNow;
             _groupRepository.Update(group);
@@ -92,7 +92,7 @@ namespace Promact.Core.Repository.GroupRepository
                     else
                     {
                         _groupEmailMappingRepository.Delete(groupEmailMapping.Id);
-                         await _groupEmailMappingRepository.SaveChangesAsync();
+                        await _groupEmailMappingRepository.SaveChangesAsync();
                     }
                 }
                 groupAc.Emails = listOfEmails;
