@@ -14,6 +14,8 @@ export class GroupEditComponent implements OnInit {
     groupModel: GroupModel;
     isExistsGroupName: boolean;
     id: number;
+    listOfActiveEmail: Array<string>;
+
     constructor(private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast) {
         this.validPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         this.groupModel = new GroupModel();
@@ -22,6 +24,7 @@ export class GroupEditComponent implements OnInit {
 
     ngOnInit() {
         this.loader.loader = true;
+        this.getActiveUserEmailList();
         this.route.params.subscribe(params => {
             this.id = +this.route.snapshot.params[this.stringConstant.paramsId];
             this.groupService.getGroupbyId(this.id).then((result) => {
@@ -29,6 +32,13 @@ export class GroupEditComponent implements OnInit {
                 this.loader.loader = false;
             }, err => {
             });
+        });
+    }
+
+    getActiveUserEmailList() {
+        this.groupService.getActiveUserEmailList().then((result) => {
+            this.listOfActiveEmail = result
+            this.loader.loader = false;
         });
     }
 

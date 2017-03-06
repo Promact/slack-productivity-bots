@@ -56,5 +56,11 @@ namespace Promact.Core.Repository.GroupRepository
         /// </summary>
         /// <returns></returns>
         Task AddDynamicGroupAsync();
+
+        /// <summary>
+        /// This method used for get active user email list. - an
+        /// </summary>
+        /// <returns>list of active user email list</returns>
+        Task<List<string>> GetActiveUserEmailList();
     }
 }

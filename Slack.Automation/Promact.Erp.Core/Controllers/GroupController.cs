@@ -157,12 +157,46 @@ namespace Promact.Erp.Core.Controllers
         }
 
 
-
+        /**
+       * @api {delete} api/group/delete/:id
+       * @apiVersion 1.0.0
+       * @apiName DeleteGroupByIdAsync
+       * @apiGroup Group   
+       * @apiParam {int} id   
+       * @apiParamExample
+       *       {
+       *         "id":"1"
+       *       }
+       * @apiSuccessExample {json} Success-Response:
+       * HTTP/1.1 200 OK 
+       * {
+       *     "result" : "true"
+       * }   
+       */
         [HttpDelete]
         [Route("delete/{id:int}")]
         public async Task<IHttpActionResult> DeleteGroupByIdAsync(int id)
         {
             return Ok(await _groupRepository.DeleteGroupById(id));
+        }
+
+
+        /**
+        * @api {get} api/group/email
+        * @apiVersion 1.0.0
+        * @apiName GetActiveUserEmailList
+        * @apiGroup Group 
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK 
+        *   {
+        *       "result" : ["abc@promactinfo.com","abc1@promactinfo.com"]
+        *   }
+        */
+        [HttpGet]
+        [Route("email")]
+        public async Task<IHttpActionResult> GetActiveUserEmailList()
+        {
+            return Ok(await _groupRepository.GetActiveUserEmailList());
         }
 
         #endregion

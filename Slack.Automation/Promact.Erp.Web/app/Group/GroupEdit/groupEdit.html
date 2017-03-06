@@ -14,11 +14,12 @@
         <md2-chips [(ngModel)]="groupModel.Emails"
                    [isRemovable]="true"
                    [readonly]="false"
-                   placeholder="Emails"
+                   placeholder="Email"
                    [allowedPattern]="validPattern"
-                   [isAutoComplete]="false"
                    name="emails"
                    #emails="ngModel"
+                   [isAutoComplete]="true"
+                   [autocompleteDataList]="listOfActiveEmail"
                    required>
         </md2-chips>
         <div [hidden]="!(emails.touched && !emails.valid && emails.errors.required)" class="error">Atleast one email is required</div>

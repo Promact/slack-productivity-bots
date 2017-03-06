@@ -195,6 +195,19 @@ namespace Promact.Core.Test
             Assert.NotEqual(listOfGroupAC.Count, 0);
         }
 
+        /// <summary>
+        /// This test case for update Dynamic Group
+        /// </summary>
+        /// <returns></returns>
+        public async Task GetActiveUserEmailList()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
+            List<string> listOfActiveEmail = await _groupRepository.GetActiveUserEmailList();
+            Assert.NotEqual(listOfActiveEmail.Count, 0);
+        }
+
         #endregion
 
         #region Private Method

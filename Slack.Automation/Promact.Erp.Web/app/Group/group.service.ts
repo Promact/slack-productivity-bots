@@ -66,5 +66,13 @@ export class GroupService {
             .toPromise();
     }
 
+    /*This service used for get active user email list*
+     * 
+     */
+    getActiveUserEmailList() {
+        return this.http.get(this.stringConstant.groupUrl + '/email').map(res => res.json())
+            .toPromise();
+    }
+
 }
 

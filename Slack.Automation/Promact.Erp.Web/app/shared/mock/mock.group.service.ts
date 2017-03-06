@@ -73,6 +73,13 @@ export class MockGroupService {
         return Promise.resolve(true);
     }
 
+    /*This service used for get active user email list*
+     * 
+     */
+    getActiveUserEmailList() {
+        return Promise.resolve(stringConstant.emails);
+    }
+
 }
 
 class MockGroup extends GroupModel {

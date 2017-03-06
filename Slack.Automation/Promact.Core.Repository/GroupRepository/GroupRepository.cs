@@ -82,9 +82,14 @@ namespace Promact.Core.Repository.GroupRepository
                 GroupAC groupAc = new GroupAC();
                 List<string> listOfEmails = new List<string>();
                 groupAc = _mapper.Map(group, groupAc);
+                //get active user email list
+                List<string> listOfActiveUserEmail = await GetActiveUserEmailList();
                 foreach (var groupEmailMapping in group.GroupEmailMapping)
                 {
-                    listOfEmails.Add(groupEmailMapping.Email);
+                    if(listOfActiveUserEmail.Contains(groupEmailMapping.Email)) //check email is active or not.
+                        listOfEmails.Add(groupEmailMapping.Email);
+                    else
+                        _groupEmailMappingRepository.Delete(groupEmailMapping.Id);
                 }
                 groupAc.Emails = listOfEmails;
                 return groupAc;
@@ -147,6 +152,20 @@ namespace Promact.Core.Repository.GroupRepository
                 //create managment group
                 await InsertDynamicGroup(_stringConstantRepository.ManagementGroup, userEmailListAc.Management);
             }
+        }
+
+        /// <summary>
+        /// This method used for get active user email list. - an
+        /// </summary>
+        /// <returns>list of active user email list</returns>
+        public async Task<List<string>> GetActiveUserEmailList()
+        {
+            UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
+            List<string> listOfEmails = new List<string>();
+            listOfEmails.AddRange(userEmailListAc.Management);
+            listOfEmails.AddRange(userEmailListAc.TamMemeber);
+            listOfEmails.AddRange(userEmailListAc.TeamLeader);
+            return listOfEmails.Distinct().ToList();
         }
 
         #endregion
