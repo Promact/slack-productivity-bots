@@ -1,10 +1,11 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ScrumDetails } from './scrumProject-Details.model';
 import { ScrumReportService } from '../scrumReport.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { EmployeeScrumAnswers } from './scrumProject-EmployeeScrumDetails.model';
 import { LoaderService } from '../../shared/loader.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
     templateUrl: './app/ScrumReport/scrumProject-Details/scrumProject-Details.html',
@@ -17,35 +18,36 @@ export class ScrumProjectDetailComponent implements OnInit {
     employeeScrumAnswers: EmployeeScrumAnswers[];
     errorMessage: string;
     Id: number;
-    Date: string;
     maxDate = new Date().toISOString().slice(0, 10);
     minDate: string;
-
-    constructor(private scrumReportService: ScrumReportService, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService ) { }
-
+    
+    constructor(private scrumReportService: ScrumReportService, private router: Router,private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService ) { }
+    
     ngOnInit() {
         this.getScrumDetailsToday();
     }
 
     getScrumDetailsToday() {
-        this.Date = new Date().toJSON();
-        this.getScrumDetails(this.Date);
+        let datePipe = new DatePipe(this.stringConstant.medium);
+        this.getScrumDetails(datePipe.transform(new Date(), this.stringConstant.dateDefaultFormat));
     }
 
     getScrumDetailsYesterday(date: string) {
-        this.Date = new Date((new Date(date).setDate(new Date(date).getDate() - 1))).toJSON();
-        this.getScrumDetails(this.Date);
+        let datePipe = new DatePipe(this.stringConstant.medium);
+        let currentDate = new Date(date);
+        let yesterDaty = datePipe.transform(new Date(currentDate.setDate(currentDate.getDate() - 1)), this.stringConstant.dateDefaultFormat);
+        this.getScrumDetails(yesterDaty);
     }
 
     getScrumDetailsGeneral(date: string) {
-        this.Date = date;
-        this.getScrumDetails(this.Date);
+        let datePipe = new DatePipe(this.stringConstant.medium);
+        this.getScrumDetails(datePipe.transform(date, this.stringConstant.dateDefaultFormat));
     }
 
     getScrumDetails(date: string) {
         this.loader.loader = true;
         this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]); 
-        this.scrumReportService.getScrumDetails(this.Id, date)
+        this.scrumReportService.getScrumDetails(+this.Id,date)
             .subscribe(
             (scrumDetails) => {
                 this.scrumDate = scrumDetails.ScrumDate;
@@ -59,6 +61,6 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     goBack() {
-        window.history.back();
+        this.router.navigate([this.stringConstant.scrumList]);
     }
 }
