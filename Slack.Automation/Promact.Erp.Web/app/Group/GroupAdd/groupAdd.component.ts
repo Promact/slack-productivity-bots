@@ -17,7 +17,7 @@ export class GroupAddComponent implements OnInit {
 
     constructor(private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast) {
         this.groupModel = new GroupModel();
-        this.validPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        this.validPattern = this.stringConstant.emailValidPattern;
         this.isExistsGroupName = false;
     }
 

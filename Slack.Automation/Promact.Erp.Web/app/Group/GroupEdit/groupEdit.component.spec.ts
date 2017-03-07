@@ -52,11 +52,10 @@ describe('Group Edit Component Test', () => {
     it("ng OnInit Error", fakeAsync(() => {
         let fixture = TestBed.createComponent(GroupEditComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { id: stringConstant.id };
+        let toast = fixture.debugElement.injector.get(Md2Toast);
+        activatedRoute.testParams = { id: 2 };
         let groupEditComponent = fixture.componentInstance;
         let name = stringConstant.groupName;
-        let groupService = fixture.debugElement.injector.get(GroupService);
-        spyOn(groupService, "getGroupbyId").and.returnValue(Promise.reject(""));
         groupEditComponent.ngOnInit();
         tick();
         expect(name).toBe(stringConstant.groupName);
