@@ -1,17 +1,35 @@
-﻿<div>
-        <h4>Select the project you want to see the scrum for :-</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Project Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let scrumProject of scrumProjects ">
-                    <td><a routerLink="detail/{{scrumProject.Id}}" routerLinkActive="active">{{scrumProject.Name}}</a></td>
-                    <td></td>
-                    </tr>
-                {{noProject}}
-            </tbody>           
-        </table>
+﻿<div class="scrum-project">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Scrum Reports</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                  
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let scrumProject of scrumProjects ">
+                                <td class="scrum-name">{{scrumProject.Name}}</td>
+                                <td><a class="btn btn-success" routerLink="detail/{{scrumProject.Id}}" routerLinkActive="active">Details</a></td>
+                               
+                            </tr>
+                          
+                        </tbody>
+                    </table>
+
+                    {{noProject}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
