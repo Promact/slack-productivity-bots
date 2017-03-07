@@ -104,7 +104,7 @@ namespace Promact.Core.Test
             List<ProjectAc> listOfProject = new List<ProjectAc>();
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
@@ -482,7 +482,7 @@ namespace Promact.Core.Test
             List<ProjectAc> listOfProject = new List<ProjectAc>();
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
@@ -810,7 +810,7 @@ namespace Promact.Core.Test
             List<ProjectAc> listOfProject = new List<ProjectAc>();
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             await AddThreeUserIncomingWebHookAsync();
             SmtpException ex = new SmtpException();

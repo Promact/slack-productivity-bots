@@ -435,5 +435,6 @@
         string ManagementGroup { get; }
         string TeamMembersGroup { get; }
         string EmailListForGroup { get; }
+        string DetailsAndSlashForUrl { get; }
     }
 }
