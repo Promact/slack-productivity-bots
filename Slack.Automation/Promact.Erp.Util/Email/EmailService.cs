@@ -1,9 +1,9 @@
-﻿using Autofac.Extras.NLog;
-using Promact.Erp.DomainModel.ApplicationClass;
+﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using System;
 using System.Net.Mail;
 using System.Text;
+using NLog;
 
 namespace Promact.Erp.Util.Email
 {
@@ -16,10 +16,10 @@ namespace Promact.Erp.Util.Email
 
         #region Constructor
 
-        public EmailService(IEnvironmentVariableRepository envVariableRepository, ILogger logger)
+        public EmailService(IEnvironmentVariableRepository envVariableRepository)
         {
             _envVariableRepository = envVariableRepository;
-            _logger = logger;
+            _logger = LogManager.GetLogger("EmailService");
         }
 
         #endregion
@@ -33,10 +33,10 @@ namespace Promact.Erp.Util.Email
         {
             try
             {
+                _logger.Info("something");
                 MailMessage message = new MailMessage();
                 _logger.Debug("Email send from : " + email.From);
                 message.From = new MailAddress(email.From);
-                _logger.Debug("Email send to : " + email.To);
                 foreach (var to in email.To)
                 {
                     _logger.Debug("Email send to : " + to);
@@ -58,7 +58,7 @@ namespace Promact.Erp.Util.Email
                 client.Host = _envVariableRepository.Host;
                 _logger.Debug("Email send Port : " + _envVariableRepository.Port);
                 client.Port = _envVariableRepository.Port;
-                _logger.Debug("Email send environment variable email : " + _envVariableRepository.Username);
+                _logger.Debug("Email send environment variable Username : " + _envVariableRepository.Username);
                 _logger.Debug("Email send environment variable password is null : " + string.IsNullOrEmpty(_envVariableRepository.Password));
                 client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.Username, _envVariableRepository.Password);
                 _logger.Debug("Email send enableSSL : " + _envVariableRepository.EnableSsl);
@@ -70,9 +70,13 @@ namespace Promact.Erp.Util.Email
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
+#pragma warning disable CS0618 // Type or member is obsolete
                     _logger.Error("Error Occured in email sending : " + ex.InnerException.Message, ex);
+#pragma warning restore CS0618 // Type or member is obsolete
                 else
+#pragma warning disable CS0618 // Type or member is obsolete
                     _logger.Error("Error Occured in email sending : " + ex.Message, ex);
+#pragma warning restore CS0618 // Type or member is obsolete
                 throw ex;
             }
         }
