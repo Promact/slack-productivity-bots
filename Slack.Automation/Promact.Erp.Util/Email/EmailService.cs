@@ -58,9 +58,9 @@ namespace Promact.Erp.Util.Email
                 client.Host = _envVariableRepository.Host;
                 _logger.Debug("Email send Port : " + _envVariableRepository.Port);
                 client.Port = _envVariableRepository.Port;
-                _logger.Debug("Email send environment variable Username : " + _envVariableRepository.Username);
+                _logger.Debug("Email send environment variable Username : " + _envVariableRepository.MailUserName);
                 _logger.Debug("Email send environment variable password is null : " + string.IsNullOrEmpty(_envVariableRepository.Password));
-                client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.Username, _envVariableRepository.Password);
+                client.Credentials = new System.Net.NetworkCredential(_envVariableRepository.MailUserName, _envVariableRepository.Password);
                 _logger.Debug("Email send enableSSL : " + _envVariableRepository.EnableSsl);
                 client.EnableSsl = Convert.ToBoolean(_envVariableRepository.EnableSsl);
                 _logger.Debug("Try to send email");

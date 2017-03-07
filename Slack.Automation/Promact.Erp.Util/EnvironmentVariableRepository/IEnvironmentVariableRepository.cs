@@ -13,7 +13,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
 
         int Port { get; }
 
-        string Username { get; }
+        string MailUserName { get; }
 
         string Password { get; }
 
