@@ -278,8 +278,10 @@
     <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\custom.min.css" />
+    <Content Include="Content\css\erp-custom.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\font-lineicons.css" />
+    <Content Include="Content\css\green.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\line-icons.svg" />
     <Content Include="Content\images\banner.jpg" />
@@ -306,7 +308,10 @@
     <Content Include="Scripts\bootstrap\dist\js\bootstrap.js" />
     <Content Include="Scripts\bootstrap\dist\js\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap\dist\js\npm.js" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\Gruntfile.js" />
     <Content Include="Scripts\bootstrap\grunt\bs-commonjs-generator.js" />
     <Content Include="Scripts\bootstrap\grunt\bs-glyphicons-data-generator.js" />
@@ -1005,6 +1010,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1026,9 +1032,6 @@
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Scripts\bootstrap\Gemfile" />
     <Content Include="Scripts\bootstrap\Gemfile.lock" />

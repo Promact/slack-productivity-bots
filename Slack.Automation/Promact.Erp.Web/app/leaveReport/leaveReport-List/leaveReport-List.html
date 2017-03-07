@@ -1,42 +1,59 @@
-﻿
-<div>
-    <h3>
-        {{noLeaves}}
-    </h3>
+﻿<div class="leave-report">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Leave report</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="row">
+                        <div class="alert alert-info col-md-12 ">
+                            <p>
+                                {{noLeaves}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group row m-15">
+                           <div class="col-md-1">Filter by:</div>
+                            <div class="col-md-3"><input type="text" class="form-control" [(ngModel)]="EmployeeName" placeholder="EmployeeName"></div>
+                            <div class="col-md-3"><input type="text" class="form-control col-md-3" [(ngModel)]="Role" placeholder="Role"></div>
+                    </div>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Employee UserName</th>
+                                <th>Role</th>
+                                <th>Total Sick Leave</th>
+                                <th>Total Casual Leave</th>
+                                <th>Utilised Casual Leave</th>
+                                <th>Balance Casual Leave</th>
+                                <th>Utilised Sick Leave</th>
+                                <th>Balance Sick Leave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let leaveReport of (leaveReports | sgFilter : EmployeeName : Role )">
+                                <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
+                                <td>{{leaveReport.EmployeeUserName}}</td>
+                                <td>{{leaveReport.Role}}</td>
+                                <td>{{leaveReport.TotalSickLeave}}</td>
+                                <td>{{leaveReport.TotalCasualLeave}}</td>
+                                <td>{{leaveReport.UtilisedCasualLeave}}</td>
+                                <td>{{leaveReport.BalanceCasualLeave}}</td>
+                                <td>{{leaveReport.UtilisedSickLeave}}</td>
+                                <td>{{leaveReport.BalanceSickLeave}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                   
+                    <button class="btn btn-success" (click)="exportDataToPdf()"><i class="fa fa-download"></i>Export Data To Pdf</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <h4>
-        Filter by:
-        <input type="text" [(ngModel)]="EmployeeName" placeholder="EmployeeName">
-        <input type="text" [(ngModel)]="Role" placeholder="Role">
-    </h4>
-</div>
-<table>
-    <thead>
-        <tr>
-            <th>Employee Name</th>
-            <th>Employee UserName</th>
-            <th>Role</th>
-            <th>Total Sick Leave</th>
-            <th>Total Casual Leave</th>
-            <th>Utilised Casual Leave</th>
-            <th>Balance Casual Leave</th>
-            <th>Utilised Sick Leave</th>
-            <th>Balance Sick Leave</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let leaveReport of (leaveReports | sgFilter : EmployeeName : Role )">
-            <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
-            <td>{{leaveReport.EmployeeUserName}}</td>
-            <td>{{leaveReport.Role}}</td>
-            <td>{{leaveReport.TotalSickLeave}}</td>
-            <td>{{leaveReport.TotalCasualLeave}}</td>
-            <td>{{leaveReport.UtilisedCasualLeave}}</td>
-            <td>{{leaveReport.BalanceCasualLeave}}</td>
-            <td>{{leaveReport.UtilisedSickLeave}}</td>
-            <td>{{leaveReport.BalanceSickLeave}}</td>
-        </tr>
-    </tbody>
-</table>
-<button (click)="exportDataToPdf()">Export Data To Pdf</button>

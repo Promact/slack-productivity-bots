@@ -24,7 +24,17 @@ namespace Promact.Erp.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                       "~/Content/css/erp-custom.css"
+                     
+                      ));
+            
+            bundles.Add(new ScriptBundle("~/bundles/themejs").Include(
+                     "~/Content/js/icheck.js"
+                 
+        
+
+               ));
         }
     }
 }
