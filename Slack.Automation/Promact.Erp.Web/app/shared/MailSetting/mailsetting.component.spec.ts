@@ -16,7 +16,11 @@ import { MailSetting } from './mailsetting.model';
 import { Md2SelectChange } from 'md2';
 import { MockToast } from '../mock/mock.md2toast';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { StringConstant } from '../../shared/stringConstant';
+
 let promise: TestBed;
+
+let stringconstant = new StringConstant();
 
 describe('Mail Setiings Component Test', () => {
     class MockRouter { }
@@ -46,8 +50,8 @@ describe('Mail Setiings Component Test', () => {
         groupList = ["hello"];
         let listOfProject: Array<Project>;
         listOfProject = [new Project()];
-        spyOn(mailService, "getListOfGroups").and.returnValue(new BehaviorSubject(groupList).asObservable());
-        spyOn(mailService, "getAllProjects").and.returnValue(new BehaviorSubject(listOfProject).asObservable());
+        spyOn(mailService, stringconstant.getListOfGroups).and.returnValue(new BehaviorSubject(groupList).asObservable());
+        spyOn(mailService, stringconstant.getAllProjects).and.returnValue(new BehaviorSubject(listOfProject).asObservable());
         mailSettingComponent.ngOnInit();
         tick();
         expect(mailSettingComponent.groupList.length).toBe(1);
@@ -62,8 +66,8 @@ describe('Mail Setiings Component Test', () => {
         let router = fixture.debugElement.injector.get(Router);
         let mailSetting = new MailSetting();
         mailSetting.Project = new Project();
-        spyOn(mailService, "addMailSetting").and.returnValue(new BehaviorSubject({}).asObservable());
-        spyOn(router, "navigate");
+        spyOn(mailService, stringconstant.addMailSetting).and.returnValue(new BehaviorSubject({}).asObservable());
+        spyOn(router, stringconstant.navigate);
         mailSettingComponent.addMailSetting(mailSetting);
         tick();
         expect(router.navigate).toHaveBeenCalled();
@@ -76,8 +80,8 @@ describe('Mail Setiings Component Test', () => {
         let router = fixture.debugElement.injector.get(Router);
         let mailSetting = new MailSetting();
         mailSetting.Project = new Project();
-        spyOn(mailService, "updateMailSetting").and.returnValue(new BehaviorSubject({}).asObservable());
-        spyOn(router, "navigate");
+        spyOn(mailService, stringconstant.updateMailSetting).and.returnValue(new BehaviorSubject({}).asObservable());
+        spyOn(router, stringconstant.navigate);
         mailSettingComponent.updateMailSetting(mailSetting);
         tick();
         expect(router.navigate).toHaveBeenCalled();
@@ -89,7 +93,7 @@ describe('Mail Setiings Component Test', () => {
         let mailService = fixture.debugElement.injector.get(MailSettingService);
         let listOfProject: Array<Project>;
         listOfProject = [new Project()];
-        spyOn(mailService, "getAllProjects").and.returnValue(new BehaviorSubject(listOfProject).asObservable());
+        spyOn(mailService, stringconstant.getAllProjects).and.returnValue(new BehaviorSubject(listOfProject).asObservable());
         mailSettingComponent.getAllProject();
         tick();
         expect(mailSettingComponent.listOfProject.length).toBe(1);
@@ -101,7 +105,7 @@ describe('Mail Setiings Component Test', () => {
         let mailService = fixture.debugElement.injector.get(MailSettingService);
         let mailSetting: MailSetting = new MailSetting;
         mailSetting.Id = 1;
-        spyOn(mailService, "getProjectByIdAndModule").and.returnValue(new BehaviorSubject(mailSetting).asObservable());
+        spyOn(mailService, stringconstant.getProjectByIdAndModule).and.returnValue(new BehaviorSubject(mailSetting).asObservable());
         mailSettingComponent.getMailSettingDetailsByProjectId(1);
         tick();
         expect(mailSettingComponent.mailSetting.Id).toBe(1);
@@ -112,8 +116,8 @@ describe('Mail Setiings Component Test', () => {
         let mailSettingComponent = fixture.componentInstance;
         let mailService = fixture.debugElement.injector.get(MailSettingService);
         let groupList = Array<string>();
-        groupList = ["hello"];
-        spyOn(mailService, "getListOfGroups").and.returnValue(new BehaviorSubject(groupList).asObservable());
+        groupList = stringconstant.testGroupList;
+        spyOn(mailService, stringconstant.getListOfGroups).and.returnValue(new BehaviorSubject(groupList).asObservable());
         mailSettingComponent.getGroups();
         tick();
         expect(mailSettingComponent.groupList.length).toBe(1);

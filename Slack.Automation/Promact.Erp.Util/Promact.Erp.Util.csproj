@@ -134,6 +134,7 @@
     <Compile Include="Email\IEmailService.cs" />
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableRepository.cs" />
     <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
+    <Compile Include="ExceptionHandler\GroupNotFound.cs" />
     <Compile Include="ExceptionHandler\LeaveNotFoundForUser.cs" />
     <Compile Include="HashingMd5\IMd5Service.cs" />
     <Compile Include="HashingMd5\Md5Service.cs" />

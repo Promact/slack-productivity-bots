@@ -54,5 +54,12 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <returns>true if current user has admin role else false</returns>
         Task<bool> CurrentUserIsAdminAsync();
+
+
+        /// <summary>
+        /// This method used for get list of user emails based on role. -an
+        /// </summary>
+        /// <returns>list of teamleader ,managment and employee email</returns>
+        Task<UserEmailListAc> GetUserEmailListBasedOnRoleAsync();
     }
 }

@@ -191,7 +191,7 @@
         string TokenEmpty { get; }
         string ErrorMsg { get; }
         string ErrorMsgNewPrivateChannel { get; }
-        string From { get; }
+        string Username { get; }
         string Password { get; }
         string EnableSsl { get; }
         string IncomingWebHookUrl { get; }
@@ -429,5 +429,11 @@
         string ScrumModule { get; }
         string LeaveModule { get; }
         string Management { get; }
+        string TestEmail { get; }
+        string SecondTestEmail { get; }
+        string TeamLeaderGroup { get; }
+        string ManagementGroup { get; }
+        string TeamMembersGroup { get; }
+        string EmailListForGroup { get; }
     }
 }

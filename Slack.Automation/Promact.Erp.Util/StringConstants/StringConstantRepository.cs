@@ -505,7 +505,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "To automate your stand up meet.\nLogin with Promact and add me to your channel.\nType *start <@{0}>* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\n>Members who are marked as in-active in OAuth will not be asked questions.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can start from where you left by typing the keyword *start <@{0}>*.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+                return "To automate your stand up meet.\nLogin with Promact and add our slack app to your slack team, also add me to your channel.\nType *start <@{0}>* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\n>Members who are marked as in-active in OAuth will not be asked questions.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can start from where you left by typing the keyword *start <@{0}>*.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
             }
         }
         public string NotAUser
@@ -519,7 +519,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please add Project details of the channel on Promact";
+                return "Please login with Promact and add our slack app to your team first.";
             }
         }
         public string Leave
@@ -1270,11 +1270,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. Something bad happened :face_with_head_bandage: .\nIs this private channel created from an existing private channel ? If yes then this could be the cause of trouble.";
             }
         }
-        public string From
+        public string Username
         {
             get
             {
-                return "From";
+                return "Username";
             }
         }
         public string Password
@@ -2937,5 +2937,11 @@ namespace Promact.Erp.Util.StringConstants
         public string LeaveModule { get { return "leave"; } }
         public string ScrumModule { get { return "scrum"; } }
         public string Management { get { return "Management"; } }
+        public string TestEmail { get { return "ankit@promactinfo.com"; } }
+        public string SecondTestEmail { get { return "test@promactinfo.com"; } }
+        public string TeamLeaderGroup { get { return "Team Leader"; } }
+        public string ManagementGroup { get { return "Management"; } }
+        public string TeamMembersGroup { get { return "Team Members"; } }
+        public string EmailListForGroup { get { return "{\"teamLeader\":[],\"tamMemeber\":[],\"management\":[\"julie@promactinfo.com\",\"roshni@promactinfo.com\"]}"; } }
     }
 }

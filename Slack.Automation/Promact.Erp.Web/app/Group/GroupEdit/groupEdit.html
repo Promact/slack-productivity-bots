@@ -1,0 +1,30 @@
+﻿<form #groupForm="ngForm">
+    <div>
+        <button class="btn-green custom-btn" (click)="backToGroupList()">Back</button>
+    </div>
+    <div class="clearfix"></div>
+    <div class="half-width">
+        <label>Name:</label>
+        <input type="text" [(ngModel)]="groupModel.Name" name="groupName" (blur)="checkGroupName(groupModel.Name)" required #groupName="ngModel">
+        <div [hidden]="!(groupName.touched && !groupName.valid && groupName.errors.required)" class="error">Name is required</div>
+        <div [hidden]="!(isExistsGroupName)" class="error">Group name already exists</div>
+    </div>
+    <div class="half-width">
+        <label>Emails:</label>
+        <md2-chips [(ngModel)]="groupModel.Emails"
+                   [isRemovable]="true"
+                   [readonly]="false"
+                   placeholder="Email"
+                   [allowedPattern]="validPattern"
+                   name="emails"
+                   #emails="ngModel"
+                   [isAutoComplete]="true"
+                   [autocompleteDataList]="listOfActiveEmail"
+                   required>
+        </md2-chips>
+        <div [hidden]="!(emails.touched && !emails.valid && emails.errors.required)" class="error">Atleast one email is required</div>
+    </div>
+    <div>
+        <button class="btn-green custom-btn" (click)="updateGroup(groupModel)" [disabled]="!(groupForm.form.valid && !isExistsGroupName)">Update</button>
+    </div>
+</form>
