@@ -2943,5 +2943,6 @@ namespace Promact.Erp.Util.StringConstants
         public string ManagementGroup { get { return "Management"; } }
         public string TeamMembersGroup { get { return "Team Members"; } }
         public string EmailListForGroup { get { return "{\"teamLeader\":[],\"tamMemeber\":[],\"management\":[\"julie@promactinfo.com\",\"roshni@promactinfo.com\"]}"; } }
+        public string DetailsAndSlashForUrl { get { return "detail/"; } }
     }
 }

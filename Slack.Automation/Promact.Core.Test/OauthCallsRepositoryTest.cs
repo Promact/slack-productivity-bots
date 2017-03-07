@@ -340,7 +340,7 @@ namespace Promact.Core.Test
         public async Task GetListOfProjectsEnrollmentOfUserByUserIdAsync()
         {
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             var result = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(_stringConstant.StringIdForTest, _stringConstant.AccessTokenForTest);
             Assert.NotEqual(result.Count, 0);
@@ -354,11 +354,11 @@ namespace Promact.Core.Test
         public async Task GetAllTeamMemberByProjectIdAsync()
         {
             var responseProjects = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, 1);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, 1);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
             var result = await _oauthCallsRepository.GetAllTeamMemberByProjectIdAsync(1, _stringConstant.AccessTokenForTest);
             Assert.NotEqual(result.Count, 0);
-            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest), Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest), Times.Once);
         }
         #endregion
 
