@@ -33,8 +33,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetailsYesterday(date: string) {
-        let yesterday = new Date((new Date(date)).valueOf() - 1000 * 60 * 60 * 24).toJSON();  //subtracting milliseconds in a day
-        this.Date = yesterday;
+        this.Date = new Date((new Date(date).setDate(new Date(date).getDate() - 1))).toJSON();
         this.getScrumDetails(this.Date);
     }
 
