@@ -10,27 +10,7 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-                <div class="x_content">
-                    <div class="form-group row m-0">
-                        <label class="control-label col-md-1 selc-date">Select Date:</label>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control col-md-4" name="selectDate" [(ngModel)]="SelectedDate" [max]="MaxDate" [min]="MinDate">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-primary" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,SelectedDate)">Search</button>
-                        </div>
-                    </div>
-                    <div *ngFor="let taskmailUser of taskMail" class="tsk-view">
-                        <div class="form-group row">
-                            <label class="control-label">  Name:</label>
-                            <p>{{taskmailUser.UserName}}</p>
-                        </div>
 
-        
-    </div>
 
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -42,7 +22,7 @@
                             <input type="date" class="form-control col-md-4" name="selectDate" [(ngModel)]="SelectedDate" [max]="MaxDate" [min]="MinDate">
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-primary" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,SelectedDate)">Search</button>
+                            <button class="btn btn-success" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,SelectedDate)">Search</button>
                         </div>
                     </div>
                     <div *ngFor="let taskmailUser of taskMail" class="tsk-view">
