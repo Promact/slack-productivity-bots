@@ -32,15 +32,15 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>management details.List of object of User</returns>
         Task<List<User>> GetManagementUserNameAsync(string accessToken);
-        
-        
+
+
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given group - JJ
         /// </summary>
-        /// <param name="channelName">slack channel name</param>
+        /// <param name="projectId">Id of OAuth Project</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>object of ProjectAc</returns>
-        Task<ProjectAc> GetProjectDetailsAsync(string channelName, string accessToken);
+        Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken);
 
 
         /// <summary>

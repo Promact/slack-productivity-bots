@@ -108,7 +108,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 if (accessToken != null)
                 {
-                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelDetail.Name, accessToken);
+                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync((int)slackChannelDetail.ProjectId, accessToken);
                     if (project?.Id > 0)
                     {
                         Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id && x.ScrumDate == date);
@@ -197,14 +197,14 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
                             replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
-                                message, slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
+                                message, slackChannelId, slackChannelDetail.ProjectId, slackUserDetail.UserId);
                         }
                     }
                     else  //all other texts
                     {
                         _logger.Debug("AddScrumAnswerAsync method");
                         replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
-                            slackChannelId, slackChannelDetail.Name, slackUserDetail.UserId);
+                            slackChannelId, slackChannelDetail.ProjectId, slackUserDetail.UserId);
                     }
                 }
                 else   //channel is not registered in the database
@@ -444,10 +444,10 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="slackUserName">slack user name of the interacting user</param>
         /// <param name="message">the message that interacting user sends</param>
         /// <param name="slackChannelId">slack channel id from which message is send</param>
-        /// <param name="slackChannelName">slack channel name from which the message has been send</param>
+        /// <param name="projectId">slack channel name from which the message has been send</param>
         /// <param name="slackUserId">slack user Id of the interacting user</param>
         /// <returns>the next question statement</returns>
-        private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, string slackChannelId, string slackChannelName, string slackUserId)
+        private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, string slackChannelId, int projectId, string slackUserId)
         {
             string reply = string.Empty;
             //today's scrum of the channel 
@@ -461,8 +461,8 @@ namespace Promact.Core.Repository.ScrumRepository
                     //list of scrum questions. Type = BotQuestionType.Scrum
                     List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                     //users of the given channel name fetched from the oauth server
-                    List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
-                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
+                    List<User> users = await GetOAuthUsersAsync(projectId, accessToken);
+                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
                     ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, questions, slackChannelId);
                     //scrumStatus could be anything like the project is in-active
                     if (scrumStatus == ScrumStatus.OnGoing)

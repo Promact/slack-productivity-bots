@@ -18,6 +18,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         public string UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
         public User TeamLeader { get; set; }
-        public List<User> ApplicationUsers { get; set; }
+        public List<User> Users { get; set; }
     }
 }
