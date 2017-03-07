@@ -1,35 +1,49 @@
-﻿<div>
-    <div>
-        <div>
-            <button class="btn-green custom-btn" (click)="addNewGroup()">Add New Group</button>
+﻿<div class="group-list">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Group</h3>
+        </div>
+        <div class="title_right">
+            <div class="form-group pull-right ">
+                <button class="btn btn-success custom-btn" (click)="addNewGroup()"><i class="fa fa-plus"></i>Add New Group</button>
+            </div>
         </div>
     </div>
-    <div class="clearfix"></div>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let group of groupList">
-                    <td>{{group.Name}}</td>
-                    <td>
-                        <button class="btn-green custom-btn" (click)="editGroup(group.Id)" [disabled]="!(group.Type == 2)">Edit</button>
-                        <button class="btn-green custom-btn" (click)="delteGroupPopup(group.Id,confirm)" [disabled]="!(group.Type == 2)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <md2-dialog #confirm>
-        <md2-dialog-title>Delete Confirmation</md2-dialog-title>
-        Are you sure you want to delete?
-        <md2-dialog-footer>
-            <button button="primary" (click)="deleteGroup(confirm)">Ok</button>
-            <button button (click)="closeDeletePopup(confirm)">Cancel</button>
-        </md2-dialog-footer>
-    </md2-dialog>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                        <div class="clearfix"></div>
+                        <div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let group of groupList">
+                                        <td>{{group.Name}}</td>
+                                        <td>
+                                            <button class="btn btn-success edit-btn" (click)="editGroup(group.Id)" [disabled]="!(group.Type == 2)"><i class="fa fa-edit"></i> Edit</button>
+                                            <button class="btn btn-success" (click)="delteGroupPopup(group.Id,confirm)" [disabled]="!(group.Type == 2)"><i class="fa fa-trash"></i> Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <md2-dialog #confirm>
+                            <md2-dialog-title>Delete Confirmation</md2-dialog-title>
+                            <p>Are you sure you want to delete?</p>
+                            <md2-dialog-footer>
+                                <button class="btn btn-success" (click)="deleteGroup(confirm)">Confirm</button>
+                                <button class="btn btn-default" button (click)="closeDeletePopup(confirm)">Cancel</button>
+                            </md2-dialog-footer>
+                        </md2-dialog>
+                    </div>
+              </div>
+            </div>
+        </div>
 </div>

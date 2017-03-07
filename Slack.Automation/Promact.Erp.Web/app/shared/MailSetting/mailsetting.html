@@ -43,7 +43,7 @@
                                                [readonly]="!projectSelected"
                                                [isAutoComplete]="true"
                                                [autocompleteDataList]="groupList"
-                                               autocomplete-item-text="data" required>
+                                               autocomplete-item-text="value" required>
                                     </md2-chips>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                                                [readonly]="!projectSelected"
                                                [isAutoComplete]="true"
                                                [autocompleteDataList]="groupList"
-                                               autocomplete-item-text="data">
+                                               autocomplete-item-text="value">
                                     </md2-chips>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
 
                         <div [hidden]="!showButton">
                             <button type="submit" (click)="addMailSetting(mailSetting)" [hidden]="isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Save</button>
-                            <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!isToUpdate" class="btn btn-primary" [disabled]="!mailSettingForm.form.valid">Update</button>
+                            <button type="submit" (click)="updateMailSetting(mailSetting)" [hidden]="!isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Update</button>
                         </div>
                     </form>
                 </div>
