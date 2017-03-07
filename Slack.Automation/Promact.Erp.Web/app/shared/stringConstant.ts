@@ -73,7 +73,7 @@ export class StringConstant {
     leaveDate = "1/1/16";
     module = "module";
     scrumName = "scrumName";
-   
+
     groupUrl = "api/group";
     staticGroup = "StaticGroup";
     groupName = "name";
@@ -89,4 +89,5 @@ export class StringConstant {
     getProjectByIdAndModule = "getProjectByIdAndModule";
     testGroupList = ["hello"];
     Date = 'date';
+    emailValidPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 }
