@@ -169,7 +169,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId, string accessToken)
         {
             List<ProjectAc> projects = new List<ProjectAc>();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, userId);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             if(response != null)
             {
@@ -187,8 +187,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<List<User>> GetAllTeamMemberByProjectIdAsync(int projectId, string accessToken)
         {
             List<User> teamMembers = new List<User>();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, projectId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, projectId);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if(response != null)
             {
                 teamMembers = JsonConvert.DeserializeObject<List<User>>(response);
