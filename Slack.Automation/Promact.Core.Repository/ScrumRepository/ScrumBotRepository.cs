@@ -189,14 +189,14 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
                             replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
-                                message, slackChannelId, slackChannelDetail.ProjectId, slackUserDetail.UserId);
+                                message, slackChannelId, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId);
                         }
                     }
                     else  //all other texts
                     {
                         _logger.Debug("AddScrumAnswerAsync method");
                         replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
-                            slackChannelId, slackChannelDetail.ProjectId, slackUserDetail.UserId);
+                            slackChannelId, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId);
                     }
                 }
                 else   //channel is not registered in the database
@@ -525,12 +525,12 @@ namespace Promact.Core.Repository.ScrumRepository
         /// This method will be called when the keyword "scrum time" or "scrum halt" or "scrum resume" is encountered. - JJ
         /// </summary>
         /// <param name="slackChannelId">slack channel id from which message is send</param>
-        /// <param name="slackChannelName">slack channel name from which the message has been send</param>
+        /// <param name="projectId">slack channel name from which the message has been send</param>
         /// <param name="slackUserName">slack user name of the interacting user</param>
         /// <param name="parameter">the keyword(second word) send by the user</param>      
         /// <param name="slackUserId">slack userId of the interacting user</param>
         /// <returns>The question or the status of the scrum</returns>
-        private async Task<string> ScrumAsync(string slackChannelId, string slackChannelName, string slackUserName, string parameter, string slackUserId)
+        private async Task<string> ScrumAsync(string slackChannelId, int projectId, string slackUserName, string parameter, string slackUserId)
         {
             //because any command outside the scrum time must not be entertained except with the replies like "scrum is concluded","scrum has not started" or "scrum has not started".
             Scrum scrum = await GetScrumAsync(slackChannelId);
@@ -544,7 +544,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     if (accessToken != null)
                     {
                         List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
-                        ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
+                        ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
                         ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, null, slackChannelId);
 
                         if (await CheckUserAsync(slackUserId, users, project.TeamLeaderId))
@@ -603,13 +603,13 @@ namespace Promact.Core.Repository.ScrumRepository
         /// This method will be called when the keyword "leave @username" is received as reply from a channel member. - JJ
         /// </summary>
         /// <param name="slackChannelId">slack channel id from which message is send</param>
-        /// <param name="slackChannelName">slack channel name from which the message has been send</param>
+        /// <param name="projectId">slack channel name from which the message has been send</param>
         /// <param name="slackUserName">slack user name of the interacting user</param>
         /// <param name="slackUserId">slack user Id of the interacting user</param>
         /// <param name="applicant">slack user name of the user who is being marked on leave</param>
         /// <param name="applicantId">slack user id of the user who is being marked on leave</param>
         /// <returns>Question to the next person or other scrum status</returns>
-        private async Task<string> LeaveAsync(string slackChannelId, string slackChannelName, string slackUserName, string slackUserId, string applicant, string applicantId)
+        private async Task<string> LeaveAsync(string slackChannelId, int projectId, string slackUserName, string slackUserId, string applicant, string applicantId)
         {
             string returnMsg;
             //we will have to check whether the scrum is on going or not before calling FetchScrumStatus()
@@ -627,7 +627,7 @@ namespace Promact.Core.Repository.ScrumRepository
                         {
                             List<Question> questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                             List<User> users = await GetOAuthUsersAsync(slackChannelName, accessToken);
-                            ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
+                            ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId, accessToken);
 
                             ScrumStatus scrumStatus = await FetchScrumStatusAsync(project, users, questions, slackChannelId);
                             if (scrumStatus == ScrumStatus.OnGoing)
@@ -670,34 +670,34 @@ namespace Promact.Core.Repository.ScrumRepository
             //Checks whether channelId starts with "G". This is done inorder to make sure that only private channels are added manually
             if (IsPrivateChannel(slackChannelId))
             {
-                // get access token of user for promact oauth server
-                var accessToken = await GetAccessToken(slackUserId);
-                if (accessToken != null)
-                {
-                    //get the project details of the given channel name
-                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
-                    //add channel details only if the channel has been registered as project in OAuth server
-                    if (project?.Id > 0)
-                    {
-                        if (project.IsActive)
-                        {
-                            SlackChannelDetails slackChannelDetails = new SlackChannelDetails();
-                            slackChannelDetails.ChannelId = slackChannelId;
-                            slackChannelDetails.CreatedOn = DateTime.UtcNow;
-                            slackChannelDetails.Deleted = false;
-                            slackChannelDetails.Name = slackChannelName;
-                            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
-                            returnMsg = _stringConstant.ChannelAddSuccess;
-                        }
-                        else
-                            returnMsg = _stringConstant.ProjectInActive;
-                    }
-                    else
-                        returnMsg = _stringConstant.ProjectNotInOAuth;
-                }
-                else
-                    // if user doesn't exist then this message will be shown to user
-                    returnMsg = _stringConstant.YouAreNotInExistInOAuthServer;
+                //// get access token of user for promact oauth server
+                //var accessToken = await GetAccessToken(slackUserId);
+                //if (accessToken != null)
+                //{
+                //    //get the project details of the given channel name
+                //    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(slackChannelName, accessToken);
+                //    //add channel details only if the channel has been registered as project in OAuth server
+                //    if (project?.Id > 0)
+                //    {
+                //        if (project.IsActive)
+                //        {
+                SlackChannelDetails slackChannelDetails = new SlackChannelDetails();
+                slackChannelDetails.ChannelId = slackChannelId;
+                slackChannelDetails.CreatedOn = DateTime.UtcNow;
+                slackChannelDetails.Deleted = false;
+                slackChannelDetails.Name = slackChannelName;
+                await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+                returnMsg = _stringConstant.ChannelAddSuccess;
+                //        }
+                //        else
+                //            returnMsg = _stringConstant.ProjectInActive;
+                //    }
+                //    else
+                //        returnMsg = _stringConstant.ProjectNotInOAuth;
+                //}
+                //else
+                //    // if user doesn't exist then this message will be shown to user
+                //    returnMsg = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
                 return _stringConstant.OnlyPrivateChannel;
