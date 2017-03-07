@@ -93,7 +93,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} api/project/{id}/detail?date={date}
+        * @api {get} api/project/detail/{id}?date={date}
         * @apiVersion 1.0 
         * @apiName GetProjectDetail
         * @apiGroup ScrumReport
@@ -121,12 +121,12 @@ namespace Promact.Erp.Core.Controllers
         * }
         */
         [HttpGet]
-        [Route("{id}/detail")]
-        public async Task<IHttpActionResult> ScrumDetailsAsync(int id)
+        [Route("detail/{id:int}")]
+        public async Task<IHttpActionResult> ScrumDetailsAsync(int id,string date)
         {
-            string queryString = Request.RequestUri.Query.Substring(1,24);
-            DateTime date = Convert.ToDateTime(queryString);
-            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, date, GetUserId(User.Identity)));
+            //string queryString = Request.RequestUri.Query.Substring(1,24);
+            DateTime newDate = Convert.ToDateTime(date);
+            return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, newDate, GetUserId(User.Identity)));
         }
         #endregion
     }
