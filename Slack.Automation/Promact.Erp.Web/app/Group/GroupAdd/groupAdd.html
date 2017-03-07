@@ -10,7 +10,7 @@
         <div [hidden]="!(isExistsGroupName)" class="error">Group name already exists</div>
     </div>
     <div class="half-width">
-        <label>Emails:</label>{{groupModel.Emails}}
+        <label>Emails:</label>
         <md2-chips [(ngModel)]="groupModel.Emails"
                    [isRemovable]="true"
                    [readonly]="false"
