@@ -4,8 +4,7 @@ import { LeaveReportService } from '../leaveReport.service';
 import { ActivatedRoute } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
-
-declare let jsPDF;
+import { JSPDF } from '../../shared/json.to.pdf';
 
 @Component({
     templateUrl: './app/leaveReport/leaveReport-Details/leaveReport-Details.html',
@@ -17,10 +16,10 @@ export class LeaveReportDetailsComponent implements OnInit {
     Id: string;
     noDetails: string;
 
-    constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) { }
+    constructor(private leaveReportService: LeaveReportService, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JSPDF) { }
 
-    ngOnInit() {        
-        this.getLeaveReportDetail();       
+    ngOnInit() {
+        this.getLeaveReportDetail();
     }
 
     getLeaveReportDetail() {
@@ -40,8 +39,8 @@ export class LeaveReportDetailsComponent implements OnInit {
                     return this.noDetails;
                 }
             },
-            error => this.errorMessage = <string>error            
-            );       
+            error => this.errorMessage = <string>error
+            );
     }
 
     goBack() {
@@ -63,17 +62,6 @@ export class LeaveReportDetailsComponent implements OnInit {
                 this.leaveReportDetail[key].Reason
             ]);
         };
-
-        let doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
-
-        doc.autoTable(columns, rows, {
-            styles: {
-                theme: this.stringConstant.theme,
-                overflow: this.stringConstant.overflow,
-                pageBreak: this.stringConstant.pageBreak,
-                tableWidth: this.stringConstant.tableWidth,
-            },
-        });
-        doc.save(this.stringConstant.save);
-    }    
+        this.jsPDF.exportJsonToPdf(columns, rows);
+    }
 }

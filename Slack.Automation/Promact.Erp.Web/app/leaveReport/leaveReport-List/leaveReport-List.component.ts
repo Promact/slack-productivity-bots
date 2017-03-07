@@ -4,9 +4,7 @@ import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
-
-declare let jsPDF;
-
+import { JSPDF } from '../../shared/json.to.pdf';
 
 @Component({
     templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
@@ -19,10 +17,10 @@ export class LeaveReportListComponent implements OnInit {
     private Role: string;
     noLeaves: string;
 
-    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant,private loader: LoaderService) { }
+    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JSPDF) { }
 
-    ngOnInit() {      
-        this.getLeaveReports();        
+    ngOnInit() {
+        this.getLeaveReports();
     }
 
     getLeaveReports() {
@@ -39,11 +37,11 @@ export class LeaveReportListComponent implements OnInit {
                     this.noLeaves = this.stringConstant.noLeaves;
                     this.loader.loader = false;
                     return this.noLeaves;
-                } 
-                                   
+                }
+
             },
             error => this.errorMessage = <string>error
-        );        
+            );
     }
 
     exportDataToPdf() {
@@ -60,19 +58,8 @@ export class LeaveReportListComponent implements OnInit {
                 this.leaveReports[key].BalanceCasualLeave,
                 this.leaveReports[key].UtilisedSickLeave,
                 this.leaveReports[key].BalanceSickLeave
-                ]);
+            ]);
         };
-
-        let doc = new jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);
-
-        doc.autoTable(columns, rows, {
-            styles: {
-                theme: this.stringConstant.theme,
-                overflow: this.stringConstant.overflow,
-                pageBreak: this.stringConstant.pageBreak,
-                tableWidth: this.stringConstant.tableWidth,
-            },
-        });
-        doc.save(this.stringConstant.save);
-    }    
+        this.jsPDF.exportJsonToPdf(columns, rows);
+    }
 }
