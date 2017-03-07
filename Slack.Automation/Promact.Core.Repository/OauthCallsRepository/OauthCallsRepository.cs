@@ -89,11 +89,11 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <summary>
         /// Method to call an api from project oAuth server and get Project details of the given channel. - JJ 
         /// </summary>
-        /// <param name="channelName">slack channel name</param>
+        /// <param name="projectId">Id of OAuth Project</param>
         /// <returns>object of ProjectAc</returns>
-        public async Task<ProjectAc> GetProjectDetailsAsync(string channelName, string accessToken)
+        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
-            var requestUrl = channelName;
+            var requestUrl = projectId.ToString();
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             ProjectAc project = new ProjectAc();
             if (!string.IsNullOrEmpty(response))

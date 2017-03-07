@@ -22,5 +22,10 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         /// </summary>
         [JsonProperty("is_archived")]
         public bool Deleted { get; set; }
+
+        /// <summary>
+        /// Id of corresponding OAuth Project
+        /// </summary>
+        public int? ProjectId { get; set; }
     }
 }
