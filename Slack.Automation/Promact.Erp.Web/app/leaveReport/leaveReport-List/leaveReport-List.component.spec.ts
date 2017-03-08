@@ -18,6 +18,7 @@ import { MockRouter } from '../../shared/mock/mock.router';
 import { ActivatedRouteStub } from '../../shared/mock/mock.activatedroute';
 let promise: TestBed;
 let stringConstant = new StringConstant();
+import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 describe('LeaveReport List Tests', () => {
     class MockLoaderService { }
@@ -86,15 +87,15 @@ describe('LeaveReport List Tests', () => {
         mockLeaveReport.TotalSickLeave = parseInt(stringConstant.sickLeave);
         mockLeaveReport.TotalCasualLeave = parseInt(stringConstant.casualLeave);
         mockLeaveReports.push(mockLeaveReport);
-
-        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(LeaveReportListComponent); //Create instance of component   
+        let jsPDFMock = fixture.debugElement.injector.get(JsonToPdfService);
+        spyOn(jsPDFMock, "exportJsonToPdf").and.callFake(function fake() { })
         let leaveReportListComponent = fixture.componentInstance;
         leaveReportListComponent.leaveReports = mockLeaveReports;
         leaveReportListComponent.exportDataToPdf();
         console.log(leaveReportListComponent.leaveReports.push());
         expect(leaveReportListComponent.leaveReports.length).toBe(1);
     });
-
 
 });
 
