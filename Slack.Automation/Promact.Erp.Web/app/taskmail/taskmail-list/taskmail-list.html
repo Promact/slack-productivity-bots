@@ -9,23 +9,20 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                    <table class="table table-bordered" [md2Data]="taskMailUsers"
-                           #md2="md2DataTable"
-                           rowsPerPage="2">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th md2SortBy="name">Name</th>
-                                <th md2SortBy="action">Action</th>
+                                <th>Name</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let taskMailUser of md2.data">
+                            <tr *ngFor="let taskMailUser of taskMailUsers">
                                 <td>{{taskMailUser.UserName}}</td>
                                 <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)" type="button" class="btn btn-success btn-sm"><i class="fa fa-envelope"> </i> Task Mail</button></td>
                             </tr>
-                        </tbody>    
+                        </tbody>
                     </table>
-              
                 </div>
             </div>
         </div>
