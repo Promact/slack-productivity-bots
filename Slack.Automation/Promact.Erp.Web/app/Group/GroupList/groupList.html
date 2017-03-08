@@ -16,7 +16,7 @@
                 <div class="x_content">
                         <div class="clearfix"></div>
                         <div>
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" [md2Data]="groupList" #md2="md2DataTable" [rowsPerPage]="10">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -24,7 +24,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let group of groupList">
+                                    <tr *ngFor="let group of md2.data">
                                         <td>{{group.Name}}</td>
                                         <td>
                                             <button class="btn btn-success edit-btn" (click)="editGroup(group.Id)" [disabled]="!(group.Type == 2)"><i class="fa fa-edit"></i> Edit</button>
@@ -32,6 +32,13 @@
                                         </td>
                                     </tr>
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="9">
+                                            <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <md2-dialog #confirm>
