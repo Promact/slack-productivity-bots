@@ -3,15 +3,15 @@
     Layout = null;
 }
 @*<div>
-    <div>
         <div>
-            <h1>Reports Management</h1>
+            <div>
+                <h1>Reports Management</h1>
+            </div>
+            <div>
+                @Html.ActionLink("Log In With Promact", "AfterLogIn", "Home")
+            </div>
         </div>
-        <div>
-            @Html.ActionLink("Log In With Promact", "AfterLogIn", "Home")
-        </div>
-    </div>
-</div>*@
+    </div>*@
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,8 +29,7 @@
     <title>Slack ERP</title>
 
     <!-- Bootstrap CSS -->
-    <link href="../../Content/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="~/Scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Additionals -->
     <link href="../../Content/css/font-lineicons.css" rel="stylesheet">
     <link href="../../Content/Site.css" rel="stylesheet">
@@ -364,9 +363,11 @@
     </section>
 
     <!-- jQuery -->
-    <script src="../../Content/js/jquery.min.js"></script>
+
+    <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="../../Content/js/bootstrap.min.js"></script>
+
+    <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Custom JS -->
     <script src="../../Content/js/custom.js"></script>
 </body>

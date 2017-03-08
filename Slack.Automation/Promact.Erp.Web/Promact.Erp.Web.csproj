@@ -290,7 +290,6 @@
     <Content Include="Content\js\custom.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="karma-test-shim.js" />
     <Content Include="karma.config.js" />
@@ -328,10 +327,6 @@
     <Content Include="Scripts\bootstrap\js\tooltip.js" />
     <Content Include="Scripts\bootstrap\js\transition.js" />
     <Content Include="Scripts\bootstrap\package.js" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\fonts\fontawesome-webfont.woff" />
