@@ -25,6 +25,7 @@ export class StringConstant {
     RoleAdmin = "Admin";
     RoleTeamLeader = "TeamLeader";
     taskList = "/task";
+    scrumList ="/scrum";
     dateDefaultFormat = "yyyy-MM-dd";
     dateFormat = "dd-MM-yyyy";
     taskDetails = "task/taskdetail";
@@ -87,4 +88,5 @@ export class StringConstant {
     updateMailSetting = "updateMailSetting";
     getProjectByIdAndModule = "getProjectByIdAndModule";
     testGroupList = ["hello"];
+    Date = 'date';
 }

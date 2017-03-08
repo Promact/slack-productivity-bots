@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import { ScrumProject } from './scrumProject-List/scrumProject-List.model';
 import { ScrumDetails } from './scrumProject-Details/scrumProject-Details.model';
 import { StringConstant } from '../shared/stringConstant';
+import { URLSearchParams, QueryEncoder } from '@angular/http';
 
 @Injectable()
 
@@ -26,7 +27,9 @@ export class ScrumReportService {
      * @param Date
      */
     getScrumDetails(id: number, date: string): Observable<ScrumDetails> {
-        return this.http.get(this.stringConstant.scrum + this.stringConstant.slash + id + this.stringConstant.detail, { search: new Date(date).toJSON() })
+        let params = new URLSearchParams();
+        params.set(this.stringConstant.Date, date);
+        return this.http.get(this.stringConstant.scrum + this.stringConstant.detail + this.stringConstant.slash + id, { search: params })
             .map(res => res.json())
             .catch(this.handleError);       
     }
