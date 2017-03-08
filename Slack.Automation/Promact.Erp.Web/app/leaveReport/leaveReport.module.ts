@@ -6,7 +6,7 @@ import { LeaveReportService } from './leaveReport.service';
 import { leaveReportRoutes } from "./leaveReport.routes";
 import { SharedModule } from '../shared/shared.module';
 import { FilterPipe } from './filter.pipe';
-import { JSPDF } from '../shared/json.to.pdf';
+import { JsonToPdfService } from '../shared/jsontopdf.service';
 import { StringConstant } from '../shared/stringConstant';
 
 @NgModule({
@@ -22,7 +22,7 @@ import { StringConstant } from '../shared/stringConstant';
     ],
     providers: [
         LeaveReportService,
-        JSPDF,
+        JsonToPdfService,
         StringConstant
     ],
 })

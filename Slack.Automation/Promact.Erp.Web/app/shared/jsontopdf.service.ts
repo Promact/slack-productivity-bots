@@ -3,7 +3,7 @@ import { StringConstant } from './stringConstant';
 declare let jsPDF;
 
 @Injectable()
-export class JSPDF {
+export class JsonToPdfService {
     constructor(private stringConstant: StringConstant) {}
 
     exportJsonToPdf(columns, rows) {

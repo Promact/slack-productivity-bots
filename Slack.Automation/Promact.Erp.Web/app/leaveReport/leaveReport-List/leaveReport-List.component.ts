@@ -4,7 +4,7 @@ import { LeaveReportService } from '../leaveReport.service';
 import { Router } from '@angular/router';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
-import { JSPDF } from '../../shared/json.to.pdf';
+import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 @Component({
     templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
@@ -17,7 +17,7 @@ export class LeaveReportListComponent implements OnInit {
     private Role: string;
     noLeaves: string;
 
-    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JSPDF) { }
+    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JsonToPdfService) { }
 
     ngOnInit() {
         this.getLeaveReports();
