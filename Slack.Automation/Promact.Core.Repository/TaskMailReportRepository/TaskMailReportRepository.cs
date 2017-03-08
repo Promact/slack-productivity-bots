@@ -123,6 +123,8 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         /// <returns>list of task mail report with task mail details</returns>
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportSelectedDateAsync(string userId, string userName, string role, string createdOn, string loginId, DateTime selectedDate)
         {
+            _logger.Debug("In Repo Created On" + createdOn);
+            _logger.Debug("In Repo Selected Date " + selectedDate);
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             if (role == _stringConstant.RoleAdmin || role == _stringConstant.RoleEmployee)
             {
@@ -208,15 +210,22 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         /// <returns>task mail report</returns>
         private async Task<TaskMailReportAc> GetTaskReportAsync(string userId, string role, string userName, DateTime selectedDate, DateTime maxDate, DateTime minDate)
         {
+            _logger.Debug("In Get Task Report Async selected Date" + selectedDate);
+            _logger.Debug("In Get Task Report Async max Date" + maxDate);
+            _logger.Debug("In Get Task Report Async min Date" + minDate);
             TaskMailReportAc taskMailReportAc;
             var taskMail = (await _taskMailRepository.FirstOrDefaultAsync(y => y.EmployeeId == userId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDate)));
             if (taskMail != null)
             {
                 //getting the team members task mails details.
+                _logger.Debug("if taskmail not null then" + taskMail.CreatedOn.Date);
                 taskMailReportAc = await GetTaskMailReportAsync(userId, role, userName, taskMail.Id, taskMail.CreatedOn.Date, maxDate, minDate);
             }
             else
             {
+                _logger.Debug("if taskmail not then selected date" + selectedDate.Date);
+                _logger.Debug("if taskmail not then max Date" + maxDate.Date);
+                _logger.Debug("if taskmail not then min Date" + minDate.Date);
                 //if team member does not have any task mail than show default task mail to the end users. 
                 taskMailReportAc = GetTaskMailReport(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
             }
@@ -235,11 +244,15 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         /// <returns>list of task mail reports</returns>
         private async Task<List<TaskMailReportAc>> TaskMailsDetailAsync(string userId, string userName, string role, string createdOn, string loginId, DateTime selectedDate)
         {
+            _logger.Debug("Task Mail Detail Async created on" + createdOn);
+            _logger.Debug("Task Mail Detail Async selected date" + selectedDate);
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             //find maximum and minimum date from the employee task mails
             IEnumerable<TaskMail> taskMails = (await _taskMailRepository.FetchAsync(x => x.EmployeeId == userId)).ToList();
             DateTime maxDate = taskMails.Max(x => x.CreatedOn);
             DateTime minDate = taskMails.Min(x => x.CreatedOn);
+            _logger.Debug("Task Mail Detail Async maxDate" + maxDate);
+            _logger.Debug("Task Mail Detail Async minDate" + minDate);
             //getting task mail information.
             TaskMailReportAc taskMailReportAc = await GetTaskReportAsync(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
             taskMailReportAcList.Add(taskMailReportAc);
