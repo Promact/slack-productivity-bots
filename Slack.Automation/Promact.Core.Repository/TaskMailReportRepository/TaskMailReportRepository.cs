@@ -324,7 +324,7 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             else
             {
                 //if employee does not have any task mail than show default task mail to the end users. 
-                taskMailReportAc = GetTaskMailReport(userId, role, userName, DateTime.Now.Date, DateTime.Now.Date, DateTime.Now.Date);
+                taskMailReportAc = GetTaskMailReport(userId, role, userName, DateTime.UtcNow.Date, DateTime.UtcNow.Date, DateTime.UtcNow.Date);
             }
             taskMailReportAcList.Add(taskMailReportAc);
             return taskMailReportAcList;

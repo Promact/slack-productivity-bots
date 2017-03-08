@@ -104,18 +104,20 @@ namespace Promact.Erp.Core.Controllers
         [Route("user/{userId}")]
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
-            DateTime createdDate;
+            _logger.Debug("before convert -" + createdOn);
+            DateTime createdDate = DateTime.ParseExact(createdOn, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            _logger.Debug("after convert dd-MM-yyyy -" + createdDate);
             _logger.Debug("CreatedOn string - " + createdOn);
             if (pageType == _stringConstantRepository.NextPage)
             {
                 _logger.Debug("Before Date Add CreatedOn (For Next Day)  - " + createdOn);
-                createdDate = Convert.ToDateTime(createdOn).AddDays(+1);
+                createdDate = createdDate.AddDays(1);
                 _logger.Debug("After Date Added createdDate (For Next Day) - " + createdDate);
             }
             else
             {
                 _logger.Debug("Before Date subtract CreatedOn (For Previous Day) - " + createdOn);
-                createdDate = Convert.ToDateTime(createdOn).AddDays(-1);
+                createdDate = createdDate.AddDays(-1);
                 _logger.Debug("After Date subtract createdDate (For Previous Day) - " + createdDate);
             }
             _logger.Debug("Task Controller CreatedOn  - " + createdOn);
