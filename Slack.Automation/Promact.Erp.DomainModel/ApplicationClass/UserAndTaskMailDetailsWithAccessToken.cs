@@ -9,10 +9,15 @@ namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class UserAndTaskMailDetailsWithAccessToken
     {
+        public UserAndTaskMailDetailsWithAccessToken()
+        {
+            IsTaskMailContinue = false;
+        }
         public User User { get; set; }
         public string AccessToken { get; set; }
         public TaskMail TaskMail { get; set; }
         public string QuestionText { get; set; }
         public IEnumerable<TaskMailDetails> TaskList { get; set; }
+        public bool IsTaskMailContinue { get; set; }
     }
 }

@@ -82,8 +82,11 @@ namespace Promact.Core.Repository.TaskMailRepository
                     var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
                     var questionOrder = previousQuestion.OrderNumber;
                     // If previous task mail is on the process and user started new task mail then will need to first complete pervious one
-                    if (questionOrder <= QuestionOrder.TaskMailSend)
+                    if (questionOrder < QuestionOrder.TaskMailSend)
+                    {
                         userAndTaskMailDetailsWithAccessToken.QuestionText = await QuestionAndAnswerAsync(null, userId);
+                        userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue = true;
+                    }
                 }
                 else
                 {
@@ -94,7 +97,7 @@ namespace Promact.Core.Repository.TaskMailRepository
 
                 #region If Task mail not send for that day
                 // if question text is null or not request to start task mail then only allowed
-                if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
+                if (!userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue && (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText)))
                 {
                     SendEmailConfirmation confirmation = taskMailDetail.SendEmailConfirmation;
                     switch (confirmation)
