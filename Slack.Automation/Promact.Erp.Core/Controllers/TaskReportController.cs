@@ -5,7 +5,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.StringConstants;
 using System;
 using Promact.Core.Repository.TaskMailReportRepository;
-using Autofac.Extras.NLog;
+using NLog;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -16,11 +16,11 @@ namespace Promact.Erp.Core.Controllers
     {
         private readonly ITaskMailReportRepository _taskMailReport;
         private readonly ILogger _logger;
-        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant, ILogger logger)
+        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant)
             :base(stringConstant)
         {
             _taskMailReport = taskMailReport;
-            _logger = logger;
+            _logger = LogManager.GetLogger("TaskReportModule");
         }
 
 
@@ -105,10 +105,21 @@ namespace Promact.Erp.Core.Controllers
         public async Task<List<TaskMailReportAc>> TaskMailDetailsReportNextPreviousDateAsync(string userId, string role, string userName, string createdOn, string pageType)
         {
             DateTime createdDate;
+            _logger.Debug("CreatedOn string - " + createdOn);
             if (pageType == _stringConstantRepository.NextPage)
-            { createdDate = Convert.ToDateTime(createdOn).AddDays(+1); }
+            {
+                _logger.Debug("Before Date Add CreatedOn (For Next Day)  - " + createdOn);
+                createdDate = Convert.ToDateTime(createdOn).AddDays(+1);
+                _logger.Debug("After Date Added createdDate (For Next Day) - " + createdDate);
+            }
             else
-            { createdDate = Convert.ToDateTime(createdOn).AddDays(-1); }
+            {
+                _logger.Debug("Before Date subtract CreatedOn (For Previous Day) - " + createdOn);
+                createdDate = Convert.ToDateTime(createdOn).AddDays(-1);
+                _logger.Debug("After Date subtract createdDate (For Previous Day) - " + createdDate);
+            }
+            _logger.Debug("Task Controller CreatedOn  - " + createdOn);
+            _logger.Debug("Task Controller createdDate  - " + createdDate);
             return await _taskMailReport.TaskMailDetailsReportSelectedDateAsync(userId, userName, role, createdOn, GetUserId(User.Identity), createdDate);
         }
 
