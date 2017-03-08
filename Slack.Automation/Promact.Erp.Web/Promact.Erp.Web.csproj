@@ -293,13 +293,25 @@
     <Content Include="Content\js\jquery.min.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="karma-test-shim.js" />
     <Content Include="karma.config.js" />
     <Content Include="package.json" />
     <Content Include="bower.json" />
     <Content Include=".bowerrc" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\line-icons.eot" />
+    <Content Include="Content\fonts\line-icons.ttf" />
+    <Content Include="Content\fonts\line-icons.woff" />
+    <Content Include="app\shared\mock\mock.router.js.map" />
+    <Content Include="app\shared\mock\mock.activatedroute.js.map" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
@@ -308,10 +320,7 @@
     <Content Include="Scripts\bootstrap\dist\js\bootstrap.js" />
     <Content Include="Scripts\bootstrap\dist\js\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap\dist\js\npm.js" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\Gruntfile.js" />
     <Content Include="Scripts\bootstrap\grunt\bs-commonjs-generator.js" />
     <Content Include="Scripts\bootstrap\grunt\bs-glyphicons-data-generator.js" />
@@ -331,23 +340,6 @@
     <Content Include="Scripts\bootstrap\js\tooltip.js" />
     <Content Include="Scripts\bootstrap\js\transition.js" />
     <Content Include="Scripts\bootstrap\package.js" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\fonts\fontawesome-webfont.eot" />
-    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
-    <Content Include="Content\fonts\fontawesome-webfont.woff" />
-    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
-    <Content Include="Content\fonts\FontAwesome.otf" />
-    <Content Include="Content\fonts\line-icons.eot" />
-    <Content Include="Content\fonts\line-icons.ttf" />
-    <Content Include="Content\fonts\line-icons.woff" />
-    <Content Include="app\shared\mock\mock.router.js.map" />
-    <Content Include="app\shared\mock\mock.activatedroute.js.map" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="Scripts\jquery-validation\build\release.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.js" />
     <Content Include="Scripts\jquery-validation\dist\additional-methods.min.js" />
@@ -405,6 +397,7 @@
     <Content Include="Scripts\jquery-validation\src\ajax.js" />
     <Content Include="Scripts\jquery-validation\src\core.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_ar.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_az.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_bg.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_bn_BD.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_ca.js" />
@@ -454,6 +447,7 @@
     <Content Include="Scripts\jquery-validation\src\localization\messages_tj.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_tr.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_uk.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ur.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_vi.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_zh.js" />
     <Content Include="Scripts\jquery-validation\src\localization\messages_zh_TW.js" />
@@ -1007,20 +1001,6 @@
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Content\js\theme\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Project_Readme.html" />
-    <Content Include="Views\Home\SlackAuthorize.cshtml" />
     <Content Include="Scripts\bootstrap\.bower.json" />
     <Content Include="Scripts\bootstrap\bower.json" />
     <Content Include="Scripts\bootstrap\CHANGELOG.md" />
@@ -1032,6 +1012,9 @@
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Scripts\bootstrap\Gemfile" />
     <Content Include="Scripts\bootstrap\Gemfile.lock" />
@@ -1168,6 +1151,20 @@
     <Content Include="Scripts\respond\LICENSE-MIT" />
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Project_Readme.html" />
+    <Content Include="Views\Home\SlackAuthorize.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Promact.Core.Repository\Promact.Core.Repository.csproj">
