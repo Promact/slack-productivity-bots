@@ -16,6 +16,7 @@ import { LeaveReport } from '../../leaveReport/leaveReport-List/leaveReport-List
 import { LeaveReportDetail } from '../../leaveReport/leaveReport-Details/leaveReport-Details.model';
 let promise: TestBed;
 let stringConstant = new StringConstant();
+import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 describe('LeaveReport Detials Tests', () => {
     const routes: Routes = [];
@@ -58,7 +59,9 @@ describe('LeaveReport Detials Tests', () => {
         mockLeaveReportDetail.LeaveFrom = stringConstant.leaveDate;
         mockLeaveReportDetails.push(mockLeaveReportDetail);
 
-        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component            
+        let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component  
+        let jsPDFMock = fixture.debugElement.injector.get(JsonToPdfService);
+        spyOn(jsPDFMock, "exportJsonToPdf").and.callFake(function fake() { })          
         let leaveReportDetailsComponent = fixture.componentInstance;
         leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
         leaveReportDetailsComponent.exportDataToPdf();
