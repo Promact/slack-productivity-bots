@@ -18,8 +18,8 @@ export class TaskMailDetailsComponent implements OnInit {
     public IsMaxDate: boolean;
     public IsMinDate: boolean;
     public SelectedDate: string;
-    public MaxDate: string;
-    public MinDate: string;
+    public MaxDate: string; // For Date Picker
+    public MinDate: string; // For Date Picker
     public IsHide: boolean;
     constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
     }
