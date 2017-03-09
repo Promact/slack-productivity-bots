@@ -10,7 +10,7 @@
             <div class="x_panel">
                 <div class="x_content">
                   
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" [md2Data]="scrumProjects" #md2="md2DataTable" [rowsPerPage]="10">
                         <thead>
                             <tr>
                                 <th>Project Name</th>
@@ -18,13 +18,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let scrumProject of scrumProjects ">
+                            <tr *ngFor="let scrumProject of md2.data">
                                 <td class="scrum-name">{{scrumProject.Name}}</td>
                                 <td><a class="btn btn-success" routerLink="detail/{{scrumProject.Id}}" routerLinkActive="active">Details</a></td>
                                
                             </tr>
                           
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="9">
+                                    <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
 
                     {{noProject}}

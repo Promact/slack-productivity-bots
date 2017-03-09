@@ -9,7 +9,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" [md2Data]="taskMailUsers" #md2="md2DataTable" [rowsPerPage]="10">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -17,11 +17,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let taskMailUser of taskMailUsers">
+                            <tr *ngFor="let taskMailUser of md2.data">
                                 <td>{{taskMailUser.UserName}}</td>
                                 <td><button (click)="taskmailDetails(taskMailUser.UserId,taskMailUser.UserName,taskMailUser.UserEmail)" type="button" class="btn btn-success btn-sm"><i class="fa fa-envelope"> </i> Task Mail</button></td>
                             </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="9">
+                                    <md2-pagination [rowsPerPageSet]="[5,10,15]"></md2-pagination>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
