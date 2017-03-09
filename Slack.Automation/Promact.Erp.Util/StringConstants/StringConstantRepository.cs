@@ -1746,7 +1746,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userIsAdmin/";
+                return "isAdmin/";
             }
         }
         public string LeaveDoesnotExist
