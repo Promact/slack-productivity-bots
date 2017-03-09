@@ -143,27 +143,30 @@ namespace Promact.Core.Repository.ScrumReportRepository
                     return projects;
                 }
 
-                else if (loginUser.Role.Equals(_stringConstant.Employee))
+                else
                 {
                     List<ProjectAc> employeeProjects = new List<ProjectAc>();
                     foreach (var project in projects)
                     {
-                        foreach (var user in project.ApplicationUsers)
+                        if (project.TeamLeaderId == loginUser.Id)
+                            employeeProjects.Add(project);
+                        else
                         {
-                            if (user.Id == loginUser.Id)
+                            foreach (var user in project.ApplicationUsers)
                             {
-                                employeeProjects.Add(project);
+                                if (user.Id == loginUser.Id)
+                                    employeeProjects.Add(project);
                             }
                         }
                     }
                     return employeeProjects;
                 }
 
-                else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
-                {
-                    List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
-                    return leaderProjects;
-                }
+                //else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
+                //{
+                //    List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
+                //    return leaderProjects;
+                //}
             }
             return projects;
         }
