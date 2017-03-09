@@ -49,7 +49,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //If logged user is an employee it will return only his scrum answers
             if (loginUser.Role.Equals(_stringConstant.Employee))
             {
-                foreach (var user in project.ApplicationUsers)
+                foreach (var user in project.Users)
                 {
                     if (user.Id.Equals(loginUser.Id))
                     {
@@ -61,7 +61,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //If logged user is admin or teamleader it will return scrum answers for the entire team
             else
             {
-                foreach (var user in project.ApplicationUsers)
+                foreach (var user in project.Users)
                 {
                     EmployeeScrumDetails employeeScrumDetail = await AssignAnswersAsync(scrum, scrumDate, user);
                     employeeScrumDetails.Add(employeeScrumDetail);
@@ -148,7 +148,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
                     List<ProjectAc> employeeProjects = new List<ProjectAc>();
                     foreach (var project in projects)
                     {
-                        foreach (var user in project.ApplicationUsers)
+                        foreach (var user in project.Users)
                         {
                             if (user.Id == loginUser.Id)
                             {

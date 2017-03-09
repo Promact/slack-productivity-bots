@@ -93,8 +93,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>object of ProjectAc</returns>
         public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
-            var requestUrl = projectId.ToString();
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, projectId.ToString());
+            string response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             ProjectAc project = new ProjectAc();
             if (!string.IsNullOrEmpty(response))
             {
@@ -104,23 +104,23 @@ namespace Promact.Core.Repository.OauthCallsRepository
         }
 
 
-        /// <summary>
-        /// This method is used to fetch list of users/employees of the given channel name from OAuth server. - JJ
-        /// </summary>
-        /// <param name="channelName">slack channel name</param>
-        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
-        /// <returns>list of object of User</returns>
-        public async Task<List<User>> GetUsersByChannelNameAsync(string channelName, string accessToken)
-        {
-            string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByChannelNameUrl, channelName);
-            string response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
-            List<User> users = new List<User>();
-            if (!string.IsNullOrEmpty(response))
-            {
-                users = JsonConvert.DeserializeObject<List<User>>(response);
-            }
-            return users;
-        }
+        ///// <summary>
+        ///// This method is used to fetch list of users/employees of the given channel name from OAuth server. - JJ
+        ///// </summary>
+        ///// <param name="channelName">slack channel name</param>
+        ///// <param name="accessToken">user's access token from Promact OAuth Server</param>
+        ///// <returns>list of object of User</returns>
+        //public async Task<List<User>> GetUsersByChannelNameAsync(string channelName, string accessToken)
+        //{
+        //    string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByChannelNameUrl, channelName);
+        //    string response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+        //    List<User> users = new List<User>();
+        //    if (!string.IsNullOrEmpty(response))
+        //    {
+        //        users = JsonConvert.DeserializeObject<List<User>>(response);
+        //    }
+        //    return users;
+        //}
 
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, userId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
-            if(response != null)
+            if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
             }
@@ -189,12 +189,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
             List<User> teamMembers = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, projectId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
-            if(response != null)
+            if (response != null)
             {
                 teamMembers = JsonConvert.DeserializeObject<List<User>>(response);
             }
             return teamMembers;
         }
+        
+
         #endregion
     }
 }

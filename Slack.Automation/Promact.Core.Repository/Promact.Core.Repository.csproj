@@ -178,6 +178,8 @@
     <Compile Include="ScrumReportRepository\ScrumReportRepository.cs" />
     <Compile Include="ScrumRepository\IScrumBotRepository.cs" />
     <Compile Include="ScrumRepository\ScrumBotRepository.cs" />
+    <Compile Include="ScrumSetUpRepository\IScrumSetUpRepository.cs" />
+    <Compile Include="ScrumSetUpRepository\ScrumSetUpRepository.cs" />
     <Compile Include="ServiceRepository\IServiceRepository.cs" />
     <Compile Include="ServiceRepository\ServiceRepository.cs" />
     <Compile Include="SlackChannelRepository\ISlackChannelRepository.cs" />

@@ -35,6 +35,7 @@ using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.TaskMailReportRepository;
 using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
+using Promact.Core.Repository.ScrumSetUpRepository;
 
 namespace Promact.Core.Test
 {
@@ -58,6 +59,7 @@ namespace Promact.Core.Test
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
+            builder.RegisterType<ScrumSetUpRepository>().As<IScrumSetUpRepository>();
             builder.RegisterType<LeaveReportRepository>().As<ILeaveReportRepository>();
             builder.RegisterType<ScrumReportRepository>().As<IScrumReportRepository>();
             builder.RegisterType<OAuthLoginRepository>().As<IOAuthLoginRepository>();
