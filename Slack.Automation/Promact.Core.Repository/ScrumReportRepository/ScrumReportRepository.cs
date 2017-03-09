@@ -161,12 +161,6 @@ namespace Promact.Core.Repository.ScrumReportRepository
                     }
                     return employeeProjects;
                 }
-
-                //else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
-                //{
-                //    List<ProjectAc> leaderProjects = projects.FindAll(x => x.TeamLeaderId == loginUser.Id).ToList();
-                //    return leaderProjects;
-                //}
             }
             return projects;
         }
