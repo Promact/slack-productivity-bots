@@ -19,7 +19,8 @@ using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Core.Repository.ScrumRepository;
-using Promact.Core.Repository.ServiceRepository; 
+using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -72,6 +73,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
+            builder.RegisterType<ScrumSetUpRepository>().As<IScrumSetUpRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
             builder.RegisterType<Bot>().AsSelf();
