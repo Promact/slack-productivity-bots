@@ -221,8 +221,7 @@ namespace Promact.Core.Test
         /// A method is used to initialize variables which are repetitively used
         /// </summary>
         public void Initialize()
-        {
-            scrum.SlackChannelId = _stringConstant.TestGroupName;
+        {           
             scrum.ScrumDate = new DateTime(2016, 9, 19);
             scrum.ProjectId = 1012;
             scrum.TeamLeaderId = _stringConstant.TestId;
