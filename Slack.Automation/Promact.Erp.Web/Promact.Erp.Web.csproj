@@ -1249,6 +1249,7 @@
     <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
     <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.error.model.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.activatedroute.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.appcomponent.service.ts" />
     <TypeScriptCompile Include="app\shared\emailHashCode.ts" />

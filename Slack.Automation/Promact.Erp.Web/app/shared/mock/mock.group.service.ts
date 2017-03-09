@@ -2,6 +2,7 @@
 import { ResponseOptions, Response } from "@angular/http";
 import { GroupModel } from '../../Group/group.model';
 import { StringConstant } from '../../shared/stringConstant';
+import { ErrorModel } from "../../shared/mock/mock.error.model";
 
 let stringConstant = new StringConstant();
 
@@ -41,8 +42,12 @@ export class MockGroupService {
             mockGroup.Emails = emails;
             mockGroup.Name = stringConstant.testGroupName;
             mockGroup.Type = 2;
+            return Promise.resolve(mockGroup);
         }
-        return Promise.resolve(mockGroup);
+        else {
+            let error = new MockError(404);
+            return Promise.reject(error);
+        }
     }
 
     /*This service used for update group*
@@ -70,6 +75,7 @@ export class MockGroupService {
      * @param id
      */
     deleteGroupById(id: number) {
+
         return Promise.resolve(true);
     }
 
@@ -88,4 +94,12 @@ class MockGroup extends GroupModel {
         this.Id = id;
     }
 
+}
+
+class MockError extends ErrorModel {
+
+    constructor(status: number) {
+        super();
+        this.status = status;
+    }
 }

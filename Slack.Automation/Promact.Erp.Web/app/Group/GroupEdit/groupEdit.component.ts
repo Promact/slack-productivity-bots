@@ -17,7 +17,7 @@ export class GroupEditComponent implements OnInit {
     listOfActiveEmail: Array<string>;
 
     constructor(private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast) {
-        this.validPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        this.validPattern = this.stringConstant.emailValidPattern;
         this.groupModel = new GroupModel();
         this.isExistsGroupName = false;
     }
@@ -31,6 +31,10 @@ export class GroupEditComponent implements OnInit {
                 this.groupModel = result
                 this.loader.loader = false;
             }, err => {
+                if (err.status === 400) {
+                    this.toast.show('Group not found.');
+                }
+                this.loader.loader = false;
             });
         });
     }
@@ -49,7 +53,6 @@ export class GroupEditComponent implements OnInit {
                 this.backToGroupList();
                 this.toast.show('Group updated successfully. ');
                 this.loader.loader = false;
-
             }, err => {
             });
         }

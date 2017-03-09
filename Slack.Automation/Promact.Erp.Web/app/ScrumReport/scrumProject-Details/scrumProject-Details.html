@@ -15,7 +15,12 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-
+                    <div>
+                        <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
+                        <button class="btn btn-success" (click)="getScrumDetailsToday()">Today</button>
+                        <input class="form-control" type="date" [(ngModel)]="date" name="date" min="{{projectCreationDate}}" max="{{maxDate}}">
+                        <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
+                    </div>
                     <div class="form-group row m-0">
                         <label class="control-label">Scrum Date:</label>
                         <p> {{scrumDate}}</p>
@@ -59,17 +64,10 @@
                             
                         </div>
                    
-                        <div class="alert alert-info">
-                            <p *ngIf="employeeScrumDetail.Status">{{employeeScrumDetail.Status}}</p>
+                        <div class="alert alert-info" *ngIf="employeeScrumDetail.Status">
+                            <p>{{employeeScrumDetail.Status}}</p>
                         </div>
                      </div>
-
-                    <div>
-                        <button class="btn btn-primary" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
-                        <button class="btn btn-primary" (click)="getScrumDetailsToday()">Today</button>
-                        <input class="form-control" type="date" [(ngModel)]="date" name="date" min="{{projectCreationDate}}" max="{{maxDate}}">
-                        <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
-                    </div>
                 </div>
             </div>
         </div>

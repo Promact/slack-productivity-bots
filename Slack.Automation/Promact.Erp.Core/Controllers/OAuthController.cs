@@ -224,7 +224,7 @@ namespace Promact.Erp.Core.Controllers
                 else
                 {
                     eventQueue.Dequeue();
-                    return BadRequest();
+                    return Ok();
                 }
             }
             return null;
