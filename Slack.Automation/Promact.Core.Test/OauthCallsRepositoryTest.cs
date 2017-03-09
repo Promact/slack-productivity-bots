@@ -52,7 +52,7 @@ namespace Promact.Core.Test
         public async Task GetUserByUserIdAsync()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.FirstNameForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
             var user = await _oauthCallsRepository.GetUserByUserIdAsync(_stringConstant.FirstNameForTest, _stringConstant.AccessTokenForTest);
             Assert.Equal(user.Email, _stringConstant.ManagementEmailForTest);

@@ -40,7 +40,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<User> GetUserByUserIdAsync(string userId, string accessToken)
         {
             User userDetails = new User();
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, userId);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
             var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
             if (response != null)
             {

@@ -1312,7 +1312,7 @@ namespace Promact.Core.Test
         private void MockingOfUserDetails()
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
         }
 
@@ -1364,7 +1364,7 @@ namespace Promact.Core.Test
         /// </summary>
         private void MockingUserDetialFromSlackUserId()
         {
-            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
             GetAsyncMethodMocking(_stringConstant.UserDetailsFromOauthServer, _stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest);
         }
 
