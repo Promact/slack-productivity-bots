@@ -108,28 +108,39 @@ namespace Promact.Core.Repository.ScrumRepository
 
                 if (accessToken != null)
                 {
-                    ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync((int)slackChannelDetail.ProjectId, accessToken);
-                    if (project?.Id > 0)
+                    if (slackChannelDetail != null && slackChannelDetail.ProjectId != null)
                     {
-                        Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id && x.ScrumDate == date);
-                        if (scrum != null)
+                        ProjectAc project = await GetOAuthProjectAsync((int)slackChannelDetail.ProjectId, accessToken);
+                        if (project?.Id > 0)
                         {
-                            _scrumDataRepository.Delete(scrum.Id);
-                            int scrumDelete = await _scrumDataRepository.SaveChangesAsync();
-                            replyText += "scrum has been deleted\n";
-                            TemporaryScrumDetails temp = _tempScrumDetailsDataRepository.FirstOrDefault(x => x.ScrumId == scrum.Id);
-                            if (temp != null)
+                            Scrum scrum = _scrumDataRepository.FirstOrDefault(x => x.ProjectId == project.Id && x.ScrumDate == date);
+                            if (scrum != null)
                             {
-                                _tempScrumDetailsDataRepository.Delete(temp.Id);
-                                int deleteTemp = await _tempScrumDetailsDataRepository.SaveChangesAsync();
-                                replyText += "temp data has been deleted\n";
+                                _scrumDataRepository.Delete(scrum.Id);
+                                int scrumDelete = await _scrumDataRepository.SaveChangesAsync();
+                                if (scrumDelete == 1)
+                                    replyText += "scrum has been deleted\n";
+                                else
+                                    replyText += "scrum has not been deleted\n";
+                                TemporaryScrumDetails temp = _tempScrumDetailsDataRepository.FirstOrDefault(x => x.ScrumId == scrum.Id);
+                                if (temp != null)
+                                {
+                                    _tempScrumDetailsDataRepository.Delete(temp.Id);
+                                    int deleteTemp = await _tempScrumDetailsDataRepository.SaveChangesAsync();
+                                    if (deleteTemp == 1)
+                                        replyText += "temp data has been deleted\n";
+                                    else
+                                        replyText += "temp data has not been deleted\n";
+                                }
                             }
+                            else
+                                replyText += "no scrum cud be deleted\n";
                         }
                         else
-                            replyText += "no scrum cud be deleted\n";
+                            replyText = "Project not found in OAuth\n";
                     }
                     else
-                        replyText = "Project not found in OAuth\n";
+                        replyText = "Slack channel not linked to any Project in OAuth\n";
                 }
                 else
                     replyText = "Please login with OAuth\n";
@@ -245,10 +256,15 @@ namespace Promact.Core.Repository.ScrumRepository
             }
             else
             {
-                DateTime date = DateTime.UtcNow.Date;
-                Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-                        DbFunctions.TruncateTime(x.ScrumDate) == date);
-                _logger.Info(scrum?.ScrumDate);
+                Scrum scrum;
+                if (slackChannelDetail?.ProjectId != null)
+                {
+                    scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
+                            DbFunctions.TruncateTime(x.ScrumDate) == _today);
+                    _logger.Info(scrum?.ScrumDate);
+                }
+                else
+                    scrum = null;
                 if (await IsScrumStartLeaveCommandAsync(scrumBotId, message, messageArray)
                    || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
                    || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
@@ -451,9 +467,8 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>Object of Scrum</returns>
         private async Task<Scrum> GetScrumAsync(int projectId)
         {
-            DateTime date = DateTime.UtcNow.Date;
-            var scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 &&
-                        DbFunctions.TruncateTime(x.ScrumDate) == date);
+            var scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId &&
+                        DbFunctions.TruncateTime(x.ScrumDate) == _today);
             _logger.Info(scrum?.ScrumDate);
             return scrum;
         }
@@ -1201,9 +1216,8 @@ namespace Promact.Core.Repository.ScrumRepository
                             questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                         if (questions.Any())
                         {
-                            DateTime date = DateTime.UtcNow.Date;
-                            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => String.Compare(x.SlackChannelId, slackChannelId, StringComparison.OrdinalIgnoreCase) == 0 && x.ProjectId == project.Id
-                            && DbFunctions.TruncateTime(x.ScrumDate) == date);
+                            Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id
+                            && DbFunctions.TruncateTime(x.ScrumDate) == _today);
                             if (scrum != null)
                             {
                                 _logger.Info(scrum?.ScrumDate);
