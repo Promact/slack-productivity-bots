@@ -82,8 +82,26 @@ namespace Promact.Core.Repository.ScrumReportRepository
             _logger.Debug("scrum Answers: " + JsonConvert.SerializeObject(scrumAnswers));
             _logger.Debug("scrum:" + JsonConvert.SerializeObject(scrum));
             //Find scrum answers for a particular employee of a particular project on a specific date 
-            List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.ScrumId == scrum.Id).ToList();
-
+            List<ScrumAnswer> todayScrumAnswers = new List<ScrumAnswer>();
+            if (scrum != null)
+            {
+                todayScrumAnswers = scrumAnswers.FindAll(x => x.ScrumId == scrum.Id).ToList();
+                foreach (var todayScrumAnswer in todayScrumAnswers)
+                {
+                    if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Yesterday)
+                    {
+                        employeeScrumDetail.Answer1 = SplitScrumAnswer(todayScrumAnswer.Answer);
+                    }
+                    if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Today)
+                    {
+                        employeeScrumDetail.Answer2 = SplitScrumAnswer(todayScrumAnswer.Answer);
+                    }
+                    if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.RoadBlock)
+                    {
+                        employeeScrumDetail.Answer3 = SplitScrumAnswer(todayScrumAnswer.Answer);
+                    }
+                }
+            }
             _logger.Debug("today Scrum Answers:" + todayScrumAnswers.Count());
             _logger.Debug("User First Name:" + JsonConvert.SerializeObject(user));
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
@@ -91,21 +109,6 @@ namespace Promact.Core.Repository.ScrumReportRepository
             if (!todayScrumAnswers.Any())
             {
                 employeeScrumDetail.Status = string.Format(_stringConstant.PersonNotAvailable, scrumDate.ToString(_stringConstant.FormatForDate));
-            }
-            foreach (var todayScrumAnswer in todayScrumAnswers)
-            {
-                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Yesterday)
-                {
-                    employeeScrumDetail.Answer1 = SplitScrumAnswer(todayScrumAnswer.Answer);
-                }
-                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.Today)
-                {
-                    employeeScrumDetail.Answer2 = SplitScrumAnswer(todayScrumAnswer.Answer);
-                }
-                if (todayScrumAnswer.Question.Type == BotQuestionType.Scrum && todayScrumAnswer.Question.OrderNumber == QuestionOrder.RoadBlock)
-                {
-                    employeeScrumDetail.Answer3 = SplitScrumAnswer(todayScrumAnswer.Answer);
-                }
             }
             return employeeScrumDetail;
         }
