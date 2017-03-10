@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.LeaveReportRepository
             {
                 //Get details of the employee from oauth server
                 User user = await GetEmployeeByIdAsync(leaveRequest.EmployeeId);
-                if (user != null)
+                if (!string.IsNullOrEmpty(user.Id))
                 {
                     LeaveReport leaveReport = new LeaveReport
                     {
@@ -141,26 +141,17 @@ namespace Promact.Core.Repository.LeaveReportRepository
                 {
                     List<LeaveRequest> distinctLeaveRequests = leaveRequests.GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
                     leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests);
-                    return leaveReports;
-                }
-                //For employee, only his leave report
-                else if (loginUser.Role.Equals(_stringConstant.Employee))
-                {
-                    List<LeaveRequest> distinctLeaveRequests = leaveRequests.FindAll(x => x.EmployeeId == loginUser.Id);
-                    leaveReports = await GetLeaveReportListAsync(distinctLeaveRequests);
-                    return leaveReports;
                 }
                 //For teamleader, leave report of all the team member(s) 
-                else if (loginUser.Role.Equals(_stringConstant.TeamLeader))
+                else
                 {
-                    List<User> projectUsers = await _oauthCallsRepository.GetProjectUsersByTeamLeaderIdAsync(loginUser.Id);
+                    var projectUsers = await _oauthCallsRepository.GetListOfEmployeeAsync(loginUser.Id);
                     foreach (var projectUser in projectUsers)
                     {
-                        List<LeaveRequest> distinctLeaveRequests = leaveRequests.Where(x => x.EmployeeId.Contains(projectUser.Id)).GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
+                        List<LeaveRequest> distinctLeaveRequests = leaveRequests.Where(x => x.EmployeeId.Contains(projectUser.UserId)).GroupBy(x => x.EmployeeId).Select(x => x.FirstOrDefault()).ToList();
                         List<LeaveReport> leaveReport = await GetLeaveReportListAsync(distinctLeaveRequests);
                         leaveReports.AddRange(leaveReport);
                     }
-                    return leaveReports;
                 }
             }            
             return leaveReports;

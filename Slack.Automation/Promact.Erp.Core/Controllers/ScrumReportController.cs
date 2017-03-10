@@ -124,7 +124,6 @@ namespace Promact.Erp.Core.Controllers
         [Route("detail/{id:int}")]
         public async Task<IHttpActionResult> ScrumDetailsAsync(int id,string date)
         {
-            //string queryString = Request.RequestUri.Query.Substring(1,24);
             DateTime newDate = Convert.ToDateTime(date);
             return Ok(await _scrumReportRepository.ScrumReportDetailsAsync(id, newDate, GetUserId(User.Identity)));
         }

@@ -21,8 +21,8 @@ namespace Promact.Core.Repository.ScrumReportRepository
         #endregion
 
         #region Constructor
-        public ScrumReportRepository(IRepository<Scrum> scrumDataRepository, 
-            IRepository<ScrumAnswer> scrumAnswerDataRepository, IStringConstantRepository stringConstant, 
+        public ScrumReportRepository(IRepository<Scrum> scrumDataRepository,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository, IStringConstantRepository stringConstant,
             IOauthCallHttpContextRespository oauthCallsRepository)
         {
             _scrumDataRepository = scrumDataRepository;
@@ -47,18 +47,10 @@ namespace Promact.Core.Repository.ScrumReportRepository
             List<EmployeeScrumDetails> employeeScrumDetails = new List<EmployeeScrumDetails>();
             //Assigning answers of scrum to employees in the project based on their role
             //If logged user is an employee it will return only his scrum answers
-            if (loginUser.Role.Equals(_stringConstant.Employee))
+            if (!(project.TeamLeaderId == loginUser.Id))
             {
-                foreach (var user in project.ApplicationUsers)
-                {
-                    if (user.Id.Equals(loginUser.Id))
-                    {
-                        EmployeeScrumDetails employeeScrumDetail = await AssignAnswersAsync(scrum, scrumDate, user);
-                        employeeScrumDetails.Add(employeeScrumDetail);
-                    }
-                }
+                employeeScrumDetails.Add((await AssignAnswersAsync(scrum, scrumDate, loginUser)));
             }
-            //If logged user is admin or teamleader it will return scrum answers for the entire team
             else
             {
                 foreach (var user in project.ApplicationUsers)
@@ -70,7 +62,6 @@ namespace Promact.Core.Repository.ScrumReportRepository
             return employeeScrumDetails;
         }
 
-
         /// <summary>
         /// Method to assign scrum answers for a specific date to a particular employee
         /// </summary>
@@ -79,7 +70,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <param name="user"></param>
         /// <returns>object with scrum answers for an employee</returns>
         private async Task<EmployeeScrumDetails> AssignAnswersAsync(Scrum scrum, DateTime scrumDate, User user)
-        { 
+        {
             EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
             //Fetch all the scrum answers for a particular employee
             List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id && DbFunctions.TruncateTime(x.AnswerDate) == DbFunctions.TruncateTime(scrumDate))).ToList();
@@ -132,35 +123,14 @@ namespace Promact.Core.Repository.ScrumReportRepository
         {
             //Getting the details of the logged in user from Oauth server
             User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId);
-            //Fetch list of all the projects from oauth server
-            List<ProjectAc> projects = await _oauthCallsRepository.GetAllProjectsAsync();
-            //Checking if there are projects returned from oauth server or not
-            if (projects.Any())
+            List<ProjectAc> projects = new List<ProjectAc>();
+            if (loginUser.Role.Equals(_stringConstant.Admin))
             {
-                //Returning list of projects as per the role of the loggeed in user
-                if (loginUser.Role.Equals(_stringConstant.Admin))
-                {
-                    return projects;
-                }
-
-                else
-                {
-                    List<ProjectAc> employeeProjects = new List<ProjectAc>();
-                    foreach (var project in projects)
-                    {
-                        if (project.TeamLeaderId == loginUser.Id)
-                            employeeProjects.Add(project);
-                        else
-                        {
-                            foreach (var user in project.ApplicationUsers)
-                            {
-                                if (user.Id == loginUser.Id)
-                                    employeeProjects.Add(project);
-                            }
-                        }
-                    }
-                    return employeeProjects;
-                }
+                projects = await _oauthCallsRepository.GetAllProjectsAsync();
+            }
+            else
+            {
+                projects = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(loginUser.Id);
             }
             return projects;
         }
@@ -184,8 +154,11 @@ namespace Promact.Core.Repository.ScrumReportRepository
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(_stringConstant.FormatForDate);
             scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
+            if (loginUser.Role == _stringConstant.Admin)
+                project.TeamLeaderId = loginUser.Id;
             //getting scrum answers of employees in a specific project
             scrumProjectDetail.EmployeeScrumAnswers = await GetEmployeeScrumDetailsAsync(project, scrum, loginUser, scrumDate);
+
             return scrumProjectDetail;
         }
 

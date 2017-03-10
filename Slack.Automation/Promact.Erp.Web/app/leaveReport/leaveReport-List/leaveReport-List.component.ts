@@ -15,9 +15,12 @@ export class LeaveReportListComponent implements OnInit {
     errorMessage: string;
     private EmployeeName: string;
     private Role: string;
-    noLeaves: string;
+    noLeaves: boolean;
 
-    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JsonToPdfService) { }
+
+    constructor(private leaveReportService: LeaveReportService, private router: Router, private stringConstant: StringConstant, private loader: LoaderService, private jsPDF: JsonToPdfService) {
+        this.noLeaves = false;
+    }
 
     ngOnInit() {
         this.getLeaveReports();
@@ -34,7 +37,7 @@ export class LeaveReportListComponent implements OnInit {
                     return leaveReports;
                 }
                 else {
-                    this.noLeaves = this.stringConstant.noLeaves;
+                    this.noLeaves = true;
                     this.loader.loader = false;
                     return this.noLeaves;
                 }

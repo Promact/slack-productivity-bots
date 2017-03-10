@@ -61,5 +61,12 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <returns>list of teamleader ,managment and employee email</returns>
         Task<UserEmailListAc> GetUserEmailListBasedOnRoleAsync();
+
+        /// <summary>
+        /// Method to get list of projects from oauth-server for an user
+        /// </summary>
+        /// <param name="userId">userId of user</param>
+        /// <returns>list of project</returns>
+        Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId);
     }
 }
