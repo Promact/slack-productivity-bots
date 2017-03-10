@@ -168,26 +168,29 @@ namespace Promact.Core.Repository.Client
             _logger.Debug("List of CC : " + email.CC.Count);
             email.To = email.To.Distinct().ToList();
             email.CC = email.CC.Distinct().ToList();
-            var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x=>x.Id).ToList();
+            var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
             _logger.Debug("List of team leaders : " + teamLeaderIds.Count);
-            var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x=>x.Id).ToList();
+            var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x => x.Id).ToList();
             _logger.Debug("List of managements : " + managementIds.Count);
             var userEmail = (await _userManager.FindByIdAsync(userId)).Email;
             teamLeaderIds.AddRange(managementIds);
             foreach (var teamLeaderId in teamLeaderIds)
             {
                 var user = await _userManager.FindByIdAsync(teamLeaderId);
-                _logger.Debug("Team leader user name : " + user.UserName);
-                var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
-                if (slackUser != null)
+                if (user != null)
                 {
-                    _logger.Debug("Slack details of team leader : " + slackUser.Name);
-                    var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
-                    //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                    var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
-                    var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
-                    if (incomingWebHook != null)
-                        await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
+                    _logger.Debug("Team leader user name : " + user.UserName);
+                    var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                    if (slackUser != null)
+                    { 
+                        _logger.Debug("Slack details of team leader : " + slackUser.Name);
+                        var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
+                        //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
+                        var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+                        var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
+                        if (incomingWebHook != null)
+                            await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
+                    }
                 }
             }
             if (email.To.Any())
