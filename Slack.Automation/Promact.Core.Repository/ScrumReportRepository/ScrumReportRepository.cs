@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Promact.Core.Repository.OauthCallsRepository;
 using System.Data.Entity;
+using NLog;
+using Newtonsoft.Json;
 
 namespace Promact.Core.Repository.ScrumReportRepository
 {
@@ -18,6 +20,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -29,6 +32,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
             _oauthCallsRepository = oauthCallsRepository;
             _stringConstant = stringConstant;
+            _logger = LogManager.GetLogger("ScrumReportModule");
         }
         #endregion
 
@@ -71,11 +75,17 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <returns>object with scrum answers for an employee</returns>
         private async Task<EmployeeScrumDetails> AssignAnswersAsync(Scrum scrum, DateTime scrumDate, User user)
         {
+            _logger.Debug("Assign Answers Async: " + scrumDate);
             EmployeeScrumDetails employeeScrumDetail = new EmployeeScrumDetails();
             //Fetch all the scrum answers for a particular employee
             List<ScrumAnswer> scrumAnswers = (await _scrumAnswerDataRepository.FetchAsync(x => x.EmployeeId == user.Id && DbFunctions.TruncateTime(x.AnswerDate) == DbFunctions.TruncateTime(scrumDate))).ToList();
+            _logger.Debug("scrum Answers: " + JsonConvert.SerializeObject(scrumAnswers));
+            _logger.Debug("scrum:" + JsonConvert.SerializeObject(scrum));
             //Find scrum answers for a particular employee of a particular project on a specific date 
             List<ScrumAnswer> todayScrumAnswers = scrumAnswers.FindAll(x => x.ScrumId == scrum.Id).ToList();
+
+            _logger.Debug("today Scrum Answers:" + todayScrumAnswers.Count());
+            _logger.Debug("User First Name:" + JsonConvert.SerializeObject(user));
             employeeScrumDetail.EmployeeName = string.Format("{0} {1}", user.FirstName, user.LastName);
             //Assigning answers to specific scrum questions
             if (!todayScrumAnswers.Any())
@@ -145,12 +155,14 @@ namespace Promact.Core.Repository.ScrumReportRepository
         /// <returns>Details of the scrum</returns>
         public async Task<ScrumProjectDetails> ScrumReportDetailsAsync(int projectId, DateTime scrumDate, string userId)
         {
+            _logger.Debug("start Method : " + scrumDate + "projectId :" + projectId);
             //Getting details of the logged in user from Oauth server
             User loginUser = await _oauthCallsRepository.GetUserByEmployeeIdAsync(userId);
             //Getting details of the specific project from Oauth server
             ProjectAc project = await _oauthCallsRepository.GetProjectDetailsAsync(projectId);
             //Getting scrum for a specific project
             Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id && DbFunctions.TruncateTime(x.ScrumDate) == DbFunctions.TruncateTime(scrumDate));
+            _logger.Debug("scrume object: " + scrum);
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(_stringConstant.FormatForDate);
             scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
