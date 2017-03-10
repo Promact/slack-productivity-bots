@@ -67,9 +67,11 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Reply text to be send</param>
         public async Task UpdateMessageAsync(string responseUrl, string replyText)
         {
+            _logger.Debug("UpdateMessageAsync method");
             var slashResponseText = new SlashResponse() { Text = replyText };
             var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
             await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString);
+            _logger.Debug("UpdateMessageAsync method post method done successfully");
         }
 
         /// <summary>
@@ -79,9 +81,11 @@ namespace Promact.Core.Repository.Client
         /// <param name="replyText">Text to be send to slack</param>
         public async Task SendMessageAsync(string responseUrl, string replyText)
         {
+            _logger.Debug("SendMessageAsync method");
             var slashResponseText = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
             await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString);
+            _logger.Debug("SendMessageAsync method post method done sucessfully");
         }
 
         /// <summary>
@@ -94,8 +98,10 @@ namespace Promact.Core.Repository.Client
         /// <param name="userId">userId of user</param>
         public async Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
+            _logger.Debug("SendMessageWithAttachmentIncomingWebhookAsync method");
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
+            _logger.Debug("SendMessageWithAttachmentIncomingWebhookAsync Client Repository - GetAttachmentAndSendToTLAndManagementAsync");
             await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
@@ -108,8 +114,10 @@ namespace Promact.Core.Repository.Client
         /// <param name="userId">UserId of user</param>
         public async Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
+            _logger.Debug("SendMessageWithoutButtonAttachmentIncomingWebhookAsync method");
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
+            _logger.Debug("SendMessageWithoutButtonAttachmentIncomingWebhookAsync Client Repository - GetAttachmentAndSendToTLAndManagementAsync");
             await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
@@ -122,10 +130,12 @@ namespace Promact.Core.Repository.Client
         /// <param name="user">User details</param>
         public async Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
+            _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync method");
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
             SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
             if (slackUser != null)
             {
+                _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync user slack name : " + slackUser.Name);
                 var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                 var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
@@ -140,6 +150,7 @@ namespace Promact.Core.Repository.Client
             email.Subject = _stringConstant.EmailSubject;
             email.To.Add(user.Email);
             _emailService.Send(email);
+            _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync Email sended successfully");
         }
         #endregion
 
@@ -157,21 +168,21 @@ namespace Promact.Core.Repository.Client
             email.To = new List<string>();
             email.CC = new List<string>();
             var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
-            _logger.Debug("List of project, user has enrollement : " + listOfprojectRelatedToUser.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of project, user has enrollement : " + listOfprojectRelatedToUser.Count);
             foreach (var projectId in listOfprojectRelatedToUser)
             {
                 var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule, userId);
                 email.To.AddRange(mailsetting.To);
                 email.CC.AddRange(mailsetting.CC);
             }
-            _logger.Debug("List of To : " + email.To.Count);
-            _logger.Debug("List of CC : " + email.CC.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of To : " + email.To.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of CC : " + email.CC.Count);
             email.To = email.To.Distinct().ToList();
             email.CC = email.CC.Distinct().ToList();
             var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
-            _logger.Debug("List of team leaders : " + teamLeaderIds.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of team leaders : " + teamLeaderIds.Count);
             var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x => x.Id).ToList();
-            _logger.Debug("List of managements : " + managementIds.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of managements : " + managementIds.Count);
             var userEmail = (await _userManager.FindByIdAsync(userId)).Email;
             teamLeaderIds.AddRange(managementIds);
             foreach (var teamLeaderId in teamLeaderIds)
@@ -179,11 +190,11 @@ namespace Promact.Core.Repository.Client
                 var user = await _userManager.FindByIdAsync(teamLeaderId);
                 if (user != null)
                 {
-                    _logger.Debug("Team leader user name : " + user.UserName);
+                    _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Team leader user name : " + user.UserName);
                     var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                     if (slackUser != null)
                     { 
-                        _logger.Debug("Slack details of team leader : " + slackUser.Name);
+                        _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Slack details of team leader : " + slackUser.Name);
                         var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                         //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
                         var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
@@ -208,6 +219,7 @@ namespace Promact.Core.Repository.Client
                 email.From = userEmail;
                 email.Subject = _stringConstant.EmailSubject;
                 _emailService.Send(email);
+                _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Email send successfullt");
             }
         }
         #endregion

@@ -1061,6 +1061,8 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task LeaveAlreadyUpdateAsync()
         {
+            var updateUser = new ApplicationUser() { Email = _stringConstant.EmailForTest, UserName = _stringConstant.EmailForTest, SlackUserId = _stringConstant.TeamLeaderSlackId };
+            await _userManager.CreateAsync(updaterUser);
             await AddUser();
             await AddThreeUserIncomingWebHookAsync();
             await AddSlackThreeUsersAsync();
@@ -1142,6 +1144,34 @@ namespace Promact.Core.Test
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases to check method LeaveUpdate from Slack repository with message already updated
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task LeaveUpdateByNotUserAsync()
+        {
+            await AddUser();
+            await AddThreeUserIncomingWebHookAsync();
+            await AddSlackThreeUsersAsync();
+            leave.Status = Condition.Approved;
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            leaveResponse.CallbackId = Convert.ToString(leave.Id);
+            var replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
+            var updateText = SlackReplyMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, replyText, _stringConstant.JsonContentString);
+            SlashChatUpdateResponseAction action = new SlashChatUpdateResponseAction()
+            {
+                Name = _stringConstant.Rejected,
+                Value = _stringConstant.Rejected
+            };
+            List<SlashChatUpdateResponseAction> actions = new List<SlashChatUpdateResponseAction>();
+            actions.Add(action);
+            leaveResponse.Actions = actions;
+            await _slackRepository.UpdateLeaveAsync(leaveResponse);
+            var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
         }
         #endregion
 
