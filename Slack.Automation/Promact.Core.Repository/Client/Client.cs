@@ -182,7 +182,7 @@ namespace Promact.Core.Repository.Client
                     _logger.Debug("Team leader user name : " + user.UserName);
                     var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                     if (slackUser != null)
-                    {
+                    { 
                         _logger.Debug("Slack details of team leader : " + slackUser.Name);
                         var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
                         //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
