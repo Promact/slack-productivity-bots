@@ -22,7 +22,8 @@ namespace Promact.Erp.Core.ActionFilters
         {
             await Task.Factory.StartNew(() =>
             {
-               _logger.Error(actionExecutedContext.Exception);
+                _logger.Error(actionExecutedContext.Exception.Message);
+                _logger.Trace(actionExecutedContext.Exception.StackTrace);
             }, cancellationToken);
         }
     }
