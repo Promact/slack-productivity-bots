@@ -137,9 +137,9 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>List of leave of a particular user</returns>
-        public IEnumerable<LeaveRequest> LeaveListByUserIdOnlyApprovedAndPending(string userId)
+        public async Task<IEnumerable<LeaveRequest>> LeaveListByUserIdOnlyApprovedAndPending(string userId)
         {
-            return _leaveRequestRepository.Fetch(x => x.EmployeeId == userId && (x.Status == Condition.Approved || x.Status == Condition.Pending));
+            return (await _leaveRequestRepository.FetchAsync(x => x.EmployeeId == userId && (x.Status == Condition.Approved || x.Status == Condition.Pending)));
         }
         #endregion
     }

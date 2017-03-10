@@ -277,7 +277,7 @@ namespace Promact.Core.Repository.SlackRepository
                                                 {
                                                     _logger.Debug("LeaveApplyAsync leave apply user name : " + user.UserName);
                                                     // Method to check more than one leave cannot be applied on that date
-                                                    validDate = LeaveDateDuplicate(user.Id, startDate, endDate);
+                                                    validDate = await LeaveDateDuplicate(user.Id, startDate, endDate);
                                                     if (!validDate)
                                                     {
                                                         leaveRequest.EmployeeId = user.Id;
@@ -342,7 +342,7 @@ namespace Promact.Core.Repository.SlackRepository
                                         {
                                             
                                             // Method to check more than one leave cannot be applied on that date
-                                            bool validDate = LeaveDateDuplicate(newUser.Id, startDate, null);
+                                            bool validDate = await LeaveDateDuplicate(newUser.Id, startDate, null);
                                             if (!validDate)
                                             {
                                                 leaveRequest.EmployeeId = newUser.Id;
@@ -737,54 +737,58 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userId">User's Id</param>
         /// <param name="startDate">leave start date</param>
+        /// <param name="endDate">leave end date</param>
         /// <returns>true or false</returns>
-        private bool LeaveDateDuplicate(string userId, DateTime startDate, DateTime? endDate)
+        private async Task<bool> LeaveDateDuplicate(string userId, DateTime startDate, DateTime? endDate)
         {
             int valid = -1;
             bool validIndicator = false;
             LeaveRequest lastLeave = new LeaveRequest();
-            IEnumerable<LeaveRequest> allLeave = _leaveRepository.LeaveListByUserIdOnlyApprovedAndPending(userId);
-            foreach (var leave in allLeave)
+            IEnumerable<LeaveRequest> allLeave = await _leaveRepository.LeaveListByUserIdOnlyApprovedAndPending(userId);
+            if (allLeave != null)
             {
-                _logger.Debug("LeaveDateDuplicate Leave of user in count : " + allLeave.Count());
-                if (leave.EndDate.HasValue)
-                    valid = leave.EndDate.Value.CompareTo(startDate);
-                else
-                    valid = leave.FromDate.CompareTo(startDate);
-                switch (valid)
+                foreach (var leave in allLeave)
                 {
-                    case -1:
-                        {
-                            if (endDate != null)
-                                valid = leave.FromDate.CompareTo(endDate);
-                            else
-                                valid = leave.FromDate.CompareTo(startDate);
-                            if (valid == -1)
-                                validIndicator = false;
-                            else
+                    _logger.Debug("LeaveDateDuplicate Leave of user in count : " + allLeave.Count());
+                    if (leave.EndDate.HasValue)
+                        valid = leave.EndDate.Value.CompareTo(startDate);
+                    else
+                        valid = leave.FromDate.CompareTo(startDate);
+                    switch (valid)
+                    {
+                        case -1:
+                            {
+                                if (endDate != null)
+                                    valid = leave.FromDate.CompareTo(endDate);
+                                else
+                                    valid = leave.FromDate.CompareTo(startDate);
+                                if (valid == -1)
+                                    validIndicator = false;
+                                else
+                                    validIndicator = true;
+                            }
+                            break;
+                        case 0:
+                            {
                                 validIndicator = true;
-                        }
-                        break;
-                    case 0:
-                        {
-                            validIndicator = true;
-                        }
-                        break;
-                    case 1:
-                        {
-                            if (endDate != null)
-                                valid = leave.FromDate.CompareTo(endDate);
-                            else
-                                valid = leave.FromDate.CompareTo(startDate);
-                            if (valid == 1)
-                                validIndicator = false;
-                            else
-                                validIndicator = true;
-                        }
+                            }
+                            break;
+                        case 1:
+                            {
+                                if (endDate != null)
+                                    valid = leave.FromDate.CompareTo(endDate);
+                                else
+                                    valid = leave.FromDate.CompareTo(startDate);
+                                if (valid == 1)
+                                    validIndicator = false;
+                                else
+                                    validIndicator = true;
+                            }
+                            break;
+                    }
+                    if (validIndicator)
                         break;
                 }
-                if (validIndicator)
-                    break;
             }
             return validIndicator;
         }
