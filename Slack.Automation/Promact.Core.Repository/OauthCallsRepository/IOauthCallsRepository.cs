@@ -7,7 +7,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
 {
     public interface IOauthCallsRepository
     {
-
+         
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their slack userId. - SS
         /// </summary>
