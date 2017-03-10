@@ -15,6 +15,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Promact.Core.Test
 {
@@ -81,6 +82,7 @@ namespace Promact.Core.Test
         public async Task GetProjectsTeamLeaderTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
+            MockingGetListOfProjectsEnrollmentOfUserByUserIdAsync();
             var response = Task.FromResult(_stringConstant.TeamLeaderLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
@@ -99,6 +101,7 @@ namespace Promact.Core.Test
         public async Task GetProjectsEmployeeTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
+            MockingGetListOfProjectsEnrollmentOfUserByUserIdAsync();
             var response = Task.FromResult(_stringConstant.EmployeeLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
@@ -269,6 +272,17 @@ namespace Promact.Core.Test
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+        }
+
+        /// <summary>
+        /// Method to check GetListOfProjectsEnrollmentOfUserByUserIdAsync
+        /// </summary>
+        /// <returns></returns>
+        public void MockingGetListOfProjectsEnrollmentOfUserByUserIdAsync()
+        {
+            var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.EmployeeIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
         }
         #endregion
     }
