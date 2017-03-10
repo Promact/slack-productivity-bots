@@ -737,6 +737,7 @@ namespace Promact.Core.Repository.SlackRepository
         /// </summary>
         /// <param name="userId">User's Id</param>
         /// <param name="startDate">leave start date</param>
+        /// <param name="endDate">leave end date</param>
         /// <returns>true or false</returns>
         private async Task<bool> LeaveDateDuplicate(string userId, DateTime startDate, DateTime? endDate)
         {
