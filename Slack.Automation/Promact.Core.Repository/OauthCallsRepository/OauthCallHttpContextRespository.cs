@@ -181,7 +181,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// Method to get list of projects from oauth-server for an user
         /// </summary>
         /// <param name="userId">userId of user</param>
-        /// <returns></returns>
+        /// <returns>list of project</returns>
         public async Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId)
         {
             var accessToken = await GetCurrentUserAcceesToken();
