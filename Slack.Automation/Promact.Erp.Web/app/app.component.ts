@@ -19,10 +19,12 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loader.loader = true;
         this.hashCode = this.emailHashCode.hashCode;
         this.httpService.getUserIsAdminOrNot().subscribe((result) => {
             this.userIsAdmin = result.IsAdmin;
             this.username = result.FirstName;
         });
+        this.loader.loader = false;
     }
 }

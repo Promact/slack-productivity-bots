@@ -7,7 +7,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
 {
     public interface IOauthCallsRepository
     {
-
+         
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their slack userId. - SS
         /// </summary>
@@ -74,7 +74,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <param name="userId">userId of user</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
-        /// <returns></returns>
+        /// <returns>list of project</returns>
         Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId, string accessToken);
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// </summary>
         /// <param name="projectId">project Id</param>
         /// <param name="accessToken">access token</param>
-        /// <returns></returns>
+        /// <returns>list of team members</returns>
         Task<List<User>> GetAllTeamMemberByProjectIdAsync(int projectId, string accessToken);
     }
 }

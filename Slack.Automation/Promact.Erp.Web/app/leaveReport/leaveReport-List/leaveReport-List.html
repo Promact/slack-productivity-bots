@@ -10,13 +10,13 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                    <div class="row">
+                    <div class="row" *ngIf ="noLeaves">
                         <div class="alert alert-info col-md-12 ">
                             <p>
-                                {{noLeaves}}
+                                No employee has any approved leaves
                             </p>
                         </div>
-                    </div>
+                    </div> 
                     <div class="form-group row m-15">
                            <div class="col-md-1">Filter by:</div>
                             <div class="col-md-3"><input type="text" class="form-control" [(ngModel)]="EmployeeName" placeholder="EmployeeName"></div>

@@ -18,6 +18,7 @@ using System.Threading;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.ExceptionHandler;
+using NLog;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -35,6 +36,7 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IEmailService _emailService;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -54,6 +56,7 @@ namespace Promact.Core.Repository.SlackRepository
             _incomingWebHookRepository = incomingWebHookRepository;
             _emailTemplateRepository = emailTemplateRepository;
             _emailService = emailService;
+            _logger = LogManager.GetLogger("SlackRepository");
         }
         #endregion
 
@@ -207,6 +210,8 @@ namespace Promact.Core.Repository.SlackRepository
                 DateTime startDate, endDate, reJoinDate;
                 User user = new User();
                 string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                _logger.Debug("Date format of leave command : " + dateFormat);
+                _logger.Debug("Current Culture info : " + Thread.CurrentThread.CurrentCulture.DisplayName);
                 // checking whether string can convert to date of independent culture or not, if return true then further process will be conduct
                 bool startDateConvertorResult = DateTime.TryParseExact(slackRequest[3], dateFormat, CultureInfo.InvariantCulture,
                     DateTimeStyles.None, out startDate);
