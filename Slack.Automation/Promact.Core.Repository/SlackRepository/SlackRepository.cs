@@ -78,47 +78,52 @@ namespace Promact.Core.Repository.SlackRepository
                 SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
                 _logger.Debug("UpdateLeaveAsync User slack name : " + slackUser.Name);
                 ApplicationUser updaterUser = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
-                _logger.Debug("UpdateLeaveAsync User want to update the leave : " + updaterUser.UserName);
-                // only pending status can be modified
-                if (leave.Status == Condition.Pending)
+                if (updaterUser != null)
                 {
-                    if (leaveResponse.Actions[0].Value == _stringConstant.Approved)
+                    _logger.Debug("UpdateLeaveAsync User want to update the leave : " + updaterUser.UserName);
+                    // only pending status can be modified
+                    if (leave.Status == Condition.Pending)
                     {
-                        leave.Status = Condition.Approved;
+                        if (leaveResponse.Actions[0].Value == _stringConstant.Approved)
+                        {
+                            leave.Status = Condition.Approved;
+                        }
+                        else
+                        {
+                            leave.Status = Condition.Rejected;
+                        }
+                        await _leaveRepository.UpdateLeaveAsync(leave);
+                        _logger.Debug("UpdateLeaveAsync leave updated successfully");
+                        replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
+                                    leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+                                    leave.Reason, leave.Status, leaveResponse.User.Name);
+                        IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                        _logger.Debug("UpdateLeaveAsync user incoming webhook is null : " + string.IsNullOrEmpty(incomingWebHook.IncomingWebHookUrl));
+                        // Used to send slack message to the user about leave updation
+                        _logger.Debug("UpdateLeaveAsync Client repository - UpdateMessageAsync");
+                        await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
+                        // Used to send email to the user about leave updation
+                        _logger.Debug("UpdateLeaveAsync Email sending");
+                        EmailApplication email = new EmailApplication();
+                        email.To = new List<string>();
+                        email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+                        email.From = updaterUser.Email;
+                        email.To.Add(user.Email);
+                        email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+                        replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
+                        leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
+                        leave.RejoinDate.Value.ToShortDateString());
+                        _emailService.Send(email);
+                        _logger.Debug("UpdateLeaveAsync Email successfully send");
                     }
                     else
                     {
-                        leave.Status = Condition.Rejected;
+                        _logger.Debug("UpdateLeaveAsync leave already updated");
+                        replyText = string.Format(_stringConstant.AlreadyUpdatedMessage, leave.Status);
                     }
-                    await _leaveRepository.UpdateLeaveAsync(leave);
-                    _logger.Debug("UpdateLeaveAsync leave updated successfully");
-                    replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
-                                leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
-                                leave.Reason, leave.Status, leaveResponse.User.Name);
-                    IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
-                    _logger.Debug("UpdateLeaveAsync user incoming webhook is null : " + string.IsNullOrEmpty(incomingWebHook.IncomingWebHookUrl));
-                    // Used to send slack message to the user about leave updation
-                    _logger.Debug("UpdateLeaveAsync Client repository - UpdateMessageAsync");
-                    await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
-                    // Used to send email to the user about leave updation
-                    _logger.Debug("UpdateLeaveAsync Email sending");
-                    EmailApplication email = new EmailApplication();
-                    email.To = new List<string>();
-                    email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
-                    email.From = updaterUser.Email;
-                    email.To.Add(user.Email);
-                    email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
-                    replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
-                    leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
-                    leave.RejoinDate.Value.ToShortDateString());
-                    _emailService.Send(email);
-                    _logger.Debug("UpdateLeaveAsync Email successfully send");
                 }
                 else
-                {
-                    _logger.Debug("UpdateLeaveAsync leave already updated");
-                    replyText = string.Format(_stringConstant.AlreadyUpdatedMessage, leave.Status);
-                }
+                    replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
             }
             catch (SmtpException ex)
             {
