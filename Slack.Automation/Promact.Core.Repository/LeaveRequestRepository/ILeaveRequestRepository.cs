@@ -65,6 +65,6 @@ namespace Promact.Core.Repository.LeaveRequestRepository
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>List of leave of a particular user</returns>
-        IEnumerable<LeaveRequest> LeaveListByUserIdOnlyApprovedAndPending(string userId);
+        Task<IEnumerable<LeaveRequest>> LeaveListByUserIdOnlyApprovedAndPending(string userId);
     }
 }
