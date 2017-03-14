@@ -23,7 +23,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         status,
         balance,
         help,
-        update
+        update,
+        projects,
+        issues
     }
 
     /// <summary>
@@ -121,5 +123,52 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     {
         Null = 1,
         NotNull = 2
+    }
+
+    public enum Priority
+    {
+        Low = 3,
+        Normal = 4,
+        High = 5,
+        Urgent = 6,
+        Immediate = 7
+    }
+
+    public enum Status
+    {
+        New = 1,
+        InProgess = 2,
+        Confirmed = 3,
+        Resolved = 4,
+        Hold = 5,
+        Feedback = 6,
+        Closed = 7,
+        Rejected = 8
+    }
+
+    public enum Tracker
+    {
+        Bug = 1,
+        Feature = 2,
+        Support = 3,
+        Tasks = 4
+    }
+
+    public enum RedmineAction
+    {
+        list,
+        create,
+        changeassignee,
+        close,
+        timeentry
+    }
+
+    public enum TimeEntryActivity
+    {
+        Analysis = 7,
+        Design = 8,
+        Development = 9,
+        Testing = 10,
+        Roadblock = 11
     }
 }

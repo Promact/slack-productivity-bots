@@ -67,10 +67,10 @@ namespace Promact.Core.Test
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             var response = Task.FromResult(_stringConstant.AdminLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(true, projects.Any());
         }
@@ -85,10 +85,10 @@ namespace Promact.Core.Test
             MockingGetListOfProjectsEnrollmentOfUserByUserIdAsync();
             var response = Task.FromResult(_stringConstant.TeamLeaderLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForTeamLeaderFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(true, projects.Any());
 
@@ -104,10 +104,10 @@ namespace Promact.Core.Test
             MockingGetListOfProjectsEnrollmentOfUserByUserIdAsync();
             var response = Task.FromResult(_stringConstant.EmployeeLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForEmployeeFromOauth);
             var requestUrlProjects = _stringConstant.AllProjectUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrlProjects, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             var projects = _scrumReportRepository.GetProjectsAsync(_stringConstant.EmployeeIdForTest).Result;
             Assert.Equal(true, projects.Any());
 
@@ -125,10 +125,10 @@ namespace Promact.Core.Test
             DateTime scrumDate = new DateTime(2016, 9, 15);
             var response = Task.FromResult(_stringConstant.EmployeeLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
             var scrumProjectDetails = _scrumReportRepository.ScrumReportDetailsAsync(testProjectId, scrumDate, _stringConstant.EmployeeIdForTest).Result;
@@ -147,10 +147,10 @@ namespace Promact.Core.Test
             DateTime scrumDate = new DateTime(2016, 9, 19);
             var response = Task.FromResult(_stringConstant.EmployeeLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionOne);
@@ -173,10 +173,10 @@ namespace Promact.Core.Test
             DateTime scrumDate = new DateTime(2016, 9, 19);
             var response = Task.FromResult(_stringConstant.AdminLogin);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionTwo);
@@ -199,10 +199,10 @@ namespace Promact.Core.Test
             DateTime scrumDate = new DateTime(2016, 9, 19);
             var response = Task.FromResult(_stringConstant.TeamLeaderLoginDetails);
             var requestUrl = string.Format("{0}{1}", _stringConstant.EmployeeIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var responseProject = Task.FromResult(_stringConstant.ProjectDetail);
             var requestProjectUrl = string.Format("{0}{1}", testProjectId, _stringConstant.GetProjectDetails);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest)).Returns(responseProject);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestProjectUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProject);
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
             _questionDataRepository.Insert(questionThree);
@@ -282,7 +282,7 @@ namespace Promact.Core.Test
         {
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.EmployeeIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
         }
         #endregion
     }

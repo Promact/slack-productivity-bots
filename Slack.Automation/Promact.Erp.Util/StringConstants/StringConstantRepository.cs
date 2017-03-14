@@ -2944,5 +2944,255 @@ namespace Promact.Erp.Util.StringConstants
         public string TeamMembersGroup { get { return "Team Members"; } }
         public string EmailListForGroup { get { return "{\"teamLeader\":[],\"tamMemeber\":[],\"management\":[\"julie@promactinfo.com\",\"roshni@promactinfo.com\"]}"; } }
         public string DetailsAndSlashForUrl { get { return "detail/"; } }
+
+        #region Redmine
+        public string RedmineBaseUrl
+        {
+            get
+            {
+                return "https://redmine.promactinfo.com/";
+            }
+        }
+
+        public string RequestToEnterProperRedmineAction
+        {
+            get
+            {
+                return "Please enter a proper redmine action. Actions are - {0} {1} {2}";
+            }
+        }
+
+        public string RedmineHelp
+        {
+            get
+            {
+                return string.Format("/redmine projects list - list all projects{0}/redmine issues list [projectId] - get all issues assigned to me in particular project{0}/redmine issues create [projectId] [Subject] [Description] [Priority] [Status] [Tracker] [AssignTo] - to create issue{0}/redmine issues changeassignee [issueId] [AssignedTo] - to change assign person{0}/redmine issues close [issueId] - to close the issue{0}/redmine issues timeentry [issueId] [hours] [date] [activity] - to add time entity for task", Environment.NewLine);
+            }
+        }
+
+        public string RedmineApiKey
+        {
+            get
+            {
+                return "X-Redmine-API-Key";
+            }
+        }
+
+        public string RedmineProjectListAssignToMeUrl
+        {
+            get
+            {
+                return "/projects.json";
+            }
+        }
+
+        public string NoProjectFoundForUser
+        {
+            get
+            {
+                return "No project found for you";
+            }
+        }
+
+        public string ProperRedmineIssueAction
+        {
+            get
+            {
+                return "Please enter a proper redmine issue action. Actions are - {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string ProperProjectId
+        {
+            get
+            {
+                return "Enter a numeric projectId";
+            }
+        }
+
+        public string RedmineIssueListAssignToMeByProjectIdUrl
+        {
+            get
+            {
+                return "issues.json?project_id={0}&assigned_to_id=me";
+            }
+        }
+
+        public string ProjectDoesNotExistForThisId
+        {
+            get
+            {
+                return "Project does not exist for Id - {0}";
+            }
+        }
+
+        public string ErrorInCreatingIssue
+        {
+            get
+            {
+                return "There are some error while creating issue in Redmine";
+            }
+        }
+
+        public string JsonApplication
+        {
+            get
+            {
+                return "application/json";
+            }
+        }
+
+        public string IssueSuccessfullyCreatedMessage
+        {
+            get
+            {
+                return "Issue successfully created Task no - {0}";
+            }
+        }
+
+        public string RedmineIssueUrl
+        {
+            get
+            {
+                return "issues.json";
+            }
+        }
+
+        public string NoUserFoundInProject
+        {
+            get
+            {
+                return "No user found for project Id - {0}";
+            }
+        }
+
+        public string IssueDoesNotExist
+        {
+            get
+            {
+                return "Issue {0} doesnot exist in Redmine";
+            }
+        }
+
+        public string IssueDetailsUrl
+        {
+            get
+            {
+                return "issues/{0}.json";
+            }
+        }
+
+        public string RedmineIssueUpdateUrl
+        {
+            get
+            {
+                return "{0}{1}{2}.json";
+            }
+        }
+
+        public string IssueUrl
+        {
+            get
+            {
+                return "issues/";
+            }
+        }
+
+        public string ErrorInUpdateIssue
+        {
+            get
+            {
+                return "There are some error while updating issue in Redmine";
+            }
+        }
+
+        public string IssueSuccessfullUpdated
+        {
+            get
+            {
+                return "Issue successfully created Task no - {0}";
+            }
+        }
+
+        public string TimeEntryUrl
+        {
+            get
+            {
+                return "time_entries.json";
+            }
+        }
+
+        public string HourIsNotNumericMessage
+        {
+            get
+            {
+                return "Please enter a numeric value for hour";
+            }
+        }
+
+        public string TimeEntryActivityErrorMessage
+        {
+            get
+            {
+                return "Please enter a proper activity. TimeEntryActivity :- {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string TimeEnrtyAddSuccessfully
+        {
+            get
+            {
+                return "Time entry has been successfully added in issue - {0}";
+            }
+        }
+
+        public string ErrorInAddingTimeEntry
+        {
+            get
+            {
+                return "Error in updating time entry of issue - {0}";
+            }
+        }
+
+        public string RedmineIssueMessageFormat
+        {
+            get
+            {
+                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.";
+            }
+        }
+
+        public string RedminePriorityErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Priority. Priority are :- {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string RedmineStatusErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Status. Status are :- {0} {1} {2} {3} {4} {5} {6} {7}";
+            }
+        }
+
+        public string RedmineTrackerErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Tracker. Tracker are :- {0} {1} {2} {3}";
+            }
+        }
+
+        public string UserByProjectIdUrl
+        {
+            get
+            {
+                return "/projects/{0}/memberships.json";
+            }
+        }
+        #endregion
     }
 }
