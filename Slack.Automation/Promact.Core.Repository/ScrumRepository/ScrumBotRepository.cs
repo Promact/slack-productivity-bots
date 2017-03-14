@@ -236,6 +236,17 @@ namespace Promact.Core.Repository.ScrumRepository
                 }
                 else   //channel is not registered in the database
                 {
+                    Scrum scrum;
+                    if (slackChannelDetail?.ProjectId != null)
+                    {
+                        DateTime today = DateTime.UtcNow.Date;
+                        scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
+                                DbFunctions.TruncateTime(x.ScrumDate) == today);
+                        _logger.Info(scrum?.ScrumDate);
+                    }
+                    else
+                        scrum = null;
+
                     //If channel is not registered in the database and the command encountered is "add channel channelname"
                     if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
                         String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
@@ -243,11 +254,11 @@ namespace Promact.Core.Repository.ScrumRepository
                         _logger.Debug("AddChannelManuallyAsync method");
                         replyText = await _scrumSetUpRepository.AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
                     }
-                    //If any of the commands which scrum bot recognizes is encountered
-                    else if ((((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) &&
-                              messageArray.Length == 2) ||
-                             String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
-                             String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                    //If any of the commands which scrum bot recognizes is encountered                  
+                    else if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
+                       || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                       || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
+                       || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
                     {
                         _logger.Debug("Channel is not in our db so give instruction to add channel");
                         replyText = _stringConstant.ChannelAddInstruction;
@@ -259,13 +270,14 @@ namespace Promact.Core.Repository.ScrumRepository
                 Scrum scrum;
                 if (slackChannelDetail?.ProjectId != null)
                 {
+                    DateTime today = DateTime.UtcNow.Date;
                     scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
-                            DbFunctions.TruncateTime(x.ScrumDate) == _today);
+                            DbFunctions.TruncateTime(x.ScrumDate) == today);
                     _logger.Info(scrum?.ScrumDate);
                 }
                 else
                     scrum = null;
-                if (await IsScrumStartLeaveCommandAsync(scrumBotId, message, messageArray)
+                if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
                    || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
                    || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
                    || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
@@ -277,7 +289,7 @@ namespace Promact.Core.Repository.ScrumRepository
             return replyText;
         }
 
-                
+
         #region Temporary Scrum Details
 
 
@@ -426,13 +438,13 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         /// <summary>
-        /// Checks whether the command is a valid scrum start or scrum leave command - JJ
+        /// Checks whether the command is a valid scrum start,leave or link command - JJ
         /// </summary>
         /// <param name="scrumBotId">Slack Id of the scrum bot</param>
         /// <param name="message">the actual message</param>
         /// <param name="messageArray">message divided by space</param>
         /// <returns>true if it is a valid start or leave command else false</returns>
-        private async Task<bool> IsScrumStartLeaveCommandAsync(string scrumBotId, string message, string[] messageArray)
+        private async Task<bool> IsScrumStartLeaveLinkCommandAsync(string scrumBotId, string message, string[] messageArray)
         {
             if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
             {
@@ -456,6 +468,27 @@ namespace Promact.Core.Repository.ScrumRepository
                     }
                 }
             }
+            else if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
+                        String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                string[] msgArray = message.Split(null);
+                int messageLength = message.Length - 1;
+                int first = message.IndexOf('"') + 1; //first index of ".
+                int last = message.IndexOf('"', message.IndexOf('"') + 1);//last index of "
+                int projectNameStartIndex = msgArray[0].Length + 2;// index from where the name of the project starts
+
+                if (messageLength == last && first == projectNameStartIndex)
+                {
+                    //fetch the project name from the message string
+                    string name = message.Substring(first, last - first);
+                    if (string.IsNullOrEmpty(name))// ex. link ""
+                        return false;// it will be considered as a normal message
+                    return true;
+                }
+                return false;
+            }
+            else if (String.Compare(message, _stringConstant.ListLinks, StringComparison.OrdinalIgnoreCase) == 0)
+                return true;
             return false;
         }
 
@@ -467,8 +500,9 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>Object of Scrum</returns>
         private async Task<Scrum> GetScrumAsync(int projectId)
         {
+            DateTime today = DateTime.UtcNow.Date;
             var scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId &&
-                        DbFunctions.TruncateTime(x.ScrumDate) == _today);
+                        DbFunctions.TruncateTime(x.ScrumDate) == today);
             _logger.Info(scrum?.ScrumDate);
             return scrum;
         }
@@ -1216,8 +1250,9 @@ namespace Promact.Core.Repository.ScrumRepository
                             questions = await _botQuestionRepository.GetQuestionsByTypeAsync(BotQuestionType.Scrum);
                         if (questions.Any())
                         {
+                            DateTime today = DateTime.UtcNow.Date;
                             Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id
-                            && DbFunctions.TruncateTime(x.ScrumDate) == _today);
+                            && DbFunctions.TruncateTime(x.ScrumDate) == today);
                             if (scrum != null)
                             {
                                 _logger.Info(scrum?.ScrumDate);

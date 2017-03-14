@@ -592,7 +592,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Project is not active in OAuth";
             }
         }
-       public string AlreadyLinked
+        public string AlreadyLinked
         {
             get
             {
@@ -943,10 +943,17 @@ namespace Promact.Erp.Util.StringConstants
                 return "Bot Not Found";
             }
         }
+        public string OAuthProjName
+        {
+            get
+            {
+                return "Sci Test Bot";
+            }
+        }
         public string StringIdForTest
         {
             get
-            {           
+            {
                 return "13b0f2ca-92f5-4713-a67e-37e50172e148";
             }
         }
@@ -1014,7 +1021,78 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\"firstName\":\"siddhartha\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":10.0,\"numberOfSickLeave\":5.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ49KJ4\",\"slackUserName\":\"siddhartha\",\"slackUserId\":\"U0HJ49KJ4\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Management\",\"claims\":[],\"logins\":[]}";
             }
         }
+        public string ProjectAndTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string ProjectTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string ProjectTeamLeaderInActiveDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":false,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string UnlinkCommand
+        {
+            get
+            {
+                return "unlink \"Two Tester\"";
 
+            }
+        }
+        public string UnlinkTest
+        {
+            get
+            {
+                return "unlink \"Sci bot testing\"";
+
+            }
+        }      
+        public string InActiveProjectTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":false,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string LinkChannelNoName
+        {
+            get
+            {
+                return "Link \"\"";
+            }
+        }
+        public string ListOfLinks
+        {
+            get
+            {
+                return "\r\n*Two Tester* - `testbotgroup`\r\n";
+            }
+        }
+        public string LinkTest
+        {
+            get
+            {
+                return "link \"Two Tester\"";
+            }
+        }
+        public string OAuthProjectName
+        {
+            get
+            {
+                return "Two Tester";
+            }
+        }
         public string SlashCommandText
         {
             get
