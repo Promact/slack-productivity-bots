@@ -49,7 +49,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             User userDetails = new User();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, employeeId, _stringConstant.UserDetailUrl);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 userDetails = JsonConvert.DeserializeObject<User>(response);
@@ -67,7 +67,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             List<User> projectUsers = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, teamLeaderId, _stringConstant.ProjectUsersByTeamLeaderId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 projectUsers = JsonConvert.DeserializeObject<List<User>>(response);
@@ -85,7 +85,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = _stringConstant.AllProjectUrl;
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
@@ -104,7 +104,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             ProjectAc project = new ProjectAc();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, projectId, _stringConstant.GetProjectDetails);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 project = JsonConvert.DeserializeObject<ProjectAc>(response);
@@ -126,7 +126,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             _logger.Info("basedUrl :" + _stringConstant.UserUrl);
             _logger.Info("requestUrl :" + requestUrl);
             _logger.Info("accessToken :" + accessToken);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return userRoleListAc;
         }
@@ -141,7 +141,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             var accessToken = await GetCurrentUserAcceesToken();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, userId, _stringConstant.TeamMembersUrl);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             var userRoleListAc = JsonConvert.DeserializeObject<List<UserRoleAc>>(response);
             return userRoleListAc;
         }
@@ -155,7 +155,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             bool result = false;
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, (await GetCurrentUserDetails()).Id);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 result = JsonConvert.DeserializeObject<bool>(response);
@@ -171,7 +171,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             var accessToken = await GetCurrentUserAcceesToken();
             UserEmailListAc userEmailListAc = new UserEmailListAc(); 
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, accessToken, _stringConstant.Bearer);
             if (response != null)
                 userEmailListAc = JsonConvert.DeserializeObject<UserEmailListAc>(response);
             return userEmailListAc;
@@ -187,7 +187,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             var accessToken = await GetCurrentUserAcceesToken();
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);

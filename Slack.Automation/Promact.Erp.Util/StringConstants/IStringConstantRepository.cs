@@ -472,5 +472,39 @@
         string EmailListForGroup { get; }
         string DetailsAndSlashForUrl { get; }
         string UserDetailsNotFound { get; }
+
+        #region Redmine
+        string RedmineBaseUrl { get; }
+        string RequestToEnterProperRedmineAction { get; }
+        string RedmineHelp { get; }
+        string RedmineApiKey { get; }
+        string RedmineProjectListAssignToMeUrl { get; }
+        string NoProjectFoundForUser { get; }
+        string ProperRedmineIssueAction { get; }
+        string ProperProjectId { get; }
+        string RedmineIssueListAssignToMeByProjectIdUrl { get; }
+        string ProjectDoesNotExistForThisId { get; }
+        string ErrorInCreatingIssue { get; }
+        string JsonApplication { get; }
+        string IssueSuccessfullyCreatedMessage { get; }
+        string RedmineIssueUrl { get; }
+        string NoUserFoundInProject { get; }
+        string IssueDoesNotExist { get; }
+        string IssueDetailsUrl { get; }
+        string RedmineIssueUpdateUrl { get; }
+        string IssueUrl { get; }
+        string ErrorInUpdateIssue { get; }
+        string IssueSuccessfullUpdated { get; }
+        string TimeEntryUrl { get; }
+        string HourIsNotNumericMessage { get; }
+        string TimeEntryActivityErrorMessage { get; }
+        string TimeEnrtyAddSuccessfully { get; }
+        string ErrorInAddingTimeEntry { get; }
+        string RedmineIssueMessageFormat { get; }
+        string RedminePriorityErrorMessage { get; }
+        string RedmineStatusErrorMessage { get; }
+        string RedmineTrackerErrorMessage { get; }
+        string UserByProjectIdUrl { get; }
+        #endregion
     }
 }

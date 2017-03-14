@@ -105,7 +105,7 @@ namespace Promact.Core.Test
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
@@ -125,8 +125,8 @@ namespace Promact.Core.Test
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             MockingUserDetialFromSlackUserId();
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString), Times.AtLeastOnce);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJsonTransform, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -139,7 +139,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -182,8 +182,8 @@ namespace Promact.Core.Test
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             Assert.Equal(Condition.Approved, leaveUpdated.Status);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString, null, null), Times.Once);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
 
@@ -227,8 +227,8 @@ namespace Promact.Core.Test
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             Assert.Equal(Condition.Rejected, leaveUpdated.Status);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString, null, null), Times.Once);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
 
@@ -247,7 +247,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Promact.Core.Test
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             MockingUserDetialFromSlackUserId();
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.List;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -333,11 +333,11 @@ namespace Promact.Core.Test
             var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.LeaveDoesnotExist, _stringConstant.OrElseString, _stringConstant.CancelLeaveError);
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             slackLeave.Text = _stringConstant.LeaveCancelCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.WrongLeaveCancelCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -393,7 +393,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveStatusCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveStatusTestForOwn;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -446,14 +446,14 @@ namespace Promact.Core.Test
             replyText += string.Format(_stringConstant.FirstAndSecondIndexStringFormat, Environment.NewLine, _stringConstant.LeaveBalanceSickReplyTextForTest);
             var response = Task.FromResult(_stringConstant.CasualLeaveResponse);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var allowedLeaveRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, _stringConstant.StringIdForTest);
             GetAsyncMethodMocking(_stringConstant.LeaveAllowed, _stringConstant.ProjectUserUrl, allowedLeaveRequestUrl, _stringConstant.AccessTokenForTest);
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.SlackHelpMessage;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -483,7 +483,7 @@ namespace Promact.Core.Test
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             slackLeave.ResponseUrl = _stringConstant.IncomingWebHookUrl;
             await AddThreeUserIncomingWebHookAsync();
             await AddUser();
@@ -501,8 +501,8 @@ namespace Promact.Core.Test
             PostAsyncMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -518,7 +518,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -538,7 +538,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.SlashCommandTextSickForUser;
             var adminResponse = Task.FromResult(_stringConstant.True);
             var adminrequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.UserSlackId);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(adminResponse);
             var replyText = _attachmentRepository.ReplyTextSick(_stringConstant.FirstNameForTest, leave);
             var userTextJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
@@ -551,9 +551,9 @@ namespace Promact.Core.Test
             PostAsyncMethodMocking(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString);
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
-            _mockHttpClient.Verify(x => x.PostAsync(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, userTextJson, _stringConstant.JsonContentString, null, null), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(thirdUserIncomingWebHook.IncomingWebHookUrl, managementTextJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -571,7 +571,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.NotTypeOfLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace Promact.Core.Test
             var replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -605,7 +605,7 @@ namespace Promact.Core.Test
             var replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -621,7 +621,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -633,7 +633,7 @@ namespace Promact.Core.Test
             var replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.Star, _stringConstant.ErrorMsg, _stringConstant.Star);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.ErrorAsync(slackLeave.ResponseUrl, _stringConstant.ErrorMsg);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -660,7 +660,7 @@ namespace Promact.Core.Test
             await AddSlackThreeUsersAsync();
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.StringIdForTest, _stringConstant.UserDetailUrl);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(1), replyText);
             var teamLeaderText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + _stringConstant.FirstNameForTest, Username = _stringConstant.LeaveBot, Attachments = attachment };
@@ -673,9 +673,9 @@ namespace Promact.Core.Test
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplate(leave));
             MockingEmailService(_emailTemplateRepository.EmailServiceTemplateSickLeave(leave));
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(secondUserIncomingWebHook.IncomingWebHookUrl, teamLeaderTextJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, userTextJson, _stringConstant.JsonContentString, null, null), Times.AtLeastOnce);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.AtLeastOnce);
         }
 
@@ -698,7 +698,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -719,7 +719,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -740,7 +740,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -761,7 +761,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -781,7 +781,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -797,7 +797,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.LeaveNoUserErrorMessage;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -812,7 +812,7 @@ namespace Promact.Core.Test
             listOfProject.Add(new ProjectAc() { Id = 1 });
             var responseProjects = Task.FromResult(JsonConvert.SerializeObject(listOfProject));
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             await AddThreeUserIncomingWebHookAsync();
             SmtpException ex = new SmtpException();
             await AddUser();
@@ -828,7 +828,7 @@ namespace Promact.Core.Test
             _mockEmail.Setup(x => x.Send(It.IsAny<EmailApplication>())).Throws(ex);
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -843,7 +843,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.AdminErrorMessageApplySickLeave + _stringConstant.SorryYouCannotApplyLeave;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -864,7 +864,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -886,7 +886,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -904,7 +904,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -921,7 +921,7 @@ namespace Promact.Core.Test
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateCL;
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -938,7 +938,7 @@ namespace Promact.Core.Test
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateFirstExample;
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -955,7 +955,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBeyondDateSecondExample;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -972,7 +972,7 @@ namespace Promact.Core.Test
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             slackLeave.Text = _stringConstant.LeaveWrongCommandForBackDateSL;
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -993,7 +993,7 @@ namespace Promact.Core.Test
             MockingUserDetialFromSlackUserId();
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1014,7 +1014,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.SlashCommandUpdateForBeyondStartDateSecondExample;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1033,7 +1033,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.SlashCommandText;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1051,7 +1051,7 @@ namespace Promact.Core.Test
             slackLeave.Text = _stringConstant.SlashCommandTextSick;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1081,7 +1081,7 @@ namespace Promact.Core.Test
             leaveResponse.Actions = actions;
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1095,7 +1095,7 @@ namespace Promact.Core.Test
             var replyText = _stringConstant.RequestToAddSlackApp;
             var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
             await _slackRepository.LeaveRequestAsync(slackLeave);
-            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1141,8 +1141,8 @@ namespace Promact.Core.Test
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             Assert.Equal(Condition.Approved, leaveUpdated.Status);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString), Times.Once);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, textJson, _stringConstant.JsonContentString, null, null), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString, null, null), Times.Once);
             _mockEmail.Verify(x => x.Send(It.IsAny<EmailApplication>()), Times.Once);
         }
 
@@ -1171,7 +1171,7 @@ namespace Promact.Core.Test
             leaveResponse.Actions = actions;
             await _slackRepository.UpdateLeaveAsync(leaveResponse);
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
-            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
+            _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString, null, null), Times.Once);
         }
 
         /// <summary>
@@ -1320,7 +1320,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserDetailsUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
         }
 
         /// <summary>
@@ -1357,7 +1357,7 @@ namespace Promact.Core.Test
         private void PostAsyncMethodMocking(string baseUrl, string contentString, string contentHeader)
         {
             var responseString = Task.FromResult(_stringConstant.Ok);
-            _mockHttpClient.Setup(x => x.PostAsync(baseUrl, contentString, contentHeader)).Returns(responseString);
+            _mockHttpClient.Setup(x => x.PostAsync(baseUrl, contentString, contentHeader, null, null)).Returns(responseString);
         }
 
         /// <summary>
@@ -1370,7 +1370,7 @@ namespace Promact.Core.Test
         private void GetAsyncMethodMocking(string toReturn, string baseUrl, string contentUrl, string accessToken)
         {
             var responseString = Task.FromResult(toReturn);
-            _mockHttpClient.Setup(x => x.GetAsync(baseUrl, contentUrl, accessToken)).Returns(responseString);
+            _mockHttpClient.Setup(x => x.GetAsync(baseUrl, contentUrl, accessToken, _stringConstant.Bearer)).Returns(responseString);
         }
 
         /// <summary>
@@ -1380,7 +1380,7 @@ namespace Promact.Core.Test
         {
             var response = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(response);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(response);
         }
 
         /// <summary>
@@ -1390,7 +1390,7 @@ namespace Promact.Core.Test
         {
             var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
             var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(teamLeaderResponse);
         }
 
         /// <summary>
@@ -1400,7 +1400,7 @@ namespace Promact.Core.Test
         {
             var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
             var managementRequestUrl = _stringConstant.ManagementDetailsUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(managementResponse);
         }
 
         /// <summary>
@@ -1442,7 +1442,7 @@ namespace Promact.Core.Test
         {
             var adminResponse = Task.FromResult(_stringConstant.True);
             var adminrequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest)).Returns(adminResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, adminrequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(adminResponse);
         }
 
         private async Task AddThreeUserIncomingWebHookAsync()

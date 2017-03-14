@@ -90,20 +90,20 @@ namespace Promact.Core.Test
 
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
             var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null, _stringConstant.Bearer)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(_stringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, _stringConstant.AccessTokenSlack);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null)).Returns(userDetailsResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null, _stringConstant.Bearer)).Returns(userDetailsResponse);
             var channelDetailsResponse = Task.FromResult(_stringConstant.ChannelDetailsResponseText);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null)).Returns(channelDetailsResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null, _stringConstant.Bearer)).Returns(channelDetailsResponse);
             var groupDetailsResponse = Task.FromResult(_stringConstant.GroupDetailsResponseText);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null)).Returns(groupDetailsResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null, _stringConstant.Bearer)).Returns(groupDetailsResponse);
 
             await _oAuthLoginRepository.AddSlackUserInformationAsync(_stringConstant.MessageTsForTest);
-            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null), Times.Once);
-            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null), Times.Once);
-            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null), Times.Once);
-            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null), Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null, _stringConstant.Bearer), Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackUserListUrl, userDetailsRequest, null, _stringConstant.Bearer), Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackChannelListUrl, userDetailsRequest, null, _stringConstant.Bearer), Times.Once);
+            _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null, _stringConstant.Bearer), Times.Once);
         }
 
         /// <summary>
