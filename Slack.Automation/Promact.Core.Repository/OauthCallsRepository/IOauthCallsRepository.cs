@@ -34,7 +34,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
 
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// Method to call an api from project oAuth server and get Project details of the project id - JJ
         /// </summary>
         /// <param name="projectId">Id of OAuth Project</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
