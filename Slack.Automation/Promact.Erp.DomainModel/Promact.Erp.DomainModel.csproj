@@ -159,6 +159,7 @@
     <Compile Include="ApplicationClass\EmailHashCodeAC.cs" />
     <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />
     <Compile Include="ApplicationClass\UserEmailListAc.cs" />
+    <Compile Include="JSonConverterUtil\SlackChannelDetailsConverter.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />

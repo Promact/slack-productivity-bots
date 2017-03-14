@@ -35,8 +35,8 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository, 
-            ISlackUserRepository slackUserRepository, ILogger logger, 
+        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository,
+            ISlackUserRepository slackUserRepository, ILogger logger,
             IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository,
             ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository,
             IOauthCallHttpContextRespository oauthCallRepository) : base(stringConstantRepository)
@@ -52,7 +52,7 @@ namespace Promact.Erp.Core.Controllers
         }
         #endregion
 
-        #region Private Methods
+        #region Public Methods
         /**
         * @api {get} oauth/refreshtoken
         * @apiVersion 1.0.0
@@ -221,13 +221,20 @@ namespace Promact.Erp.Core.Controllers
                     eventQueue.Dequeue();
                     return Ok();
                 }
+                //when a channel or a group is archived
+                else if (eventType == _stringConstantRepository.ChannelArchive || eventType == _stringConstantRepository.GroupArchive)
+                {
+                    await _slackChannelRepository.DeleteChannelAsync(events.Event.Channel.ChannelId);
+                    eventQueue.Dequeue();
+                    return Ok();
+                }
                 else
                 {
                     eventQueue.Dequeue();
                     return Ok();
                 }
             }
-            return null;
+            return Ok();
         }
 
         /**

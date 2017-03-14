@@ -103,7 +103,6 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         /// <returns>status message</returns>
         public async Task<string> AddChannelManuallyAsync(string slackChannelName, string slackChannelId, string slackUserId)
         {
-            string returnMsg;
             //Checks whether channelId starts with "G" or "C". This is done inorder to make sure that only gruops or channels are added manually
             if (IsPrivateChannel(slackChannelId))
             {
@@ -116,16 +115,14 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     slackChannelDetails.Deleted = false;
                     slackChannelDetails.Name = slackChannelName;
                     await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
-                    returnMsg = _stringConstant.ChannelAddSuccess;
+                    return _stringConstant.ChannelAddSuccess;
                 }
                 else
                     // if user doesn't exist then this message will be shown to user
-                    returnMsg = _stringConstant.YouAreNotInExistInOAuthServer;
+                    return _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
-                returnMsg = _stringConstant.OnlyPrivateChannel;
-
-            return returnMsg;
+                return _stringConstant.OnlyPrivateChannel;
         }
 
 
@@ -156,7 +153,6 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         /// <returns>appropriate message</returns>
         private async Task<string> ProcessCommandsAsync(string slackUserId, string slackChannelId, string givenProjectName, string command)
         {
-            string reply = string.Empty;
             //Checks whether channelId starts with "G" or "C". This is done inorder to make sure that only gruops or channels are added manually
             if (IsPrivateChannel(slackChannelId))
             {
@@ -164,10 +160,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                 if (accessToken != null)
                 {
                     ApplicationUser appUser = await _applicationUser.FirstAsync(x => x.SlackUserId == slackUserId);
-                    //the list of projects in which the user is either team leader or member
-                    List<ProjectAc> projectList = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(appUser.Id, accessToken);
                     //the project which is mentioned by user
-                    ProjectAc project = projectList.FirstOrDefault(x => String.Compare(givenProjectName, x.Name, StringComparison.OrdinalIgnoreCase) == 0);
+                    ProjectAc project = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(appUser.Id, accessToken)).FirstOrDefault(x => String.Compare(givenProjectName, x.Name, StringComparison.OrdinalIgnoreCase) == 0);
                     if (project != null)
                     {
                         //check whether user is the team leader of the project
@@ -177,31 +171,31 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                             {
                                 //command to link
                                 if (String.Compare(command, _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0)
-                                    reply = await LinkAsync(slackChannelId, givenProjectName, project);
+                                    return await LinkAsync(slackChannelId, givenProjectName, project);
 
                                 //command to unlink
                                 else if (String.Compare(command, _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
-                                    reply = await UnlinkAsync(slackChannelId, givenProjectName, project);
+                                    return await UnlinkAsync(slackChannelId, givenProjectName, project);
+                                return string.Empty;
 
                             }
                             else
-                                reply = string.Format(_stringConstant.NotActiveUser, slackUserId);
+                                return string.Format(_stringConstant.NotActiveUser, slackUserId);
 
                         }
                         else
-                            reply = string.Format(_stringConstant.NotTeamLeader, slackUserId);
+                            return string.Format(_stringConstant.NotTeamLeader, slackUserId);
 
                     }
                     else
-                        reply = string.Format(_stringConstant.NotTeamLeaderOfProject, givenProjectName, slackUserId);
+                        return string.Format(_stringConstant.NotTeamLeaderOfProject, givenProjectName, slackUserId);
                 }
                 else
                     // if user doesn't exist then this message will be shown to user
-                    reply = _stringConstant.YouAreNotInExistInOAuthServer;
+                    return _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
-                reply = _stringConstant.OnlyPrivateChannel;
-            return reply;
+                return _stringConstant.OnlyPrivateChannel;
         }
 
 
@@ -214,7 +208,6 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         /// <returns>status message</returns>
         private async Task<string> LinkAsync(string slackChannelId, string givenProjectName, ProjectAc project)
         {
-            string reply = string.Empty;
             if (project.IsActive)
             {
                 SlackChannelDetails alreadyLinkedChannel = await _slackChannelDetailsReposirtory.FirstOrDefaultAsync(x => x.ProjectId == project.Id);
@@ -226,20 +219,16 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     {
                         slackChannel.ProjectId = project.Id;
                         await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-                        reply = string.Format(_stringConstant.ProjectLinked, givenProjectName, slackChannel.Name);
+                        return string.Format(_stringConstant.ProjectLinked, givenProjectName, slackChannel.Name);
                     }
                     else
-                        reply = string.Format(_stringConstant.UnLinkFirst, givenProjectName);
-
+                        return string.Format(_stringConstant.UnLinkFirst, givenProjectName);
                 }
                 else
-                    reply = _stringConstant.AlreadyLinked;
-
+                    return _stringConstant.AlreadyLinked;
             }
             else
-                reply = _stringConstant.InActiveProject;
-
-            return reply;
+                return _stringConstant.InActiveProject;
         }
 
 
@@ -252,11 +241,9 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         /// <returns>status message</returns>
         private async Task<string> UnlinkAsync(string slackChannelId, string givenProjectName, ProjectAc project)
         {
-            string reply = string.Empty;
-
             SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(slackChannelId);
             if (slackChannel.ProjectId == null)
-                reply = string.Format(_stringConstant.NotLinkedYet, givenProjectName);
+                return string.Format(_stringConstant.NotLinkedYet, givenProjectName);
 
             else
             {
@@ -264,13 +251,11 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                 {
                     slackChannel.ProjectId = null;
                     await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-                    reply = string.Format(_stringConstant.UnlinkedSuccessfully, givenProjectName, slackChannel.Name);
+                    return string.Format(_stringConstant.UnlinkedSuccessfully, givenProjectName, slackChannel.Name);
                 }
                 else
-                    reply = string.Format(_stringConstant.NotLinkedToChannel, givenProjectName);
-
+                    return string.Format(_stringConstant.NotLinkedToChannel, givenProjectName);
             }
-            return reply;
         }
 
 
