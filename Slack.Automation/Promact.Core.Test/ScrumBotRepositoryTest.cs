@@ -456,7 +456,7 @@ namespace Promact.Core.Test
             string compareString = string.Format(_stringConstant.UserNotInProject, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
             Assert.Equal(compareString, actualString);
         }
-
+                  
 
         /// <summary>
         /// Method StartScrum Testing with existing scrum and in-active users
@@ -748,7 +748,7 @@ namespace Promact.Core.Test
             await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
-            string compareString = _stringConstant.ScrumNotHalted + string.Format(_stringConstant.InActiveInOAuth, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
+            string compareString = _stringConstant.ScrumNotHalted + string.Format(_stringConstant.UserNotInProject, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
             Assert.Equal(compareString, actualString);
         }
 
@@ -1473,6 +1473,7 @@ namespace Promact.Core.Test
         }
 
 
+        //not required
         /// <summary>
         /// Method AddScrumAnswer Testing with normal conversation on slack channel
         /// </summary>
@@ -1494,6 +1495,7 @@ namespace Promact.Core.Test
         #region ProcessMessagesAsync Test Cases
 
 
+        //not required
         /// <summary>
         /// Method ProcessMessagesAsync Testing with scrum help
         /// </summary>
@@ -1507,6 +1509,7 @@ namespace Promact.Core.Test
         }
 
 
+        //not required
         /// <summary>
         /// Method ProcessMessagesAsync Testing with not registered channel
         /// </summary>
@@ -1525,6 +1528,7 @@ namespace Promact.Core.Test
         #region AddChannel Test Cases
 
 
+        //not required
         /// <summary>
         /// Method AddChannelManually Testing
         /// </summary>
@@ -1598,6 +1602,7 @@ namespace Promact.Core.Test
         }
 
 
+        //future
         /// <summary>
         /// Method link channel with wrong command
         /// </summary>

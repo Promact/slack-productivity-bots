@@ -289,7 +289,7 @@ namespace Promact.Core.Repository.ScrumRepository
             return replyText;
         }
 
-
+                
         #region Temporary Scrum Details
 
 
