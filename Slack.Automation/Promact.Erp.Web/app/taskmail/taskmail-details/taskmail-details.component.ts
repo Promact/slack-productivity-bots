@@ -61,6 +61,7 @@ export class TaskMailDetailsComponent implements OnInit {
         this.router.navigate([this.stringConstant.taskList]);
     }
     getTaskMailPrevious(UserName, UserId, UserRole, CreatedOn) {
+        this.loader.loader = true;
         this.SelectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportPreviousDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
             this.taskMail = taskMails;
@@ -76,10 +77,12 @@ export class TaskMailDetailsComponent implements OnInit {
                 });
 
             });
+            this.loader.loader = false;
         });
         this.IsMaxDate = false;
     }
     getTaskMailNext(UserName, UserId, UserRole, CreatedOn) {
+        this.loader.loader = true;
         this.SelectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
             this.taskMail = taskMails;
@@ -96,10 +99,11 @@ export class TaskMailDetailsComponent implements OnInit {
 
                 });
             });
-
+            this.loader.loader = false;     
         });
     }
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
+        this.loader.loader = true;
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMails => {
             this.taskMail = taskMails;
             this.IsMaxDate = false;
@@ -117,7 +121,7 @@ export class TaskMailDetailsComponent implements OnInit {
                     taskMail.StatusName = TaskMailStatus[taskMail.Status];
                 });
             });
-
+            this.loader.loader = false;
         });
     }
 }
