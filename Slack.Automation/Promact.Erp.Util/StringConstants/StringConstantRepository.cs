@@ -953,7 +953,7 @@ namespace Promact.Erp.Util.StringConstants
         public string StringIdForTest
         {
             get
-            {
+            {           
                 return "13b0f2ca-92f5-4713-a67e-37e50172e148";
             }
         }
