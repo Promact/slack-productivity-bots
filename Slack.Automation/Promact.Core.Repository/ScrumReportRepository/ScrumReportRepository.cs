@@ -57,7 +57,7 @@ namespace Promact.Core.Repository.ScrumReportRepository
             }
             else
             {
-                foreach (var user in project.ApplicationUsers)
+                foreach (var user in project.Users)
                 {
                     EmployeeScrumDetails employeeScrumDetail = await AssignAnswersAsync(scrum, scrumDate, user);
                     employeeScrumDetails.Add(employeeScrumDetail);

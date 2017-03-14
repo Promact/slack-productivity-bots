@@ -87,14 +87,14 @@ namespace Promact.Core.Repository.OauthCallsRepository
 
 
         /// <summary>
-        /// Method to call an api from project oAuth server and get Project details of the given channel. - JJ 
+        /// Method to call an api from project oAuth server and get Project details of the given project id. - JJ 
         /// </summary>
-        /// <param name="channelName">slack channel name</param>
+        /// <param name="projectId">Id of OAuth Project</param>
         /// <returns>object of ProjectAc</returns>
-        public async Task<ProjectAc> GetProjectDetailsAsync(string channelName, string accessToken)
+        public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
-            var requestUrl = channelName;
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, projectId.ToString());
+            string response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
             ProjectAc project = new ProjectAc();
             if (!string.IsNullOrEmpty(response))
             {
@@ -102,26 +102,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return project;
         }
-
-
-        /// <summary>
-        /// This method is used to fetch list of users/employees of the given channel name from OAuth server. - JJ
-        /// </summary>
-        /// <param name="channelName">slack channel name</param>
-        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
-        /// <returns>list of object of User</returns>
-        public async Task<List<User>> GetUsersByChannelNameAsync(string channelName, string accessToken)
-        {
-            string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UsersDetailByChannelNameUrl, channelName);
-            string response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
-            List<User> users = new List<User>();
-            if (!string.IsNullOrEmpty(response))
-            {
-                users = JsonConvert.DeserializeObject<List<User>>(response);
-            }
-            return users;
-        }
-
+                   
 
         /// <summary>
         /// Method to call an api of oAuth server and get Casual leave allowed to user by user slackName. - SS
@@ -171,7 +152,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
             var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
-            if(response != null)
+            if (response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
             }
@@ -195,6 +176,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
             }
             return teamMembers;
         }
+        
+
         #endregion
     }
 }

@@ -10,8 +10,6 @@
         </div>
     </div>
 
-
-
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
@@ -27,14 +25,16 @@
                     </div>
                     <div *ngFor="let taskmailUser of taskMail" class="tsk-view">
                         <div class="form-group row">
-                            <label class="control-label">  Name:</label>
-                            <p>{{taskmailUser.UserName}}</p>
+                            <div class="col-md-1">
+                                <label class="control-label">  Name:</label>
+                                <p>{{taskmailUser.UserName}}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">  Task Mail Date:</label>
+                                <p>{{taskmailUser.CreatedOns}}</p>
+                            </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label class="control-label">    Task Mail Date:</label>
-                            <p>{{taskmailUser.CreatedOns}}</p>
-                        </div>
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
@@ -54,17 +54,12 @@
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
-
                     <div class="x_title"></div>
-
                     <div class="row m-0">
-
                         <button [disabled]="IsMinDate" (click)="getTaskMailPrevious(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns)" class="btn btn-success pull-left"> Previous</button>
                         <button [disabled]="IsMaxDate" (click)="getTaskMailNext(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns)" class="btn btn-success pull-right"> Next</button>
                     </div>
-
                 </div>
             </div>
         </div>

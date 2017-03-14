@@ -23,8 +23,23 @@
         string CancelLeaveError { get; }
         string SlackHelpMessage { get; }
         string SlackErrorMessage { get; }
-
-
+        string Link { get; }
+        string Unlink { get; }
+        string NotActiveUser { get; }
+        string NotTeamLeader { get; }
+        string ListOfLinks { get; }
+        string ProjectAndTeamLeaderDetail { get; }
+        string ProjectTeamLeaderDetail { get; }
+        string ProjectLinked { get; }
+        string UnLinkFirst { get; }
+        string InActiveProject { get; }
+        string AlreadyLinked { get; }
+        string NotLinkedYet { get; }
+        string UnlinkedSuccessfully { get; }
+        string  NotLinkedToChannel { get; }
+        string NoLinks { get; }
+        string Links { get; }
+        string NotTeamLeaderOfProject { get; }
         string UsersDetailByChannelNameUrl { get; }
         string UserDetailsByIdUrl { get; }
         string UrlRtmStart { get; }
@@ -36,6 +51,7 @@
         string SlackAuthorize { get; }
         string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
+        string ProjectDetailUrl { get; }
         string ProjectUsersByTeamLeaderId { get; }
         string ProjectUserDetailsUrl { get; }
         string ProjectTeamLeaderDetailsUrl { get; }
@@ -44,6 +60,14 @@
         string ThankYou { get; }
         string InternalError { get; }
         string SlackUserListUrl { get; }
+        string ProjectDetailsFromOauthInValidUser { get; }
+        string ProjectDetailsFromOauthOneEmployee { get; }
+        string ProjectDetailsFromOauthOneInActiveEmployee { get; }
+
+        string ProjectDetailsFromOauthThreeEmployeeInActive { get; }
+        string ProjectDetailsFromOauthThreeEmployee { get; }
+        string ProjectChannelNotLinked { get; }
+
         string SlackChannelListUrl { get; }
         string SlackGroupListUrl { get; }
         string TaskMailBotStatusErrorMessage { get; }
@@ -76,6 +100,7 @@
         string LoggerErrorMessageOAuthControllerSlackDetailsAdd { get; }
         string PreviousDayStatus { get; }
         string PreviousDayScrumAnswer { get; }
+        string InActiveProjectDetailsFromOauthInActiveUser { get; }
         string NameFormat { get; }
         string AnswerNotRecorded { get; }
         string UserNotInOAuthOrProject { get; }
@@ -90,6 +115,7 @@
         string NoSlackDetails { get; }
         string ScrumCannotBeHalted { get; }
         string ScrumCannotBeResumed { get; }
+        string ProjectDetailsFromOauthInActiveUser { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
         string EmployeesListFromOauthThreeEmployeesInActive { get; }
@@ -113,6 +139,7 @@
         string GroupArchive { get; }
         string ChannelRename { get; }
         string GroupRename { get; }
+        string ListLinks { get; }
 
         string NoProjectFound { get; }
         string ScrumComplete { get; }
@@ -160,6 +187,7 @@
         string Command { get; }
         string ResponseUrl { get; }
         string TeamDomain { get; }
+        string OAuthProjName { get; }
         string TeamId { get; }
         string Text { get; }
         string Token { get; }
@@ -169,6 +197,13 @@
         string UnderConstruction { get; }
         string Hello { get; }
         string All { get; }
+        string LinkTest { get; }
+        string LinkChannelNoName { get; }
+        string UnlinkCommand { get; }
+        string UnlinkTest { get; }
+        string ProjectTeamLeaderInActiveDetail { get; }
+        string OAuthProjectName { get; }
+        string InActiveProjectTeamLeaderDetail { get; }
         string StringHourForTest { get; }
         string AfterLogIn { get; }
         string Home { get; }
@@ -234,7 +269,7 @@
         string UserDetailsResponseText { get; }
         string ChannelDetailsResponseText { get; }
         string GroupDetailsResponseText { get; }
-        string LeaveListTestForOwn { get; }
+        string List { get; }
         string WrongLeaveCancelCommandForTest { get; }
         string LeaveStatusTestForOwn { get; }
         string SecondQuestionForTest { get; }

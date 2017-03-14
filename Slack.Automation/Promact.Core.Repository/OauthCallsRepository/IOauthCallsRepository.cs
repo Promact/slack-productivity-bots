@@ -7,7 +7,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
 {
     public interface IOauthCallsRepository
     {
-         
         /// <summary>
         /// Method to call an api from project oAuth server and get Employee detail by their slack userId. - SS
         /// </summary>
@@ -32,24 +31,15 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>management details.List of object of User</returns>
         Task<List<User>> GetManagementUserNameAsync(string accessToken);
-        
-        
+
+
         /// <summary>
-        /// Method to call an api from project oAuth server and get Project details of the given group - JJ
+        /// Method to call an api from project oAuth server and get Project details of the project id - JJ
         /// </summary>
-        /// <param name="channelName">slack channel name</param>
+        /// <param name="projectId">Id of OAuth Project</param>
         /// <param name="accessToken">user's access token from Promact OAuth Server</param>
         /// <returns>object of ProjectAc</returns>
-        Task<ProjectAc> GetProjectDetailsAsync(string channelName, string accessToken);
-
-
-        /// <summary>
-        /// This method is used to fetch list of users/employees of the given group name. - JJ
-        /// </summary>
-        /// <param name="channelName">slack channel name</param>
-        /// <param name="accessToken">user's access token from Promact OAuth Server</param>
-        /// <returns>list of object of User</returns>
-        Task<List<User>> GetUsersByChannelNameAsync(string channelName, string accessToken);
+        Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken);
 
 
         /// <summary>
@@ -69,6 +59,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>true if user has admin role else false</returns>
         Task<bool> UserIsAdminAsync(string userId, string accessToken);
 
+
         /// <summary>
         /// Method to get list of projects from oauth-server for an user
         /// </summary>
@@ -77,6 +68,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>list of project</returns>
         Task<List<ProjectAc>> GetListOfProjectsEnrollmentOfUserByUserIdAsync(string userId, string accessToken);
 
+
         /// <summary>
         /// Method to get list of team member by project Id
         /// </summary>
@@ -84,5 +76,6 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <param name="accessToken">access token</param>
         /// <returns>list of team members</returns>
         Task<List<User>> GetAllTeamMemberByProjectIdAsync(int projectId, string accessToken);
+
     }
 }

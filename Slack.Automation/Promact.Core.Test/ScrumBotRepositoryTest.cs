@@ -15,7 +15,7 @@ using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Core.Repository.ServiceRepository;
-
+using Promact.Core.Repository.ScrumSetUpRepository;
 
 namespace Promact.Core.Test
 {
@@ -33,6 +33,7 @@ namespace Promact.Core.Test
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
         private readonly IRepository<TemporaryScrumDetails> _temporaryScrumDetailsRepository;
         private readonly IScrumBotRepository _scrumBotRepository;
+        private readonly IScrumSetUpRepository _scrumSetUpRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelReposiroty;
         private readonly IStringConstantRepository _stringConstant;
@@ -61,6 +62,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _scrumBotRepository = _componentContext.Resolve<IScrumBotRepository>();
+            _scrumSetUpRepository = _componentContext.Resolve<IScrumSetUpRepository>();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
@@ -122,8 +124,7 @@ namespace Promact.Core.Test
             profile.Title = _stringConstant.UserNameForTest;
 
             scrum.CreatedOn = DateTime.UtcNow;
-            scrum.ProjectId = _stringConstant.ProjectIdForTest;
-            scrum.SlackChannelId = _stringConstant.SlackChannelIdForTest;
+            scrum.ProjectId = 1;
             scrum.ScrumDate = DateTime.UtcNow;
             scrum.TeamLeaderId = _stringConstant.TeamLeaderIdForTest;
             scrum.IsHalted = false;
@@ -152,6 +153,7 @@ namespace Promact.Core.Test
             slackChannelDetails.Deleted = false;
             slackChannelDetails.CreatedOn = DateTime.UtcNow;
             slackChannelDetails.Name = _stringConstant.GroupName;
+            slackChannelDetails.ProjectId = 1;
 
             temporaryScrumDetails.ScrumId = 1;
             temporaryScrumDetails.CreatedOn = DateTime.UtcNow;
@@ -174,12 +176,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthInValid);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInValidUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
         }
 
@@ -189,12 +187,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
         }
 
@@ -343,35 +337,6 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method StartScrum Testing with the first user not in slack
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumInitiateSlackUserNotFound()
-        {
-            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
-            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(testUser);
-            await _userManager.AddLoginAsync(testUser.Id, info);
-
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            string expectedString = string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.UserNameForTest) + Environment.NewLine;
-            Assert.Equal(expectedString, actualString);
-        }
-
-
-        /// <summary>
         /// Method StartScrum Testing with In Valid Start Command
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -444,13 +409,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             _scrumDataRepository.Insert(scrum);
@@ -482,13 +443,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             _scrumDataRepository.Insert(scrum);
@@ -499,57 +456,7 @@ namespace Promact.Core.Test
             string compareString = string.Format(_stringConstant.UserNotInProject, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
             Assert.Equal(compareString, actualString);
         }
-
-
-        /// <summary>
-        /// Method StartScrum Testing with existing scrum but inactive user and no project
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumInitiateNoProjectUserInactive()
-        {
-            await AddChannelUserAsync();
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            string compareString =  _stringConstant.NoProjectFound;
-            Assert.Equal(compareString, actualString);
-        }
-
-
-        /// <summary>
-        /// Method StartScrum Testing with existing scrum and in-active users
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task StartScrumHasScrumHasInActiveUsers()
-        {
-            await AddChannelUserAsync();
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(testUser);
-            await _userManager.AddLoginAsync(testUser.Id, info);
-            await InActiveUserProjectSetup();
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-            _scrumAnswerDataRepository.Insert(scrumAnswer);
-            await _scrumAnswerDataRepository.SaveChangesAsync();
-            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            string expectedString = string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.UserNameForTest) + Environment.NewLine;
-            Assert.Equal(expectedString, actualString);
-        }
-
+                  
 
         /// <summary>
         /// Method StartScrum Testing with existing scrum and in-active users
@@ -568,12 +475,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
             await _botQuestionRepository.AddQuestionAsync(question);
 
@@ -584,10 +487,10 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Method StartScrum Testing with in-active users
+        /// Method Scrum Resume Testing with in-active users
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task ScrumInitiateHasInActiveUsers()
+        public async Task ScrumResumeHasInActiveUsers()
         {
             await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
             slackUserDetails.UserId = _stringConstant.ChannelIdForTest;
@@ -602,12 +505,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, infor);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -618,44 +517,6 @@ namespace Promact.Core.Test
             await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.ChannelIdForTest, 0, question.Id);
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
             string expectedString = _stringConstant.ScrumNotHalted + Environment.NewLine + string.Format(_stringConstant.UserNotInProject, _stringConstant.TestUser) + string.Format(_stringConstant.InActiveInOAuth, _stringConstant.UserNameForTest) + _stringConstant.ScrumComplete;
-            Assert.Equal(expectedString, actualString);
-        }
-
-
-        /// <summary>
-        /// Method StartScrum Testing with in-active users
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumInitiateHasInActiveUser()
-        {
-            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(testUser);
-            await _userManager.AddLoginAsync(testUser.Id, info);
-
-            UserLoginInfo infor = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, infor);
-
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-            _scrumAnswerDataRepository.Insert(scrumAnswer);
-            await _scrumAnswerDataRepository.SaveChangesAsync();
-            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.StringIdForTest, 0, question.Id);
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.StartBot, _stringConstant.ScrumBotName);
-            string expectedString = string.Format(_stringConstant.InActiveInOAuth, testSlackUserDetails.Name) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
             Assert.Equal(expectedString, actualString);
         }
 
@@ -677,13 +538,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, info);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             _scrumDataRepository.Insert(scrum);
@@ -711,13 +568,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             await _botQuestionRepository.AddQuestionAsync(question1);
@@ -746,13 +599,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             scrum.IsHalted = true;
@@ -777,10 +626,6 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
             await _botQuestionRepository.AddQuestionAsync(question);
             scrum.IsHalted = true;
             _scrumDataRepository.Insert(scrum);
@@ -788,33 +633,6 @@ namespace Promact.Core.Test
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumHalt, _stringConstant.ScrumBotName);
             Assert.Equal(_stringConstant.NoEmployeeFound, actualString);
-        }
-
-
-        /// <summary>
-        /// Scrum halt Testing with no users
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumHaltTeamLeader()
-        {
-            await AddChannelUserAsync();
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            user.Id = _stringConstant.TeamLeaderIdForTest;
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            scrum.IsHalted = true;
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumHalt, _stringConstant.ScrumBotName);
-            Assert.Equal(_stringConstant.NoEmployeeFound + _stringConstant.ScrumCannotBeHalted, actualString);
         }
 
 
@@ -861,9 +679,6 @@ namespace Promact.Core.Test
             await AddChannelUserAsync();
             await UserProjectSetup();
             await _botQuestionRepository.AddQuestionAsync(question);
-            scrum.ScrumDate = DateTime.Today.AddDays(-2);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumHalt, _stringConstant.ScrumBotName);
             Assert.Equal(_stringConstant.ScrumNotStarted, actualString);
@@ -923,13 +738,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
             _scrumDataRepository.Insert(scrum);
@@ -938,6 +749,36 @@ namespace Promact.Core.Test
 
             string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
             string compareString = _stringConstant.ScrumNotHalted + string.Format(_stringConstant.InActiveInOAuth, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
+            Assert.Equal(compareString, actualString);
+        }
+
+
+        /// <summary>
+        /// Method StartScrum Testing with on going scrum but inactive user
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task ScrumResumeDeletedUserHasOnGoingScrum()
+        {
+            await AddChannelUserAsync();
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+
+            UserLoginInfo infor = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, infor);
+
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthOneEmployee);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+
+            await _botQuestionRepository.AddQuestionAsync(question);
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
+
+            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
+            string compareString = _stringConstant.ScrumNotHalted + string.Format(_stringConstant.UserNotInProject, _stringConstant.UserNameForTest) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
             Assert.Equal(compareString, actualString);
         }
 
@@ -957,13 +798,9 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
@@ -1016,32 +853,6 @@ namespace Promact.Core.Test
 
 
         /// <summary>
-        /// Scrum Resume Testing with in-active users
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task ScrumResumeHasInActiveUser()
-        {
-            await AddChannelUserAsync();
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(testUser);
-            await _userManager.AddLoginAsync(testUser.Id, info);
-            await InActiveUserProjectSetup();
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            scrum.IsHalted = true;
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-            _scrumAnswerDataRepository.Insert(scrumAnswer);
-            await _scrumAnswerDataRepository.SaveChangesAsync();
-            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.StringIdForTest, 0, question.Id);
-            string actualString = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ScrumResume, _stringConstant.ScrumBotName);
-            string expectedString = _stringConstant.ScrumResumed + string.Format(_stringConstant.InActiveInOAuth, slackUserDetails.Name) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.UserNameForTest) + Environment.NewLine;
-            Assert.Equal(expectedString, actualString);
-        }
-
-
-        /// <summary>
         /// Scrum Resume Testing with in-active users and in-active project
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -1053,12 +864,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, info);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.InActiveProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.InActiveProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1098,6 +905,24 @@ namespace Promact.Core.Test
             await _scrumDataRepository.SaveChangesAsync();
             string msg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">", _stringConstant.ScrumBotName);
             Assert.Equal(_stringConstant.ScrumIsHalted, msg);
+        }
+
+
+        /// <summary>
+        /// Method to test that slack channel is not linked to OAuth project
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task ChannelNotLinked()
+        {
+            slackChannelDetails.ProjectId = null;
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">", _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.ProjectChannelNotLinked, actual);
         }
 
 
@@ -1240,12 +1065,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1269,10 +1090,6 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, info);
-
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
 
             _scrumDataRepository.Insert(scrum);
             await _scrumDataRepository.SaveChangesAsync();
@@ -1368,12 +1185,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, infor);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthOneEmployee);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthOneEmployee);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1399,12 +1212,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthOneEmployee);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthOneEmployee);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1421,29 +1230,6 @@ namespace Promact.Core.Test
         /// Method Leave Testing with the leave applicant in active
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task LeaveApplicantInActive()
-        {
-            await AddChannelUserAsync();
-            await InActiveUserProjectSetup();
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(testUser);
-            await _userManager.AddLoginAsync(testUser.Id, info);
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
-            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">", _stringConstant.ScrumBotName);
-            string expected = string.Format(_stringConstant.InActiveInOAuth, _stringConstant.TestUser) + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.UserNameForTest) + Environment.NewLine;
-            Assert.Equal(expected, actual);
-        }
-
-
-        /// <summary>
-        /// Method Leave Testing with the leave applicant in active
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
         public async Task LeaveInCorrectApplicant()
         {
             await AddChannelUserAsync();
@@ -1452,12 +1238,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthThreeEmployees);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthThreeEmployee);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1491,12 +1273,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(testUser);
             await _userManager.AddLoginAsync(testUser.Id, infor);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthThreeEmployeesInActive);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthThreeEmployeeInActive);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1507,32 +1285,6 @@ namespace Promact.Core.Test
             await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.ThirdUserSlackUserId, 0, question.Id);
             string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">", _stringConstant.ScrumBotName);
             string expected = _stringConstant.UserNotInSlack + string.Format(_stringConstant.QuestionToNextEmployee, _stringConstant.TestUser) + Environment.NewLine;
-            Assert.Equal(expected, actual);
-        }
-
-
-        /// <summary>
-        /// Method Leave Testing with first user left to answer one question but not an active user now
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task LeaveFirstUserOneAnswerLeftScrumComplete()
-        {
-            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-            testSlackUserDetails.UserId = _stringConstant.ThirdUserSlackUserId;
-            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
-
-            await InActiveUserProjectSetup();
-
-            await _botQuestionRepository.AddQuestionAsync(question);
-            await _botQuestionRepository.AddQuestionAsync(question1);
-            _scrumDataRepository.Insert(scrum);
-            await _scrumDataRepository.SaveChangesAsync();
-            _scrumAnswerDataRepository.Insert(scrumAnswer);
-            await _scrumAnswerDataRepository.SaveChangesAsync();
-            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.ThirdUserSlackUserId, 0, question.Id);
-            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Leave + " <@" + _stringConstant.StringIdForTest + ">", _stringConstant.ScrumBotName);
-            string expected = string.Format(_stringConstant.UserNotInProject, _stringConstant.UserNameForTest) + string.Format(_stringConstant.InActiveInOAuth, _stringConstant.TestUser) + _stringConstant.ScrumComplete;
             Assert.Equal(expected, actual);
         }
 
@@ -1549,12 +1301,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var usersListResponse = Task.FromResult(_stringConstant.EmployeesListFromOauthOneEmployee);
-            string usersListRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, usersListRequestUrl, _stringConstant.AccessTokenForTest)).Returns(usersListResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthOneEmployee);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             await _botQuestionRepository.AddQuestionAsync(question);
@@ -1668,6 +1416,32 @@ namespace Promact.Core.Test
 
 
         /// <summary>
+        /// Method AddScrumAnswer Testing (update answer) with only One Answer marked to be asked later
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task AddScrumAnswerInActiveUser()
+        {
+            await UserProjectSetup();
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
+            await _botQuestionRepository.AddQuestionAsync(question);
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+            _scrumAnswerDataRepository.Insert(scrumAnswer);
+            await _scrumAnswerDataRepository.SaveChangesAsync();
+            await AddChannelUserAsync();
+            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.IdForTest, 0, question.Id);
+
+            string actualMsg = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.StringIdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.Scrum, _stringConstant.ScrumBotName);
+            string expectedMsg = string.Format(_stringConstant.PleaseAnswer, _stringConstant.UserNameForTest);
+            Assert.Equal(expectedMsg, actualMsg);
+        }
+
+
+        /// <summary>
         /// Method AddScrumAnswer Testing (update answer) with only One Answer marked to be asked later but inactive user
         /// </summary>
         [Fact, Trait("Category", "Required")]
@@ -1677,12 +1451,8 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListInValid);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
+            var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInActiveUser);
+            string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
 
             UserLoginInfo infor = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
@@ -1703,6 +1473,7 @@ namespace Promact.Core.Test
         }
 
 
+        //not required
         /// <summary>
         /// Method AddScrumAnswer Testing with normal conversation on slack channel
         /// </summary>
@@ -1724,6 +1495,7 @@ namespace Promact.Core.Test
         #region ProcessMessagesAsync Test Cases
 
 
+        //not required
         /// <summary>
         /// Method ProcessMessagesAsync Testing with scrum help
         /// </summary>
@@ -1737,6 +1509,7 @@ namespace Promact.Core.Test
         }
 
 
+        //not required
         /// <summary>
         /// Method ProcessMessagesAsync Testing with not registered channel
         /// </summary>
@@ -1755,6 +1528,7 @@ namespace Promact.Core.Test
         #region AddChannel Test Cases
 
 
+        //not required
         /// <summary>
         /// Method AddChannelManually Testing
         /// </summary>
@@ -1765,31 +1539,6 @@ namespace Promact.Core.Test
             await UserProjectSetup();
             string actual = await _scrumBotRepository.ProcessMessagesAsync(slackUserDetails.UserId, _stringConstant.GroupNameStartsWith + slackChannelDetails.ChannelId, _stringConstant.Add + " " + _stringConstant.Channel + " " + slackChannelDetails.Name, _stringConstant.ScrumBotName);
             Assert.Equal(_stringConstant.ChannelAddSuccess, actual);
-        }
-
-
-        /// <summary>
-        /// Method AddChannelManually but project inactive
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task AddChannelInActiveProject()
-        {
-            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-
-            var userResponse = Task.FromResult(_stringConstant.EmployeesListFromOauth);
-            string userRequestUrl = string.Format("{0}{1}", _stringConstant.UsersDetailByChannelNameUrl, _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.UserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
-
-            var projectResponse = Task.FromResult(_stringConstant.InActiveProjectDetailsFromOauth);
-            string projectRequestUrl = string.Format("{0}", _stringConstant.GroupName);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
-
-            string actual = await _scrumBotRepository.ProcessMessagesAsync(slackUserDetails.UserId, _stringConstant.GroupNameStartsWith + slackChannelDetails.ChannelId, _stringConstant.Add + " " + _stringConstant.Channel + " " + slackChannelDetails.Name, _stringConstant.ScrumBotName);
-            Assert.Equal(_stringConstant.ProjectInActive, actual);
         }
 
 
@@ -1820,20 +1569,133 @@ namespace Promact.Core.Test
         }
 
 
+        #endregion
+
+
+        #region Link Channel
+
+
         /// <summary>
-        /// Method AddChannelManually Testing with no project added
+        /// Method List links Testing 
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public async Task AddChannelNoProject()
+        public async Task ListLink()
         {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            slackUserDetails.UserId = _stringConstant.IdForTest;
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            testSlackUserDetails.UserId = _stringConstant.StringIdForTest;
+            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
+
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
-            string actual = await _scrumBotRepository.ProcessMessagesAsync(slackUserDetails.UserId, _stringConstant.GroupNameStartsWith + slackChannelDetails.ChannelId, _stringConstant.Add + " " + _stringConstant.Channel + " " + _stringConstant.GroupName, _stringConstant.ScrumBotName);
-            Assert.Equal(_stringConstant.ProjectNotInOAuth, actual);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
+            await UserProjectSetup();
+
+            await _botQuestionRepository.AddQuestionAsync(question);
+            _scrumDataRepository.Insert(scrum);
+            await _scrumDataRepository.SaveChangesAsync();
+            await _scrumBotRepository.AddTemporaryScrumDetailsAsync(1, _stringConstant.StringIdForTest, 0, question.Id);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ListLinks, _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.NoLinks, actual);
         }
 
+
+        //future
+        /// <summary>
+        /// Method link channel with wrong command
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelWrongCommand()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            slackUserDetails.UserId = _stringConstant.IdForTest;
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            testSlackUserDetails.UserId = _stringConstant.StringIdForTest;
+            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
+            await UserProjectSetup();
+
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.LinkTest + _stringConstant.NameClaimType, _stringConstant.ScrumBotName);
+            Assert.Empty(actual);
+        }
+
+
+        /// <summary>
+        /// Method link channel with wrong command but channel not linked yet
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelWrongCommandChannelNotLinked()
+        {
+            slackChannelDetails.ProjectId = null;
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            slackUserDetails.UserId = _stringConstant.IdForTest;
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            testSlackUserDetails.UserId = _stringConstant.StringIdForTest;
+            await _slackUserRepository.AddSlackUserAsync(testSlackUserDetails);
+
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(testUser);
+            await _userManager.AddLoginAsync(testUser.Id, info);
+
+            await UserProjectSetup();
+
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, "link \"\"", _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.ProjectChannelNotLinked, actual);
+        }
+
+
+        /// <summary>
+        /// Method List links Testing 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelNoUser()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.LinkTest + _stringConstant.NameClaimType, _stringConstant.ScrumBotName);
+            Assert.Empty(actual);
+        }
+
+
+        /// <summary>
+        /// Method List links Testing 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelNoUserValidCommand()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.ListLinks, _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.SlackUserNotFound, actual);
+        }
+
+
+        /// <summary>
+        /// Method link channel no channel Testing 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelNoUserNoChannel()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, "link \"\"", _stringConstant.ScrumBotName);
+            Assert.Empty(actual);
+        }
+
+
+        /// <summary>
+        /// Method link channel no channel Testing 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LinkChannelNoUserHasChannel()
+        {
+            await _slackChannelReposiroty.AddSlackChannelAsync(slackChannelDetails);
+            string actual = await _scrumBotRepository.ProcessMessagesAsync(_stringConstant.IdForTest, _stringConstant.SlackChannelIdForTest, _stringConstant.LinkTest, _stringConstant.ScrumBotName);
+            Assert.Equal(_stringConstant.SlackUserNotFound, actual);
+        }
 
         #endregion
 
