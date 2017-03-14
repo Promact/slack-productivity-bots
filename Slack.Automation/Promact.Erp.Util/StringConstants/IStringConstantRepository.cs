@@ -27,6 +27,9 @@
         string Unlink { get; }
         string NotActiveUser { get; }
         string NotTeamLeader { get; }
+        string ListOfLinks { get; }
+        string ProjectAndTeamLeaderDetail { get; }
+        string ProjectTeamLeaderDetail { get; }
         string ProjectLinked { get; }
         string UnLinkFirst { get; }
         string InActiveProject { get; }
@@ -184,6 +187,7 @@
         string Command { get; }
         string ResponseUrl { get; }
         string TeamDomain { get; }
+        string OAuthProjName { get; }
         string TeamId { get; }
         string Text { get; }
         string Token { get; }
@@ -193,6 +197,13 @@
         string UnderConstruction { get; }
         string Hello { get; }
         string All { get; }
+        string LinkTest { get; }
+        string LinkChannelNoName { get; }
+        string UnlinkCommand { get; }
+        string UnlinkTest { get; }
+        string ProjectTeamLeaderInActiveDetail { get; }
+        string OAuthProjectName { get; }
+        string InActiveProjectTeamLeaderDetail { get; }
         string StringHourForTest { get; }
         string AfterLogIn { get; }
         string Home { get; }

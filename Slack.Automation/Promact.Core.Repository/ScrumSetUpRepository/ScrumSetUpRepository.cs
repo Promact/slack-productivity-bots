@@ -66,9 +66,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         public async Task<string> ProcessSetUpMessagesAsync(string slackUserId, SlackChannelDetails slackChannel, string message)
         {
             if (String.Compare(message, _stringConstant.ListLinks, StringComparison.OrdinalIgnoreCase) == 0)
-            {
                 return await ListLinkAsync(slackUserId);
-            }
+
             else
             {
                 string[] messageArray = message.Split(null);
@@ -178,24 +177,20 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                             {
                                 //command to link
                                 if (String.Compare(command, _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0)
-                                {
                                     reply = await LinkAsync(slackChannelId, givenProjectName, project);
-                                }
+
                                 //command to unlink
                                 else if (String.Compare(command, _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
-                                {
                                     reply = await UnlinkAsync(slackChannelId, givenProjectName, project);
-                                }
+
                             }
                             else
-                            {
                                 reply = string.Format(_stringConstant.NotActiveUser, slackUserId);
-                            }
+
                         }
                         else
-                        {
                             reply = string.Format(_stringConstant.NotTeamLeader, slackUserId);
-                        }
+
                     }
                     else
                         reply = string.Format(_stringConstant.NotTeamLeaderOfProject, givenProjectName, slackUserId);
@@ -234,19 +229,16 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                         reply = string.Format(_stringConstant.ProjectLinked, givenProjectName, slackChannel.Name);
                     }
                     else
-                    {
                         reply = string.Format(_stringConstant.UnLinkFirst, givenProjectName);
-                    }
+
                 }
                 else
-                {
                     reply = _stringConstant.AlreadyLinked;
-                }
+
             }
             else
-            {
                 reply = _stringConstant.InActiveProject;
-            }
+
             return reply;
         }
 
@@ -264,9 +256,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
 
             SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(slackChannelId);
             if (slackChannel.ProjectId == null)
-            {
                 reply = string.Format(_stringConstant.NotLinkedYet, givenProjectName);
-            }
+
             else
             {
                 if (slackChannel.ProjectId == project.Id)
@@ -276,9 +267,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     reply = string.Format(_stringConstant.UnlinkedSuccessfully, givenProjectName, slackChannel.Name);
                 }
                 else
-                {
                     reply = string.Format(_stringConstant.NotLinkedToChannel, givenProjectName);
-                }
+
             }
             return reply;
         }
@@ -310,13 +300,11 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     });
 
                 if (string.IsNullOrEmpty(reply))
-                {
                     reply = _stringConstant.NoLinks;
-                }
+
                 else
-                {
-                    reply =_stringConstant.Links + Environment.NewLine + reply;
-                }
+                    reply = _stringConstant.Links + Environment.NewLine + reply;
+
             }
             else
                 // if user doesn't exist then this message will be shown to user
