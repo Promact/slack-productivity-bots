@@ -1,4 +1,6 @@
-﻿using Promact.Core.Repository.AttachmentRepository;
+using Newtonsoft.Json;
+using NLog;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackChannelRepository;
@@ -25,7 +27,7 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IStringConstantRepository _stringConstant;
-
+        private readonly ILogger _logger;
 
         #endregion
 
@@ -47,6 +49,7 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
             _oauthCallsRepository = oauthCallsRepository;
             _stringConstant = stringConstant;
             _applicationUser = applicationUser;
+            _logger = LogManager.GetLogger("ScrumBotModule");
         }
 
 
@@ -217,8 +220,12 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(slackChannelId);
                     if (slackChannel.ProjectId == null)
                     {
+                        _logger.Debug("\nLinkAsync method : not linked to any project yet\n");
                         slackChannel.ProjectId = project.Id;
                         await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
+                        var channel = await _slackChannelRepository.GetByIdAsync(slackChannel.ChannelId);
+                        _logger.Debug("\nLinkAsync method : linked project . Project id is " + channel.ProjectId);
+
                         return string.Format(_stringConstant.ProjectLinked, givenProjectName, slackChannel.Name);
                     }
                     else
@@ -249,8 +256,12 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
             {
                 if (slackChannel.ProjectId == project.Id)
                 {
+                    _logger.Debug("\nUnLinkAsync method : matching project found\n");
                     slackChannel.ProjectId = null;
                     await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
+                    var channel = await _slackChannelRepository.GetByIdAsync(slackChannel.ChannelId);
+                    _logger.Debug("\nUnLinkAsync method : unlinked from project . Project id is " + channel.ProjectId);
+
                     return string.Format(_stringConstant.UnlinkedSuccessfully, givenProjectName, slackChannel.Name);
                 }
                 else
@@ -273,7 +284,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                 ApplicationUser appUser = await _applicationUser.FirstAsync(x => x.SlackUserId == slackUserId);
                 List<ProjectAc> projectList = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(appUser.Id, accessToken);
                 List<SlackChannelDetails> slackChannelList = _slackChannelDetailsReposirtory.FetchAsync(x => !x.Deleted).Result.ToList();
-
+                _logger.Debug("\n channel list :" + JsonConvert.SerializeObject(slackChannelList) );
+                
                 projectList.Where(y => y.IsActive && y.TeamLeader != null && y.TeamLeader.IsActive && y.TeamLeaderId == appUser.Id)
                     .Select(proj => new
                     {
@@ -283,6 +295,8 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     {
                         reply += Environment.NewLine + "*" + x.ProjectName + (x.SlackChannel != null ? "* - `" + x.SlackChannel.Name + "`" : "* - none") + Environment.NewLine;
                     });
+
+                _logger.Debug("\nproject channel list :"+reply);
 
                 if (string.IsNullOrEmpty(reply))
                     reply = _stringConstant.NoLinks;
