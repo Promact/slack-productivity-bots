@@ -10,7 +10,6 @@ using Promact.Erp.DomainModel.ApplicationClass.Redmine;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.Client;
 using Newtonsoft.Json;
-using System.Threading;
 using System.Globalization;
 
 namespace Promact.Core.Repository.RedmineRepository
@@ -44,7 +43,7 @@ namespace Promact.Core.Repository.RedmineRepository
         /// </summary>
         /// <param name="slashCommand">slash command</param>
         /// <returns>reply message</returns>
-        public async Task SlackRequest(SlashCommand slashCommand)
+        public async Task SlackRequestAsync(SlashCommand slashCommand)
         {
             var text = _attachmentRepository.SlackText(slashCommand.Text);
             var user = await _userDataRepository.FirstOrDefaultAsync(x => x.SlackUserId == slashCommand.UserId);
@@ -59,7 +58,6 @@ namespace Promact.Core.Repository.RedmineRepository
                         #region Project list
                         case SlackAction.projects:
                             {
-                                ;
                                 var result = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl,
                                     _stringConstant.RedmineProjectListAssignToMeUrl,
                                     user.RedmineApiKey, _stringConstant.RedmineApiKey);
@@ -127,7 +125,7 @@ namespace Promact.Core.Repository.RedmineRepository
                                                     var projectConvertor = StringToInt(text[2], out projectId);
                                                     if (projectConvertor)
                                                     {
-                                                        var redmineUserId = await GetUserRedmineIdByName(text[8], projectId, user.RedmineApiKey);
+                                                        var redmineUserId = await GetUserRedmineIdByNameAsync(text[8], projectId, user.RedmineApiKey);
                                                         if (redmineUserId !=0)
                                                         {
                                                             var issue = new PostRedmineResponse()
@@ -174,8 +172,8 @@ namespace Promact.Core.Repository.RedmineRepository
                                                 if (!string.IsNullOrEmpty(response))
                                                 {
                                                     var issue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(response);
-                                                    var redmineUserId = await GetUserRedmineIdByName(text[3], issue.Issue.Project.Id, user.RedmineApiKey);
-                                                    await UpdateByProperty(false, redmineUserId, text[2], user.RedmineApiKey);
+                                                    var redmineUserId = await GetUserRedmineIdByNameAsync(text[3], issue.Issue.Project.Id, user.RedmineApiKey);
+                                                    await UpdateByPropertyAsync(false, redmineUserId, text[2], user.RedmineApiKey);
                                                 }
                                                 else
                                                     replyText = string.Format(_stringConstant.IssueDoesNotExist, text[2]);
@@ -186,7 +184,7 @@ namespace Promact.Core.Repository.RedmineRepository
                                         #region Issue close
                                         case RedmineAction.close:
                                             {
-                                                await UpdateByProperty(true, 0, text[2], user.RedmineApiKey);
+                                                await UpdateByPropertyAsync(true, 0, text[2], user.RedmineApiKey);
                                             }
                                             break;
                                         #endregion
@@ -309,9 +307,7 @@ namespace Promact.Core.Repository.RedmineRepository
         {
             bool valueConverted = false;
             valueConverted = Priority.TryParse(priority, out priorityId);
-            if (valueConverted)
-                replyText = string.Empty;
-            else
+            if (!valueConverted)
                 replyText = string.Format(_stringConstant.RedminePriorityErrorMessage,
                     Priority.Low.ToString(), Priority.Normal.ToString(), Priority.High.ToString(),
                     Priority.Urgent.ToString(), Priority.Immediate.ToString());
@@ -327,9 +323,7 @@ namespace Promact.Core.Repository.RedmineRepository
         private bool CheckStatus(string status, out Status statusId)
         {
             bool valueConverted = Status.TryParse(status, out statusId);
-            if (valueConverted)
-                replyText = string.Empty;
-            else
+            if (!valueConverted)
                 replyText = string.Format(_stringConstant.RedmineStatusErrorMessage,
                     Status.New.ToString(), Status.InProgess.ToString(), Status.Confirmed.ToString(),
                     Status.Resolved.ToString(), Status.Hold.ToString(), Status.Feedback.ToString(),
@@ -347,10 +341,8 @@ namespace Promact.Core.Repository.RedmineRepository
         {
             bool valueConverted = false;
             valueConverted = Tracker.TryParse(text, out trackerId);
-            if (valueConverted)
-                replyText = string.Empty;
-            else
-                string.Format(_stringConstant.RedmineTrackerErrorMessage,
+            if (!valueConverted)
+                replyText = string.Format(_stringConstant.RedmineTrackerErrorMessage,
                     Tracker.Bug.ToString(), Tracker.Feature.ToString(), Tracker.Support.ToString(),
                     Tracker.Tasks.ToString());
             return valueConverted;
@@ -372,7 +364,7 @@ namespace Promact.Core.Repository.RedmineRepository
         /// <param name="issueId">issue Id</param>
         /// <param name="redmineApiKey">redmine api key</param>
         /// <param name="issue">issue details</param>
-        private async Task UpdateIssue(int issueId, string redmineApiKey, PostRedmineResponse issue)
+        private async Task UpdateIssueAsync(int issueId, string redmineApiKey, PostRedmineResponse issue)
         {
             var updateRequestUrl = string.Format(_stringConstant.RedmineIssueUpdateUrl,
                 _stringConstant.RedmineBaseUrl, _stringConstant.IssueUrl, issueId);
@@ -394,7 +386,7 @@ namespace Promact.Core.Repository.RedmineRepository
         /// <param name="assignTo">update to assign the issue</param>
         /// <param name="issueStringId">issue id in string</param>
         /// <param name="userRedmineApiKey">redmine api key</param>
-        private async Task UpdateByProperty(bool isClose, int assignTo, string issueStringId, string userRedmineApiKey)
+        private async Task UpdateByPropertyAsync(bool isClose, int assignTo, string issueStringId, string userRedmineApiKey)
         {
             int issueId;
             string result;
@@ -425,7 +417,7 @@ namespace Promact.Core.Repository.RedmineRepository
                     updateIssue.Issue.StatusId = (Status)response.Issue.Status.Id;
 
                 }
-                await UpdateIssue(issueId, userRedmineApiKey, updateIssue);
+                await UpdateIssueAsync(issueId, userRedmineApiKey, updateIssue);
             }
         }
 
@@ -464,7 +456,7 @@ namespace Promact.Core.Repository.RedmineRepository
         /// <param name="projectId">project Id</param>
         /// <param name="redmineApiKey">redmine api key</param>
         /// <returns></returns>
-        private async Task<int> GetUserRedmineIdByName(string name, int projectId, string redmineApiKey)
+        private async Task<int> GetUserRedmineIdByNameAsync(string name, int projectId, string redmineApiKey)
         {
             int userId = 0;
             var requestUrl = string.Format(_stringConstant.UserByProjectIdUrl, projectId);

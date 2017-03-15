@@ -10,6 +10,6 @@ namespace Promact.Core.Repository.RedmineRepository
         /// </summary>
         /// <param name="slashCommand">slash command</param>
         /// <returns>reply message</returns>
-        Task SlackRequest(SlashCommand slashCommand);
+        Task SlackRequestAsync(SlashCommand slashCommand);
     }
 }

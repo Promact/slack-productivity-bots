@@ -470,6 +470,24 @@
         string RedmineTrackerErrorMessage { get; }
         string UserByProjectIdUrl { get; }
         string RedmineTimeEntryDateFormat { get; }
+        string RedmineWrongActionCommand { get; }
+        string RedmineCommandProjectList { get; }
+        string RedmineWrongIssueActionCommand { get; }
+        string RedmineCommandIssueListWrongProjectId { get; }
+        string RedmineCommandIssueList { get; }
+        string RedmineCommandCreateWrongPriority { get; }
+        string RedmineCommandCreateWrongStatus { get; }
+        string RedmineCommandCreateWrongTracker { get; }
+        string RedmineCommandCreateWrongProjectId { get; }
+        string RedmineCommandCreate { get; }
+        string RedmineCommandChangeAssign { get; }
+        string RedmineCommandIssueClose { get; }
+        string RedmineTimeEntryWrongIssueId { get; }
+        string RedmineTimeEntry { get; }
+        string RedmineTimeEntryHourFormatCommand { get; }
+        string RedmineTimeEntryDateFormatCommand { get; }
+        string RedmineTimeEntryTimeEntryActivityFormatCommand { get; }
+        string RedmineCommandHelp { get; }
         #endregion
     }
 }
