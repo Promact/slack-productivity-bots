@@ -3308,7 +3308,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "No user found for project Id - {0}";
+                return "{0} is not found in project Id - {1}";
             }
         }
 
@@ -3437,6 +3437,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "/projects/{0}/memberships.json";
+            }
+        }
+
+        public string RedmineTimeEntryDateFormat
+        {
+            get
+            {
+                return "yyyy-MM-dd";
             }
         }
         #endregion

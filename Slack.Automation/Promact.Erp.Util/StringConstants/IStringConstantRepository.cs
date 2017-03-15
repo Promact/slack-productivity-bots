@@ -505,6 +505,7 @@
         string RedmineStatusErrorMessage { get; }
         string RedmineTrackerErrorMessage { get; }
         string UserByProjectIdUrl { get; }
+        string RedmineTimeEntryDateFormat { get; }
         #endregion
     }
 }

@@ -142,6 +142,7 @@
     <Compile Include="ApplicationClass\Redmine\RedmineProject.cs" />
     <Compile Include="ApplicationClass\Redmine\RedmineResponseSingleProject.cs" />
     <Compile Include="ApplicationClass\Redmine\RedmineTimeEntries.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineTimeEntryApplicationClass.cs" />
     <Compile Include="ApplicationClass\Redmine\RedmineUser.cs" />
     <Compile Include="ApplicationClass\Redmine\RedmineUserResponse.cs" />
     <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
