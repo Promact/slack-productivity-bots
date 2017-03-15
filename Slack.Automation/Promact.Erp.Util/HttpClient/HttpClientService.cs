@@ -45,7 +45,7 @@ namespace Promact.Erp.Util.HttpClient
                         _client.DefaultRequestHeaders.Add(accessTokenType, accessToken);
                 }
                 _logger.Debug("ContentUrl : " + contentUrl);
-                var response = await _client.GetAsync(contentUrl);
+                var response = _client.GetAsync(contentUrl).Result;
                 _client.Dispose();
                 string responseContent = null;
                 _logger.Debug("Status code : " + response.StatusCode);
@@ -84,6 +84,40 @@ namespace Promact.Erp.Util.HttpClient
                     _client.DefaultRequestHeaders.Add(accessTokenType, accessToken);
                 }
                 var response = await _client.PostAsync(baseUrl, new StringContent(contentString, Encoding.UTF8, contentHeader));
+                _client.Dispose();
+                string responseString = null;
+                if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    responseString = response.Content.ReadAsStringAsync().Result;
+                }
+                return responseString;
+            }
+            catch (HttpRequestException)
+            {
+                throw new Exception(_stringConstant.HttpRequestExceptionErrorMessage);
+            }
+        }
+
+        /// <summary>
+        /// Method to use System.Net.Http.HttpClient's PutAsync method
+        /// </summary>
+        /// <param name="baseUrl">base url</param>
+        /// <param name="contentString">text to be send</param>
+        /// <param name="contentHeader">content header</param>
+        /// <param name="accessToken">access token</param>
+        /// <param name="accessTokenType">access token type</param>
+        /// <returns>responseString</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
+        public async Task<string> PutAsync(string baseUrl, string contentString, string contentHeader, string accessToken, string accessTokenType)
+        {
+            try
+            {
+                _client = new System.Net.Http.HttpClient();
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    _client.DefaultRequestHeaders.Add(accessTokenType, accessToken);
+                }
+                var response = await _client.PutAsync(baseUrl, new StringContent(contentString, Encoding.UTF8, contentHeader));
                 _client.Dispose();
                 string responseString = null;
                 if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.Created)

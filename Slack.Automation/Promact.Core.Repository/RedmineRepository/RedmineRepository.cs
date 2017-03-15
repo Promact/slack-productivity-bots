@@ -46,7 +46,7 @@ namespace Promact.Core.Repository.RedmineRepository
         /// <returns>reply message</returns>
         public async Task SlackRequest(SlashCommand slashCommand)
         {
-            var text = _attachmentRepository.SlackText(slashCommand.Text.ToLower());
+            var text = _attachmentRepository.SlackText(slashCommand.Text);
             var user = await _userDataRepository.FirstOrDefaultAsync(x => x.SlackUserId == slashCommand.UserId);
             if (user != null)
             {
@@ -157,7 +157,7 @@ namespace Promact.Core.Repository.RedmineRepository
                                                             }
                                                         }
                                                         else
-                                                            replyText = _stringConstant.NoUserFoundInProject;
+                                                            replyText = string.Format(_stringConstant.NoUserFoundInProject, text[8], projectId);
                                                     }
                                                     else
                                                         replyText = _stringConstant.ProperProjectId;
@@ -174,7 +174,7 @@ namespace Promact.Core.Repository.RedmineRepository
                                                 if (!string.IsNullOrEmpty(response))
                                                 {
                                                     var issue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(response);
-                                                    var redmineUserId = await GetUserRedmineIdByName(text[4], issue.Issue.Project.Id, user.RedmineApiKey);
+                                                    var redmineUserId = await GetUserRedmineIdByName(text[3], issue.Issue.Project.Id, user.RedmineApiKey);
                                                     await UpdateByProperty(false, redmineUserId, text[2], user.RedmineApiKey);
                                                 }
                                                 else
@@ -203,22 +203,23 @@ namespace Promact.Core.Repository.RedmineRepository
                                                     var hourConvertor = double.TryParse(text[3], out hour);
                                                     if (hourConvertor)
                                                     {
-                                                        var dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                                                         DateTime date;
-                                                        var dateConvertor = DateTime.TryParseExact(text[4], dateFormat, CultureInfo.InvariantCulture,
-                                                            DateTimeStyles.None, out date);
+                                                        var dateConvertor = DateTime.TryParseExact(text[4], _stringConstant.RedmineTimeEntryDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
                                                         if (dateConvertor)
                                                         {
                                                             TimeEntryActivity timeEntryActivity;
                                                             var timeEntryActivityConvertor = TimeEntryActivity.TryParse(text[5], out timeEntryActivity);
                                                             if (timeEntryActivityConvertor)
                                                             {
-                                                                var timeEntry = new RedmineTimeEntries()
+                                                                var timeEntry = new RedmineTimeEntryApplicationClass()
                                                                 {
-                                                                    ActivityId = timeEntryActivity,
-                                                                    IssueId = issueId,
-                                                                    Date = date,
-                                                                    Hours = hour
+                                                                    TimeEntry = new RedmineTimeEntries()
+                                                                    {
+                                                                        ActivityId = timeEntryActivity,
+                                                                        IssueId = issueId,
+                                                                        Date = date.ToString(_stringConstant.RedmineTimeEntryDateFormat),
+                                                                        Hours = hour
+                                                                    }
                                                                 };
                                                                 var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
                                                                     _stringConstant.RedmineBaseUrl, _stringConstant.TimeEntryUrl);
@@ -238,7 +239,7 @@ namespace Promact.Core.Repository.RedmineRepository
                                                                     TimeEntryActivity.Testing.ToString());
                                                         }
                                                         else
-                                                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
+                                                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, _stringConstant.RedmineTimeEntryDateFormat);
                                                     }
                                                     else
                                                         replyText = _stringConstant.HourIsNotNumericMessage;
@@ -376,14 +377,13 @@ namespace Promact.Core.Repository.RedmineRepository
             var updateRequestUrl = string.Format(_stringConstant.RedmineIssueUpdateUrl,
                 _stringConstant.RedmineBaseUrl, _stringConstant.IssueUrl, issueId);
             var issueInJsonText = JsonConvert.SerializeObject(issue);
-            var updateResult = await _httpClientService.PostAsync(updateRequestUrl, issueInJsonText,
+            var updateResult = await _httpClientService.PutAsync(updateRequestUrl, issueInJsonText,
                 _stringConstant.JsonApplication, redmineApiKey, _stringConstant.RedmineApiKey);
-            if (string.IsNullOrEmpty(updateResult))
+            if (updateResult == null)
                 replyText = _stringConstant.ErrorInUpdateIssue;
             else
             {
-                var createdIssue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(updateResult);
-                replyText = string.Format(_stringConstant.IssueSuccessfullUpdated, createdIssue.Issue.IssueId);
+                replyText = string.Format(_stringConstant.IssueSuccessfullUpdated, issueId);
             }
         }
 
@@ -411,6 +411,7 @@ namespace Promact.Core.Repository.RedmineRepository
                         TrackerId = (Tracker)response.Issue.Tracker.Id,
                         StatusId = (Status)response.Issue.Status.Id,
                         Description = response.Issue.Description,
+                        Subject = response.Issue.Subject
                     }
                 };
                 if (isClose)

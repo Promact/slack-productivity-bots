@@ -27,5 +27,17 @@ namespace Promact.Erp.Util.HttpClient
         /// <returns>responseString</returns>
         /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
         Task<string> PostAsync(string baseUrl, string contentString, string contentHeader, string accessToken, string accessTokenType);
+
+        /// <summary>
+        /// Method to use System.Net.Http.HttpClient's PutAsync method
+        /// </summary>
+        /// <param name="baseUrl">base url</param>
+        /// <param name="contentString">text to be send</param>
+        /// <param name="contentHeader">content header</param>
+        /// <param name="accessToken">access token</param>
+        /// <param name="accessTokenType">access token type</param>
+        /// <returns>responseString</returns>
+        /// <exception cref="HttpRequestException">Exception will be when request server is closed</exception>
+        Task<string> PutAsync(string baseUrl, string contentString, string contentHeader, string accessToken, string accessTokenType);
     }
 }
