@@ -47,7 +47,7 @@ namespace Promact.Erp.Core.Controllers
         {
             var request = HttpContext.Current.Request.Form;
             var redmine = _attachmentRepository.SlashCommandTransfrom(request);
-            await _redmineRepository.SlackRequest(redmine);
+            await _redmineRepository.SlackRequestAsync(redmine);
             return Ok();
         }
         #endregion
