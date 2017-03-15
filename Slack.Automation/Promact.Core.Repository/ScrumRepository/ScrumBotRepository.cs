@@ -93,7 +93,9 @@ namespace Promact.Core.Repository.ScrumRepository
             _logger.Info(DateTime.UtcNow.Date);
             string replyText = string.Empty;
             SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(slackUserId);
+            _logger.Info("\nSlack User Detail\n " + slackUserDetail);
             SlackChannelDetails slackChannelDetail = await _slackChannelRepository.GetByIdAsync(slackChannelId);
+            _logger.Info("\nSlack Channel Detail\n " + slackChannelDetail);
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
@@ -164,7 +166,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     {
                         replyText = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(slackUserId, slackChannelDetail, message);
                         if (string.IsNullOrEmpty(replyText))
-                            replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelDetail.ProjectId, slackUserId);
+                            replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelDetail.ProjectId, slackUserId, true);
                     }
                     else
                     {
@@ -216,19 +218,24 @@ namespace Promact.Core.Repository.ScrumRepository
                                 {
                                     _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
                                     replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
-                                        message, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId);
+                                        message, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
                                 }
                             }
                             else  //all other texts
                             {
                                 _logger.Debug("AddScrumAnswerAsync method");
                                 replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
-                                     (int)slackChannelDetail.ProjectId, slackUserDetail.UserId);
+                                     (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
                             }
                         }
                         else
                         {
-                            replyText = _stringConstant.ProjectChannelNotLinked;
+                            if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
+                              || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                              || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                            {
+                                replyText = _stringConstant.ProjectChannelNotLinked;
+                            }
                         }
 
                         #endregion
@@ -236,17 +243,6 @@ namespace Promact.Core.Repository.ScrumRepository
                 }
                 else   //channel is not registered in the database
                 {
-                    Scrum scrum;
-                    if (slackChannelDetail?.ProjectId != null)
-                    {
-                        DateTime today = DateTime.UtcNow.Date;
-                        scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
-                                DbFunctions.TruncateTime(x.ScrumDate) == today);
-                        _logger.Info(scrum?.ScrumDate);
-                    }
-                    else
-                        scrum = null;
-
                     //If channel is not registered in the database and the command encountered is "add channel channelname"
                     if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
                         String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
@@ -257,8 +253,7 @@ namespace Promact.Core.Repository.ScrumRepository
                     //If any of the commands which scrum bot recognizes is encountered                  
                     else if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
                        || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
-                       || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
-                       || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
+                       || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         _logger.Debug("Channel is not in our db so give instruction to add channel");
                         replyText = _stringConstant.ChannelAddInstruction;
@@ -289,7 +284,7 @@ namespace Promact.Core.Repository.ScrumRepository
             return replyText;
         }
 
-                
+
         #region Temporary Scrum Details
 
 
@@ -514,13 +509,13 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="slackUserName">slack user name of the interacting user</param>
         /// <param name="message">the message that interacting user sends</param>
         /// <param name="projectId">slack channel name from which the message has been send</param>
+        /// <param name="isLinkCommand">it indicates whether the message was already processed as a link command</param>
         /// <param name="slackUserId">slack user Id of the interacting user</param>
         /// <returns>the next question statement</returns>
-        private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, int? projectId, string slackUserId)
+        private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, int? projectId, string slackUserId, bool isLinkCommand)
         {
             if (projectId != null)
             {
-                string reply = string.Empty;
                 //today's scrum of the channel 
                 Scrum scrum = await GetScrumAsync((int)projectId);
                 if (scrum != null && scrum.IsOngoing && !scrum.IsHalted)
@@ -555,22 +550,23 @@ namespace Promact.Core.Repository.ScrumRepository
                                 //update the details in temporary table 
                                 await UpdateTemporaryScrumDetailsAsync(slackUserId, scrum.Id, users, null);
                                 //get the next question
-                                reply = await GetQuestionAsync(scrum.Id, questions, users, scrum.ProjectId);
+                                return await GetQuestionAsync(scrum.Id, questions, users, scrum.ProjectId);
                             }
                             //the user interacting is not the expected user
                             else
-                                reply = status;
+                                return status;
                         }
                         else
-                            reply = ReplyStatusofScrumToClient(scrumStatus);
+                            return ReplyStatusofScrumToClient(scrumStatus);
                     }
                     else
                         // if user doesn't exist then this message will be shown to user
-                        reply = _stringConstant.YouAreNotInExistInOAuthServer;
+                        return _stringConstant.YouAreNotInExistInOAuthServer;
                 }
-                return reply;
             }
-            return _stringConstant.ProjectChannelNotLinked;
+            else if (isLinkCommand && projectId == null)
+                return _stringConstant.ProjectChannelNotLinked;
+            return string.Empty;
         }
 
 
