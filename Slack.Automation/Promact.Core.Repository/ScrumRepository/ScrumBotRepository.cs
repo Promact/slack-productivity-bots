@@ -93,7 +93,9 @@ namespace Promact.Core.Repository.ScrumRepository
             _logger.Info(DateTime.UtcNow.Date);
             string replyText = string.Empty;
             SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(slackUserId);
+            _logger.Info("\nSlack User Detail\n " + slackUserDetail);
             SlackChannelDetails slackChannelDetail = await _slackChannelRepository.GetByIdAsync(slackChannelId);
+            _logger.Info("\nSlack Channel Detail\n " + slackChannelDetail);
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
@@ -512,7 +514,6 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <returns>the next question statement</returns>
         private async Task<string> AddScrumAnswerAsync(string slackUserName, string message, int? projectId, string slackUserId, bool isLinkCommand)
         {
-            string reply = string.Empty;
             if (projectId != null)
             {
                 //today's scrum of the channel 
@@ -549,23 +550,23 @@ namespace Promact.Core.Repository.ScrumRepository
                                 //update the details in temporary table 
                                 await UpdateTemporaryScrumDetailsAsync(slackUserId, scrum.Id, users, null);
                                 //get the next question
-                                reply = await GetQuestionAsync(scrum.Id, questions, users, scrum.ProjectId);
+                                return await GetQuestionAsync(scrum.Id, questions, users, scrum.ProjectId);
                             }
                             //the user interacting is not the expected user
                             else
-                                reply = status;
+                                return status;
                         }
                         else
-                            reply = ReplyStatusofScrumToClient(scrumStatus);
+                            return ReplyStatusofScrumToClient(scrumStatus);
                     }
                     else
                         // if user doesn't exist then this message will be shown to user
-                        reply = _stringConstant.YouAreNotInExistInOAuthServer;
+                        return _stringConstant.YouAreNotInExistInOAuthServer;
                 }
             }
             else if (isLinkCommand && projectId == null)
                 return _stringConstant.ProjectChannelNotLinked;
-            return reply;
+            return string.Empty;
         }
 
 
