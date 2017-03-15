@@ -1159,7 +1159,7 @@ namespace Promact.Core.Test
             leave.Status = Condition.Approved;
             await _leaveRequestRepository.ApplyLeaveAsync(leave);
             leaveResponse.CallbackId = Convert.ToString(leave.Id);
-            var replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
+            var replyText = _stringConstant.YouAreNotInExistInOAuthServer;
             var updateText = SlackReplyMethodMocking(firstUserIncomingWebHook.IncomingWebHookUrl, replyText, _stringConstant.JsonContentString);
             SlashChatUpdateResponseAction action = new SlashChatUpdateResponseAction()
             {
