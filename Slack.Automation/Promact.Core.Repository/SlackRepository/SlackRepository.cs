@@ -94,25 +94,32 @@ namespace Promact.Core.Repository.SlackRepository
                         }
                         await _leaveRepository.UpdateLeaveAsync(leave);
                         _logger.Debug("UpdateLeaveAsync leave updated successfully");
+                        _logger.Debug("Leave details : " +leave.ToString());
                         replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
                                     leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                     leave.Reason, leave.Status, leaveResponse.User.Name);
+                        _logger.Debug("Reply text to user : " + replyText);
                         IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
                         _logger.Debug("UpdateLeaveAsync user incoming webhook is null : " + string.IsNullOrEmpty(incomingWebHook.IncomingWebHookUrl));
                         // Used to send slack message to the user about leave updation
                         _logger.Debug("UpdateLeaveAsync Client repository - UpdateMessageAsync");
                         await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
+                        _logger.Debug("Creating Email object");
                         // Used to send email to the user about leave updation
-                        _logger.Debug("UpdateLeaveAsync Email sending");
                         EmailApplication email = new EmailApplication();
                         email.To = new List<string>();
                         email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+                        _logger.Debug("Email body is null : " + email.Body);
                         email.From = updaterUser.Email;
+                        _logger.Debug("Email from : " + email.From);
                         email.To.Add(user.Email);
+                        _logger.Debug("Email from : " + email.To);
                         email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
                         replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
                         leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
                         leave.RejoinDate.Value.ToShortDateString());
+                        _logger.Debug("Reply text to updator : " + replyText);
+                        _logger.Debug("UpdateLeaveAsync Email sending");
                         _emailService.Send(email);
                         _logger.Debug("UpdateLeaveAsync Email successfully send");
                     }
@@ -123,7 +130,7 @@ namespace Promact.Core.Repository.SlackRepository
                     }
                 }
                 else
-                    replyText = _stringConstant.AdminErrorMessageUpdateSickLeave;
+                    replyText = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             catch (SmtpException ex)
             {
