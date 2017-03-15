@@ -17,9 +17,10 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.OauthCallsRepository;
+using Promact.Core.Repository.RedmineRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Core.Repository.ScrumRepository;
-using Promact.Core.Repository.ServiceRepository; 
+using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -96,6 +97,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
+            builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
