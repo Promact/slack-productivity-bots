@@ -3447,6 +3447,150 @@ namespace Promact.Erp.Util.StringConstants
                 return "yyyy-MM-dd";
             }
         }
+
+        public string RedmineWrongActionCommand
+        {
+            get
+            {
+                return "wrongcommand";
+            }
+        }
+
+        public string RedmineCommandProjectList
+        {
+            get
+            {
+                return "projects list";
+            }
+        }
+
+        public string RedmineWrongIssueActionCommand
+        {
+            get
+            {
+                return "issues wrongcommand";
+            }
+        }
+
+        public string RedmineCommandIssueListWrongProjectId
+        {
+            get
+            {
+                return "issues list abc";
+            }
+        }
+
+        public string RedmineCommandIssueList
+        {
+            get
+            {
+                return "issues list 1";
+            }
+        }
+
+        public string RedmineCommandCreateWrongPriority
+        {
+            get
+            {
+                return "issues create 1 hello hello Wrong New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongStatus
+        {
+            get
+            {
+                return "issues create 1 hello hello Normal Wrong Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongTracker
+        {
+            get
+            {
+                return "issues create 1 hello hello Normal New Wrong siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongProjectId
+        {
+            get
+            {
+                return "issues create abc hello hello Normal New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreate
+        {
+            get
+            {
+                return "issues create 1 Admin Admin Normal New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandChangeAssign
+        {
+            get
+            {
+                return "issues changeassignee 1 siddhartha";
+            }
+        }
+
+        public string RedmineCommandIssueClose
+        {
+            get
+            {
+                return "issues close 1";
+            }
+        }
+
+        public string RedmineTimeEntryWrongIssueId
+        {
+            get
+            {
+                return string.Format("issues timeentry abc 2.0 {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntry
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 2.0 {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntryHourFormatCommand
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 abc {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntryDateFormatCommand
+        {
+            get
+            {
+                return "issues timeentry 1 2.0 15-03-2017 Development";
+            }
+        }
+
+        public string RedmineTimeEntryTimeEntryActivityFormatCommand
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 2.0 {0} Wrong", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineCommandHelp
+        {
+            get
+            {
+                return "help";
+            }
+        }
         #endregion
     }
 }
