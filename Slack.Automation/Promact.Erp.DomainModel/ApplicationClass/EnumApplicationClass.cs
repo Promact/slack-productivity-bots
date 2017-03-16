@@ -25,7 +25,8 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         help,
         update,
         projects,
-        issues
+        issues,
+        apikey
     }
 
     /// <summary>

@@ -45,7 +45,7 @@ namespace Promact.Core.Test
         }
         #endregion
 
-        #region Public Methods
+        #region Test Cases
         /// <summary>
         /// Test case for User Not Found
         /// </summary>
@@ -483,6 +483,57 @@ namespace Promact.Core.Test
             await CreateUserAsync();
             slashCommand.Text = _stringConstant.RedmineCommandHelp;
             var replyText = _stringConstant.RedmineHelp;
+            var slashResponseJsonText = MockingSendMessageAsync(replyText);
+            await _redmineRepository.SlackRequestAsync(slashCommand);
+            _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
+        }
+
+        /// <summary>
+        /// Test case for redmine api key not found
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task RedmineSlackRequestRedmineKeyNullAsync()
+        {
+            var user = new ApplicationUser()
+            {
+                Id = _stringConstant.StringIdForTest,
+                UserName = _stringConstant.EmailForTest,
+                Email = _stringConstant.EmailForTest,
+                SlackUserId = _stringConstant.UserSlackId,
+            };
+            await _userManager.CreateAsync(user);
+            slashCommand.Text = _stringConstant.RedmineCommandHelp;
+            var replyText = _stringConstant.RedmineApiKeyIsNull;
+            var slashResponseJsonText = MockingSendMessageAsync(replyText);
+            await _redmineRepository.SlackRequestAsync(slashCommand);
+            _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
+        }
+
+        /// <summary>
+        /// Test case for redmine api key in-valid
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task RedmineSlackRequestAPIKeyInValidAsync()
+        {
+            await CreateUserAsync();
+            slashCommand.Text = _stringConstant.RedmineAPIKeyCommand;
+            var replyText = _stringConstant.PleaseEnterValidAPIKey;
+            var slashResponseJsonText = MockingSendMessageAsync(replyText);
+            await _redmineRepository.SlackRequestAsync(slashCommand);
+            _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
+        }
+
+        /// <summary>
+        /// Test case for redmine api key
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task RedmineSlackRequestAPIKeyAsync()
+        {
+            await CreateUserAsync();
+            GetAsyncMethodMocking(_stringConstant.Ok, _stringConstant.RedmineBaseUrl,_stringConstant.RedmineIssueUrl, 
+                _stringConstant.AccessTokenForTest);
+            slashCommand.Text = _stringConstant.RedmineAPIKeyCommand;
+            var replyText = _stringConstant.RedmineKeyAddSuccessfully;
             var slashResponseJsonText = MockingSendMessageAsync(replyText);
             await _redmineRepository.SlackRequestAsync(slashCommand);
             _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);

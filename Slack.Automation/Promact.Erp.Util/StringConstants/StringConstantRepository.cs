@@ -3212,7 +3212,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("/redmine projects list - list all projects{0}/redmine issues list [projectId] - get all issues assigned to me in particular project{0}/redmine issues create [projectId] [Subject] [Description] [Priority] [Status] [Tracker] [AssignTo] - to create issue{0}/redmine issues changeassignee [issueId] [AssignedTo] - to change assign person{0}/redmine issues close [issueId] - to close the issue{0}/redmine issues timeentry [issueId] [hours] [date] [activity] - to add time entity for task", Environment.NewLine);
+                return string.Format("/redmine projects list - list all projects{0}/redmine issues list [projectId] - get all issues assigned to me in particular project{0}/redmine issues create [projectId] [Subject] [Description] [Priority] [Status] [Tracker] [AssignTo] - to create issue{0}/redmine issues changeassignee [issueId] [AssignedTo] - to change assign person{0}/redmine issues close [issueId] - to close the issue{0}/redmine issues timeentry [issueId] [hours] [date] [activity] - to add time entity for task{0}/redmine apikey [API-Key] - to add or update - ", Environment.NewLine);
             }
         }
 
@@ -3589,6 +3589,38 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "help";
+            }
+        }
+
+        public string RedmineApiKeyIsNull
+        {
+            get
+            {
+                return string.Format("To use redmine slash command please add your redmine API Key. {0}To add or update - /redmine apikey [API-Key]", Environment.NewLine);
+            }
+        }
+
+        public string RedmineKeyAddSuccessfully
+        {
+            get
+            {
+                return "Your redmine api key successfully added";
+            }
+        }
+
+        public string PleaseEnterValidAPIKey
+        {
+            get
+            {
+                return string.Format("Please enter a valid redmine API-Key of redmine.{0}Click here to get you redmine API-Key - https://redmine.promactinfo.com/my/account", Environment.NewLine);
+            }
+        }
+
+        public string RedmineAPIKeyCommand
+        {
+            get
+            {
+                return string.Format("apikey {0}", AccessTokenForTest);
             }
         }
         #endregion

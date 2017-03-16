@@ -524,6 +524,10 @@
         string RedmineTimeEntryDateFormatCommand { get; }
         string RedmineTimeEntryTimeEntryActivityFormatCommand { get; }
         string RedmineCommandHelp { get; }
+        string RedmineApiKeyIsNull { get; }
+        string RedmineKeyAddSuccessfully { get; }
+        string PleaseEnterValidAPIKey { get; }
+        string RedmineAPIKeyCommand { get; }
         #endregion
     }
 }
