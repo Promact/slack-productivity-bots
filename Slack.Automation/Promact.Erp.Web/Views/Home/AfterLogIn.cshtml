@@ -18,6 +18,8 @@
     <link href="../../Content/css/custom.min.css" rel="stylesheet">
     <link href="../../Content/css/erp-custom.css" rel="stylesheet" />
     <link href="../../Content/Site.css" rel="stylesheet">
+
+    <link href="~/Content/js/nprogress/nprogress.css" rel="stylesheet" />
     @*Polyfill(s) for older browsers*@
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
@@ -63,20 +65,26 @@ else
 {
     <body class="nav-md">
         <my-app>
+           
 
-            <div class="overlay">
+                <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
+         
+
+            @*<div class="overlay">
             </div>
             <div class="loader">
                 <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
-            </div>
+            </div>*@
         </my-app>
         <!-- jQuery -->
         <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap -->
         <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
         <!-- Custom Theme Scripts -->
+        <script src="~/Scripts/nprogress/nprogress.js"></script>
         @*<script src="../../Content/js/custom.js"></script>*@
-        <script src="~/Content/js/custom.js"></script>
+
+        <script src="~/Content/js/nprogress/nprogress.js"></script>
     </body>
 }
 </html>
