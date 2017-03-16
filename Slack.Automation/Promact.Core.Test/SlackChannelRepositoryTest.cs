@@ -4,7 +4,7 @@ using Autofac;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
-
+using System.Collections.Generic;
 
 namespace Promact.Core.Test
 {
@@ -94,6 +94,31 @@ namespace Promact.Core.Test
             await _slackChannelRepository.DeleteChannelAsync(slackChannelDetails.ChannelId);
             SlackChannelDetails slackChannel = await _slackChannelRepository.GetByIdAsync(slackChannelDetails.ChannelId);
             Assert.Null(slackChannel);
+        }
+
+
+        /// <summary>
+        /// Test case to check the functionality of FetchChannelByProjectIdAsync method of Slack Channel Repository - true case
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task FetchChannelByProjectIdAsync()
+        {
+            slackChannelDetails.ProjectId = 1;
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            SlackChannelDetails slackChannel = await _slackChannelRepository.FetchChannelByProjectIdAsync((int)slackChannelDetails.ProjectId);
+            Assert.Equal(slackChannel.Name, slackChannelDetails.Name);
+        }
+
+
+        /// <summary>
+        /// Test case to check the functionality of FetchChannelAsync method of Slack Channel Repository - true case
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task FetchChannelAsync()
+        {
+            await _slackChannelRepository.AddSlackChannelAsync(slackChannelDetails);
+            IEnumerable<SlackChannelDetails> slackChannels = await _slackChannelRepository.FetchChannelAsync();
+            Assert.NotEmpty(slackChannels);
         }
 
 

@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Collections.Generic;
+
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
@@ -76,6 +78,27 @@ namespace Promact.Core.Repository.SlackChannelRepository
         }
 
 
+        /// <summary>
+        /// Method to fetch active slack channels - JJ
+        /// </summary>
+        ///<returns>list of object of SlackChannelDetails</returns>
+        public async Task<IEnumerable<SlackChannelDetails>> FetchChannelAsync()
+        {
+            return await _slackChannelDetailsRepository.FetchAsync(x => !x.Deleted);
+        }
+
+
+        /// <summary>
+        /// Method to fetch active slack channels - JJ
+        /// </summary>
+        /// <param name="projectId">Id of the OAuth Project</param>
+        ///<returns>object of SlackChannelDetails</returns>
+        public async Task<SlackChannelDetails> FetchChannelByProjectIdAsync(int projectId)
+        {
+            return await _slackChannelDetailsRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId);
+        }
+
+            
         #endregion
     }
 }
