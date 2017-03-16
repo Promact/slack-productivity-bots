@@ -233,15 +233,15 @@ $(document).ready(function() {
 });
 
 // NProgress
-if (typeof NProgress != 'undefined') {
-    $(document).ready(function () {
-        NProgress.start();
-    });
+//if (typeof NProgress != 'undefined') {
+//    $(document).ready(function () {
+//        NProgress.start();
+//    });
 
-    $(window).load(function () {
-        NProgress.done();
-    });
-}
+//    $(window).load(function () {
+//        NProgress.done();
+//    });
+//}
 /**
  * Resize function without multiple trigger
  * 

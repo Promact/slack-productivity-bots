@@ -70,9 +70,12 @@
         </div>
         <!-- /page content -->
     </div>
-    <div *ngIf="loader.loader">
-        <div class="loader">
+    <div *ngIf="loader.loader" style="position:relative;">
+        <div class="overlay">
+        <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
+        
+            </div><!--<div class="loader">
             <svg width="1em" height="1em"><circle cx="0.5em" cy="0.5em" r="0.45em" /></svg>
-        </div>
+        </div>-->
     </div>
 </div>

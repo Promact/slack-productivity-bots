@@ -943,6 +943,8 @@
     <Content Include="Scripts\modernizr\test\node\lib\options.js" />
     <Content Include="Scripts\modernizr\test\universal\lib\build-hash.js" />
     <Content Include="Scripts\modernizr\test\universal\lib\generate-banner.js" />
+    <Content Include="Content\js\nprogress\nprogress.css" />
+    <Content Include="Content\js\nprogress\nprogress.js" />
     <Content Include="Scripts\respond\cross-domain\example.html" />
     <Content Include="Scripts\respond\cross-domain\respond-proxy.html" />
     <Content Include="Scripts\respond\cross-domain\respond.proxy.gif" />
@@ -1001,6 +1003,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1162,10 +1165,7 @@
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Content\js\theme\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
