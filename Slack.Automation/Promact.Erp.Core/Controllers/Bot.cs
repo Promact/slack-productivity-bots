@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Autofac;
+using NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -10,39 +11,48 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+
 namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
+
         #region Private Variables
+
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _scrumlogger;
         private readonly ILogger _logger;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly IScrumBotRepository _scrumBotRepository;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         private static string _scrumBotId;
+        private readonly IComponentContext _component;
+
         #endregion
+
 
         #region Constructor
 
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetailsRepository,
-           IStringConstantRepository stringConstant, IScrumBotRepository scrumBotRepository,
-           IEnvironmentVariableRepository environmentVariableRepository)
+           IStringConstantRepository stringConstant,
+           IEnvironmentVariableRepository environmentVariableRepository, IComponentContext component)
         {
             _taskMailRepository = taskMailRepository;
             _slackUserDetailsRepository = slackUserDetailsRepository;
             _logger = LogManager.GetLogger("TaskBotModule");
             _scrumlogger = LogManager.GetLogger("ScrumBotModule");
             _stringConstant = stringConstant;
-            _scrumBotRepository = scrumBotRepository;
             _environmentVariableRepository = environmentVariableRepository;
+            _component = component;
         }
+
         #endregion
 
+        
         #region Public Methods
+
+
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -125,8 +135,10 @@ namespace Promact.Erp.Core.Controllers
                 _scrumlogger.Debug("Scrum bot got message :" + message);
                 try
                 {
+                    IScrumBotRepository scrumBotRepository = _component.Resolve<IScrumBotRepository>();
+
                     _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                    string replyText = _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
+                    string replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
                     _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
 
                     if (!String.IsNullOrEmpty(replyText))
@@ -162,6 +174,7 @@ namespace Promact.Erp.Core.Controllers
                 }
             };
         }
+
 
         #endregion
     }
