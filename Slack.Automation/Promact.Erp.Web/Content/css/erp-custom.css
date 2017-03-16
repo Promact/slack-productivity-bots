@@ -15,7 +15,8 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
 .md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
 .taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 7px;text-align:right}
 .taskmail-details table{margin:30px 0;}
-.taskmail-details  .tsk-view  label{float:left;padding-right:10px;width:104px;text-align:right}
+.taskmail-details  .tsk-view  label{float:left;padding-right:10px;text-align:right}
+.taskmail-details .tsk-view div p{clear:both;display:inline-block}
 .taskmail-details .btn-back , .leave-report-details .btn-back , .scrum-details .btn-back , .leave-report-details .btn-back{padding:6px 15px;font-size:14px;}
 .taskmail-details .btn-back .fa-arrow-left , .leave-report-details .btn-back .fa-arrow-left  , .scrum-details .btn-back .fa-arrow-left{font-size: 13px;padding: 0px 5px 0px 0px;vertical-align: middle;margin-top:-1px;}
 

@@ -24,12 +24,12 @@
                         </div>
                     </div>
                     <div *ngFor="let taskmailUser of taskMail" class="tsk-view">
-                        <div class="form-group row">
-                            <div class="col-md-1">
+                        <div class="clearfix col-md-12">
+                            <div class="pull-left">
                                 <label class="control-label">  Name:</label>
                                 <p>{{taskmailUser.UserName}}</p>
                             </div>
-                            <div class="col-md-3">
+                            <div class="pull-right">
                                 <label class="control-label">  Task Mail Date:</label>
                                 <p>{{taskmailUser.CreatedOns}}</p>
                             </div>
