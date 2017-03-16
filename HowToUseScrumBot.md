@@ -4,11 +4,11 @@
 You may skip Step 1, if it's already done.
 
 #### 1. Common Initial Setup
+  * A user must be registered in Promact-OAuth-Server and must be externally logged in from Promact-OAuth-Server in our slack application.
   * A user must add Promact's slack app to their slack team.
-  * A user must be registered(details such as Slack Name must be exactly same as slack username) in Promact-OAuth-Server and must be externally logged in from Promact-OAuth-Server in our slack application.
 
 #### 2. Scrum Meeting Setup
-  * Add the project details of the slack channel in which scrum meeting has to be conducted to Promact-Oauth-Server, where the slack channel name must be entered as it is given in slack.
+  * Add the project details of the slack channel in which scrum meeting has to be conducted to Promact-Oauth-Server and link the slack channel to the project(follow instructions on point 4 to link).
   * Add the team members of the project(members of the slack channel) except the TL of the project.
   * Add the scrum bot to the slack channel in which scrum meeting has to be conducted.
 
@@ -22,6 +22,11 @@ You may skip Step 1, if it's already done.
   * The previous day scrum data (if any) of a user will be displayed to the user along with the first question.
   * If any user contacts the Bot (as in direct conversation with the bot), bot will not respond as expected, unless if it is for taking help i.e. by writing **“scrum help”**.
 
+#### 4. Link Commands
+  * Only team leaders can execute the following commands in the slack channels of their OAuth projects.
+  * Use `link "projectname"`to link slack channel to the OAuth project of the name _projectname_.
+  * Use `unlink "projectname"` to unlink slack channel from the OAuth project.
+  * Use `list links` to get the list of OAuth projects (of which the user is team leader) and their correspondingly linked Slack channels.
 
 # Rules and Limitations
 #### List of Rules and Limitations of Scrum meeting conducted by a scrum bot
