@@ -53,216 +53,240 @@ namespace Promact.Core.Repository.RedmineRepository
                 var actionConvertorResult = SlackAction.TryParse(text[0], out action);
                 if (actionConvertorResult)
                 {
-                    switch (action)
+                    if (action != SlackAction.apikey)
                     {
-                        #region Project list
-                        case SlackAction.projects:
+                        if (!string.IsNullOrEmpty(user.RedmineApiKey))
+                        {
+                            switch (action)
                             {
-                                var result = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl,
-                                    _stringConstant.RedmineProjectListAssignToMeUrl,
-                                    user.RedmineApiKey, _stringConstant.RedmineApiKey);
-                                if (!string.IsNullOrEmpty(result))
-                                {
-                                    var projectList = JsonConvert.DeserializeObject<GetRedmineProjectsResponse>(result);
-                                    foreach (var project in projectList.Projects)
+                                #region Project list
+                                case SlackAction.projects:
                                     {
-                                        replyText += MessageForProject(project);
-                                    }
-                                }
-                                else
-                                    replyText = _stringConstant.NoProjectFoundForUser;
-                            }
-                            break;
-                        #endregion
-
-                        #region Issues
-                        case SlackAction.issues:
-                            {
-                                RedmineAction redmineAction;
-                                var subActionConvertor = RedmineAction.TryParse(text[1], out redmineAction);
-                                if (subActionConvertor)
-                                {
-                                    switch (redmineAction)
-                                    {
-                                        #region Issues List
-                                        case RedmineAction.list:
+                                        var result = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl,
+                                            _stringConstant.RedmineProjectListAssignToMeUrl,
+                                            user.RedmineApiKey, _stringConstant.RedmineApiKey);
+                                        if (!string.IsNullOrEmpty(result))
+                                        {
+                                            var projectList = JsonConvert.DeserializeObject<GetRedmineProjectsResponse>(result);
+                                            foreach (var project in projectList.Projects)
                                             {
-                                                int projectId;
-                                                var projectConvertor = StringToInt(text[2], out projectId);
-                                                if (projectConvertor)
-                                                {
-                                                    var requestUrl = string.Format(_stringConstant.RedmineIssueListAssignToMeByProjectIdUrl, projectId);
-                                                    var result = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl, requestUrl, user.RedmineApiKey, _stringConstant.RedmineApiKey);
-                                                    if (!string.IsNullOrEmpty(result))
-                                                    {
-                                                        var issues = JsonConvert.DeserializeObject<GetRedmineResponse>(result);
-                                                        foreach (var issue in issues.Issues)
-                                                        {
-                                                            replyText += MessageForIssue(issue);
-                                                        }
-                                                    }
-                                                    else
-                                                        replyText = string.Format(_stringConstant.ProjectDoesNotExistForThisId, projectId);
-                                                }
-                                                else
-                                                    replyText = _stringConstant.ProperProjectId;
+                                                replyText += MessageForProject(project);
                                             }
-                                            break;
-                                        #endregion
+                                        }
+                                        else
+                                            replyText = _stringConstant.NoProjectFoundForUser;
+                                    }
+                                    break;
+                                #endregion
 
-                                        #region Issue Create
-                                        case RedmineAction.create:
+                                #region Issues
+                                case SlackAction.issues:
+                                    {
+                                        RedmineAction redmineAction;
+                                        var subActionConvertor = RedmineAction.TryParse(text[1], out redmineAction);
+                                        if (subActionConvertor)
+                                        {
+                                            switch (redmineAction)
                                             {
-                                                Priority priorityId;
-                                                Status statusId;
-                                                Tracker trackerId;
-                                                bool priorityConvertor = CheckPriority(text[5], out priorityId);
-                                                bool statusConvertor = CheckStatus(text[6], out statusId);
-                                                bool trackerConvertor = CheckTracker(text[7], out trackerId);
-                                                if (priorityConvertor && statusConvertor && trackerConvertor)
-                                                {
-                                                    int projectId;
-                                                    var projectConvertor = StringToInt(text[2], out projectId);
-                                                    if (projectConvertor)
+                                                #region Issues List
+                                                case RedmineAction.list:
                                                     {
-                                                        var redmineUserId = await GetUserRedmineIdByNameAsync(text[8], projectId, user.RedmineApiKey);
-                                                        if (redmineUserId !=0)
+                                                        int projectId;
+                                                        var projectConvertor = StringToInt(text[2], out projectId);
+                                                        if (projectConvertor)
                                                         {
-                                                            var issue = new PostRedmineResponse()
+                                                            var requestUrl = string.Format(_stringConstant.RedmineIssueListAssignToMeByProjectIdUrl, projectId);
+                                                            var result = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl, requestUrl, user.RedmineApiKey, _stringConstant.RedmineApiKey);
+                                                            if (!string.IsNullOrEmpty(result))
                                                             {
-                                                                Issue = new PostRedminIssue()
+                                                                var issues = JsonConvert.DeserializeObject<GetRedmineResponse>(result);
+                                                                foreach (var issue in issues.Issues)
                                                                 {
-                                                                    ProjectId = projectId,
-                                                                    PriorityId = priorityId,
-                                                                    TrackerId = trackerId,
-                                                                    StatusId = statusId,
-                                                                    Subject = text[3],
-                                                                    Description = text[4],
-                                                                    AssignTo = redmineUserId
+                                                                    replyText += MessageForIssue(issue);
                                                                 }
-                                                            };
-                                                            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
-                                                                _stringConstant.RedmineBaseUrl, _stringConstant.RedmineIssueUrl);
-                                                            var issueInJsonText = JsonConvert.SerializeObject(issue);
-                                                            var result = await _httpClientService.PostAsync(requestUrl, issueInJsonText,
-                                                                _stringConstant.JsonApplication, user.RedmineApiKey, _stringConstant.RedmineApiKey);
-                                                            if (string.IsNullOrEmpty(result))
-                                                                replyText = _stringConstant.ErrorInCreatingIssue;
-                                                            else
-                                                            {
-                                                                var createdIssue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(result);
-                                                                replyText = string.Format(_stringConstant.IssueSuccessfullyCreatedMessage, createdIssue.Issue.IssueId);
                                                             }
+                                                            else
+                                                                replyText = string.Format(_stringConstant.ProjectDoesNotExistForThisId, projectId);
                                                         }
                                                         else
-                                                            replyText = string.Format(_stringConstant.NoUserFoundInProject, text[8], projectId);
+                                                            replyText = _stringConstant.ProperProjectId;
                                                     }
-                                                    else
-                                                        replyText = _stringConstant.ProperProjectId;
-                                                }
-                                            }
-                                            break;
-                                        #endregion
+                                                    break;
+                                                #endregion
 
-                                        #region Change Assignee
-                                        case RedmineAction.changeassignee:
-                                            {
-                                                var requestUrl = string.Format(_stringConstant.IssueDetailsUrl, text[2]);
-                                                var response = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl, requestUrl, user.RedmineApiKey, _stringConstant.RedmineApiKey);
-                                                if (!string.IsNullOrEmpty(response))
-                                                {
-                                                    var issue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(response);
-                                                    var redmineUserId = await GetUserRedmineIdByNameAsync(text[3], issue.Issue.Project.Id, user.RedmineApiKey);
-                                                    await UpdateByPropertyAsync(false, redmineUserId, text[2], user.RedmineApiKey);
-                                                }
-                                                else
-                                                    replyText = string.Format(_stringConstant.IssueDoesNotExist, text[2]);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Issue close
-                                        case RedmineAction.close:
-                                            {
-                                                await UpdateByPropertyAsync(true, 0, text[2], user.RedmineApiKey);
-                                            }
-                                            break;
-                                        #endregion
-
-                                        #region Issue Time Entry
-                                        case RedmineAction.timeentry:
-                                            {
-                                                int issueId;
-                                                string result;
-                                                var issueConvertor = ToCheckIssueExistOrNot(text[2], user.RedmineApiKey, out issueId, out result);
-                                                if (issueConvertor)
-                                                {
-                                                    double hour;
-                                                    var hourConvertor = double.TryParse(text[3], out hour);
-                                                    if (hourConvertor)
+                                                #region Issue Create
+                                                case RedmineAction.create:
                                                     {
-                                                        DateTime date;
-                                                        var dateConvertor = DateTime.TryParseExact(text[4], _stringConstant.RedmineTimeEntryDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
-                                                        if (dateConvertor)
+                                                        Priority priorityId;
+                                                        Status statusId;
+                                                        Tracker trackerId;
+                                                        bool priorityConvertor = CheckPriority(text[5], out priorityId);
+                                                        bool statusConvertor = CheckStatus(text[6], out statusId);
+                                                        bool trackerConvertor = CheckTracker(text[7], out trackerId);
+                                                        if (priorityConvertor && statusConvertor && trackerConvertor)
                                                         {
-                                                            TimeEntryActivity timeEntryActivity;
-                                                            var timeEntryActivityConvertor = TimeEntryActivity.TryParse(text[5], out timeEntryActivity);
-                                                            if (timeEntryActivityConvertor)
+                                                            int projectId;
+                                                            var projectConvertor = StringToInt(text[2], out projectId);
+                                                            if (projectConvertor)
                                                             {
-                                                                var timeEntry = new RedmineTimeEntryApplicationClass()
+                                                                var redmineUserId = await GetUserRedmineIdByNameAsync(text[8], projectId, user.RedmineApiKey);
+                                                                if (redmineUserId != 0)
                                                                 {
-                                                                    TimeEntry = new RedmineTimeEntries()
+                                                                    var issue = new PostRedmineResponse()
                                                                     {
-                                                                        ActivityId = timeEntryActivity,
-                                                                        IssueId = issueId,
-                                                                        Date = date.ToString(_stringConstant.RedmineTimeEntryDateFormat),
-                                                                        Hours = hour
+                                                                        Issue = new PostRedminIssue()
+                                                                        {
+                                                                            ProjectId = projectId,
+                                                                            PriorityId = priorityId,
+                                                                            TrackerId = trackerId,
+                                                                            StatusId = statusId,
+                                                                            Subject = text[3],
+                                                                            Description = text[4],
+                                                                            AssignTo = redmineUserId
+                                                                        }
+                                                                    };
+                                                                    var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
+                                                                        _stringConstant.RedmineBaseUrl, _stringConstant.RedmineIssueUrl);
+                                                                    var issueInJsonText = JsonConvert.SerializeObject(issue);
+                                                                    var result = await _httpClientService.PostAsync(requestUrl, issueInJsonText,
+                                                                        _stringConstant.JsonApplication, user.RedmineApiKey, _stringConstant.RedmineApiKey);
+                                                                    if (string.IsNullOrEmpty(result))
+                                                                        replyText = _stringConstant.ErrorInCreatingIssue;
+                                                                    else
+                                                                    {
+                                                                        var createdIssue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(result);
+                                                                        replyText = string.Format(_stringConstant.IssueSuccessfullyCreatedMessage, createdIssue.Issue.IssueId);
                                                                     }
-                                                                };
-                                                                var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
-                                                                    _stringConstant.RedmineBaseUrl, _stringConstant.TimeEntryUrl);
-                                                                var jsonText = JsonConvert.SerializeObject(timeEntry);
-                                                                var response = await _httpClientService.PostAsync(requestUrl, jsonText,
-                                                                    _stringConstant.JsonApplication, user.RedmineApiKey, _stringConstant.RedmineApiKey);
-                                                                if (!string.IsNullOrEmpty(response))
-                                                                {
-                                                                    replyText = string.Format(_stringConstant.TimeEnrtyAddSuccessfully, issueId);
                                                                 }
                                                                 else
-                                                                    replyText = string.Format(_stringConstant.ErrorInAddingTimeEntry, issueId);
+                                                                    replyText = string.Format(_stringConstant.NoUserFoundInProject, text[8], projectId);
                                                             }
                                                             else
-                                                                replyText = string.Format(_stringConstant.TimeEntryActivityErrorMessage, TimeEntryActivity.Analysis.ToString(),
-                                                                    TimeEntryActivity.Design.ToString(), TimeEntryActivity.Development.ToString(), TimeEntryActivity.Roadblock.ToString(),
-                                                                    TimeEntryActivity.Testing.ToString());
+                                                                replyText = _stringConstant.ProperProjectId;
+                                                        }
+                                                    }
+                                                    break;
+                                                #endregion
+
+                                                #region Change Assignee
+                                                case RedmineAction.changeassignee:
+                                                    {
+                                                        var requestUrl = string.Format(_stringConstant.IssueDetailsUrl, text[2]);
+                                                        var response = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl, requestUrl, user.RedmineApiKey, _stringConstant.RedmineApiKey);
+                                                        if (!string.IsNullOrEmpty(response))
+                                                        {
+                                                            var issue = JsonConvert.DeserializeObject<RedmineResponseSingleProject>(response);
+                                                            var redmineUserId = await GetUserRedmineIdByNameAsync(text[3], issue.Issue.Project.Id, user.RedmineApiKey);
+                                                            await UpdateByPropertyAsync(false, redmineUserId, text[2], user.RedmineApiKey);
                                                         }
                                                         else
-                                                            replyText = string.Format(_stringConstant.DateFormatErrorMessage, _stringConstant.RedmineTimeEntryDateFormat);
+                                                            replyText = string.Format(_stringConstant.IssueDoesNotExist, text[2]);
                                                     }
-                                                    else
-                                                        replyText = _stringConstant.HourIsNotNumericMessage;
-                                                }
-                                            }
-                                            break;
-                                            #endregion
-                                    }
-                                }
-                                else
-                                    replyText = string.Format(_stringConstant.ProperRedmineIssueAction, RedmineAction.list.ToString(),
-                                        RedmineAction.create.ToString(), RedmineAction.changeassignee.ToString(), RedmineAction.close.ToString(),
-                                        RedmineAction.timeentry.ToString());
-                            }
-                            break;
-                        #endregion
+                                                    break;
+                                                #endregion
 
-                        #region Help
-                        case SlackAction.help:
-                            {
-                                replyText = _stringConstant.RedmineHelp;
+                                                #region Issue close
+                                                case RedmineAction.close:
+                                                    {
+                                                        await UpdateByPropertyAsync(true, 0, text[2], user.RedmineApiKey);
+                                                    }
+                                                    break;
+                                                #endregion
+
+                                                #region Issue Time Entry
+                                                case RedmineAction.timeentry:
+                                                    {
+                                                        int issueId;
+                                                        string result;
+                                                        var issueConvertor = ToCheckIssueExistOrNot(text[2], user.RedmineApiKey, out issueId, out result);
+                                                        if (issueConvertor)
+                                                        {
+                                                            double hour;
+                                                            var hourConvertor = double.TryParse(text[3], out hour);
+                                                            if (hourConvertor)
+                                                            {
+                                                                DateTime date;
+                                                                var dateConvertor = DateTime.TryParseExact(text[4], _stringConstant.RedmineTimeEntryDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+                                                                if (dateConvertor)
+                                                                {
+                                                                    TimeEntryActivity timeEntryActivity;
+                                                                    var timeEntryActivityConvertor = TimeEntryActivity.TryParse(text[5], out timeEntryActivity);
+                                                                    if (timeEntryActivityConvertor)
+                                                                    {
+                                                                        var timeEntry = new RedmineTimeEntryApplicationClass()
+                                                                        {
+                                                                            TimeEntry = new RedmineTimeEntries()
+                                                                            {
+                                                                                ActivityId = timeEntryActivity,
+                                                                                IssueId = issueId,
+                                                                                Date = date.ToString(_stringConstant.RedmineTimeEntryDateFormat),
+                                                                                Hours = hour
+                                                                            }
+                                                                        };
+                                                                        var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
+                                                                            _stringConstant.RedmineBaseUrl, _stringConstant.TimeEntryUrl);
+                                                                        var jsonText = JsonConvert.SerializeObject(timeEntry);
+                                                                        var response = await _httpClientService.PostAsync(requestUrl, jsonText,
+                                                                            _stringConstant.JsonApplication, user.RedmineApiKey, _stringConstant.RedmineApiKey);
+                                                                        if (!string.IsNullOrEmpty(response))
+                                                                        {
+                                                                            replyText = string.Format(_stringConstant.TimeEnrtyAddSuccessfully, issueId);
+                                                                        }
+                                                                        else
+                                                                            replyText = string.Format(_stringConstant.ErrorInAddingTimeEntry, issueId);
+                                                                    }
+                                                                    else
+                                                                        replyText = string.Format(_stringConstant.TimeEntryActivityErrorMessage, TimeEntryActivity.Analysis.ToString(),
+                                                                            TimeEntryActivity.Design.ToString(), TimeEntryActivity.Development.ToString(), TimeEntryActivity.Roadblock.ToString(),
+                                                                            TimeEntryActivity.Testing.ToString());
+                                                                }
+                                                                else
+                                                                    replyText = string.Format(_stringConstant.DateFormatErrorMessage, _stringConstant.RedmineTimeEntryDateFormat);
+                                                            }
+                                                            else
+                                                                replyText = _stringConstant.HourIsNotNumericMessage;
+                                                        }
+                                                    }
+                                                    break;
+                                                    #endregion
+                                            }
+                                        }
+                                        else
+                                            replyText = string.Format(_stringConstant.ProperRedmineIssueAction, RedmineAction.list.ToString(),
+                                                RedmineAction.create.ToString(), RedmineAction.changeassignee.ToString(), RedmineAction.close.ToString(),
+                                                RedmineAction.timeentry.ToString());
+                                    }
+                                    break;
+                                #endregion
+
+                                #region Help
+                                case SlackAction.help:
+                                    {
+                                        replyText = _stringConstant.RedmineHelp;
+                                    }
+                                    break;
+                                    #endregion
                             }
-                            break;
-                            #endregion
+                        }
+                        else
+                            replyText = _stringConstant.RedmineApiKeyIsNull;
                     }
+                    #region Api Key
+                    else
+                    {
+                        var response = await _httpClientService.GetAsync(_stringConstant.RedmineBaseUrl,
+                                            _stringConstant.RedmineIssueUrl, text[1], _stringConstant.RedmineApiKey);
+                        if (!string.IsNullOrEmpty(response))
+                        {
+                            user.RedmineApiKey = text[1];
+                            _userDataRepository.Update(user);
+                            await _userDataRepository.SaveChangesAsync();
+                            replyText = _stringConstant.RedmineKeyAddSuccessfully;
+                        }
+                        else
+                            replyText = _stringConstant.PleaseEnterValidAPIKey;
+                    }
+                    #endregion
                 }
                 else
                     replyText = string.Format(_stringConstant.RequestToEnterProperRedmineAction, SlackAction.list.ToString(),
