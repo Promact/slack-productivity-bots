@@ -437,7 +437,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "Only private channels can be added manually.";
             }
         }
-
         public string ScrumHalted
         {
             get
@@ -1718,7 +1717,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is not included as a member in the project(of this group in OAuth)\n";
+                return "<@{0}> is not included as a team member/employee in the project i.e OAuth project\n>Remember, team leaders are not expected to answer for other users :wink:";
             }
         }
         public string Admin
