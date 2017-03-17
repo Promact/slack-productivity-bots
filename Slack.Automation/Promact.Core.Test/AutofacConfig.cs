@@ -37,6 +37,7 @@ using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.RedmineRepository;
+using Promact.Core.Repository.ConfigurationRepository;
 
 namespace Promact.Core.Test
 {
@@ -100,6 +101,7 @@ namespace Promact.Core.Test
             builder.RegisterInstance(httpContext).As<Mock<HttpContextBase>>();
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
+            builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
 
             var container = builder.Build();
             return container;
