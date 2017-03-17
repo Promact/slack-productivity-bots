@@ -75,7 +75,41 @@ describe('Configuration Component Test', () => {
         expect(configurationComponent.configurationId).toBe(1);
     }));
 
-    it('openModel status false', fakeAsync(() => {
+    it('openModel status leaveModule true', fakeAsync(() => {
+        let fixture = TestBed.createComponent(ConfigurationComponent); //Create instance of component            
+        let configurationComponent = fixture.componentInstance;
+        let configurationService = fixture.debugElement.injector.get(ConfigurationService);
+        let configuration = new Configuration();
+        configuration.Module = stringConstant.leaveModule;
+        configuration.Status = false;
+        configuration.Id = 1;
+        let router = fixture.debugElement.injector.get(Router);
+        spyOn(router, stringConstant.navigate);
+        spyOn(configurationService, stringConstant.updateConfiguration).and.returnValue(new BehaviorSubject({}).asObservable());
+        let popup = fixture.debugElement.injector.get(Md2Dialog);
+        configurationComponent.openModel(configuration, popup);
+        tick();
+        expect(configurationComponent.configurationId).toBe(1);
+    }));
+
+    it('openModel status scrumModule false', fakeAsync(() => {
+        let fixture = TestBed.createComponent(ConfigurationComponent); //Create instance of component            
+        let configurationComponent = fixture.componentInstance;
+        let configurationService = fixture.debugElement.injector.get(ConfigurationService);
+        let configuration = new Configuration();
+        configuration.Module = stringConstant.scrumModule;
+        configuration.Status = false;
+        configuration.Id = 1;
+        let router = fixture.debugElement.injector.get(Router);
+        spyOn(router, stringConstant.navigate);
+        spyOn(configurationService, stringConstant.updateConfiguration).and.returnValue(new BehaviorSubject({}).asObservable());
+        let popup = fixture.debugElement.injector.get(Md2Dialog);
+        configurationComponent.openModel(configuration, popup);
+        tick();
+        expect(configurationComponent.configurationId).toBe(1);
+    }));
+
+    it('openModel status taskModule false', fakeAsync(() => {
         let fixture = TestBed.createComponent(ConfigurationComponent); //Create instance of component            
         let configurationComponent = fixture.componentInstance;
         let configurationService = fixture.debugElement.injector.get(ConfigurationService);
