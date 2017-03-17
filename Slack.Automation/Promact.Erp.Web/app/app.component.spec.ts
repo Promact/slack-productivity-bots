@@ -13,6 +13,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { EmailHashCode } from './shared/emailHashCode';
 import { Project } from './shared/MailSetting/project.model';
 import { StringConstant } from './shared/stringconstant';
+import { ConfigurationService } from './configuration/configuration.service';
+import { ConfigurationStatusAC } from './configuration/configuration.model';
 let promise: TestBed;
 
 describe('AppComponent Test', () => {
@@ -33,17 +35,29 @@ describe('AppComponent Test', () => {
     }));
 
     it('User is admin', () => {
-        let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
-        let appComponent = fixture.componentInstance;
-        let appService = fixture.debugElement.injector.get(AppComponentService);
-        spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
-        appComponent.ngOnInit();
-        expect(appComponent.userIsAdmin).toBe(true);
+            let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
+            let appComponent = fixture.componentInstance;
+            let appService = fixture.debugElement.injector.get(AppComponentService);
+            let configurationService = fixture.debugElement.injector.get(ConfigurationService);
+            let config = new ConfigurationStatusAC();
+            config.LeaveOn = true;
+            config.ScrumOn = false;
+            config.TaskOn = true;
+            spyOn(configurationService, "getListOfConfigurationStatus").and.returnValue(new BehaviorSubject(config).asObservable());
+            spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
+            appComponent.ngOnInit();
+            expect(appComponent.userIsAdmin).toBe(true);
     });
     it('User is not admin', () => {
         let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
         let appComponent = fixture.componentInstance;
         let appService = fixture.debugElement.injector.get(AppComponentService);
+        let configurationService = fixture.debugElement.injector.get(ConfigurationService);
+        let config = new ConfigurationStatusAC();
+        config.LeaveOn = true;
+        config.ScrumOn = false;
+        config.TaskOn = true;
+        spyOn(configurationService, "getListOfConfigurationStatus").and.returnValue(new BehaviorSubject(config).asObservable());
         spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: false }).asObservable());
         appComponent.ngOnInit();
         expect(appComponent.userIsAdmin).toBe(false);
