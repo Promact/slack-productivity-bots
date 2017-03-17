@@ -76,6 +76,6 @@ describe('ScrumReport Tests', () => {
         spyOn(scrumService, "getScrumProjects").and.returnValue(new BehaviorSubject(scrumProjects).asObservable());
         let result = scrumProjectListComponent.getScrumProjects();
         tick();
-        expect(scrumProjectListComponent.scrumProjects.length).toBe(0);
+        expect(scrumProjectListComponent.noProject).toBe(true);
     }));
 });
