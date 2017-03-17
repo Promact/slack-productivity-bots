@@ -12,10 +12,10 @@ import { StringConstant } from '../shared/stringConstant';
     templateUrl: './app/configuration/configuration.html',
 })
 export class ConfigurationComponent implements OnInit {
-    private configurationStatus: ConfigurationStatusAC = new ConfigurationStatusAC();
-    private configurationList: Array<Configuration> = new Array<Configuration>();
-    private configurationId: number;
-    private configuration: Configuration = new Configuration();
+    configurationStatus: ConfigurationStatusAC = new ConfigurationStatusAC();
+    configurationList: Array<Configuration> = new Array<Configuration>();
+    configurationId: number;
+    configuration: Configuration = new Configuration();
     constructor(private httpService: ConfigurationService, private router: Router, private loader: LoaderService,
         private sharedService: SharedService, private stringConstant: StringConstant) { }
 
