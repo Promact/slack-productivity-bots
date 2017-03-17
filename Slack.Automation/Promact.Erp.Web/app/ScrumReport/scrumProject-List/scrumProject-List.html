@@ -4,12 +4,11 @@
             <h3>Scrum Reports</h3>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                  
+
                     <table class="table table-bordered" [md2Data]="scrumProjects" #md2="md2DataTable" [rowsPerPage]="10">
                         <thead>
                             <tr>
@@ -21,9 +20,9 @@
                             <tr *ngFor="let scrumProject of md2.data">
                                 <td class="scrum-name">{{scrumProject.Name}}</td>
                                 <td><a class="btn btn-success" routerLink="detail/{{scrumProject.Id}}" routerLinkActive="active">Details</a></td>
-                               
+
                             </tr>
-                          
+
                         </tbody>
                         <tfoot>
                             <tr>
@@ -33,11 +32,9 @@
                             </tr>
                         </tfoot>
                     </table>
-
-
-                    <div class="alert alert-info">
-                        <p>{{noProject}}</p>
-                    </div>
+                    <div class="alert alert-info" *ngIf="noProject">
+                        <p>No projects to display</p>
+                   </div>
                 </div>
             </div>
         </div>
