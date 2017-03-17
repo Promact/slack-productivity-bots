@@ -1196,6 +1196,7 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
     <TypeScriptCompile Include="app\appcomponent.service.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.component.spec.ts" />
     <TypeScriptCompile Include="app\configuration\configuration.component.ts" />
     <TypeScriptCompile Include="app\configuration\configuration.model.ts" />
     <TypeScriptCompile Include="app\configuration\configuration.module.ts" />

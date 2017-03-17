@@ -15,17 +15,7 @@ export class ConfigurationService {
     *
     */
     getListOfConfiguration() {
-        return this.http.get(this.configurationUrl).map(res => res.json())
-            .toPromise();
-    }
-
-    /*This service used for add new configuration*
-     * /
-     * @param configuration
-     */
-    addConfiguration(configuration: Configuration) {
-        return this.http
-            .post(this.configurationUrl, JSON.stringify(configuration), { headers: this.headers });
+        return this.http.get(this.configurationUrl).map(res => res.json());
     }
 
     /*This service used for add new configuration*
@@ -41,7 +31,6 @@ export class ConfigurationService {
     *
     */
     getListOfConfigurationStatus() {
-        return this.http.get('api/configuration/status').map(res => res.json())
-            .toPromise();
+        return this.http.get('api/configuration/status').map(res => res.json());
     }
 }

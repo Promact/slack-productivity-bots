@@ -6,6 +6,7 @@ import { Md2Toast } from 'md2';
 import { ConfigurationService } from './configuration.service';
 import { Configuration, ConfigurationStatusAC } from './configuration.model';
 import { SharedService } from '../shared/shared.service';
+import { StringConstant } from '../shared/stringConstant';
 
 @Component({
     templateUrl: './app/configuration/configuration.html',
@@ -15,11 +16,12 @@ export class ConfigurationComponent implements OnInit {
     private configurationList: Array<Configuration> = new Array<Configuration>();
     private configurationId: number;
     private configuration: Configuration = new Configuration();
-    constructor(private httpService: ConfigurationService, private router: Router, private loader: LoaderService, private sharedService: SharedService) { }
+    constructor(private httpService: ConfigurationService, private router: Router, private loader: LoaderService,
+        private sharedService: SharedService, private stringConstant: StringConstant) { }
 
     ngOnInit() {
         this.loader.loader = true;
-        this.httpService.getListOfConfiguration().then((result) => {
+        this.httpService.getListOfConfiguration().subscribe((result) => {
             this.configurationList = result;
         });
         this.loader.loader = false;
@@ -35,21 +37,22 @@ export class ConfigurationComponent implements OnInit {
         }
         else {
             this.loader.loader = true;
-            if (configuration.Module === "leave")
+            this.configurationStatus = this.sharedService.getConfigurationStatusAC();
+            if (configuration.Module === this.stringConstant.leaveModule)
             { this.configurationStatus.LeaveOn = configuration.Status; }
-            if (configuration.Module === "task")
+            if (configuration.Module === this.stringConstant.taskModule)
             { this.configurationStatus.TaskOn = configuration.Status; }
-            if (configuration.Module === "scrum")
+            if (configuration.Module === this.stringConstant.scrumModule)
             { this.configurationStatus.ScrumOn = configuration.Status; }
             this.sharedService.setConfigurationStatusAC(this.configurationStatus);
             this.loader.loader = false;
-            this.router.navigate(['/'])
+            this.router.navigate([this.stringConstant.slash])
         }
     }
 
     AddToSlack(popup) {
         popup.close();
-        window.location.href = '/Home/SlackOAuthAuthorization/' + this.configurationId
+        window.location.href = this.stringConstant.slackAppUrl + this.configurationId
     }
 
     updateConfiguration(configuration: Configuration) {
