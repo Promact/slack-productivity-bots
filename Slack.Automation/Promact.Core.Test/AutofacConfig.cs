@@ -36,7 +36,6 @@ using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
-using Promact.Core.Repository.ScrumSetUpRepository;
 
 namespace Promact.Core.Test
 {

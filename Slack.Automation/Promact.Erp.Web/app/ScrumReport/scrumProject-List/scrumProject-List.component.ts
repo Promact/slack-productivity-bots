@@ -12,31 +12,30 @@ import { LoaderService } from '../../shared/loader.service';
 export class ScrumProjectListComponent implements OnInit {
     scrumProjects: ScrumProject[];
     errorMessage: string;
-    noProject: string;
+    noProject: boolean;
 
-    constructor(private scrumReportService: ScrumReportService, private stringConstant: StringConstant, private loader: LoaderService) { }
 
-    ngOnInit() {
-        this.getScrumProjects();            
+    constructor(private scrumReportService: ScrumReportService, private stringConstant: StringConstant, private loader: LoaderService) {
+        this.noProject = false;
     }
 
+    ngOnInit() {
+        this.getScrumProjects();
+    }
+    
     getScrumProjects() {
         this.loader.loader = true;
-        this.scrumReportService.getScrumProjects()
-            .subscribe(
-            scrumProjects => {
-                this.scrumProjects = scrumProjects;
-                if (scrumProjects.length !== 0) {
-                    this.loader.loader = false;  
-                    return scrumProjects;
-                }
-                else {
-                    this.noProject = this.stringConstant.noProjectToDisplay;
-                    this.loader.loader = false;  
-                    return this.noProject;
-                }               
-            },
+        this.scrumReportService.getScrumProjects().subscribe(result => {
+            if (result.length > 0) {
+                this.scrumProjects = result;
+                this.loader.loader = false;
+            }
+            else {
+                this.noProject = true;
+                this.loader.loader = false;
+            }
+        },
             error => this.errorMessage = <string>error
-            );      
+        );
     }
 }
