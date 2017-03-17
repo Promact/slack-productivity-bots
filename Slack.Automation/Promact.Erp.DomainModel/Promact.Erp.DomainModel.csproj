@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationClass\ConfigurationStatusAC.cs" />
     <Compile Include="ApplicationClass\EmailApplication.cs" />
     <Compile Include="ApplicationClass\EmployeeScrumDetails.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />
     <Compile Include="ApplicationClass\UserEmailListAc.cs" />
     <Compile Include="JSonConverterUtil\SlackChannelDetailsConverter.cs" />
+    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />
