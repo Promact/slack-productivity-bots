@@ -157,6 +157,8 @@
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
+    <Compile Include="ConfigurationRepository\ConfigurationRepository.cs" />
+    <Compile Include="ConfigurationRepository\IConfigurationRepository.cs" />
     <Compile Include="EmailServiceTemplateRepository\EmailServiceTemplateRepository.cs" />
     <Compile Include="EmailServiceTemplateRepository\IEmailServiceTemplateRepository.cs" />
     <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />

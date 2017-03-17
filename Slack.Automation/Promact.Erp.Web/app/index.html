@@ -11,20 +11,23 @@
                     <div class="menu_section">
                         <ul class="nav side-menu">
                             <li>
+                                <a routerLink="/configuration" *ngIf="userIsAdmin"><i class="glyphicon glyphicon-wrench"></i> Configuration</a>
+                            </li>
+                            <li *ngIf="configurationStatus.ScrumOn">
                                 <a><i class="fa fa-puzzle-piece"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="/scrum">Scrum Reports</a></li>
                                     <li *ngIf="userIsAdmin"><a routerLink="/scrum/mailsetting">Mail Setting</a></li>
                                 </ul>
                             </li>
-                            <li>
+                            <li *ngIf="configurationStatus.TaskOn">
                                 <a><i class="fa fa-tasks"></i> Task List Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="task">Task Reports</a></li>
                                     <li *ngIf="userIsAdmin"><a routerLink="/task/mailsetting">Mail Setting</a></li>
                                 </ul>
-                            </li>
-                            <li>
+                            </li> 
+                            <li *ngIf="configurationStatus.LeaveOn">
                                 <a><i class="fa fa-calendar"></i> Leave Management <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="leave">Leave Reports</a></li>
