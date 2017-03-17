@@ -1263,6 +1263,10 @@
     <TypeScriptCompile Include="app\shared\mock\mock.routerLink.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.md2Dialog.ts" />
     <TypeScriptCompile Include="app\shared\shared.module.ts" />
+    <TypeScriptCompile Include="app\shared\shared.service.ts" />
+    <TypeScriptCompile Include="app\shared\stringConstant.ts" />
+    <TypeScriptCompile Include="app\shared\spinner.component.ts" />
+    <TypeScriptCompile Include="app\shared\spinner.service.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.spec.ts" />

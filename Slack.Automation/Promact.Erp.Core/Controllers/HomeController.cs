@@ -221,8 +221,8 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app"
         * }
         */
-        [Authorize]
-        public async Task<ActionResult> SlackOAuthAuthorization(int configurationId)
+        [Route("Home/SlackOAuthAuthorization/{id}")]
+        public ActionResult SlackOAuthAuthorization(int id)
         {
             try
             {
