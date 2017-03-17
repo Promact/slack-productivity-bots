@@ -9,6 +9,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.Client;
+using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.GroupRepository;
@@ -99,6 +100,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
+            builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
