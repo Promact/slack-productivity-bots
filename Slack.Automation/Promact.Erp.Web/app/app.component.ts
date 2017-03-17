@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
 
         this.loader.loader = true;
         this.hashCode = this.emailHashCode.hashCode;
-        this.configurationHttpService.getListOfConfigurationStatus().then((result) => {
+        this.configurationHttpService.getListOfConfigurationStatus().subscribe((result) => {
             this.configurationStatus = result;
             this.sharedService.setConfigurationStatusAC(this.configurationStatus);
         });
