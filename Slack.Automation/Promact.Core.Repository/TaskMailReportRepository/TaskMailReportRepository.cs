@@ -249,10 +249,16 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             List<TaskMailReportAc> taskMailReportAcList = new List<TaskMailReportAc>();
             //find maximum and minimum date from the employee task mails
             IEnumerable<TaskMail> taskMails = (await _taskMailRepository.FetchAsync(x => x.EmployeeId == userId)).ToList();
-            DateTime maxDate = taskMails.Max(x => x.CreatedOn);
-            DateTime minDate = taskMails.Min(x => x.CreatedOn);
-            _logger.Debug("Task Mail Detail Async maxDate" + maxDate);
-            _logger.Debug("Task Mail Detail Async minDate" + minDate);
+            DateTime maxDate, minDate;
+            if (taskMails.Any())
+            {
+                maxDate = taskMails.Max(x => x.CreatedOn);
+                minDate = taskMails.Min(x => x.CreatedOn);
+            }
+            else {
+                maxDate = selectedDate;
+                minDate = selectedDate;
+            }
             //getting task mail information.
             TaskMailReportAc taskMailReportAc = await GetTaskReportAsync(userId, role, userName, selectedDate.Date, maxDate.Date, minDate.Date);
             taskMailReportAcList.Add(taskMailReportAc);
