@@ -40,7 +40,7 @@ namespace Promact.Erp.Web
 
             #region Reads app credentials from json file
 
-            using (StreamReader str = new StreamReader(HostingEnvironment.MapPath("~/seedData.json")))
+            using (StreamReader str = new StreamReader(HostingEnvironment.MapPath(_stringConstantRepository.SeedDataPath)))
             {
                 string text = str.ReadToEnd();
                 var seedData = JsonConvert.DeserializeObject<SeedData>(text);
@@ -49,7 +49,7 @@ namespace Promact.Erp.Web
                     var status = _appCredentialRepository.AddAppCredentialAsync(credential).Result;
                 }
             }
-            
+
             #endregion
 
             // Configure the db context, user manager and signin manager to use a single instance per request
@@ -104,7 +104,7 @@ namespace Promact.Erp.Web
                     AuthenticationFailed = authenticationFailed =>
                     {
                         authenticationFailed.Response.Redirect("/"); //redirect to home page.
-                            authenticationFailed.HandleResponse();
+                        authenticationFailed.HandleResponse();
                         return Task.FromResult(0);
                     },
                 }
