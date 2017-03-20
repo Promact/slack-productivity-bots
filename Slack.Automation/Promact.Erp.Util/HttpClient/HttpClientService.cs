@@ -52,7 +52,7 @@ namespace Promact.Erp.Util.HttpClient
                 _logger.Debug("Return content : " + responseContent);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    responseContent = response.Content.ReadAsStringAsync().Result;
+                    responseContent = await response.Content.ReadAsStringAsync();
                 }
                 return responseContent;
             }
