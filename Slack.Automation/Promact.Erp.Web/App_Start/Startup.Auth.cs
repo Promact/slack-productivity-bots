@@ -104,7 +104,7 @@ namespace Promact.Erp.Web
                     AuthenticationFailed = authenticationFailed =>
                     {
                         authenticationFailed.Response.Redirect("/"); //redirect to home page.
-                        authenticationFailed.HandleResponse();
+                            authenticationFailed.HandleResponse();
                         return Task.FromResult(0);
                     },
                 }
