@@ -2,7 +2,7 @@
 import { Router } from '@angular/router';
 import { NgModule } from "@angular/core";
 import { LoaderService } from '../shared/loader.service';
-import { Md2Toast } from 'md2';
+import { Md2Toast, Md2DialogConfig } from 'md2';
 import { ConfigurationService } from './configuration.service';
 import { Configuration, ConfigurationStatusAC } from './configuration.model';
 import { SharedService } from '../shared/shared.service';
@@ -16,6 +16,7 @@ export class ConfigurationComponent implements OnInit {
     configurationList: Array<Configuration> = new Array<Configuration>();
     configurationId: number;
     configuration: Configuration = new Configuration();
+    dialogConfig: Md2DialogConfig = { disableClose: true };
     constructor(private httpService: ConfigurationService, private router: Router, private loader: LoaderService,
         private sharedService: SharedService, private stringConstant: StringConstant) { }
 
@@ -33,7 +34,7 @@ export class ConfigurationComponent implements OnInit {
         this.updateConfiguration(configuration);
         this.loader.loader = false;
         if (configuration.Status === true) {
-            popup.open();
+            popup.open(this.dialogConfig);
         }
         else {
             this.loader.loader = true;
