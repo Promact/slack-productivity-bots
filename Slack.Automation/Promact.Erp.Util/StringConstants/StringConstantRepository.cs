@@ -3189,5 +3189,6 @@ namespace Promact.Erp.Util.StringConstants
         public string TeamMembersGroup { get { return "Team Members"; } }
         public string EmailListForGroup { get { return "{\"teamLeader\":[],\"tamMemeber\":[],\"management\":[\"julie@promactinfo.com\",\"roshni@promactinfo.com\"]}"; } }
         public string DetailsAndSlashForUrl { get { return "detail/"; } }
+        public string UserDetailsNotFound { get { return "{0}'s details not found. {0} is not yet logged in from oauth server"; } }
     }
 }

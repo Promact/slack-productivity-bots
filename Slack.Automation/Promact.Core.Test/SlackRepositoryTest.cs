@@ -1173,6 +1173,42 @@ namespace Promact.Core.Test
             var leaveUpdated = await _leaveRequestRepository.LeaveByIdAsync(leave.Id);
             _mockHttpClient.Verify(x => x.PostAsync(firstUserIncomingWebHook.IncomingWebHookUrl, updateText, _stringConstant.JsonContentString), Times.Once);
         }
+
+        /// <summary>
+        /// Test cases for checking method SlackLeaveList from Slack respository for user not found
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackLeaveListUserNotFoundAsync()
+        {
+            await AddUser();
+            await AddThreeUserIncomingWebHookAsync();
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            var replyText = string.Format(_stringConstant.UserDetailsNotFound, _stringConstant.FirstNameForTest);
+            slackLeave.Text = _stringConstant.LeaveListCommandForTest;
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        }
+
+        /// <summary>
+        /// Test cases for checking method SlackLeaveStatus from Slack respository for user not found
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackLeaveStatusUserNotFoundAsync()
+        {
+            await AddUser();
+            await AddThreeUserIncomingWebHookAsync();
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            await _leaveRequestRepository.ApplyLeaveAsync(leave);
+            var replyText = string.Format(_stringConstant.UserDetailsNotFound, _stringConstant.FirstNameForTest);
+            slackLeave.Text = _stringConstant.LeaveStatusCommandForTest;
+            MockingOfUserDetails();
+            MockingUserDetialFromSlackUserId();
+            var textJson = SlackReplyMethodMocking(slackLeave.ResponseUrl, replyText, _stringConstant.JsonContentString);
+            await _slackRepository.LeaveRequestAsync(slackLeave);
+            _mockHttpClient.Verify(x => x.PostAsync(slackLeave.ResponseUrl, textJson, _stringConstant.JsonContentString), Times.Once);
+        }
         #endregion
 
         #region Initialisation
