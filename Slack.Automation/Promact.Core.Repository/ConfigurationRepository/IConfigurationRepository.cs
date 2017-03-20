@@ -22,5 +22,18 @@ namespace Promact.Core.Repository.ConfigurationRepository
         /// </summary>
         /// <returns>list of status</returns>
         Task<ConfigurationStatusAC> GetAllConfigurationStatusAsync();
+
+        /// <summary>
+        /// Method to get app credentials by configuration Id
+        /// </summary>
+        /// <param name="configurationId">setting configuration Id</param>
+        /// <returns>app credentials</returns>
+        Task<AppCredential> GetAppCredentialsByConfigurationIdAsync(int configurationId);
+
+        /// <summary>
+        /// Method to disable configuration by configuration Id
+        /// </summary>
+        /// <param name="configurationId">setting configuration Id</param>
+        Task DisableAppByConfigurationIdAsync(int configurationId);
     }
 }
