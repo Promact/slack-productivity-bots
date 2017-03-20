@@ -16,7 +16,7 @@ export class MockGroupService {
     */
     getListOfGroup() {
         let mockGroup = new GroupModel();
-        var emails = stringConstant.emails;
+        let emails = stringConstant.emails;
         mockGroup.Emails = emails;
         mockGroup.Name = stringConstant.testGroupName;
         mockGroup.Type = 2;
@@ -38,7 +38,7 @@ export class MockGroupService {
     getGroupbyId(id: number) {
         let mockGroup = new MockGroup(id);
         if (id === 1) {
-            var emails = stringConstant.emails;
+            let emails = stringConstant.emails;
             mockGroup.Emails = emails;
             mockGroup.Name = stringConstant.testGroupName;
             mockGroup.Type = 2;

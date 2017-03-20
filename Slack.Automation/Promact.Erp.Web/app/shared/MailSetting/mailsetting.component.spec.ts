@@ -122,4 +122,4 @@ describe('Mail Setiings Component Test', () => {
         tick();
         expect(mailSettingComponent.groupList.length).toBe(1);
     }));
-})
+});

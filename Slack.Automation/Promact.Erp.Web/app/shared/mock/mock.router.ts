@@ -4,7 +4,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 
 export class UrlTree {
-    root: any;
     queryParams: {
         [key: string]: string;
     };
