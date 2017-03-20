@@ -263,6 +263,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\configuration\configuration.html" />
     <Content Include="app\Group\GroupAdd\groupAdd.html" />
     <Content Include="app\Group\GroupEdit\groupEdit.html" />
     <Content Include="app\Group\GroupList\groupList.html" />
@@ -1001,6 +1002,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1162,10 +1164,7 @@
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Content\js\theme\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -1197,6 +1196,12 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
     <TypeScriptCompile Include="app\appcomponent.service.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.component.spec.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.component.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.model.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.module.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.routes.ts" />
+    <TypeScriptCompile Include="app\configuration\configuration.service.ts" />
     <TypeScriptCompile Include="app\enums\taskMailStatus.ts" />
     <TypeScriptCompile Include="app\Group\group.component.spec.ts" />
     <TypeScriptCompile Include="app\Group\group.model.ts" />
@@ -1262,6 +1267,7 @@
     <TypeScriptCompile Include="app\shared\mock\mock.md2Dialog.ts" />
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
     <TypeScriptCompile Include="app\shared\shared.module.ts" />
+    <TypeScriptCompile Include="app\shared\shared.service.ts" />
     <TypeScriptCompile Include="app\shared\stringConstant.ts" />
     <TypeScriptCompile Include="app\shared\spinner.component.ts" />
     <TypeScriptCompile Include="app\shared\spinner.service.ts" />
