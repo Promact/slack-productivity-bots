@@ -50,7 +50,7 @@ export class MailSettingComponent implements OnInit {
         this.httpService.addMailSetting(this.mailSettingAC).subscribe((result) => {
             this.toaster.show(this.stringConstant.mailSettingOf + ' ' + this.currentModule + ' ' + this.stringConstant.successfully + ' ' + this.stringConstant.added);
             this.router.navigate(['/']);
-        })
+        });
         this.loader.loader = false;
     };
 

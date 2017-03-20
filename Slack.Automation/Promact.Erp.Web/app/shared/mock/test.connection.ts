@@ -7,7 +7,6 @@ declare var HTTP_BINDINGS, bind;
 @Injectable()
 export class TestConnection {
     mockConnection(url: string) {
-        let example: any;
         let connection: MockConnection;
         let injector = ReflectiveInjector.resolveAndCreate([
             HTTP_BINDINGS,

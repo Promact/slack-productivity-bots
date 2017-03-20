@@ -1,15 +1,12 @@
-﻿import { Input, Directive } from '@angular/core';
+﻿import { Input, Directive, HostListener, HostBinding} from '@angular/core';
 @Directive({
     selector: '[routerLink]',
-    host: {
-        '(click)': 'onClick()'
-    }
 })
 export class RouterLinkStubDirective {
-    @Input('routerLink') linkParams: any;
+    @Input() linkParams: any;
     navigatedTo: any = null;
-
-    onClick() {
+    @HostListener('click') onClick() {
         this.navigatedTo = this.linkParams;
     }
+   
 }
