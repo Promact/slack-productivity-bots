@@ -23,7 +23,7 @@ using NLog;
 namespace Promact.Core.Repository.SlackRepository
 {
     public class SlackRepository : ISlackRepository
-    { 
+    {
         #region Private Variable
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
@@ -94,7 +94,7 @@ namespace Promact.Core.Repository.SlackRepository
                         }
                         await _leaveRepository.UpdateLeaveAsync(leave);
                         _logger.Debug("UpdateLeaveAsync leave updated successfully");
-                        _logger.Debug("Leave details : " +leave.ToString());
+                        _logger.Debug("Leave details : " + leave.ToString());
                         replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
                                     leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
                                     leave.Reason, leave.Status, leaveResponse.User.Name);
@@ -347,7 +347,6 @@ namespace Promact.Core.Repository.SlackRepository
                                         // if user doesn't exist in OAuth server then user can't apply leave
                                         if (newUser.Id != null)
                                         {
-                                            
                                             // Method to check more than one leave cannot be applied on that date
                                             bool validDate = await LeaveDateDuplicate(newUser.Id, startDate, null);
                                             if (!validDate)
@@ -519,10 +518,15 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 // other user slack user name
                 SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
-                var user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
-                _logger.Debug("SlackLeaveListAsync user name other : " + user.UserName);
-                // leave list of other user 
-                replyText = await LeavesListBySlackUserIdAsync(user.Id, accessToken);
+                if (slackUser != null)
+                {
+                    var user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
+                    _logger.Debug("SlackLeaveListAsync user name other : " + user.UserName);
+                    // leave list of other user 
+                    replyText = await LeavesListBySlackUserIdAsync(user.Id, accessToken);
+                }
+                else
+                    replyText = string.Format(_stringConstant.UserDetailsNotFound, slackText[1]);
             }
             else
             {
@@ -573,10 +577,15 @@ namespace Promact.Core.Repository.SlackRepository
             {
                 // other user slack user name
                 SlackUserDetailAc slackUser = await _slackUserRepository.GetBySlackNameAsync(slackText[1]);
-                var user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
-                _logger.Debug("SlackLeaveStatusAsync user name other : " + user.UserName);
-                // last leave details of other user 
-                replyText = await LeaveStatusBySlackUserIdAsync(user.Id, accessToken);
+                if (slackUser != null)
+                {
+                    var user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUser.UserId);
+                    _logger.Debug("SlackLeaveStatusAsync user name other : " + user.UserName);
+                    // last leave details of other user 
+                    replyText = await LeaveStatusBySlackUserIdAsync(user.Id, accessToken);
+                }
+                else
+                    replyText = string.Format(_stringConstant.UserDetailsNotFound, slackText[1]);
             }
             else
             {

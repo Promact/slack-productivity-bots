@@ -471,5 +471,6 @@
         string TeamMembersGroup { get; }
         string EmailListForGroup { get; }
         string DetailsAndSlashForUrl { get; }
+        string UserDetailsNotFound { get; }
     }
 }
