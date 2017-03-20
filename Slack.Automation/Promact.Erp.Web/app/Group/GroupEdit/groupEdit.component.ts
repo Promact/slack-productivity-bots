@@ -41,7 +41,7 @@ export class GroupEditComponent implements OnInit {
 
     getActiveUserEmailList() {
         this.groupService.getActiveUserEmailList().then((result) => {
-            this.listOfActiveEmail = result
+            this.listOfActiveEmail = result;
         });
     }
 
