@@ -34,7 +34,8 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<GroupEmailMapping> GroupEmailMapping { get; set; }
         public DbSet<MailSetting> MailSetting { get; set; }
         public DbSet<MailSettingMapping> MailSettingMapping { get; set; }
-        
+        public DbSet<AppCredential> AppCredential { get; set; }
+
         public static PromactErpContext Create()
         {
             return new PromactErpContext();

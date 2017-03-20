@@ -306,6 +306,7 @@
     <Content Include="Content\fonts\line-icons.woff" />
     <Content Include="app\shared\mock\mock.router.js.map" />
     <Content Include="app\shared\mock\mock.activatedroute.js.map" />
+    <Content Include="CredentialSeedData\credentialSeedData.example.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -998,9 +999,11 @@
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <Content Include="Views\Home\OAuthAppCredential.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -1162,10 +1165,7 @@
     <Content Include="Scripts\respond\package.json" />
     <Content Include="Scripts\respond\README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Content\js\theme\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

@@ -5,6 +5,7 @@ using Autofac.Integration.WebApi;
 using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using Promact.Core.Repository.AppCredentialRepository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.BotQuestionRepository;
@@ -73,6 +74,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<LeaveRequestRepository>().As<ILeaveRequestRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<ScrumBotRepository>().As<IScrumBotRepository>();
+            builder.RegisterType<AppCredentialRepository>().As<IAppCredentialRepository>();
             builder.RegisterType<ScrumSetUpRepository>().As<IScrumSetUpRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
