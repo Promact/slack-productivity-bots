@@ -93,7 +93,7 @@ export class StringConstant {
     leaveModule = "leave";
     taskModule = "task";
     scrumModule = "scrum";
-    slackAppUrl = "/Home/SlackOAuthAuthorization/";
+    slackAppUrl = "/Home/SlackOAuthAuthorization?configurationId=";
     getListOfConfiguration = "getListOfConfiguration";
     updateConfiguration = "updateConfiguration";
 }

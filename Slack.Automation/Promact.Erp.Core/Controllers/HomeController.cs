@@ -13,6 +13,7 @@ using System;
 using Promact.Erp.DomainModel.ApplicationClass;
 using NLog;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Core.Repository.ConfigurationRepository;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -27,14 +28,15 @@ namespace Promact.Erp.Core.Controllers
         private readonly IGroupRepository _groupRepository;
         private readonly ILogger _logger;
         private readonly IMd5Service _md5Service;
-
+        private readonly IConfigurationRepository _configurationRepository;
         #endregion
 
         #region Constructor
 
         public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
             ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
-            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository) : base(stringConstant)
+            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository,
+            IConfigurationRepository configurationRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -43,6 +45,7 @@ namespace Promact.Erp.Core.Controllers
             _logger = LogManager.GetLogger("AuthenticationModule");
             _md5Service = md5Service;
             _groupRepository = groupRepository;
+            _configurationRepository = configurationRepository;
         }
 
         #endregion
@@ -61,7 +64,7 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
-            _logger.Info("Index: Today " + DateTime.Today+"\n Today's Date :"+ DateTime.Today.Date);
+            _logger.Info("Index: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
@@ -208,25 +211,29 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {get} Home/SlackOAuthAuthorization
+        * @api {get} Home/SlackOAuthAuthorization?configurationId=7
         * @apiVersion 1.0.0
         * @apiName SlackOAuthAuthorization
-        * @apiGroup SlackOAuthAuthorization    
+        * @apiGroup SlackOAuthAuthorization   
+        * @apiParam {int} configurationId  configurationId 
         * @apiSuccessExample {json} Success-Response:
         * HTTP/1.1 200 OK 
         * {
         *     "Description":"Add to slack button will redirect here and it will open a Slack OAuth Authorization Page for our app"
         * }
         */
-        [Route("Home/SlackOAuthAuthorization/{configurationId}")]
-        public ActionResult SlackOAuthAuthorization(int configurationId)
+        [Authorize]
+        public async Task<ActionResult> SlackOAuthAuthorization(int configurationId)
         {
             try
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                    return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                    var appCredential = await _configurationRepository.GetAppCredentialsByConfigurationIdAsync(configurationId);
+                    if (appCredential != null)
+                        return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.OAuthAuthorizationScopeAndClientId + appCredential.ClientId);
                 }
+                await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
                 return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);
             }
             catch (HttpRequestException ex)
