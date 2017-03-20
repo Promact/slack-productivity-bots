@@ -12,13 +12,16 @@ namespace Promact.Core.Repository.ConfigurationRepository
         #region Private Variables
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IStringConstantRepository _stringConstant;
+        private readonly IRepository<AppCredential> _appCredentialDataRepository;
         #endregion
 
         #region Constructor
-        public ConfigurationRepository(IRepository<Configuration> configurationDataRepository, IStringConstantRepository stringConstant)
+        public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
+            IStringConstantRepository stringConstant, IRepository<AppCredential> appCredentialDataRepository)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
+            _appCredentialDataRepository = appCredentialDataRepository;
         }
         #endregion
 
@@ -53,6 +56,33 @@ namespace Promact.Core.Repository.ConfigurationRepository
             configStatus.ScrumOn = await StatusOfModule(_stringConstant.ScrumModule);
             configStatus.TaskOn = await StatusOfModule(_stringConstant.TaskModule);
             return configStatus;
+        }
+
+        /// <summary>
+        /// Method to get app credentials by configuration Id
+        /// </summary>
+        /// <param name="configurationId">setting configuration Id</param>
+        /// <returns>app credentials</returns>
+        public async Task<AppCredential> GetAppCredentialsByConfigurationIdAsync(int configurationId)
+        {
+            AppCredential appCredential = new AppCredential();
+            var configuration = await _configurationDataRepository.FirstOrDefaultAsync(x=>x.Id == configurationId);
+            if (configuration != null)
+            {
+                appCredential = await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.Module == configuration.Module);
+            }
+            return appCredential;
+        }
+
+        /// <summary>
+        /// Method to disable configuration by configuration Id
+        /// </summary>
+        /// <param name="configurationId">setting configuration Id</param>
+        public async Task DisableAppByConfigurationIdAsync(int configurationId)
+        {
+            var configuration = await _configurationDataRepository.FirstAsync(x => x.Id == configurationId);
+            configuration.Status = false;
+            await UpdateConfigurationAsync(configuration);
         }
         #endregion
 

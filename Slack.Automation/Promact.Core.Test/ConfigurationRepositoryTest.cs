@@ -17,6 +17,7 @@ namespace Promact.Core.Test
         private readonly IConfigurationRepository _configurationRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IRepository<Configuration> _configurationDataRepository;
+        private readonly IRepository<AppCredential> _appCredentialDataRepository;
         private Configuration taskConfiguration = new Configuration();
         private Configuration leaveConfiguration = new Configuration();
         private Configuration scrumConfiguration = new Configuration();
@@ -29,6 +30,7 @@ namespace Promact.Core.Test
             _configurationRepository = _componentContext.Resolve<IConfigurationRepository>();
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _configurationDataRepository = _componentContext.Resolve<IRepository<Configuration>>();
+            _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
             Initialize();
         }
         #endregion
@@ -72,6 +74,34 @@ namespace Promact.Core.Test
             Assert.True(configurations.TaskOn);
             Assert.False(configurations.ScrumOn);
             Assert.False(configurations.LeaveOn);
+        }
+
+        /// <summary>
+        /// Test case to test the method GetAppCredentialsByConfigurationIdAsync of ConfigurationRepository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetAppCredentialsByConfigurationIdAsync()
+        {
+            await AddConfigurationAsync();
+            AppCredential appCredential = new AppCredential() { ClientId = _stringConstant.StringIdForTest, ClientSecret = _stringConstant.StringIdForTest, CreatedOn = DateTime.UtcNow, Module = _stringConstant.TaskModule };
+            _appCredentialDataRepository.Insert(appCredential);
+            await _appCredentialDataRepository.SaveChangesAsync();
+            var configurationId = (await _configurationDataRepository.FirstAsync(x => x.Module == _stringConstant.TaskModule)).Id;
+            var configuration = await _configurationRepository.GetAppCredentialsByConfigurationIdAsync(configurationId);
+            Assert.Equal(configuration.ClientId, _stringConstant.StringIdForTest);
+        }
+
+        /// <summary>
+        /// Test case to test the method DisableAppByConfigurationIdAsync of ConfigurationRepository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task DisableAppByConfigurationIdAsync()
+        {
+            await AddConfigurationAsync();
+            var configurationId = (await _configurationDataRepository.FirstAsync(x => x.Module == _stringConstant.TaskModule)).Id;
+            await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
+            var configuration = await _configurationDataRepository.FirstAsync(x=>x.Id == configurationId);
+            Assert.False(configuration.Status);
         }
         #endregion
 
