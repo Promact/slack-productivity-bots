@@ -19,7 +19,7 @@ export class MockScrumReportService {
         let mockScrumProject = new ScrumProject();
         mockScrumProject.Name = this.stringConstant.projectName;
         mockScrumProjects.push(mockScrumProject);
-        return new BehaviorSubject(mockScrumProjects).asObservable()
+        return new BehaviorSubject(mockScrumProjects).asObservable();
     }
 
     getScrumDetails(id: number, date: string) {
@@ -36,7 +36,7 @@ export class MockScrumReportService {
             mockScrumDetails.ProjectCreationDate = this.stringConstant.ProjectCreationDate;
             mockScrumDetails.EmployeeScrumAnswers = mockEmployeeScrumAnswers;
         }
-        return new BehaviorSubject(mockScrumDetails).asObservable()
+        return new BehaviorSubject(mockScrumDetails).asObservable();
     }
 }
 

@@ -4,7 +4,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 import { RouterLinkStubDirective } from '../../shared/mock/mock.routerLink';
 import { GroupListComponent } from './groupList.component';
 import { GroupModule } from '../group.module';
-import { GroupService } from '../group.service'
+import { GroupService } from '../group.service';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
 import { MockRouter } from '../../shared/mock/mock.router';

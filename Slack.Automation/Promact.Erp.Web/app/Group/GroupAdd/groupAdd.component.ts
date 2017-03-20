@@ -24,7 +24,7 @@ export class GroupAddComponent implements OnInit {
     ngOnInit() {
         this.loader.loader = true;
         this.groupService.getActiveUserEmailList().then((result) => {
-            this.listOfActiveEmail = result
+            this.listOfActiveEmail = result;
             this.loader.loader = false;
         });
 
@@ -48,7 +48,7 @@ export class GroupAddComponent implements OnInit {
         if (groupName !== undefined && groupName !== "") {
             this.loader.loader = true;
             this.groupService.checkGroupNameIsExists(groupName, 0).then((result) => {
-                this.isExistsGroupName = result
+                this.isExistsGroupName = result;
                 this.loader.loader = false;
             }, err => {
 

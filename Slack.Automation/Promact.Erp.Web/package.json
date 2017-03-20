@@ -8,7 +8,7 @@
     "docker": "npm run docker-build && docker run -it --rm -p 3000:3000 -p 3001:3001 ng2-quickstart",
     "pree2e": "npm run webdriver:update",
     "e2e": "tsc && concurrently \"http-server -s\" \"protractor protractor.config.js\" --kill-others --success first",
-    "lint": "tslint ./app/**/*.ts -t verbose",
+    "tslint": "tslint -c tslint.json ./app/**/*.ts",
     "lite": "lite-server",
     "postinstall": "typings install",
     "test": "karma start karma.config.js",
@@ -41,7 +41,6 @@
     "reflect-metadata": "0.1.8",
     "rxjs": "^5.0.1",
     "systemjs": "0.19.40",
-    "tslint": "^4.4.2",
     "zone.js": "0.7.4"
   },
   "devDependencies": {
@@ -63,7 +62,7 @@
     "remap-istanbul": "0.7.0",
     "rimraf": "2.5.4",
     "systemjs": "0.19.43",
-    "tslint": "^4.4.2",
+    "tslint": "4.0.0-dev.1",
     "typescript": "2.0.10",
     "typings": "2.0.0",
     "codecov.io": "0.1.6"

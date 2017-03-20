@@ -61,7 +61,7 @@ describe('LeaveReport Detials Tests', () => {
 
         let fixture = TestBed.createComponent(LeaveReportDetailsComponent); //Create instance of component  
         let jsPDFMock = fixture.debugElement.injector.get(JsonToPdfService);
-        spyOn(jsPDFMock, "exportJsonToPdf").and.callFake(function fake() { })          
+        spyOn(jsPDFMock, "exportJsonToPdf").and.callFake(function fake() { });          
         let leaveReportDetailsComponent = fixture.componentInstance;
         leaveReportDetailsComponent.leaveReportDetail = mockLeaveReportDetails;
         leaveReportDetailsComponent.exportDataToPdf();

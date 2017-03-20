@@ -30,5 +30,6 @@ test_script:
    }
 - cd ./Slack.Automation/Promact.Erp.Web
 - npm test 
+- npm run tslint
 after_test:
   - npm run codecov 

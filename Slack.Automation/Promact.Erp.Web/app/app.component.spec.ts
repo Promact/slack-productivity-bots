@@ -33,12 +33,12 @@ describe('AppComponent Test', () => {
     }));
 
     it('User is admin', () => {
-            let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
-            let appComponent = fixture.componentInstance;
-            let appService = fixture.debugElement.injector.get(AppComponentService);
-            spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
-            appComponent.ngOnInit();
-            expect(appComponent.userIsAdmin).toBe(true);
+        let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
+        let appComponent = fixture.componentInstance;
+        let appService = fixture.debugElement.injector.get(AppComponentService);
+        spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
+        appComponent.ngOnInit();
+        expect(appComponent.userIsAdmin).toBe(true);
     });
     it('User is not admin', () => {
         let fixture = TestBed.createComponent(AppComponent); //Create instance of component            
@@ -48,4 +48,4 @@ describe('AppComponent Test', () => {
         appComponent.ngOnInit();
         expect(appComponent.userIsAdmin).toBe(false);
     });
-})
+});

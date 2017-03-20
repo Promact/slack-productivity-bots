@@ -28,7 +28,7 @@ export class GroupEditComponent implements OnInit {
         this.route.params.subscribe(params => {
             this.id = +this.route.snapshot.params[this.stringConstant.paramsId];
             this.groupService.getGroupbyId(this.id).then((result) => {
-                this.groupModel = result
+                this.groupModel = result;
                 this.loader.loader = false;
             }, err => {
                 if (err.status === 400) {
@@ -41,7 +41,7 @@ export class GroupEditComponent implements OnInit {
 
     getActiveUserEmailList() {
         this.groupService.getActiveUserEmailList().then((result) => {
-            this.listOfActiveEmail = result
+            this.listOfActiveEmail = result;
             this.loader.loader = false;
         });
     }
@@ -62,7 +62,7 @@ export class GroupEditComponent implements OnInit {
         if (groupName !== undefined && groupName !== "") {
             this.loader.loader = true;
             this.groupService.checkGroupNameIsExists(groupName, this.id).then((result) => {
-                this.isExistsGroupName = result
+                this.isExistsGroupName = result;
                 this.loader.loader = false;
             }, err => {
 
