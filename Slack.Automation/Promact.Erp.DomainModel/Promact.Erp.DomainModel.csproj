@@ -134,6 +134,7 @@
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
     <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
+    <Compile Include="ApplicationClass\SeedData.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelResponse.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="ApplicationClass\UserEmailListAc.cs" />
     <Compile Include="JSonConverterUtil\SlackChannelDetailsConverter.cs" />
     <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\AppCredential.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />

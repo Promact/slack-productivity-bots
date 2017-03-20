@@ -307,6 +307,8 @@
     <Content Include="Content\fonts\line-icons.woff" />
     <Content Include="app\shared\mock\mock.router.js.map" />
     <Content Include="app\shared\mock\mock.activatedroute.js.map" />
+    <Content Include="CredentialSeedData\credentialSeedData.example.json" />
+    <Content Include="CredentialSeedData\credentialSeedData.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

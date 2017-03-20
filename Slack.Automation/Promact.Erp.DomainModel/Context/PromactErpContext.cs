@@ -38,6 +38,8 @@ namespace Promact.Erp.DomainModel.Context
         public DbSet<Configuration> Configuration { get; set; }
 #pragma warning restore CS0108 // Member hides inherited member; missing new keyword
 
+        public DbSet<AppCredential> AppCredential { get; set; }
+
         public static PromactErpContext Create()
         {
             return new PromactErpContext();
