@@ -28,11 +28,13 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetailsToday() {
+        this.loader.loader = true;
         let datePipe = new DatePipe(this.stringConstant.medium);
         this.getScrumDetails(datePipe.transform(new Date(), this.stringConstant.dateDefaultFormat));
     }
 
     getScrumDetailsYesterday(date: string) {
+        this.loader.loader = true;
         let datePipe = new DatePipe(this.stringConstant.medium);
         let currentDate = new Date(date);
         let yesterDaty = datePipe.transform(new Date(currentDate.setDate(currentDate.getDate() - 1)), this.stringConstant.dateDefaultFormat);
@@ -40,12 +42,12 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetailsGeneral(date: string) {
+        this.loader.loader = true;
         let datePipe = new DatePipe(this.stringConstant.medium);
         this.getScrumDetails(datePipe.transform(date, this.stringConstant.dateDefaultFormat));
     }
 
     getScrumDetails(date: string) {
-        this.loader.loader = true;
         this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]); 
         this.scrumReportService.getScrumDetails(+this.Id,date)
             .subscribe(

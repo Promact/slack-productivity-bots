@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
         this.httpService.getUserIsAdminOrNot().subscribe((result) => {
             this.userIsAdmin = result.IsAdmin;
             this.username = result.FirstName;
+            this.loader.loader = false;
         });
-        this.loader.loader = false;
     }
 }
