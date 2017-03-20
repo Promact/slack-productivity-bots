@@ -35,6 +35,7 @@
         string InActiveProject { get; }
         string AlreadyLinked { get; }
         string NotLinkedYet { get; }
+        string SeedDataPath { get; }
         string UnlinkedSuccessfully { get; }
         string  NotLinkedToChannel { get; }
         string NoLinks { get; }
