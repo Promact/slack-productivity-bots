@@ -1403,6 +1403,13 @@ namespace Promact.Erp.Util.StringConstants
                     "{0}Example :-{0}/leaves list username - for other user{0}/leaves list - for own", Environment.NewLine);
             }
         }
+        public string SeedDataPath
+        {
+            get
+            {
+                return "~/CredentialSeedData/credentialSeedData.json";
+            }
+        }
         public string SlashCommandLeaveCancelErrorMessage
         {
             get
