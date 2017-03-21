@@ -46,7 +46,7 @@ namespace Promact.Erp.Web
                 var seedData = JsonConvert.DeserializeObject<SeedData>(text);
                 foreach (var credential in seedData.AppCredential)
                 {
-                    var status = _appCredentialRepository.AddAppCredentialAsync(credential).Result;
+                    var status = _appCredentialRepository.AddUpdateAppCredentialAsync(credential).Result;
                 }
             }
 

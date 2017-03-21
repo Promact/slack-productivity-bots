@@ -12,5 +12,9 @@ namespace Promact.Erp.DomainModel.Models
 
         [Required]
         public string ClientSecret { get; set; }
+
+        public string BotToken { get; set; }
+
+        public bool IsSelected { get; set; }
     }
 }

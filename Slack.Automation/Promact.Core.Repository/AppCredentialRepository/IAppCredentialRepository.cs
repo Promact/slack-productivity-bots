@@ -15,8 +15,14 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// <summary>
         /// Adds the app's credentials to the database - JJ
         /// </summary>
-        /// <param name="appCredential"></param>
-        /// <returns></returns>
-        Task<int> AddAppCredentialAsync(AppCredential appCredential);
+        /// <param name="appCredential">object of app credential</param>
+        /// <returns>status of operation</returns>
+        Task<int> AddUpdateAppCredentialAsync(AppCredential appCredential);
+
+        /// <summary>
+        /// Get the app credentials of the app which has been selected for integration - JJ
+        /// </summary>
+        /// <returns>object of AppCredential</returns>
+        Task<AppCredential> FetchSelectedAppAsync();
     }
 }
