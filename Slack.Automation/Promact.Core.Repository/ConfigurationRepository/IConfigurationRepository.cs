@@ -12,11 +12,13 @@ namespace Promact.Core.Repository.ConfigurationRepository
         /// </summary>
         /// <param name="configuration">configuration</param>
         Task UpdateConfigurationAsync(Configuration configuration);
+
         /// <summary>
         /// Method to get list of configuration
         /// </summary>
         /// <returns>list of configuration</returns>
         IEnumerable<Configuration> GetAllConfiguration();
+
         /// <summary>
         /// Method to get list status of all module
         /// </summary>
@@ -24,7 +26,7 @@ namespace Promact.Core.Repository.ConfigurationRepository
         Task<ConfigurationStatusAC> GetAllConfigurationStatusAsync();
 
         /// <summary>
-        /// Method to get app credentials by configuration Id
+        /// Method to get app credentials by configuration Id and update the IsSelected bit to be true
         /// </summary>
         /// <param name="configurationId">setting configuration Id</param>
         /// <returns>app credentials</returns>
