@@ -152,18 +152,31 @@ namespace Promact.Erp.Core.Controllers
         * HTTP/1.1 400 Bad Request 
         * {
         *    "error": "Problems parsing JSON object"
-        * }  
+        * } 
+        * @apiError GroupNotFound
+        * @apiErrorExample {json} Error-Response:
+        * HTTP/1.1 404 Not Found 
+        * {
+        *   "error": "GroupNotFound"
+        * }     
         */
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IHttpActionResult> UpdateGroupAsync(int id, GroupAC groupAC)
         {
-            if (ModelState.IsValid)
+            try
             {
-                groupAC.Id = id;
-                return Ok(await _groupRepository.UpdateGroupAsync(groupAC));
+                if (ModelState.IsValid)
+                {
+                    groupAC.Id = id;
+                    return Ok(await _groupRepository.UpdateGroupAsync(groupAC));
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (GroupNotFound)
+            {
+                return NotFound();
+            }
         }
 
         /**
@@ -205,13 +218,26 @@ namespace Promact.Erp.Core.Controllers
        * HTTP/1.1 200 OK 
        * {
        *     "result" : "true"
-       * }   
+       * } 
+       * @apiError GroupNotFound
+       * @apiErrorExample {json} Error-Response:
+       * HTTP/1.1 404 Not Found 
+       * {
+       *   "error": "GroupNotFound"
+       * }    
        */
         [HttpDelete]
         [Route("delete/{id:int}")]
         public async Task<IHttpActionResult> DeleteGroupByIdAsync(int id)
         {
-            return Ok(await _groupRepository.DeleteGroupByIdAsync(id));
+            try
+            {
+                return Ok(await _groupRepository.DeleteGroupByIdAsync(id));
+            }
+            catch (GroupNotFound)
+            {
+                return NotFound();
+            }
         }
 
 
