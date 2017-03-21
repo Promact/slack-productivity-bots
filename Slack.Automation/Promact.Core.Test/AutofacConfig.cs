@@ -39,6 +39,7 @@ using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.RedmineRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 
 namespace Promact.Core.Test
 {
@@ -104,6 +105,7 @@ namespace Promact.Core.Test
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
+            builder.RegisterType<BotRepository>().As<IBotRepository>();
 
             var container = builder.Build();
             return container;
