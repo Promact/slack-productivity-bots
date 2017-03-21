@@ -314,6 +314,27 @@ namespace Promact.Core.Test
         }
 
         /// <summary>
+        /// Test case for Issue Change Assign for user not found
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task RedmineSlackRequestIssueChangeAssignUserNotFouundAsync()
+        {
+            await CreateUserAsync();
+            slashCommand.Text = _stringConstant.RedmineCommandChangeAssign;
+            var replyText = string.Format(_stringConstant.NoUserFoundInProject, _stringConstant.FirstNameForTest, 1);
+            var requestUrl = string.Format(_stringConstant.IssueDetailsUrl, 1);
+            GetAsyncMethodMocking(RedmineResponseSingleProjectInJson(), _stringConstant.RedmineBaseUrl, requestUrl, _stringConstant.AccessTokenForTest);
+            var postRequestUrl = string.Format(_stringConstant.RedmineIssueUpdateUrl, _stringConstant.RedmineBaseUrl, _stringConstant.IssueUrl, 1);
+            redmineIssue.Issue.TrackerId = Tracker.Bug;
+            redmineIssue.Issue.PriorityId = Priority.Normal;
+            var issueInJsonText = JsonConvert.SerializeObject(redmineIssue);
+            _mockHttpClient.Setup(x => x.PutAsync(postRequestUrl, issueInJsonText, _stringConstant.JsonApplication, _stringConstant.AccessTokenForTest, _stringConstant.RedmineApiKey)).Returns(Task.FromResult(_stringConstant.Ok));
+            var slashResponseJsonText = MockingSendMessageAsync(replyText);
+            await _redmineRepository.SlackRequestAsync(slashCommand);
+            _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
+        }
+
+        /// <summary>
         /// Test case for Issue Change Assign No updated
         /// </summary>
         [Fact, Trait("Category", "Required")]

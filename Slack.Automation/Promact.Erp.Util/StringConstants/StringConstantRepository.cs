@@ -3623,6 +3623,14 @@ namespace Promact.Erp.Util.StringConstants
                 return string.Format("apikey {0}", AccessTokenForTest);
             }
         }
+
+        public string RedmineProjectListFormat
+        {
+            get
+            {
+                return "{0}. Project - {1},{2}";
+            }
+        }
         #endregion
     }
 }

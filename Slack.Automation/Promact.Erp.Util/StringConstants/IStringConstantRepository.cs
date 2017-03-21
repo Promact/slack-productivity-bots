@@ -528,6 +528,7 @@
         string RedmineKeyAddSuccessfully { get; }
         string PleaseEnterValidAPIKey { get; }
         string RedmineAPIKeyCommand { get; }
+        string RedmineProjectListFormat { get; }
         #endregion
     }
 }
