@@ -37,6 +37,7 @@ using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.ConfigurationRepository;
+using Promact.Core.Repository.AppCredentialRepository;
 
 namespace Promact.Core.Test
 {
@@ -68,6 +69,7 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
+            builder.RegisterType<AppCredentialRepository>().As<IAppCredentialRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
