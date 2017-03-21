@@ -51,7 +51,8 @@
         string SlackAuthorize { get; }
         string ScrumBotScopeAndClientId { get; }
         string TaskBotScopeAndClientId { get; }
-        string SlashCommandScopeAndClientId { get; }
+        string LeaveSlashCommandScopeAndClientId { get; }
+        string RedmineSlashCommandScopeAndClientId { get; }
         string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
         string ProjectDetailUrl { get; }

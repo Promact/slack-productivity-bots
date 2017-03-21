@@ -190,7 +190,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "User could not be added";
             }
         }
-      
+
         public string ScrumBotScopeAndClientId
         {
             get
@@ -202,14 +202,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "?scope=bot,users:read,users:read.email,chat:write:bot,chat:write:user,users:read.email&client_id=";
+                return "?scope=bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
             }
         }
-        public string SlashCommandScopeAndClientId
+        public string LeaveSlashCommandScopeAndClientId
         {
             get
             {
                 return "?scope=incoming-webhook,commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
+            }
+        }
+        public string RedmineSlashCommandScopeAndClientId
+        {
+            get
+            {
+                return "?scope=commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
             }
         }
         public string SlackAuthorize
