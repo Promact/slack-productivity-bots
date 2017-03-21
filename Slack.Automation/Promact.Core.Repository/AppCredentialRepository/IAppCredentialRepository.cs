@@ -10,7 +10,7 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// </summary>
         /// <param name="module">Name of app</param>
         /// <returns>object of AppCredential</returns>
-        Task<AppCredential> FetchAppCredentialByModule(string module);
+        Task<AppCredential> FetchAppCredentialByModuleAsync(string module);
 
         /// <summary>
         /// Adds the app's credentials to the database - JJ
@@ -18,6 +18,13 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// <param name="appCredential">object of app credential</param>
         /// <returns>status of operation</returns>
         Task<int> AddUpdateAppCredentialAsync(AppCredential appCredential);
+
+        /// <summary>
+        /// Updates the app's credentials to the database - JJ
+        /// </summary>
+        /// <param name="appCredntial">object of app credential</param>
+        /// <returns>status of operation</returns>
+        Task<int> UpdateBotTokenAsync(AppCredential appCredntial);
 
         /// <summary>
         /// Get the app credentials of the app which has been selected for integration - JJ
