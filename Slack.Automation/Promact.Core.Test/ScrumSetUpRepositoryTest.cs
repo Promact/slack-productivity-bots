@@ -131,7 +131,7 @@ namespace Promact.Core.Test
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauthInValidUser);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
         }
 
         private async Task UserProjectSetup()
@@ -142,7 +142,7 @@ namespace Promact.Core.Test
 
             var projectResponse = Task.FromResult(_stringConstant.ProjectDetailsFromOauth);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, _stringConstant.StringValueOneForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
         }
 
 
@@ -177,7 +177,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectAndTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
 
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.ListLinks);
             Assert.Equal(_stringConstant.NoLinks, actual);
@@ -195,7 +195,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.ListLinks);
             string expected = _stringConstant.Links + Environment.NewLine + _stringConstant.ListOfLinks;
             Assert.Equal(expected, actual);
@@ -215,7 +215,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.LinkTest);
             string expected = string.Format(_stringConstant.ProjectLinked, _stringConstant.OAuthProjectName, _stringConstant.GroupName);
             Assert.Equal(expected, actual);
@@ -234,7 +234,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.LinkTest);
             Assert.Equal(_stringConstant.OnlyPrivateChannel, actual);
         }
@@ -252,7 +252,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.LinkTest);
             string expected = string.Format(_stringConstant.UnLinkFirst, _stringConstant.OAuthProjectName);
             Assert.Equal(expected, actual);
@@ -272,7 +272,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.LinkTest);
             Assert.Equal(_stringConstant.AlreadyLinked, actual);
         }
@@ -291,7 +291,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.InActiveProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.LinkTest);
             Assert.Equal(_stringConstant.InActiveProject, actual);
         }
@@ -351,7 +351,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderInActiveDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkCommand);
             string expected = string.Format(_stringConstant.NotActiveUser, _stringConstant.StringIdForTest);
             Assert.Equal(expected, actual);
@@ -371,7 +371,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderInActiveDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkTest);
             string expected = string.Format(_stringConstant.NotTeamLeader, _stringConstant.StringIdForTest);
             Assert.Equal(expected, actual);
@@ -404,7 +404,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkCommand);
             string expected = string.Format(_stringConstant.UnlinkedSuccessfully, _stringConstant.OAuthProjectName, _stringConstant.GroupName);
             Assert.Equal(expected, actual);
@@ -424,7 +424,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkCommand);
             string expected = string.Format(_stringConstant.NotLinkedToChannel, _stringConstant.OAuthProjectName);
             Assert.Equal(expected, actual);
@@ -444,7 +444,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkCommand);
             string expected = string.Format(_stringConstant.NotLinkedYet, _stringConstant.OAuthProjectName);
             Assert.Equal(expected, actual);
@@ -464,7 +464,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var projectResponse = Task.FromResult(_stringConstant.ProjectTeamLeaderInActiveDetail);
             string projectRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest)).Returns(projectResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUrl, projectRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(projectResponse);
             string actual = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(_stringConstant.StringIdForTest, slackChannelDetails, _stringConstant.UnlinkTest);
             string expected = string.Format(_stringConstant.NotTeamLeader, _stringConstant.StringIdForTest);
             Assert.Equal(expected, actual);

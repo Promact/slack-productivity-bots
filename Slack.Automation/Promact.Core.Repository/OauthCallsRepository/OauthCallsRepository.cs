@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             User userDetails = new User();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 userDetails = JsonConvert.DeserializeObject<User>(response);
@@ -60,7 +60,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             List<User> teamLeader = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 teamLeader = JsonConvert.DeserializeObject<List<User>>(response);
@@ -77,7 +77,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<List<User>> GetManagementUserNameAsync(string accessToken)
         {
             List<User> management = new List<User>();
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.ManagementDetailsUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.ManagementDetailsUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 management = JsonConvert.DeserializeObject<List<User>>(response);
@@ -94,7 +94,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         public async Task<ProjectAc> GetProjectDetailsAsync(int projectId, string accessToken)
         {
             string requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.ProjectDetailUrl, projectId.ToString());
-            string response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
+            string response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
             ProjectAc project = new ProjectAc();
             if (!string.IsNullOrEmpty(response))
             {
@@ -114,7 +114,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             LeaveAllowed allowedLeave = new LeaveAllowed();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.CasualLeaveUrl, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 allowedLeave = JsonConvert.DeserializeObject<LeaveAllowed>(response);
@@ -133,7 +133,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             bool result = false;
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.UserIsAdmin, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if (response != null)
             {
                 result = JsonConvert.DeserializeObject<bool>(response);
@@ -151,8 +151,8 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             List<ProjectAc> projects = new List<ProjectAc>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, userId);
-            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken);
-            if (response != null)
+            var response = await _httpClientService.GetAsync(_stringConstant.ProjectUrl, requestUrl, accessToken, _stringConstant.Bearer);
+            if(response != null)
             {
                 projects = JsonConvert.DeserializeObject<List<ProjectAc>>(response);
             }
@@ -169,7 +169,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
         {
             List<User> teamMembers = new List<User>();
             var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, projectId);
-            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken);
+            var response = await _httpClientService.GetAsync(_stringConstant.UserUrl, requestUrl, accessToken, _stringConstant.Bearer);
             if(response != null)
             {
                 teamMembers = JsonConvert.DeserializeObject<List<User>>(response);

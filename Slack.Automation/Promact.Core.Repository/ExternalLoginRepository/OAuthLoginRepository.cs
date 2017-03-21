@@ -104,7 +104,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task AddSlackUserInformationAsync(string code)
         {
             string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, code);
-            string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
+            string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null, _stringConstant.Bearer);
             SlackOAuthResponse slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
             _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
             bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
@@ -121,7 +121,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
 
             string detailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, slackOAuth.AccessToken);
             //get all the slack users of the team
-            string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null);
+            string userDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackUserListUrl, detailsRequest, null, _stringConstant.Bearer);
             SlackUserResponse slackUsers = JsonConvert.DeserializeObject<SlackUserResponse>(userDetailsResponse);
             if (slackUsers.Ok)
             {
@@ -147,7 +147,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                         await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
                         _logger.Debug("Add Slack User Id Done");
                         //the public channels' details
-                        string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null);
+                        string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null, _stringConstant.Bearer);
                         SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
                         if (channels.Ok)
                         {
@@ -162,7 +162,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                             throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
                         _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                         //the public groups' details
-                        string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
+                        string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null, _stringConstant.Bearer);
                         SlackGroupDetails groups = JsonConvert.DeserializeObject<SlackGroupDetails>(groupDetailsResponse);
                         _logger.Info("Groups:" + groups.ErrorMessage);
                         _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
