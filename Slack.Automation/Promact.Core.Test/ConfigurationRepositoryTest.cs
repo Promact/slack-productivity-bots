@@ -118,7 +118,7 @@ namespace Promact.Core.Test
             leaveConfiguration.Module = _stringConstant.LeaveModule;
             leaveConfiguration.Status = false;
             scrumConfiguration.CreatedOn = DateTime.UtcNow;
-            scrumConfiguration.Module = _stringConstant.ScrumModule;
+            scrumConfiguration.Module = _stringConstant.Scrum;
             scrumConfiguration.Status = false;
         }
         #endregion

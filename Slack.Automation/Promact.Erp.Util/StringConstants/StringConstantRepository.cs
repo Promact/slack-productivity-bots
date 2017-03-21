@@ -190,11 +190,26 @@ namespace Promact.Erp.Util.StringConstants
                 return "User could not be added";
             }
         }
-        public string OAuthAuthorizationScopeAndClientId
+      
+        public string ScrumBotScopeAndClientId
         {
             get
             {
-                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
+                return "?scope=bot,users:read,groups:read,users:read.email,channels:read,chat:write:bot,chat:write:user&client_id=";
+            }
+        }
+        public string TaskBotScopeAndClientId
+        {
+            get
+            {
+                return "?scope=bot,users:read,users:read.email,chat:write:bot,chat:write:user,users:read.email&client_id=";
+            }
+        }
+        public string SlashCommandScopeAndClientId
+        {
+            get
+            {
+                return "?scope=incoming-webhook,commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
             }
         }
         public string SlackAuthorize
@@ -223,6 +238,20 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "managements";
+            }
+        }
+        public string TestSlackClientId
+        {
+            get
+            {
+                return "YourSlackOAuthClientId";
+            }
+        }
+        public string TestSlackClientSecret
+        {
+            get
+            {
+                return "YourSlackOAuthClientSecret";
             }
         }
         public string OAuthAcessUrl
@@ -953,7 +982,7 @@ namespace Promact.Erp.Util.StringConstants
         public string StringIdForTest
         {
             get
-            {           
+            {
                 return "13b0f2ca-92f5-4713-a67e-37e50172e148";
             }
         }
@@ -1057,7 +1086,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "unlink \"Sci bot testing\"";
 
             }
-        }      
+        }
         public string InActiveProjectTeamLeaderDetail
         {
             get
@@ -3197,7 +3226,7 @@ namespace Promact.Erp.Util.StringConstants
         public string Bearer { get { return "Bearer"; } }
         public string TaskModule { get { return "task"; } }
         public string LeaveModule { get { return "leave"; } }
-        public string ScrumModule { get { return "scrum"; } }
+        public string RedmineModule { get { return "redmine"; } }
         public string Management { get { return "Management"; } }
         public string TestEmail { get { return "ankit@promactinfo.com"; } }
         public string SecondTestEmail { get { return "test@promactinfo.com"; } }
