@@ -24,9 +24,10 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// </summary>
         /// <param name="module">Name of app</param>
         /// <returns>object of AppCredential</returns>
-        public async Task<AppCredential> FetchAppCredentialByModule(string module)
+        public async Task<AppCredential> FetchAppCredentialByModuleAsync(string module)
         {
-            return await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.Module == module);
+            var app = await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.Module == module);
+            return app;
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// <returns>status of operation</returns>
         public async Task<int> AddUpdateAppCredentialAsync(AppCredential appCredential)
         {
-            AppCredential credential = await FetchAppCredentialByModule(appCredential?.Module);
+            AppCredential credential = await FetchAppCredentialByModuleAsync(appCredential?.Module);
             if (credential == null)
             {
                 appCredential.CreatedOn = DateTime.UtcNow.Date;
@@ -59,5 +60,17 @@ namespace Promact.Core.Repository.AppCredentialRepository
         {
             return await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.IsSelected);
         }
+
+        /// <summary>
+        /// Updates the app's credentials to the database - JJ
+        /// </summary>
+        /// <param name="appCredntial">object of app credential</param>
+        /// <returns>status of operation</returns>
+        public async Task<int> UpdateBotTokenAsync(AppCredential appCredntial)
+        {
+            _appCredentialDataRepository.Update(appCredntial);
+            return await _appCredentialDataRepository.SaveChangesAsync();
+        }
+
     }
 }
