@@ -32,8 +32,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly ILogger _logger;
-        private readonly ITaskMailBotRepository _taskMailBotRepository;
-        private readonly IScrumRepository _scrumRepository;
+
         #endregion
 
         #region Constructor
@@ -42,8 +41,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
-             IAppCredentialRepository appCredentialRepository, ITaskMailBotRepository taskMailBotRepository, 
-             IScrumRepository scrumRepository)
+             IAppCredentialRepository appCredentialRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -56,8 +54,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _slackChannelRepository = slackChannelRepository;
             _appCredentialRepository = appCredentialRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
-            _taskMailBotRepository = taskMailBotRepository;
-            _scrumRepository = scrumRepository;
         }
 
         #endregion
