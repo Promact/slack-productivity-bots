@@ -229,20 +229,16 @@ namespace Promact.Erp.Core.Controllers
                 if (User.Identity.IsAuthenticated)
                 {
                     var appCredential = await _configurationRepository.GetAppCredentialsByConfigurationIdAsync(configurationId);
-                    if (appCredential != null)
+                    if (!string.IsNullOrEmpty(appCredential?.ClientId))
                     {
                         if (String.Compare(appCredential.Module, _stringConstantRepository.Scrum, true) == 0)
-                        {
                             return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.ScrumBotScopeAndClientId + appCredential.ClientId);
-                        }
                         else if (String.Compare(appCredential.Module, _stringConstantRepository.TaskModule, true) == 0)
-                        {
                             return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.TaskBotScopeAndClientId + appCredential.ClientId);
-                        }
-                        else if ((String.Compare(appCredential.Module, _stringConstantRepository.RedmineModule, true) == 0) || (String.Compare(appCredential.Module, _stringConstantRepository.LeaveModule, true) == 0))
-                        {
-                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.SlashCommandScopeAndClientId + appCredential.ClientId);
-                        }
+                        else if (String.Compare(appCredential.Module, _stringConstantRepository.LeaveModule, true) == 0)
+                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.LeaveSlashCommandScopeAndClientId + appCredential.ClientId);
+                        else if (String.Compare(appCredential.Module, _stringConstantRepository.RedmineModule, true) == 0)
+                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.RedmineSlashCommandScopeAndClientId + appCredential.ClientId);
                     }
                 }
                 await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
