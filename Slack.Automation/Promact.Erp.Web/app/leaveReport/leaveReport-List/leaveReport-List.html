@@ -17,11 +17,13 @@
                             </p>
                         </div>
                     </div> 
+                    
                     <div class="form-group row m-15">
                            <div class="col-md-1 p-0"><label class="mt-5">Filter by:</label></div>
                             <div class="col-md-3"><input type="text" class="form-control" [(ngModel)]="EmployeeName" placeholder="EmployeeName"></div>
                             <div class="col-md-3"><input type="text" class="form-control col-md-3" [(ngModel)]="Role" placeholder="Role"></div>
                     </div>
+                    
                     <table class="table table-hover table-bordered" [md2Data]="leaveReports" #md2="md2DataTable" [rowsPerPage]="10">
                         <thead>
                             <tr>
@@ -37,6 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
                             <tr *ngFor="let leaveReport of (md2.data | sgFilter : EmployeeName : Role )">
                                 <td><a routerLink="detail/{{leaveReport.EmployeeId}}" routerLinkActive="active">{{leaveReport.EmployeeName}}</a></td>
                                 <td>{{leaveReport.EmployeeUserName}}</td>
@@ -48,7 +51,10 @@
                                 <td>{{leaveReport.UtilisedSickLeave}}</td>
                                 <td>{{leaveReport.BalanceSickLeave}}</td>
                             </tr>
-                        </tbody>
+                            <tr *ngIf="(md2.data | sgFilter : EmployeeName : Role ).length==0">
+                                <td colspan="9">No records to display</td>
+                            </tr>
+                       </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="9">
@@ -57,7 +63,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                   
+                  
                     <button class="btn btn-success" (click)="exportDataToPdf()"><i class="fa fa-download"></i>Export Data To Pdf</button>
                 </div>
             </div>
