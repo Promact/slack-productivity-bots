@@ -121,7 +121,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 SlackOAuthResponse slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
                 appCredential.IsSelected = false;
                 appCredential.BotToken = slackOAuth.Bot.BotAccessToken;
-                await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
+                await _appCredentialRepository.UpdateBotTokenAsync(appCredential);
                 _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
                 bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
                 if (!checkUserIncomingWebHookExist && !string.IsNullOrEmpty(slackOAuth.IncomingWebhook?.Url))
