@@ -24,5 +24,12 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// </summary>
         /// <returns>object of AppCredential</returns>
         Task<AppCredential> FetchSelectedAppAsync();
+
+        /// <summary>
+        /// Method to clear bot token of app
+        /// </summary>
+        /// <param name="module">module name</param>
+        /// <returns></returns>
+        Task ClearBotTokenByModule(string module);
     }
 }

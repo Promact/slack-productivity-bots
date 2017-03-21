@@ -44,7 +44,9 @@ namespace Promact.Core.Repository.AppCredentialRepository
             }
             else
             {
+                var botToken = credential.BotToken;
                 credential = _mapper.Map(appCredential, credential);
+                credential.BotToken = botToken;
                 _appCredentialDataRepository.Update(credential);
             }
             return await _appCredentialDataRepository.SaveChangesAsync();
@@ -58,6 +60,19 @@ namespace Promact.Core.Repository.AppCredentialRepository
         public async Task<AppCredential> FetchSelectedAppAsync()
         {
             return await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.IsSelected);
+        }
+
+        /// <summary>
+        /// Method to clear bot token of app
+        /// </summary>
+        /// <param name="module">module name</param>
+        /// <returns></returns>
+        public async Task ClearBotTokenByModule(string module)
+        {
+            var appCredentials = await FetchAppCredentialByModule(module);
+            appCredentials.BotToken = null;
+            _appCredentialDataRepository.Update(appCredentials);
+            await _appCredentialDataRepository.SaveChangesAsync();
         }
     }
 }

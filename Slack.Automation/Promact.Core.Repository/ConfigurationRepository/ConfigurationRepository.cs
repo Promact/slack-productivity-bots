@@ -1,4 +1,5 @@
 ﻿using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -14,16 +15,18 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
-
+        private readonly IBotRepository _botRepository;
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
-            IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository)
+            IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository,
+            IBotRepository botRepository)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
             _appCredentialRepository = appCredentialRepository;
+            _botRepository = botRepository;
         }
         #endregion
 
@@ -36,6 +39,8 @@ namespace Promact.Core.Repository.ConfigurationRepository
         {
             _configurationDataRepository.Update(configuration);
             await _configurationDataRepository.SaveChangesAsync();
+            if (!configuration.Status)
+                await _botRepository.TurnOffBot(configuration.Module);
         }
 
         /// <summary>
