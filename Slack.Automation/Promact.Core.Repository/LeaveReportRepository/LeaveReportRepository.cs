@@ -188,8 +188,8 @@ namespace Promact.Core.Repository.LeaveReportRepository
                         leaveReportDetail.EndDay = leave.EndDate.Value.DayOfWeek.ToString();
                         leaveReportDetail.Reason = leave.Reason;
                         leaveReportDetail.Type = leave.Type.ToString();
+                        leaveReportDetails.Add(leaveReportDetail);
                     }
-                    leaveReportDetails.Add(leaveReportDetail);
                 }
                 return leaveReportDetails;
             }

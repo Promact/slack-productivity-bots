@@ -17,7 +17,6 @@
                         <label class="control-label col-md-1 selc-date">Select Date:</label>
                         <div class="col-md-4">
                             <md2-datepicker [(ngModel)]="selectedDate" [max]="maxDate" [min]="minDate" onkeydown="return false" class="form-control col-md-4"></md2-datepicker>
-                            <!--<input type="date" class="form-control col-md-4" name="selectDate" onkeydown="return false" [(ngModel)]="selectedDate" >-->
                         </div>
                         <div class="col-md-2">
                             <button class="btn btn-success" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,selectedDate)">Search</button>
