@@ -38,6 +38,7 @@ using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 using Promact.Core.Repository.RedmineRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.AppCredentialRepository;

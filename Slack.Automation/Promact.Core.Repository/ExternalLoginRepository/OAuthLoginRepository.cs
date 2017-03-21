@@ -21,7 +21,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
     public class OAuthLoginRepository : IOAuthLoginRepository
     {
         #region Private Variables
-
         private readonly ApplicationUserManager _userManager;
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackUserDetails> _slackUserDetailsRepository;
@@ -33,7 +32,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly ILogger _logger;
-
+        private readonly IBotRepository _botRepository;
         #endregion
 
         #region Constructor
@@ -43,7 +42,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
-             IAppCredentialRepository appCredentialRepository)
+             IAppCredentialRepository appCredentialRepository, IBotRepository botRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -56,6 +55,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _slackChannelRepository = slackChannelRepository;
             _appCredentialRepository = appCredentialRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
+            _botRepository = botRepository;
         }
 
         #endregion
@@ -122,6 +122,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 appCredential.IsSelected = false;
                 appCredential.BotToken = slackOAuth.Bot.BotAccessToken;
                 await _appCredentialRepository.UpdateBotTokenAsync(appCredential);
+                await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
+                await _botRepository.TurnOnBot(appCredential.Module);
                 _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
                 bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
                 if (!checkUserIncomingWebHookExist && !string.IsNullOrEmpty(slackOAuth.IncomingWebhook?.Url))
