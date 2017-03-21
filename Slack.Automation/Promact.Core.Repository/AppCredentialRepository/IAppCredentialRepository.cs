@@ -8,7 +8,7 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// <summary>
         /// Get the app credentials of the given module - JJ
         /// </summary>
-        /// <param name="module"></param>
+        /// <param name="module">Name of app</param>
         /// <returns>object of AppCredential</returns>
         Task<AppCredential> FetchAppCredentialByModule(string module);
 
