@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
 using Moq;
+using Promact.Core.Repository.AppCredentialRepository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.ServiceRepository;
@@ -25,6 +26,7 @@ namespace Promact.Core.Test
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
+        private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IStringConstantRepository _stringConstant;
@@ -32,8 +34,10 @@ namespace Promact.Core.Test
         private readonly ApplicationUserManager _userManager;
         private SlackEventApiAC slackEvent = new SlackEventApiAC();
         private SlackChannelDetails channel = new SlackChannelDetails();
+        private SlackUserDetails slackUserDetails = new SlackUserDetails();
         private SlackProfile profile = new SlackProfile();
         private ApplicationUser user = new ApplicationUser();
+        private AppCredential appCredential = new AppCredential();
         #endregion
 
         #region Constructor
@@ -49,17 +53,34 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
+            _appCredentialRepository = _componentContext.Resolve<IAppCredentialRepository>();
             Initialize();
         }
         #endregion
 
         #region Test Cases
+
         /// <summary>
-        /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository with true value
+        /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository but user not in slack
         /// </summary>
         [Fact, Trait("Category", "Required")]
         public async Task AddNewUserFromExternalLoginAsync()
         {
+            var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.UserIdForTest);
+            var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+            Assert.Equal(user.UserName, _stringConstant.EmailForTest);
+            Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
+        }
+
+        /// <summary>
+        /// Test case to check method AddNewUserFromExternalLogin of OAuth Login Repository, user in slack
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task AddUserFromExternalLoginAsync()
+        {
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             var user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(_stringConstant.EmailForTest, _stringConstant.AccessTokenForTest, _stringConstant.UserIdForTest);
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
@@ -88,8 +109,11 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
 
+            await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
+
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
+            //var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _stringConstant.TestSlackClientId, _stringConstant.TestSlackClientSecret, _stringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(_stringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, _stringConstant.AccessTokenSlack);
@@ -142,6 +166,27 @@ namespace Promact.Core.Test
             profile.LastName = _stringConstant.TestUser;
             profile.Phone = _stringConstant.PhoneForTest;
             profile.Title = _stringConstant.UserNameForTest;
+
+            appCredential.BotToken = _stringConstant.LeaveBot;
+            appCredential.ClientId = _stringConstant.TestSlackClientId;
+            appCredential.ClientSecret = _stringConstant.TestSlackClientSecret;
+            appCredential.Module = _stringConstant.LeaveModule;
+            appCredential.IsSelected = true;
+
+            slackUserDetails.UserId = _stringConstant.StringIdForTest;
+            slackUserDetails.Name = _stringConstant.TestUser;
+            slackUserDetails.TeamId = _stringConstant.PromactStringName;
+            slackUserDetails.CreatedOn = DateTime.UtcNow;
+            slackUserDetails.Deleted = false;
+            slackUserDetails.IsAdmin = false;
+            slackUserDetails.Email = _stringConstant.EmailForTest;
+            slackUserDetails.IsBot = false;
+            slackUserDetails.IsPrimaryOwner = false;
+            slackUserDetails.IsOwner = false;
+            slackUserDetails.IsRestrictedUser = false;
+            slackUserDetails.IsUltraRestrictedUser = false;
+            slackUserDetails.Profile = profile;
+            slackUserDetails.RealName = _stringConstant.TestUser + _stringConstant.TestUser;
 
             slackEvent.ApiAppId = _stringConstant.StringIdForTest;
             slackEvent.Challenge = _stringConstant.SlackHelpMessage;

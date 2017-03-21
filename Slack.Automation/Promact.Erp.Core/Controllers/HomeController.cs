@@ -91,7 +91,6 @@ namespace Promact.Erp.Core.Controllers
             string userId = GetUserId(User.Identity);
             //for check login user is already added in slack 
             ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
-
             //this for get login user email address and encrypt hash code.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
@@ -231,7 +230,20 @@ namespace Promact.Erp.Core.Controllers
                 {
                     var appCredential = await _configurationRepository.GetAppCredentialsByConfigurationIdAsync(configurationId);
                     if (appCredential != null)
-                        return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.OAuthAuthorizationScopeAndClientId + appCredential.ClientId);
+                    {
+                        if (String.Compare(appCredential.Module, _stringConstantRepository.Scrum, true) == 0)
+                        {
+                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.ScrumBotScopeAndClientId + appCredential.ClientId);
+                        }
+                        else if (String.Compare(appCredential.Module, _stringConstantRepository.TaskModule, true) == 0)
+                        {
+                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.TaskBotScopeAndClientId + appCredential.ClientId);
+                        }
+                        else if ((String.Compare(appCredential.Module, _stringConstantRepository.RedmineModule, true) == 0) || (String.Compare(appCredential.Module, _stringConstantRepository.LeaveModule, true) == 0))
+                        {
+                            return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.SlashCommandScopeAndClientId + appCredential.ClientId);
+                        }
+                    }
                 }
                 await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
                 return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);

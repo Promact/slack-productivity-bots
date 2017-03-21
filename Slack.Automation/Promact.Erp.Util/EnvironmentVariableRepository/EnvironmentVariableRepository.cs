@@ -43,14 +43,6 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
             }
         }
 
-        public string ScrumBotToken
-        {
-            get
-            {
-                return GetVariables(_stringConstant.ScrumBotToken);
-            }
-        }
-
         public string PromactOAuthClientId
         {
             get
@@ -58,15 +50,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
                 return GetVariables(_stringConstant.PromactOAuthClientId);
             }
         }
-
-        public string SlackOAuthClientId
-        {
-            get
-            {
-                return GetVariables(_stringConstant.SlackOAuthClientId);
-            }
-        }
-
+              
         public int Port
         {
             get
@@ -98,15 +82,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
                 return Convert.ToBoolean(GetVariables(_stringConstant.EnableSsl));
             }
         }
-
-        public string SlackOAuthClientSecret
-        {
-            get
-            {
-                return GetVariables(_stringConstant.SlackOAuthClientSecret);
-            }
-        }
-
+              
         public string IncomingWebHookUrl
         {
             get
@@ -123,12 +99,5 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
             }
         }
 
-        public string TaskmailAccessToken
-        {
-            get
-            {
-                return GetVariables(_stringConstant.TaskmailAccessToken);
-            }
-        }
     }
 }

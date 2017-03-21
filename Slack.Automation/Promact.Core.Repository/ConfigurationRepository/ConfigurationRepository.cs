@@ -1,4 +1,5 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
+﻿using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringConstants;
@@ -11,17 +12,18 @@ namespace Promact.Core.Repository.ConfigurationRepository
     {
         #region Private Variables
         private readonly IRepository<Configuration> _configurationDataRepository;
+        private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly IRepository<AppCredential> _appCredentialDataRepository;
+
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
-            IStringConstantRepository stringConstant, IRepository<AppCredential> appCredentialDataRepository)
+            IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
-            _appCredentialDataRepository = appCredentialDataRepository;
+            _appCredentialRepository = appCredentialRepository;
         }
         #endregion
 
@@ -53,23 +55,25 @@ namespace Promact.Core.Repository.ConfigurationRepository
         {
             ConfigurationStatusAC configStatus = new ConfigurationStatusAC();
             configStatus.LeaveOn = await StatusOfModule(_stringConstant.LeaveModule);
-            configStatus.ScrumOn = await StatusOfModule(_stringConstant.ScrumModule);
+            configStatus.ScrumOn = await StatusOfModule(_stringConstant.Scrum);
             configStatus.TaskOn = await StatusOfModule(_stringConstant.TaskModule);
             return configStatus;
         }
 
         /// <summary>
-        /// Method to get app credentials by configuration Id
+        /// Method to get app credentials by configuration Id and update the IsSelected bit to be true
         /// </summary>
         /// <param name="configurationId">setting configuration Id</param>
         /// <returns>app credentials</returns>
         public async Task<AppCredential> GetAppCredentialsByConfigurationIdAsync(int configurationId)
         {
             AppCredential appCredential = new AppCredential();
-            var configuration = await _configurationDataRepository.FirstOrDefaultAsync(x=>x.Id == configurationId);
+            Configuration configuration = await _configurationDataRepository.FirstOrDefaultAsync(x => x.Id == configurationId);
             if (configuration != null)
             {
-                appCredential = await _appCredentialDataRepository.FirstOrDefaultAsync(x => x.Module == configuration.Module);
+                appCredential = await _appCredentialRepository.FetchAppCredentialByModule(configuration.Module);
+                appCredential.IsSelected = true;
+                await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
             }
             return appCredential;
         }
