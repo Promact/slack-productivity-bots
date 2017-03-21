@@ -59,14 +59,19 @@ namespace Promact.Core.Repository.GroupRepository
         /// <returns>Primary key(Id)</returns>
         public async Task<int> UpdateGroupAsync(GroupAC groupAC)
         {
-            Group group = await _groupRepository.FirstAsync(x => x.Id == groupAC.Id);
-            group.Name = groupAC.Name;
-            group.UpdatedDate = DateTime.UtcNow;
-            _groupRepository.Update(group);
-            await _groupRepository.SaveChangesAsync();
-            _groupEmailMappingRepository.RemoveRange(x => x.GroupId == groupAC.Id);
-            await AddGroupEmailMappingAsync(groupAC.Emails, groupAC.Id);
-            return groupAC.Id;
+            Group group = await _groupRepository.FirstOrDefaultAsync(x => x.Id == groupAC.Id && x.Type == 2);
+            if (group != null)
+            {
+                group.Name = groupAC.Name;
+                group.UpdatedDate = DateTime.UtcNow;
+                _groupRepository.Update(group);
+                await _groupRepository.SaveChangesAsync();
+                _groupEmailMappingRepository.RemoveRange(x => x.GroupId == groupAC.Id);
+                await AddGroupEmailMappingAsync(groupAC.Emails, groupAC.Id);
+                return groupAC.Id;
+            }
+            else
+                throw new GroupNotFound();
         }
 
         /// <summary>
@@ -135,9 +140,14 @@ namespace Promact.Core.Repository.GroupRepository
         /// <returns>true</returns>
         public async Task<bool> DeleteGroupByIdAsync(int id)
         {
-            _groupRepository.Delete(id);
-            await _groupRepository.SaveChangesAsync();
-            return true;
+            if (await _groupRepository.FirstOrDefaultAsync(x => x.Id == id && x.Type == 2) != null)
+            {
+                _groupRepository.Delete(id);
+                await _groupRepository.SaveChangesAsync();
+                return true;
+            }
+            else
+                throw new GroupNotFound();
         }
 
         /// <summary>
