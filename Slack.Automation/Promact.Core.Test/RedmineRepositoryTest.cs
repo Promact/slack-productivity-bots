@@ -715,7 +715,7 @@ namespace Promact.Core.Test
         /// <returns>project detail string</returns>
         private string MessageForProject(RedmineProject project)
         {
-            return string.Format("{0}. Project - {1}, ", project.Id, project.Name);
+            return string.Format("{0}. Project - {1},{2}", project.Id, project.Name, Environment.NewLine);
         }
 
         /// <summary>
