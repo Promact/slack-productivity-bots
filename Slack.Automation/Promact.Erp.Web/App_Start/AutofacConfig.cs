@@ -9,6 +9,7 @@ using Promact.Core.Repository.AppCredentialRepository;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.AutoMapperConfig;
 using Promact.Core.Repository.BotQuestionRepository;
+using Promact.Core.Repository.BotRepository;
 using Promact.Core.Repository.Client;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
