@@ -21,7 +21,7 @@
                         <input class="form-control" type="date" [(ngModel)]="date" onkeydown="return false" name="date" max="{{maxDate}}" min="{{projectCreationDate}}" >
                         <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
                     </div>
-                    <div class="form-group row m-0">
+                    <div class="form-group row m-0" *ngIf="!status">
                         <label class="control-label">Scrum Date:</label>
                         <p> {{scrumDate}}</p>
                     </div>
@@ -67,7 +67,12 @@
                         <div class="alert alert-info" *ngIf="employeeScrumDetail.Status">
                             <p>{{employeeScrumDetail.Status}}</p>
                         </div>
+                        
                      </div>
+
+                    <div class="alert alert-info" *ngIf="status">
+                        <p>Scrum was not conducted on {{scrumDate}}</p>
+                    </div>
                 </div>
             </div>
         </div>
