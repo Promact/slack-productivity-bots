@@ -104,8 +104,7 @@ namespace Promact.Erp.Core.Controllers
         [Route("oauth/slackoauthrequest")]
         public async Task<IHttpActionResult> SlackOAuthAsync(string code)
         {
-            string message = string.Empty;
-            var errorMessage = string.Empty;
+            string message = string.Empty, errorMessage = string.Empty;
             try
             {
                 await _oAuthLoginRepository.AddSlackUserInformationAsync(code);
