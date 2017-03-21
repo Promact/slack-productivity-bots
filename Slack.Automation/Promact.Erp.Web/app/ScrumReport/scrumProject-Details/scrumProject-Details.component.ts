@@ -18,12 +18,14 @@ export class ScrumProjectDetailComponent implements OnInit {
     employeeScrumAnswers: EmployeeScrumAnswers[];
     errorMessage: string;
     Id: number;
-    maxDate = new Date().toISOString().slice(0, 10);
     minDate: string;
-    status: boolean;
-    
-    constructor(private scrumReportService: ScrumReportService, private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) { }
-    
+    minDateForDateRange: Date;
+    maxDateForDateRange: Date;
+
+    constructor(private scrumReportService: ScrumReportService, private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) {
+        this.maxDateForDateRange = new Date();
+    }
+
     ngOnInit() {
         this.getScrumDetailsToday();
     }
@@ -49,20 +51,21 @@ export class ScrumProjectDetailComponent implements OnInit {
     }
 
     getScrumDetails(date: string) {
-        this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]); 
-        this.scrumReportService.getScrumDetails(+this.Id,date)
+        this.route.params.subscribe(params => this.Id = params[this.stringConstant.paramsId]);
+        this.scrumReportService.getScrumDetails(+this.Id, date)
             .subscribe(
             (scrumDetails) => {
                 this.status = false;
                 this.scrumDate = scrumDetails.ScrumDate;
                 this.projectCreationDate = scrumDetails.ProjectCreationDate;
+                this.minDateForDateRange = new Date(this.projectCreationDate);
                 this.employeeScrumAnswers = scrumDetails.EmployeeScrumAnswers;
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
                 if (scrumDetails.EmployeeScrumAnswers === null) {this.status = true;}
                 this.loader.loader = false;
             },
             error => this.errorMessage = <string>error
-            );        
+            );
     }
 
     goBack() {
