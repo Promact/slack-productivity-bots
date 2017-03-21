@@ -22,9 +22,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     minDate: string;
     status: boolean;
     
-    constructor(private scrumReportService: ScrumReportService, private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) {
-      
-    }
+    constructor(private scrumReportService: ScrumReportService, private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) { }
     
     ngOnInit() {
         this.getScrumDetailsToday();
@@ -60,8 +58,7 @@ export class ScrumProjectDetailComponent implements OnInit {
                 this.projectCreationDate = scrumDetails.ProjectCreationDate;
                 this.employeeScrumAnswers = scrumDetails.EmployeeScrumAnswers;
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
-                if (scrumDetails.EmployeeScrumAnswers === null)
-                {this.status = true;}
+                if (scrumDetails.EmployeeScrumAnswers === null) {this.status = true;}
                 this.loader.loader = false;
             },
             error => this.errorMessage = <string>error
