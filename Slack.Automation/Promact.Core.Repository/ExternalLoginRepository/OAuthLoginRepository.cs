@@ -181,8 +181,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                                     await AddChannelGroupAsync(channel);
                                 }
                             }
-                            else
-                                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + channels.ErrorMessage);
                             _logger.Info("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                             //the public groups' details
                             string groupDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackGroupListUrl, detailsRequest, null);
@@ -198,8 +196,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                                     _logger.Debug("Slack User Id  : " + (await _userManager.FindByEmailAsync(applicationUser.Email)).SlackUserId);
                                 }
                             }
-                            else
-                                throw new SlackAuthorizeException(_stringConstant.SlackAuthError + groups.ErrorMessage);
                         }
                         else
                             throw new SlackAuthorizeException(string.Format(_stringConstant.NotInSlackOrNotExpectedUser, slackUserDetails.Profile.Email));
