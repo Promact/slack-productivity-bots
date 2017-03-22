@@ -7,7 +7,7 @@ import { TaskMailStatus } from '../../enums/TaskMailStatus';
 import { DatePipe } from '@angular/common';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
-
+ 
 @Component({
     selector: 'date-pipe',
     templateUrl: "app/taskmail/taskmail-details/taskmail-details.html",
