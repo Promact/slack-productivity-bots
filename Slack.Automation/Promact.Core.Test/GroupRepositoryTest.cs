@@ -85,6 +85,28 @@ namespace Promact.Core.Test
             Assert.Equal(id, newId);
         }
 
+
+        /// <summary>
+        /// This test case used to check exception condition. 
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateGroupExceptionAsync()
+        {
+            await CreateUserAndMockingHttpContextToReturnAccessToken();
+            int id = await CreateGroupAsync();
+            var group = await _groupRepository.GetGroupByIdAsync(id);
+            GroupAC newGroupAC = new GroupAC();
+            newGroupAC.Name = _stringConstant.NameForTest;
+            newGroupAC.Id = 2;
+            newGroupAC.Type = 1;
+            List<string> listOfString = new List<string>();
+            listOfString.Add(_stringConstant.TestEmail);
+            listOfString.Add(_stringConstant.SecondTestEmail);
+            newGroupAC.Emails = listOfString;
+            Assert.Throws<AggregateException>(() => _groupRepository.UpdateGroupAsync(newGroupAC).Result);
+        }
+
         /// <summary>
         /// This test case for  get group by id.
         /// </summary>
@@ -165,13 +187,24 @@ namespace Promact.Core.Test
             Assert.Equal(isDeleted, true);
         }
 
+        /// <summary>
+        /// This test case used to check exception condition 
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task DeleteGroupByIdExceptionAsync()
+        {
+            int id = await CreateGroupAsync();
+            Assert.Throws<AggregateException>(() => _groupRepository.DeleteGroupByIdAsync(2).Result);
+        }
+
 
         /// <summary>
         /// This test case used for add Dynamic Group 
         /// </summary>
         /// <returns></returns>
         [Fact, Trait("Category", "Required")]
-        public async Task AddDynamicGroup()
+        public async Task AddDynamicGroupAsync()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             await _groupRepository.AddDynamicGroupAsync();
@@ -185,7 +218,7 @@ namespace Promact.Core.Test
         /// </summary>
         /// <returns></returns>
         [Fact, Trait("Category", "Required")]
-        public async Task UpdateDynamicGroup()
+        public async Task UpdateDynamicGroupAsync()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             await _groupRepository.AddDynamicGroupAsync();
@@ -193,12 +226,12 @@ namespace Promact.Core.Test
             List<GroupAC> listOfGroupAC = await _groupRepository.GetListOfGroupACAsync();
             Assert.NotEqual(listOfGroupAC.Count, 0);
         }
-
+        
         /// <summary>
         /// This test case for update Dynamic Group
         /// </summary>
         /// <returns></returns>
-        public async Task GetActiveUserEmailList()
+        public async Task GetActiveUserEmailListAsync()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             List<string> listOfActiveEmail = await _groupRepository.GetActiveUserEmailListAsync();

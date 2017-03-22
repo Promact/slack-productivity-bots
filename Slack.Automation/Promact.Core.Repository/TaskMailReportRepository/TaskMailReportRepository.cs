@@ -169,9 +169,18 @@ namespace Promact.Core.Repository.TaskMailReportRepository
             var userIdList = userRoleAcList.Select(x => x.UserId);
             //getting list of task mails using userIdList.
             var taskMails = (await _taskMailRepository.FetchAsync(x => userIdList.Contains(x.EmployeeId))).ToList();
+            DateTime maxDate, minDate;
+            if (taskMails.Any())
+            {
+                maxDate = taskMails.Max(x => x.CreatedOn);
+                minDate = taskMails.Min(x => x.CreatedOn);
+            }
+            else
+            {
+                maxDate = DateTime.UtcNow;
+                minDate = DateTime.UtcNow;
+            }
             //getting maximum and minimum date form the team members task mails
-            DateTime maxDate = taskMails.Max(x => x.CreatedOn);
-            DateTime minDate = taskMails.Min(x => x.CreatedOn);
             return new Tuple<DateTime, DateTime>(maxDate, minDate);
         }
 

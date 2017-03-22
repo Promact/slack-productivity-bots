@@ -47,10 +47,11 @@ export class GroupListComponent implements OnInit {
             this.toast.show("Group deleted sucessfully.");
             this.ngOnInit();
             this.loader.loader = false;
-            popup.close();
         }, err => {
-
+            this.toast.show("Group must not be deleted.");
+            this.loader.loader = false;
         });
+        popup.close();
     }
 
     closeDeletePopup(popup) {

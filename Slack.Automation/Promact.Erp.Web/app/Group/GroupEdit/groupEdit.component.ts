@@ -50,9 +50,11 @@ export class GroupEditComponent implements OnInit {
         if (!this.isExistsGroupName) {
             this.groupService.updateGroup(groupModel).then((result) => {
                 this.backToGroupList();
-                this.toast.show('Group updated successfully. ');
+                this.toast.show('Group updated successfully.');
                 this.loader.loader = false;
             }, err => {
+                this.toast.show('Group must not be updated.');
+                this.loader.loader = false;
             });
         }
     }

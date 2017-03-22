@@ -7,7 +7,7 @@ import { TaskMailStatus } from '../../enums/TaskMailStatus';
 import { DatePipe } from '@angular/common';
 import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
-
+ 
 @Component({
     selector: 'date-pipe',
     templateUrl: "app/taskmail/taskmail-details/taskmail-details.html",
@@ -18,8 +18,8 @@ export class TaskMailDetailsComponent implements OnInit {
     public isMaxDate: boolean;
     public isMinDate: boolean;
     public selectedDate: string;
-    public maxDate: string; // For Date Picker
-    public minDate: string; // For Date Picker
+    public maxDate: Date; // For Date Picker
+    public minDate: Date; // For Date Picker
     public isHide: boolean;
     constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
     }
@@ -39,12 +39,12 @@ export class TaskMailDetailsComponent implements OnInit {
             this.taskService.getTaskMailDetailsReport(params[this.stringConstant.paramsUserId], params[this.stringConstant.userRole], params[this.stringConstant.paramsUserName]).subscribe(taskMails => {
                 this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe(this.stringConstant.medium);
-                this.minDate = datePipeMinDate.transform(this.taskMail[0].MinDate, this.stringConstant.dateDefaultFormat);
+                this.minDate = new Date(this.taskMail[0].MinDate);
                 if (datePipeMinDate.transform(this.taskMail[0].MinDate, this.stringConstant.dateDefaultFormat) === datePipeMinDate.transform(this.taskMail[0].CreatedOn, this.stringConstant.dateDefaultFormat)) {
                     this.isMinDate = true;
                 }
                 let datePipeMaxDate = new DatePipe(this.stringConstant.medium);
-                this.maxDate = datePipeMaxDate.transform(this.taskMail[0].MaxDate, this.stringConstant.dateDefaultFormat);
+                this.maxDate = new Date(this.taskMail[0].MaxDate);
                 this.taskMail.forEach(taskmails => {
                     let datePipe = new DatePipe(this.stringConstant.medium);
                     taskmails.CreatedOns = datePipe.transform(taskmails.CreatedOn, this.stringConstant.dateFormat);
@@ -104,7 +104,9 @@ export class TaskMailDetailsComponent implements OnInit {
     }
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.loader.loader = true;
-        this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate).subscribe(taskMails => {
+        let datePipeSelectedDate = new DatePipe(this.stringConstant.medium);
+        let selectedDate = datePipeSelectedDate.transform(SelectedDate, this.stringConstant.dateDefaultFormat);
+        this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, selectedDate).subscribe(taskMails => {
             this.taskMail = taskMails;
             this.isMaxDate = false;
             this.isMinDate = false;

@@ -14,27 +14,24 @@
             <div class="x_panel">
                 <div class="x_content">
                     <div class="form-group row m-0">
-                        <label class="control-label col-md-1 selc-date">Select Date:</label>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control col-md-4" name="selectDate" onkeydown="return false" [(ngModel)]="selectedDate" [max]="maxDate" [min]="minDate">
+                        <label class="control-label col-md-2 col-cs-2 selc-date">Select Date:</label>
+                        <div class="col-md-3 p-0">
+                            <md2-datepicker [(ngModel)]="selectedDate" [max]="maxDate" [min]="minDate"></md2-datepicker>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 pl-0">
                             <button class="btn btn-success" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,selectedDate)">Search</button>
                         </div>
                     </div>
-                    <div *ngFor="let taskmailUser of taskMail" class="tsk-view">
-                        <div class="clearfix col-md-12">
-                            <div class="pull-left">
-                                <label class="control-label">  Name:</label>
-                                <p>{{taskmailUser.UserName}}</p>
-                            </div>
-                            <div class="pull-right">
-                                <label class="control-label">  Task Mail Date:</label>
-                                <p>{{taskmailUser.CreatedOns}}</p>
-                            </div>
+                    <div *ngFor="let taskmailUser of taskMail">
+                        <div class="clearfix row m-0">
+                            <label class="control-label col-md-2 col-cs-2 p-0">  Task Mail Date:</label>
+                            <p class="col-md-2">{{taskmailUser.CreatedOns}}</p>
                         </div>
-
-                        <table class="table table-hover table-bordered">
+                        <div class="form-group  ">
+                            <label class="control-label  p-0">Name:</label>
+                            <span class="tsk-name">{{taskmailUser.UserName}}</span>
+                        </div>
+                        <table class="table table-hover table-bordered tsk-view">
                             <thead>
                                 <tr>
                                     <th>Description</th>

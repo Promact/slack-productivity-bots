@@ -996,19 +996,16 @@
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <Content Include="tslint.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\js\theme\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Project_Readme.html" />
     <Content Include="Scripts\bootstrap\.bower.json" />
     <Content Include="Scripts\bootstrap\bower.json" />
     <Content Include="Scripts\bootstrap\CHANGELOG.md" />
