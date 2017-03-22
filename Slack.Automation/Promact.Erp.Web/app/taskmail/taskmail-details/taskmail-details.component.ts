@@ -105,7 +105,7 @@ export class TaskMailDetailsComponent implements OnInit {
     getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
         this.loader.loader = true;
         let datePipeSelectedDate = new DatePipe(this.stringConstant.medium);
-        let selectedDate = datePipeSelectedDate.transform(SelectedDate, this.stringConstant.dateDefaultFormat)
+        let selectedDate = datePipeSelectedDate.transform(SelectedDate, this.stringConstant.dateDefaultFormat);
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, selectedDate).subscribe(taskMails => {
             this.taskMail = taskMails;
             this.isMaxDate = false;
