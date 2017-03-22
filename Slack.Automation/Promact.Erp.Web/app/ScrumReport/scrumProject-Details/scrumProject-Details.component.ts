@@ -19,6 +19,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     errorMessage: string;
     Id: number;
     minDate: string;
+    status: boolean;
     minDateForDateRange: Date;
     maxDateForDateRange: Date;
 
