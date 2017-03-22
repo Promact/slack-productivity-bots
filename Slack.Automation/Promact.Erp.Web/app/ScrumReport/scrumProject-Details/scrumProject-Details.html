@@ -15,10 +15,10 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_content">
-                    <div>
+                    <div class="scrum-dates">
                         <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
                         <button class="btn btn-success" (click)="getScrumDetailsToday()">Today</button>
-                        <md2-datepicker [(ngModel)]="date" [max]="maxDateForDateRange" [min]="minDateForDateRange" onkeydown="return false" class="form-control col-md-4"></md2-datepicker>
+                        <md2-datepicker [(ngModel)]="date" [max]="maxDateForDateRange" [min]="minDateForDateRange"></md2-datepicker>
                         <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
                     </div>
                     <div class="form-group row m-0">

@@ -15,14 +15,20 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
  md2-option.md2-selected ,md2-select:focus:not(.md2-select-disabled) .md2-select-trigger ,.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder{color:#169F85!important;}
  md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{border-color:#169F85!important;}
 .md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
-.taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 7px;text-align:right}
+.taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 10px;}
 .taskmail-details table{margin:30px 0;}
+.taskmail-details .tsk-name{padding-left:10px;text-transform:capitalize;}
 .taskmail-details  .tsk-view  label{float:left;padding-right:10px;text-align:right}
 .taskmail-details .tsk-view div p{clear:both;display:inline-block}
 .taskmail-details .btn-back , .leave-report-details .btn-back , .scrum-details .btn-back , .leave-report-details .btn-back{padding:6px 15px;font-size:14px;}
 .taskmail-details .btn-back .fa-arrow-left , .leave-report-details .btn-back .fa-arrow-left  , .scrum-details .btn-back .fa-arrow-left{font-size: 13px;padding: 0px 5px 0px 0px;vertical-align: middle;margin-top:-1px;}
-
-
+.taskmail-details .md2-datepicker-trigger {padding: 0 0 18px 32px;}
+.taskmail-details .md2-datepicker-icon{top:5px;}
+.taskmail-details .md2-datepicker-input{width:195px;}
+.taskmail-details .col-cs-2{width:10%;}
+.md2-datepicker-header{background-color:#169F85 !important;}
+md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: #169F85 !important;border-color: #169F85 !important;}
+.md2-datepicker-actions .md2-button ,md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow ,.md2-calendar-day.today{color:#169F85 !important}
 .alert-info{color: #31708f !important;background-color: #d9edf7 !important;border-color: #bce8f1 !important;padding:8px;}
  .alert-info p{font-size:15px;}
 .leave-report  .btn .fa , .leave-report-details .btn .fa{padding-right:7px;}
@@ -40,6 +46,8 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
 .scrum-details input[type="date"]{display: inline-block;width: 26%;margin: 0 15px;}
 .scrum-details .scrum-que-ans{margin-top:15px;}
 .scrum-details .alert-info{margin:20px 0;}
+.scrum-dates .md2-datepicker-input{width:190px;}
+.scrum-details .scrum-dates button , .scrum-details .scrum-dates md2-datepicker{margin-right:15px;}
 
 .after-login-nav {float: right;background: #EDEDED;border-bottom: 1px solid #D9DEE4;margin-bottom: 10px;width: 100%;padding:15px;}
 .after-login-nav a{float:right;font-size:18px;}
