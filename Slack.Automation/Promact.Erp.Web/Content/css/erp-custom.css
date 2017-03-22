@@ -16,7 +16,7 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
  md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{border-color:#169F85!important;}
 .md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
 .taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 10px;}
-.taskmail-details table{margin:30px 0;}
+.taskmail-details table{margin:10px 0 30px 0;}
 .taskmail-details .tsk-name{padding-left:10px;text-transform:capitalize;}
 .taskmail-details  .tsk-view  label{float:left;padding-right:10px;text-align:right}
 .taskmail-details .tsk-view div p{clear:both;display:inline-block}
