@@ -169,6 +169,7 @@
     <Compile Include="OAuthLoginRepositoryTest.cs" />
     <Compile Include="OauthCallsRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedmineRepositoryTest.cs" />
     <Compile Include="ScrumBotRepositoryTest.cs" />
     <Compile Include="ScrumReportRepositoryTest.cs" />
     <Compile Include="ScrumSetUpRepositoryTest.cs" />

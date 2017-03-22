@@ -64,7 +64,7 @@ namespace Promact.Core.Test
             await CreateUserAndMockingHttpContextToReturnAccessToken();
             var responseProjects = Task.FromResult(_stringConstant.ProjectDetailsForAdminFromOauth);
             var requestUrl = _stringConstant.AllProjectUrl;
-            _mockHttpClientService.Setup(x=>x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest)).Returns(responseProjects);
+            _mockHttpClientService.Setup(x=>x.GetAsync(_stringConstant.ProjectUrl, requestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(responseProjects);
             var result = await _mailSettingRepository.GetAllProjectAsync();
             Assert.True(result.Any());
         }

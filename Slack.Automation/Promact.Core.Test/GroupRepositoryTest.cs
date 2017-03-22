@@ -248,7 +248,7 @@ namespace Promact.Core.Test
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
             var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest)).Returns(emailGroupListResponse);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(emailGroupListResponse);
 
         }
         #endregion

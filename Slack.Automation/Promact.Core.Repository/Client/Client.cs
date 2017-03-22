@@ -70,7 +70,7 @@ namespace Promact.Core.Repository.Client
             _logger.Debug("UpdateMessageAsync method");
             var slashResponseText = new SlashResponse() { Text = replyText };
             var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
-            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString);
+            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString, null, null);
             _logger.Debug("UpdateMessageAsync method post method done successfully");
         }
 
@@ -84,7 +84,7 @@ namespace Promact.Core.Repository.Client
             _logger.Debug("SendMessageAsync method");
             var slashResponseText = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
             var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
-            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString);
+            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString, null, null);
             _logger.Debug("SendMessageAsync method post method done sucessfully");
         }
 
@@ -140,7 +140,7 @@ namespace Promact.Core.Repository.Client
                 var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                 var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
                 if (incomingWebHook != null)
-                    await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
+                    await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString, null, null);
             }
             EmailApplication email = new EmailApplication();
             email.To = new List<string>();
@@ -200,7 +200,7 @@ namespace Promact.Core.Repository.Client
                         var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
                         var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
                         if (incomingWebHook != null)
-                            await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString);
+                            await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString, null, null);
                     }
                 }
             }

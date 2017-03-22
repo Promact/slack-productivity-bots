@@ -176,6 +176,8 @@
     <Compile Include="OauthCallsRepository\OauthCallHttpContextRespository.cs" />
     <Compile Include="OauthCallsRepository\OauthCallsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedmineRepository\IRedmineRepository.cs" />
+    <Compile Include="RedmineRepository\RedmineRepository.cs" />
     <Compile Include="ScrumReportRepository\IScrumReportRepository.cs" />
     <Compile Include="ScrumReportRepository\ScrumReportRepository.cs" />
     <Compile Include="ScrumRepository\IScrumBotRepository.cs" />
