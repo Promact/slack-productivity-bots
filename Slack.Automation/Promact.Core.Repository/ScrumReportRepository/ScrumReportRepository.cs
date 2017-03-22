@@ -166,14 +166,17 @@ namespace Promact.Core.Repository.ScrumReportRepository
             //Getting scrum for a specific project
             Scrum scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == project.Id && DbFunctions.TruncateTime(x.ScrumDate) == DbFunctions.TruncateTime(scrumDate));
             _logger.Debug("scrume object: " + scrum);
+
             ScrumProjectDetails scrumProjectDetail = new ScrumProjectDetails();
             scrumProjectDetail.ScrumDate = scrumDate.ToString(_stringConstant.FormatForDate);
-            scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
-            if (loginUser.Role == _stringConstant.Admin)
-                project.TeamLeaderId = loginUser.Id;
-            //getting scrum answers of employees in a specific project
-            scrumProjectDetail.EmployeeScrumAnswers = await GetEmployeeScrumDetailsAsync(project, scrum, loginUser, scrumDate);
-
+            if (scrum != null)
+            {
+                scrumProjectDetail.ProjectCreationDate = project.CreatedDate;
+                if (loginUser.Role == _stringConstant.Admin)
+                    project.TeamLeaderId = loginUser.Id;
+                //getting scrum answers of employees in a specific project
+                scrumProjectDetail.EmployeeScrumAnswers = await GetEmployeeScrumDetailsAsync(project, scrum, loginUser, scrumDate);
+            }
             return scrumProjectDetail;
         }
 

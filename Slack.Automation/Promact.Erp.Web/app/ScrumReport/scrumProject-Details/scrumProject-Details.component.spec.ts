@@ -67,6 +67,29 @@ describe('ScrumReport Tests', () => {
             expect(scrumProjectDetailsComponent.employeeScrumAnswers.length).toBe(1);
     }));
 
+    it('Shows scrum answers of employees null', fakeAsync(() => {
+        let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
+        let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+        activatedRoute.testParams = { Id: stringConstant.userId };
+
+        let scrumProjectDetailsComponent = fixture.componentInstance;
+        let scrumService = fixture.debugElement.injector.get(ScrumReportService);
+        let mockScrumDetails = new ScrumDetails();
+        let date = new Date().toString();
+        let id = 123;
+        if (id === 123) {
+            mockScrumDetails.ScrumDate = date;
+            mockScrumDetails.ProjectCreationDate = stringConstant.ProjectCreationDate;
+            mockScrumDetails.EmployeeScrumAnswers = null;
+        }
+
+        spyOn(scrumService, "getScrumDetails").and.returnValue(new BehaviorSubject(mockScrumDetails).asObservable());
+        let result = scrumProjectDetailsComponent.ngOnInit();
+        tick();
+        expect(scrumProjectDetailsComponent.projectCreationDate).toBe(stringConstant.ProjectCreationDate);
+    }));
+
+
     it('Shows scrum answers of employees in a project on initialization', () => {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
