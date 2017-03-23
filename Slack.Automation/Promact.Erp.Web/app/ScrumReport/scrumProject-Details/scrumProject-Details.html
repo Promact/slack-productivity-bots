@@ -16,7 +16,7 @@
             <div class="x_panel">
                 <div class="x_content">
                     <div class="scrum-dates">
-                        <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
+                        <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Previous</button>
                         <button class="btn btn-success" (click)="getScrumDetailsToday()">Today</button>
                         <md2-datepicker [(ngModel)]="date" [max]="maxDateForDateRange" [min]="minDateForDateRange"></md2-datepicker>
                         <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
