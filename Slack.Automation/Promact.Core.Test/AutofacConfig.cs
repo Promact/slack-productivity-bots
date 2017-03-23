@@ -83,7 +83,10 @@ namespace Promact.Core.Test
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
             builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
             builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
-            builder.RegisterType<SocketClientWrapper>().As<ISocketClientWrapper>().SingleInstance();
+            var socketWrapperMock = new Mock<ISocketClientWrapper>();
+            var socketWrapperMockObject = socketWrapperMock.Object;
+            builder.RegisterInstance(socketWrapperMock).As<Mock<ISocketClientWrapper>>();
+            builder.RegisterInstance(socketWrapperMockObject).As<ISocketClientWrapper>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();

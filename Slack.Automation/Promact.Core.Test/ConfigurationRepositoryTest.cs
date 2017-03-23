@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Moq;
 using Promact.Core.Repository.BotRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Erp.DomainModel.DataRepository;
@@ -19,7 +20,7 @@ namespace Promact.Core.Test
         private readonly IStringConstantRepository _stringConstant;
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IRepository<AppCredential> _appCredentialDataRepository;
-        private readonly ISocketClientWrapper _socketClientWrapper;
+        private readonly Mock<ISocketClientWrapper> _mockSocketClientWrapper;
         private readonly ITaskMailBotRepository _taskMailBotRepository;
         private Configuration taskConfiguration = new Configuration();
         private Configuration leaveConfiguration = new Configuration();
@@ -34,7 +35,7 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _configurationDataRepository = _componentContext.Resolve<IRepository<Configuration>>();
             _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
-            _socketClientWrapper = _componentContext.Resolve<ISocketClientWrapper>();
+            _mockSocketClientWrapper = _componentContext.Resolve<Mock<ISocketClientWrapper>>();
             _taskMailBotRepository = _componentContext.Resolve<ITaskMailBotRepository>();
             Initialize();
         }
@@ -102,8 +103,10 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task DisableAppByConfigurationIdAsync()
         {
-            _taskMailBotRepository.StartAndConnectTaskMailBot(_stringConstant.AccessTokenForTest);
+            _mockSocketClientWrapper.Setup(x => x.StopBotByModule(_stringConstant.TaskModule));
             await AddConfigurationAsync();
+            AppCredential appCredential = new AppCredential() { ClientId = _stringConstant.StringIdForTest, ClientSecret = _stringConstant.StringIdForTest, CreatedOn = DateTime.UtcNow, Module = _stringConstant.TaskModule, BotToken = _stringConstant.ScrumBotToken };
+            _appCredentialDataRepository.Insert(appCredential);
             var configurationId = (await _configurationDataRepository.FirstAsync(x => x.Module == _stringConstant.TaskModule)).Id;
             await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
             var configuration = await _configurationDataRepository.FirstAsync(x=>x.Id == configurationId);
