@@ -15,18 +15,20 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly IBotRepository _botRepository;
+        private readonly ITaskMailBotRepository _taskMailBotRepository;
+        private readonly IScrumRepository _scrumRepository;
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
             IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository,
-            IBotRepository botRepository)
+            ITaskMailBotRepository taskMailBotRepository, IScrumRepository scrumRepository)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
             _appCredentialRepository = appCredentialRepository;
-            _botRepository = botRepository;
+            _taskMailBotRepository = taskMailBotRepository;
+            _scrumRepository = scrumRepository;
         }
         #endregion
 
@@ -40,7 +42,7 @@ namespace Promact.Core.Repository.ConfigurationRepository
             _configurationDataRepository.Update(configuration);
             await _configurationDataRepository.SaveChangesAsync();
             if (!configuration.Status)
-                await _botRepository.TurnOffBot(configuration.Module);
+                await StopBotByModuleAsync(configuration.Module);
         }
 
         /// <summary>
@@ -104,6 +106,24 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private async Task<bool> StatusOfModule(string module)
         {
             return (await _configurationDataRepository.FirstOrDefaultAsync(x => x.Module == module)).Status;
+        }
+
+        /// <summary>
+        /// Method to Stop bot by module name
+        /// </summary>
+        /// <param name="module">name of module</param>
+        /// <returns></returns>
+        private async Task StopBotByModuleAsync(string module)
+        {
+            if (module == _stringConstant.TaskModule)
+            {
+                _taskMailBotRepository.TurnOffTaskMailBot();
+            }
+            if (module == _stringConstant.Scrum)
+            {
+                _scrumRepository.TurnOffScrumBot();
+            }
+            await _appCredentialRepository.ClearBotTokenByModule(module);
         }
         #endregion
     }

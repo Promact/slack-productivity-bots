@@ -103,12 +103,14 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
-            builder.RegisterType<BotRepository>().As<IBotRepository>();
+            builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
+            builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+            builder.RegisterType<SocketClientWrapper>().As<ISocketClientWrapper>().SingleInstance();
             var container = builder.Build();
             
             // replace mvc dependancy resolver with autofac
