@@ -102,7 +102,7 @@ namespace Promact.Core.Repository.ScrumRepository
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
-            AppCredential appCredential = await _appCredentialRepository.FetchAppCredentialByModule(_stringConstant.Scrum);
+            AppCredential appCredential = await _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.Scrum);
 
             #region Added temporarily for testing purpose
 

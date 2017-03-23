@@ -82,7 +82,7 @@ namespace Promact.Core.Repository.AppCredentialRepository
         /// <returns></returns>
         public async Task ClearBotTokenByModule(string module)
         {
-            var appCredentials = await FetchAppCredentialByModule(module);
+            var appCredentials = await FetchAppCredentialByModuleAsync(module);
             appCredentials.BotToken = null;
             _appCredentialDataRepository.Update(appCredentials);
             await _appCredentialDataRepository.SaveChangesAsync();
