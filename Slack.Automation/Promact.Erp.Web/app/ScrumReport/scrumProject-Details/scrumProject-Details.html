@@ -16,7 +16,7 @@
             <div class="x_panel">
                 <div class="x_content">
                     <div class="scrum-dates">
-                        <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Yesterday</button>
+                        <button class="btn btn-success" [disabled]="minDate<=projectCreationDate" (click)="getScrumDetailsYesterday(scrumDate)">Previous</button>
                         <button class="btn btn-success" (click)="getScrumDetailsToday()">Today</button>
                         <md2-datepicker [(ngModel)]="date" [max]="maxDateForDateRange" [min]="minDateForDateRange"></md2-datepicker>
                         <button class="btn btn-success" [disabled]="date==undefined || date == '' " (click)="getScrumDetailsGeneral(date)">Get Scrum</button>
@@ -25,34 +25,30 @@
                         <label class="control-label">Scrum Date:</label>
                         <p> {{scrumDate}}</p>
                     </div>
+                    <div class="x_title clearfix">
+                        <h2>Scrum Queries</h2>
+                    </div>
                     <div *ngFor="let employeeScrumDetail of employeeScrumAnswers">
-                        <div class="form-group row m-0">
+                        <div class="form-group row m-0 emp-title">
                             <label class="control-label">Employee Name :</label>
                             <p>{{employeeScrumDetail.EmployeeName}}</p>
                         </div>
 
-
                         <div class="scrum-que-ans" *ngIf="!employeeScrumDetail.Status">
-                            <div class="x_title clearfix">
-                                <h2>Scrum Queries</h2>
-                            </div>
 
                             <div class="clearfix"></div>
-
                             <div class="que-block">
                                 <h5>1. What did you do yesterday?</h5>
                                 <ul *ngFor="let answer of employeeScrumDetail.Answer1">
                                     <li>{{answer}}</li>
                                 </ul>
                             </div>
-
                             <div class="que-block">
                                 <h5>2. What will you do today?</h5>
                                 <ul *ngFor="let answer of employeeScrumDetail.Answer2">
                                     <li>{{answer}}</li>
                                 </ul>
                             </div>
-
 
                             <div class="que-block">
                                 <h5>3. Any Roadblock?</h5>
@@ -61,15 +57,13 @@
                                 </ul>
                             </div>
 
-                            
                         </div>
-                   
+
                         <div class="alert alert-info" *ngIf="employeeScrumDetail.Status">
                             <p>{{employeeScrumDetail.Status}}</p>
                         </div>
-                        
-                     </div>
 
+                    </div>
                     <div class="alert alert-info" *ngIf="status">
                         <p>Scrum was not conducted on {{scrumDate}}</p>
                     </div>

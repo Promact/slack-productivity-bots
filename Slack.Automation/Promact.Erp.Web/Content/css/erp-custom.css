@@ -5,9 +5,11 @@
 .mt-5{margin-top:5px;}
 .m-15{margin:15px 0;}
 .fa{margin-right:6px;}
+.table-bordered>thead>tr>th{font-size:14px;}
 .nav-md .container.body .col-md-3.left_col{z-index:20 !important}
  .table-bordered>thead>tr>th{vertical-align:middle;}
 md2-chips .md2-chips-container {box-shadow:  none !important;}
+.page-title .title_left h3{font-size:23px;}
 .mail-settings .form-group{margin-bottom:20px;}
 .mail-settings .chip-input-form {width:100%;}
 .mail-settings input[type=checkbox]{vertical-align:middle;margin:0;}
@@ -16,8 +18,8 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
  md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{border-color:#169F85!important;}
 .md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
 .taskmail-details label.selc-date {padding: 0;vertical-align: top;display: block;padding-top: 10px;}
-.taskmail-details table{margin:10px 0 30px 0;}
-.taskmail-details .tsk-name{padding-left:10px;text-transform:capitalize;}
+.taskmail-details table{margin:10px 0 8px 0;}
+.taskmail-details .tsk-name{text-transform:capitalize;}
 .taskmail-details  .tsk-view  label{float:left;padding-right:10px;text-align:right}
 .taskmail-details .tsk-view div p{clear:both;display:inline-block}
 .taskmail-details .btn-back , .leave-report-details .btn-back , .scrum-details .btn-back , .leave-report-details .btn-back{padding:6px 15px;font-size:14px;}
@@ -26,6 +28,9 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
 .taskmail-details .md2-datepicker-icon{top:5px;}
 .taskmail-details .md2-datepicker-input{width:195px;}
 .taskmail-details .col-cs-2{width:10%;}
+.taskmail-details .bg-grey{background-color: #f7f7f7;padding: 16px;border: 1px solid #ddd;margin:12px 0;}
+.taskmail-details  .bg-grey label , .taskmail-details .bg-grey p{margin:0;}
+.taskmail-details .bg-grey table td:first-child{width:38%;}
 .md2-datepicker-header{background-color:#169F85 !important;}
 md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: #169F85 !important;border-color: #169F85 !important;}
 .md2-datepicker-actions .md2-button ,md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow ,.md2-calendar-day.today{color:#169F85 !important}
@@ -34,7 +39,7 @@ md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: 
 .leave-report  .btn .fa , .leave-report-details .btn .fa{padding-right:7px;}
 .leave-report table{margin:30px 0;}
 
-
+md2-pagination .md2-rows-select{margin:0 !important;}
 .scrum-project .x_content h2{margin:0;}
 .scrum-project td.scrum-name{text-transform:capitalize;}
 .scrum-details .control-label{float:left;padding-right:10px;margin:0;}
@@ -46,8 +51,12 @@ md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: 
 .scrum-details input[type="date"]{display: inline-block;width: 26%;margin: 0 15px;}
 .scrum-details .scrum-que-ans{margin-top:15px;}
 .scrum-details .alert-info{margin:20px 0;}
+.scrum-dates md2-datepicker{margin-top:-6px;}
 .scrum-dates .md2-datepicker-input{width:190px;}
 .scrum-details .scrum-dates button , .scrum-details .scrum-dates md2-datepicker{margin-right:15px;}
+.scrum-details .emp-title{background: #f3f3f3;border-radius: 3px;position: relative;padding: 7px 10px;margin-bottom: 5px;}
+.scrum-details .x_title {padding:4px 0;}
+.scrum-details .x_title h2 {font-size: 14px;font-weight: bold;}
 
 .after-login-nav {float: right;background: #EDEDED;border-bottom: 1px solid #D9DEE4;margin-bottom: 10px;width: 100%;padding:15px;}
 .after-login-nav a{float:right;font-size:18px;}
@@ -66,23 +75,9 @@ md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: 
  .md2-dialog-body p{font-size:15px;}
 md2-pagination .md2-pagination li.active {background: #26B99A !important;}
 
-#nprogress .bar {
-    background: #1ABB9C !important;
-        height: 3px !important;
-}
-#nprogress .spinner-icon{    border-top-color: #1ABB9C !important;
-    border-left-color: #1ABB9C !important;
-    width: 23px;
-    height: 23px
-}
-.overlay{    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255,255,255,0.5);
-    height: 100vh;
-    z-index: 99}
+#nprogress .bar {background: #1ABB9C !important;height: 3px !important;}
+#nprogress .spinner-icon{border-top-color: #1ABB9C !important;border-left-color: #1ABB9C !important;width: 23px;height: 23px}
+.overlay{position: fixed;top: 0;left: 0;right: 0;bottom: 0;background-color: rgba(255,255,255,0.5);height: 100vh;z-index: 99}
  md2-pagination .md2-pagination li.active {background: #26B99A !important;}
  
  .app-container{width:80%;margin:0 auto;}
@@ -90,22 +85,5 @@ md2-pagination .md2-pagination li.active {background: #26B99A !important;}
  .app-container p.info-msg {font-size: 18px;color: #31708f;padding: 10px;border-radius: 4px;border: 1px solid transparent;margin:50px 0 20px 0;background-color: #d9edf7;border-color: #bce8f1;font-size:19px;}
  .app-container .back-btn{padding: 8px 12px;font-size: 15px;font-family: roboto-regular;border-radius: 2px;color: rgb(33,33,33);background-color: rgb(250,250,250);border-color: #4bcf99;outline: none;margin-top: 15px;border-style: none;cursor: pointer;box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);transform: translate3d(0, 0, 0);}
 
-.loader {
-   display: inline-block;
-   font-size: 6rem;
-   animation: 2s rotate infinite linear;
-   width: 1em;
-   height: 1em;
-   position: absolute;
-   top: 38%;
-   left: 57%;
-   margin: -50px 0px 0px -50px;
-}
-.loader circle {
-   fill: transparent;
-   stroke: #4bcf99 ;
-   stroke-width: 0.1em;
-   stroke-linecap: round;
-   stroke-dasharray: 2.3525em 0.4705em;
-   animation: 1.5s strokeDashArray infinite linear, 24s colorBounce infinite linear;
-}
+.loader {display: inline-block;font-size: 6rem;animation: 2s rotate infinite linear;width: 1em;height: 1em;position: absolute;top: 38%;left: 57%;margin: -50px 0px 0px -50px;}
+.loader circle {fill: transparent;stroke: #4bcf99 ;stroke-width: 0.1em;stroke-linecap: round;stroke-dasharray: 2.3525em 0.4705em;animation: 1.5s strokeDashArray infinite linear, 24s colorBounce infinite linear;}
