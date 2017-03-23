@@ -61,8 +61,8 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void TaskMailBot()
         {
-            var appCredential = _appCredentialRepository.FetchAppCredentialByModule(_stringConstant.TaskModule).Result;
-            if (appCredential != null && !string.IsNullOrEmpty(appCredential.BotToken))
+            var appCredential = _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.TaskModule).Result;
+            if (!string.IsNullOrEmpty(appCredential?.BotToken))
             {
                 _logger.Info("TaskMailAccessToken : " + appCredential.BotToken);
                 SlackSocketClient client = new SlackSocketClient(appCredential.BotToken);
@@ -124,8 +124,8 @@ namespace Promact.Erp.Core.Controllers
         /// </summary>
         public void Scrum()
         {
-            var appCredential = _appCredentialRepository.FetchAppCredentialByModule(_stringConstant.TaskModule).Result;
-            if (appCredential != null && !string.IsNullOrEmpty(appCredential.BotToken))
+            var appCredential = _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.Scrum).Result;
+            if (!string.IsNullOrEmpty(appCredential?.BotToken))
             {
                 SlackSocketClient client = new SlackSocketClient(appCredential.BotToken);//scrumBot
 
