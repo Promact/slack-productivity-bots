@@ -7,7 +7,6 @@ using Promact.Erp.Core.ActionFilters;
 using System.Web.Http;
 using System.Web.Mvc;
 
-
 [assembly: OwinStartupAttribute(typeof(Promact.Erp.Web.Startup))]
 namespace Promact.Erp.Web
 {
