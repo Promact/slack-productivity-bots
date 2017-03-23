@@ -23,33 +23,38 @@
                         </div>
                     </div>
                     <div *ngFor="let taskmailUser of taskMail">
-                        <div class="clearfix row m-0">
-                            <label class="control-label col-md-2 col-cs-2 p-0">  Task Mail Date:</label>
-                            <p class="col-md-2">{{taskmailUser.CreatedOns}}</p>
+                        <div class="bg-grey">
+                            <div class="row m-0">
+                                <div class="clearfix m-0 pull-left">
+                                    <label class="control-label">Task Mail Date:</label>
+                                    <p style="display:inline-block;">{{taskmailUser.CreatedOns}}</p>
+                                </div>
+                                <div class="clearfix pull-right">
+                                    <label class="control-label  p-0">Name:</label>
+                                    <span class="tsk-name">{{taskmailUser.UserName}}</span>
+                                </div>
+                            </div>
+                            <table class="table table-hover table-bordered tsk-view">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Hours</th>
+                                        <th>Status</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let taskmailDetails of taskmailUser.TaskMails">
+                                        <!--<td>{{taskmailDetails.Id}}</td>-->
+                                       
+                                        <td>{{taskmailDetails.Description}}</td>
+                                        <td>{{taskmailDetails.Hours}}</td>
+                                        <td>{{taskmailDetails.StatusName}}</td>
+                                        <td>{{taskmailDetails.Comment}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="form-group  ">
-                            <label class="control-label  p-0">Name:</label>
-                            <span class="tsk-name">{{taskmailUser.UserName}}</span>
-                        </div>
-                        <table class="table table-hover table-bordered tsk-view">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Hours</th>
-                                    <th>Status</th>
-                                    <th>Comment</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let taskmailDetails of taskmailUser.TaskMails">
-                                    <!--<td>{{taskmailDetails.Id}}</td>-->
-                                    <td>{{taskmailDetails.Description}}</td>
-                                    <td>{{taskmailDetails.Hours}}</td>
-                                    <td>{{taskmailDetails.StatusName}}</td>
-                                    <td>{{taskmailDetails.Comment}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                     <div class="x_title"></div>
                     <div class="row m-0">
