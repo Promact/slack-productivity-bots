@@ -122,7 +122,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 string slackOAuthResponse = await _httpClientService.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null);
                 SlackOAuthResponse slackOAuth = JsonConvert.DeserializeObject<SlackOAuthResponse>(slackOAuthResponse);
                 appCredential.IsSelected = false;
-                appCredential.BotToken = slackOAuth.Bot.BotAccessToken;
+                appCredential.BotToken = slackOAuth?.Bot?.BotAccessToken;
+                appCredential.BotUserId = slackOAuth?.Bot?.BotUserId;
                 await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
                 await StartBotByModuleAsync(appCredential.Module);
                 _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
