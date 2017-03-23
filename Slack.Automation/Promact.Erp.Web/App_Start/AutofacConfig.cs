@@ -103,8 +103,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
             builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
-            builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
-
+         
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();

@@ -1,4 +1,7 @@
-﻿using Promact.Erp.Util.StringConstants;
+﻿using Autofac;
+using NLog;
+using Promact.Core.Repository.ScrumRepository;
+using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -10,7 +13,9 @@ namespace Promact.Core.Repository.BotRepository
         #region Private Variable
         private readonly IStringConstantRepository _stringConstant;
         private readonly ITaskMailBotRepository _taskMailBotRepository;
-        private readonly IScrumRepository _scrumRepository;
+        private readonly ILogger _scrumlogger;
+        private readonly IComponentContext _component;
+
         #endregion
 
         #region Public property
@@ -30,11 +35,12 @@ namespace Promact.Core.Repository.BotRepository
         /// Constructor
         /// </summary>
         public SocketClientWrapper(IStringConstantRepository stringConstant, ITaskMailBotRepository taskMailBotRepository,
-            IScrumRepository scrumRepository)
+            IComponentContext component)
         {
             _stringConstant = stringConstant;
             _taskMailBotRepository = taskMailBotRepository;
-            _scrumRepository = scrumRepository;
+            _component = component;
+            _scrumlogger = LogManager.GetLogger("ScrumBotModule");
         }
         #endregion
 
@@ -46,12 +52,22 @@ namespace Promact.Core.Repository.BotRepository
         public void InitializeAndConnectScrumBot(string bottoken)
         {
             ScrumBot = new SlackSocketClient(bottoken);
-            var showMethod = GetShowMethod();
+            Action<MessageReceived> showMethod = GetShowMethod();
             ScrumBot.Connect((connect) => { });
             ScrumBot.OnMessageReceived += async (message) =>
             {
-                var replyText = await _scrumRepository.ConductScrum(message);
-                ScrumBot.SendMessage(showMethod, message.channel, replyText);
+                IScrumBotRepository scrumBotRepository = _component.Resolve<IScrumBotRepository>();
+
+                _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
+                string replyText = await scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+
+                if (!String.IsNullOrEmpty(replyText))
+                {
+                    _scrumlogger.Debug("Scrum bot sending reply");
+                    ScrumBot.SendMessage(showMethod, message.channel, replyText);
+                    _scrumlogger.Debug("Scrum bot sent reply");
+                }
             };
         }
 

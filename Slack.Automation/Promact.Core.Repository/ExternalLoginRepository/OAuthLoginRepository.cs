@@ -319,7 +319,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="module">name of module</param>
         private async Task StartBotByModuleAsync(string module)
         {
-            var appCredential = await _appCredentialRepository.FetchAppCredentialByModule(module);
+            var appCredential = await _appCredentialRepository.FetchAppCredentialByModuleAsync(module);
             if(!string.IsNullOrEmpty(appCredential?.BotToken))
             {
                 if (module == _stringConstant.TaskModule)
