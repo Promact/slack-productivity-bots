@@ -9,6 +9,7 @@
 .nav-md .container.body .col-md-3.left_col{z-index:20 !important}
  .table-bordered>thead>tr>th{vertical-align:middle;}
 md2-chips .md2-chips-container {box-shadow:  none !important;}
+.page-title .title_left h3{font-size:23px;}
 .mail-settings .form-group{margin-bottom:20px;}
 .mail-settings .chip-input-form {width:100%;}
 .mail-settings input[type=checkbox]{vertical-align:middle;margin:0;}
@@ -38,7 +39,7 @@ md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: 
 .leave-report  .btn .fa , .leave-report-details .btn .fa{padding-right:7px;}
 .leave-report table{margin:30px 0;}
 
-
+md2-pagination .md2-rows-select{margin:0 !important;}
 .scrum-project .x_content h2{margin:0;}
 .scrum-project td.scrum-name{text-transform:capitalize;}
 .scrum-details .control-label{float:left;padding-right:10px;margin:0;}
@@ -50,8 +51,12 @@ md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input{color: 
 .scrum-details input[type="date"]{display: inline-block;width: 26%;margin: 0 15px;}
 .scrum-details .scrum-que-ans{margin-top:15px;}
 .scrum-details .alert-info{margin:20px 0;}
+.scrum-dates md2-datepicker{margin-top:-6px;}
 .scrum-dates .md2-datepicker-input{width:190px;}
 .scrum-details .scrum-dates button , .scrum-details .scrum-dates md2-datepicker{margin-right:15px;}
+.scrum-details .emp-title{background: #f3f3f3;border-radius: 3px;position: relative;padding: 7px 10px;margin-bottom: 5px;}
+.scrum-details .x_title {padding:4px 0;}
+.scrum-details .x_title h2 {font-size: 14px;font-weight: bold;}
 
 .after-login-nav {float: right;background: #EDEDED;border-bottom: 1px solid #D9DEE4;margin-bottom: 10px;width: 100%;padding:15px;}
 .after-login-nav a{float:right;font-size:18px;}
