@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using NLog;
-using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.Util.StringConstants;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -12,19 +11,17 @@ namespace Promact.Core.Repository.BotRepository
     public class ScrumRepository : IScrumRepository
     {
         #region Private Variables
-        private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IComponentContext _component;
         private readonly ILogger _scrumlogger;
         private readonly ISocketClientWrapper _socketClientWrapper;
-        private string _scrumBotId = null;
+       
         #endregion
 
         #region Constructor
-        public ScrumRepository(ISlackUserRepository slackUserDetailsRepository, IStringConstantRepository stringConstant,
+        public ScrumRepository(IStringConstantRepository stringConstant,
             IComponentContext component, ISocketClientWrapper socketClientWrapper)
         {
-            _slackUserDetailsRepository = slackUserDetailsRepository;
             _stringConstant = stringConstant;
             _component = component;
             _scrumlogger = LogManager.GetLogger("ScrumBotModule");
@@ -54,7 +51,7 @@ namespace Promact.Core.Repository.BotRepository
                         Repository.ScrumRepository.IScrumBotRepository scrumBotRepository = _component.Resolve<Repository.ScrumRepository.IScrumBotRepository>();
 
                         _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                        string replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
+                        string replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text).Result;
                         _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
 
                         if (!String.IsNullOrEmpty(replyText))
