@@ -111,7 +111,6 @@ namespace Promact.Core.Test
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
-            builder.RegisterType<BotRepository>().As<IBotRepository>();
 
             var container = builder.Build();
             return container;
