@@ -329,9 +329,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             if(!string.IsNullOrEmpty(appCredential?.BotToken))
             {
                 if (module == _stringConstant.TaskModule)
-                    _taskMailBotRepository.StartAndConnectTaskMailBot(appCredential.BotToken);
+                    _socketClientWrapper.InitializeAndConnectTaskBot(appCredential.BotToken);
                 if (module == _stringConstant.Scrum)
-                    _scrumRepository.StartAndConnectScrumBot(appCredential.BotToken);
+                    _socketClientWrapper.InitializeAndConnectScrumBot(appCredential.BotToken);
             }
         }
         #endregion

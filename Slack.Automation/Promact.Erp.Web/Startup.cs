@@ -20,8 +20,8 @@ namespace Promact.Erp.Web
             DatabaseConfig.Initialize(container);
             GlobalFilters.Filters.Add(new ExceptionLoggerFilter(container.Resolve<ILogger>()));
             GlobalConfiguration.Configuration.Filters.Add(new ApiExceptionLoggerFilter(container.Resolve<ILogger>()));
-            BotStartUp.StartUpAsync(container).Wait();
             ConfigureAuth(app, container);
+            BotStartUp.StartUpAsync(container).Wait();
         }
     }
 }

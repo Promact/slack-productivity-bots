@@ -25,7 +25,6 @@ namespace Promact.Core.Repository.BotRepository
             _stringConstant = stringConstant;
             _component = component;
             _scrumlogger = LogManager.GetLogger("ScrumBotModule");
-            _socketClientWrapper = socketClientWrapper;
         }
         #endregion
 
@@ -34,60 +33,54 @@ namespace Promact.Core.Repository.BotRepository
         /// Method to turn on scrum bot
         /// </summary>
         /// <param name="botToken">token of bot</param>
-        public void StartAndConnectScrumBot(string botToken)
+        public async Task<string> ConductScrum(NewMessage message)
         {
-            if (!string.IsNullOrEmpty(botToken))
+            _scrumlogger.Debug("Scrum bot got message :" + message);
+            string replyText = string.Empty;
+            try
             {
-                _socketClientWrapper.InitializeAndConnectScrumBot(botToken);
-                // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
-                MessageReceived messageReceive = new MessageReceived();
-                messageReceive.ok = true;
-                Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                _socketClientWrapper.ScrumBot.OnMessageReceived += (message) =>
+                Repository.ScrumRepository.IScrumBotRepository scrumBotRepository = _component.Resolve<Repository.ScrumRepository.IScrumBotRepository>();
+
+                _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
+                replyText = await scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId);
+                _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+
+                if (!String.IsNullOrEmpty(replyText))
                 {
-                    _scrumlogger.Debug("Scrum bot got message :" + message);
-                    try
-                    {
-                        Repository.ScrumRepository.IScrumBotRepository scrumBotRepository = _component.Resolve<Repository.ScrumRepository.IScrumBotRepository>();
-
-                        _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                        string replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text).Result;
-                        _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
-
-                        if (!String.IsNullOrEmpty(replyText))
-                        {
-                            _scrumlogger.Debug("Scrum bot sending reply");
-                            _socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, replyText);
-                            _scrumlogger.Debug("Scrum bot sent reply");
-                        }
-                    }
-                    catch (TaskCanceledException ex)
-                    {
-                        _socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                        _scrumlogger.Trace(ex.StackTrace);
-                        _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
-                        _socketClientWrapper.ScrumBot.CloseSocket();
-                        throw ex;
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        _socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                        _scrumlogger.Trace(ex.StackTrace);
-                        _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
-                        _socketClientWrapper.ScrumBot.CloseSocket();
-                        throw ex;
-                    }
-                    catch (Exception ex)
-                    {
-                        _socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
-                        _scrumlogger.Trace(ex.StackTrace);
-                        _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
-                        _socketClientWrapper.ScrumBot.CloseSocket();
-                        throw ex;
-                    }
-                };
+                    _scrumlogger.Debug("Scrum bot sending reply");
+                    //_socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, replyText);
+                    _scrumlogger.Debug("Scrum bot sent reply");
+                }
             }
+            catch (TaskCanceledException ex)
+            {
+                replyText = _stringConstant.ErrorMsg;
+                //_socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                _scrumlogger.Trace(ex.StackTrace);
+                _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
+                //_socketClientWrapper.ScrumBot.CloseSocket();
+                throw ex;
+            }
+            catch (HttpRequestException ex)
+            {
+                replyText = _stringConstant.ErrorMsg;
+                //_socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                _scrumlogger.Trace(ex.StackTrace);
+                _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
+                //_socketClientWrapper.ScrumBot.CloseSocket();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                replyText = _stringConstant.ErrorMsg;
+                //_socketClientWrapper.ScrumBot.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                _scrumlogger.Trace(ex.StackTrace);
+                _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
+                //_socketClientWrapper.ScrumBot.CloseSocket();
+                throw ex;
+            }
+            return replyText;
         }
-        #endregion
     }
+    #endregion
 }
