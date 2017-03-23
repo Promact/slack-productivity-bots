@@ -1,4 +1,7 @@
-﻿namespace Promact.Core.Repository.BotRepository
+﻿using SlackAPI.WebSocketMessages;
+using System.Threading.Tasks;
+
+namespace Promact.Core.Repository.BotRepository
 {
     public interface IScrumRepository
     {
@@ -6,6 +9,6 @@
         /// Method to turn on scrum bot
         /// </summary>
         /// <param name="botToken">token of bot</param>
-        void StartAndConnectScrumBot(string botToken);
+        Task<string> ConductScrum(NewMessage message);
     }
 }

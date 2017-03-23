@@ -13,9 +13,8 @@ namespace Promact.Erp.Web.App_Start
             IStringConstantRepository stringConstant = container.Resolve<IStringConstantRepository>();
             IAppCredentialRepository appCredential = container.Resolve<IAppCredentialRepository>();
             ISocketClientWrapper socketClientWrapper = container.Resolve<ISocketClientWrapper>();
-            
-            socketClientWrapper.InitializeAndConnectTaskBot((await appCredential.FetchAppCredentialByModuleAsync(stringConstant.TaskModule)).BotToken);
-            socketClientWrapper.InitializeAndConnectScrumBot((await appCredential.FetchAppCredentialByModuleAsync(stringConstant.Scrum)).BotToken);
+            socketClientWrapper.InitializeAndConnectTaskBot((await appCredential.FetchAppCredentialByModule(stringConstant.TaskModule)).BotToken);
+            socketClientWrapper.InitializeAndConnectScrumBot((await appCredential.FetchAppCredentialByModule(stringConstant.Scrum)).BotToken);
         }
     }
 }
