@@ -18,20 +18,19 @@ namespace Promact.Erp.Util.HashingMd5
             if (!string.IsNullOrEmpty(data))
             {
                 //create new instance of md5
-                MD5 md5 = MD5.Create();
-                //convert the input text to array of bytes
-                byte[] hashData = md5.ComputeHash(Encoding.Default.GetBytes(data));
-                //create new instance of StringBuilder to save hashed data
-                StringBuilder returnValue = new StringBuilder();
-                //loop for each byte and add it to StringBuilder
-                for (int i = 0; i < hashData.Length; i++)
+                StringBuilder hash = new StringBuilder();
+                MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+                byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(data));
+
+                for (int i = 0; i < bytes.Length; i++)
                 {
-                    returnValue.Append(hashData[i].ToString());
+                    hash.Append(bytes[i].ToString("x2"));
                 }
-                data = returnValue.ToString();
+                // return hexadecimal string
+                return hash.ToString();
             }
-            // return hexadecimal string
             return data;
         }
     }
+
 }
