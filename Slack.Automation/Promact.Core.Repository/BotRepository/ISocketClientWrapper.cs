@@ -1,19 +1,7 @@
-﻿using SlackAPI;
-
-namespace Promact.Core.Repository.BotRepository
+﻿namespace Promact.Core.Repository.BotRepository
 {
     public interface ISocketClientWrapper
     {
-        /// <summary>
-        /// Contain ScrumBot Client socket details
-        /// </summary>
-        SlackSocketClient ScrumBot { get; }
-
-        /// <summary>
-        /// Contain TaskMailBot Client socket details
-        /// </summary>
-        SlackSocketClient TaskBot { get; }
-
         /// <summary>
         /// Method to initialize scrum bot
         /// </summary>

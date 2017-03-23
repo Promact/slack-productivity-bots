@@ -1,5 +1,7 @@
 ﻿using Promact.Erp.Util.StringConstants;
 using SlackAPI;
+using SlackAPI.WebSocketMessages;
+using System;
 
 namespace Promact.Core.Repository.BotRepository
 {
@@ -7,27 +9,32 @@ namespace Promact.Core.Repository.BotRepository
     {
         #region Private Variable
         private readonly IStringConstantRepository _stringConstant;
+        private readonly ITaskMailBotRepository _taskMailBotRepository;
+        private readonly IScrumRepository _scrumRepository;
         #endregion
 
         #region Public property
         /// <summary>
         /// Contain ScrumBot Client socket details
         /// </summary>
-        public SlackSocketClient ScrumBot { get; private set; }
+        private SlackSocketClient ScrumBot { get; set; }
 
         /// <summary>
         /// Contain TaskMailBot Client socket details
         /// </summary>
-        public SlackSocketClient TaskBot { get; private set; }
+        private SlackSocketClient TaskBot { get; set; }
         #endregion
 
         #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
-        public SocketClientWrapper(IStringConstantRepository stringConstant)
+        public SocketClientWrapper(IStringConstantRepository stringConstant, ITaskMailBotRepository taskMailBotRepository,
+            IScrumRepository scrumRepository)
         {
             _stringConstant = stringConstant;
+            _taskMailBotRepository = taskMailBotRepository;
+            _scrumRepository = scrumRepository;
         }
         #endregion
 
@@ -39,7 +46,13 @@ namespace Promact.Core.Repository.BotRepository
         public void InitializeAndConnectScrumBot(string bottoken)
         {
             ScrumBot = new SlackSocketClient(bottoken);
+            var showMethod = GetShowMethod();
             ScrumBot.Connect((connect) => { });
+            ScrumBot.OnMessageReceived += async (message) =>
+            {
+                var replyText = await _scrumRepository.ConductScrum(message);
+                ScrumBot.SendMessage(showMethod, message.channel, replyText);
+            };
         }
 
         /// <summary>
@@ -49,7 +62,13 @@ namespace Promact.Core.Repository.BotRepository
         public void InitializeAndConnectTaskBot(string bottoken)
         {
             TaskBot = new SlackSocketClient(bottoken);
+            var showMethod = GetShowMethod();
             TaskBot.Connect((connect) => { });
+            TaskBot.OnMessageReceived += async (message) =>
+            {
+                var replyText = await _taskMailBotRepository.ConductTask(message);
+                TaskBot.SendMessage(showMethod, message.channel, replyText);
+            };
         }
 
         /// <summary>
@@ -62,6 +81,21 @@ namespace Promact.Core.Repository.BotRepository
                 TaskBot.CloseSocket();
             else if (module == _stringConstant.Scrum)
                 ScrumBot.CloseSocket();
+        }
+        #endregion
+
+        #region Private Method
+        /// <summary>
+        /// Method to create action of receive message
+        /// </summary>
+        /// <returns>action of message receive</returns>
+        private Action<MessageReceived> GetShowMethod()
+        {
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            return showMethod;
         }
         #endregion
     }
