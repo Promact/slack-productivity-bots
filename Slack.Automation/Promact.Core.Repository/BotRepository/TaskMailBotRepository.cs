@@ -31,14 +31,6 @@ namespace Promact.Core.Repository.BotRepository
 
         #region Public Methods
         /// <summary>
-        /// Method to turn off task mail bot
-        /// </summary>
-        public void TurnOffTaskMailBot()
-        {
-            _socketClientWrapper.TaskBot.CloseSocket();
-        }
-
-        /// <summary>
         /// Method to turn on task mail bot
         /// </summary>
         /// <param name="botToken">token of bot</param>
@@ -46,7 +38,7 @@ namespace Promact.Core.Repository.BotRepository
         {
             if (!string.IsNullOrEmpty(botToken))
             {
-                _socketClientWrapper.InitializeTaskBot(botToken);
+                _socketClientWrapper.InitializeAndConnectTaskBot(botToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;

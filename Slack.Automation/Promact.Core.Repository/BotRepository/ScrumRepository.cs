@@ -34,14 +34,6 @@ namespace Promact.Core.Repository.BotRepository
 
         #region Public Methods
         /// <summary>
-        /// Method to turn off scrum bot
-        /// </summary>
-        public void TurnOffScrumBot()
-        {
-            _socketClientWrapper.ScrumBot.CloseSocket();
-        }
-
-        /// <summary>
         /// Method to turn on scrum bot
         /// </summary>
         /// <param name="botToken">token of bot</param>
@@ -49,12 +41,11 @@ namespace Promact.Core.Repository.BotRepository
         {
             if (!string.IsNullOrEmpty(botToken))
             {
-                _socketClientWrapper.InitializeScrumBot(botToken);
+                _socketClientWrapper.InitializeAndConnectScrumBot(botToken);
                 // Creating a Action<MessageReceived> for Slack Socket Client to get connected.
                 MessageReceived messageReceive = new MessageReceived();
                 messageReceive.ok = true;
                 Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
-                _socketClientWrapper.ScrumBot.Connect((connect) => { });
                 _socketClientWrapper.ScrumBot.OnMessageReceived += (message) =>
                 {
                     _scrumlogger.Debug("Scrum bot got message :" + message);
