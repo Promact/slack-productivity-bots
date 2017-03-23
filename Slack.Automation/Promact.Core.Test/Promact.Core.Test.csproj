@@ -173,6 +173,7 @@
     <Compile Include="RedmineRepositoryTest.cs" />
     <Compile Include="ScrumBotRepositoryTest.cs" />
     <Compile Include="ScrumReportRepositoryTest.cs" />
+    <Compile Include="ScrumRepositoryTest.cs" />
     <Compile Include="ScrumSetUpRepositoryTest.cs" />
     <Compile Include="SlackChannelRepositoryTest.cs" />
     <Compile Include="SlackRepositoryTest.cs" />
