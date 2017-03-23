@@ -32,17 +32,18 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly ILogger _logger;
-        private readonly IBotRepository _botRepository;
+        private readonly ITaskMailBotRepository _taskMailBotRepository;
+        private readonly IScrumRepository _scrumRepository;
         #endregion
 
         #region Constructor
-
         public OAuthLoginRepository(ApplicationUserManager userManager,
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
-             IAppCredentialRepository appCredentialRepository, IBotRepository botRepository)
+             IAppCredentialRepository appCredentialRepository, ITaskMailBotRepository taskMailBotRepository, 
+             IScrumRepository scrumRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -55,7 +56,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _slackChannelRepository = slackChannelRepository;
             _appCredentialRepository = appCredentialRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
-            _botRepository = botRepository;
+            _taskMailBotRepository = taskMailBotRepository;
+            _scrumRepository = scrumRepository;
         }
 
         #endregion
@@ -276,10 +278,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
 
         #endregion
 
-
         #region Private Region
-
-
         /// <summary>
         /// Used to update application user details with slack id - JJ
         /// </summary>
@@ -300,7 +299,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
             return false;
         }
-
 
         /// <summary>
         /// Add slack channel details to the database - JJ
@@ -325,7 +323,21 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
         }
 
-
+        /// <summary>
+        /// Method to start bot as per module name
+        /// </summary>
+        /// <param name="module">name of module</param>
+        private async Task StartBotByModuleAsync(string module)
+        {
+            var appCredential = await _appCredentialRepository.FetchAppCredentialByModule(module);
+            if(!string.IsNullOrEmpty(appCredential?.BotToken))
+            {
+                if (module == _stringConstant.TaskModule)
+                    _taskMailBotRepository.StartAndConnectTaskMailBot(appCredential.BotToken);
+                if (module == _stringConstant.Scrum)
+                    _scrumRepository.StartAndConnectScrumBot(appCredential.BotToken);
+            }
+        }
         #endregion
     }
 }
