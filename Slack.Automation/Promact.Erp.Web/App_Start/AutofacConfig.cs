@@ -110,6 +110,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+            builder.RegisterType<SocketClientWrapper>().As<ISocketClientWrapper>().SingleInstance();
             var container = builder.Build();
             
             // replace mvc dependancy resolver with autofac

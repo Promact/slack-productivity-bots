@@ -81,6 +81,9 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
+            builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
+            builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
+            builder.RegisterType<SocketClientWrapper>().As<ISocketClientWrapper>().SingleInstance();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
