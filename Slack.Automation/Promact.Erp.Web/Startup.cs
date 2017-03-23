@@ -4,7 +4,6 @@ using Promact.Erp.Web.App_Start;
 using Autofac;
 using Autofac.Extras.NLog;
 using Promact.Erp.Core.ActionFilters;
-using Promact.Erp.Core.Controllers;
 using System.Web.Http;
 using System.Web.Mvc;
 
