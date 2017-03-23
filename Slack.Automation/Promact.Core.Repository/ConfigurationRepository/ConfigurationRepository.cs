@@ -15,20 +15,18 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
-        private readonly ITaskMailBotRepository _taskMailBotRepository;
-        private readonly IScrumRepository _scrumRepository;
+        private readonly ISocketClientWrapper _socketClientWrapper;
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
             IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository,
-            ITaskMailBotRepository taskMailBotRepository, IScrumRepository scrumRepository)
+            ISocketClientWrapper socketClientWrapper)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
             _appCredentialRepository = appCredentialRepository;
-            _taskMailBotRepository = taskMailBotRepository;
-            _scrumRepository = scrumRepository;
+            _socketClientWrapper = socketClientWrapper;
         }
         #endregion
 
@@ -115,14 +113,7 @@ namespace Promact.Core.Repository.ConfigurationRepository
         /// <returns></returns>
         private async Task StopBotByModuleAsync(string module)
         {
-            if (module == _stringConstant.TaskModule)
-            {
-                _taskMailBotRepository.TurnOffTaskMailBot();
-            }
-            if (module == _stringConstant.Scrum)
-            {
-                _scrumRepository.TurnOffScrumBot();
-            }
+            _socketClientWrapper.StopBotByModule(module);
             await _appCredentialRepository.ClearBotTokenByModule(module);
         }
         #endregion

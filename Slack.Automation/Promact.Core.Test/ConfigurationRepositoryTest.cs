@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Promact.Core.Repository.BotRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -18,6 +19,8 @@ namespace Promact.Core.Test
         private readonly IStringConstantRepository _stringConstant;
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IRepository<AppCredential> _appCredentialDataRepository;
+        private readonly ISocketClientWrapper _socketClientWrapper;
+        private readonly ITaskMailBotRepository _taskMailBotRepository;
         private Configuration taskConfiguration = new Configuration();
         private Configuration leaveConfiguration = new Configuration();
         private Configuration scrumConfiguration = new Configuration();
@@ -31,6 +34,8 @@ namespace Promact.Core.Test
             _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
             _configurationDataRepository = _componentContext.Resolve<IRepository<Configuration>>();
             _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
+            _socketClientWrapper = _componentContext.Resolve<ISocketClientWrapper>();
+            _taskMailBotRepository = _componentContext.Resolve<ITaskMailBotRepository>();
             Initialize();
         }
         #endregion
@@ -97,6 +102,7 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task DisableAppByConfigurationIdAsync()
         {
+            _taskMailBotRepository.StartAndConnectTaskMailBot(_stringConstant.AccessTokenForTest);
             await AddConfigurationAsync();
             var configurationId = (await _configurationDataRepository.FirstAsync(x => x.Module == _stringConstant.TaskModule)).Id;
             await _configurationRepository.DisableAppByConfigurationIdAsync(configurationId);
