@@ -3,11 +3,6 @@
     public interface ITaskMailBotRepository
     {
         /// <summary>
-        /// Method to turn off task mail bot
-        /// </summary>
-        void TurnOffTaskMailBot();
-
-        /// <summary>
         /// Method to turn on task mail bot
         /// </summary>
         /// <param name="botToken">token of bot</param>
