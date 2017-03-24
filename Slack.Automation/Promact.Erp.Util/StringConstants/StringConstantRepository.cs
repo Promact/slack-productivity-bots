@@ -219,27 +219,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "?scope=commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
             }
         }
-        public string TaskBotScopeAndClientId
-        {
-            get
-            {
-                return "?scope=bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
-        public string LeaveSlashCommandScopeAndClientId
-        {
-            get
-            {
-                return "?scope=incoming-webhook,commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
-        public string RedmineSlashCommandScopeAndClientId
-        {
-            get
-            {
-                return "?scope=commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
         public string SlackAuthorize
         {
             get
