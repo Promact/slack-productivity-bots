@@ -987,18 +987,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task TaskUserNotFoundAsync()
         {
-            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
-            var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(userResponse);
-            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
-            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(teamLeaderResponse);
-            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
-            var managementRequestUrl = _stringConstant.ManagementDetailsUrl;
-            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(managementResponse);
-            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
-            await _userManager.CreateAsync(user);
-            await _userManager.AddLoginAsync(user.Id, info);
+            message.text = _stringConstant.TaskMailSubject;
+            var responses = await _taskMailRepository.ProcessTask(message);
+            Assert.Equal(responses, _stringConstant.NoSlackDetails);
         }
         #endregion
 
