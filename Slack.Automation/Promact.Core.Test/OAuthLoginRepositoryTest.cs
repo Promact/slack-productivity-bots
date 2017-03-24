@@ -112,7 +112,7 @@ namespace Promact.Core.Test
             await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
 
             var slackOAuthResponse = Task.FromResult(_stringConstant.SlackOAuthResponseText);
-            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _envVariableRepository.SlackOAuthClientId, _envVariableRepository.SlackOAuthClientSecret, _stringConstant.MessageTsForTest);
+            var slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, _stringConstant.TestSlackClientId, _stringConstant.TestSlackClientSecret, _stringConstant.MessageTsForTest);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.OAuthAcessUrl, slackOAuthRequest, null, _stringConstant.Bearer)).Returns(slackOAuthResponse);
             var userDetailsResponse = Task.FromResult(_stringConstant.UserDetailsResponseText);
             var userDetailsRequest = string.Format(_stringConstant.SlackUserDetailsUrl, _stringConstant.AccessTokenSlack);
