@@ -981,12 +981,11 @@ namespace Promact.Core.Test
             Assert.Equal(response, text);
         }
 
-
         /// <summary>
-        /// Mocking and User create used in all test cases
+        /// Test case for task mail start and ask first question for true result, First question of task mail
         /// </summary>
-        /// <returns></returns>
-        private async Task mockAndUserCreate()
+        [Fact, Trait("Category", "Required")]
+        public async Task TaskUserNotFoundAsync()
         {
             var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
             var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
@@ -1001,7 +1000,6 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
         }
-
         #endregion
 
         #region Initialisation
@@ -1139,6 +1137,26 @@ namespace Promact.Core.Test
             await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.ProcessTask(message);
             Assert.Equal(response, _stringConstant.RequestToStartTaskMail);
+        }
+
+        /// <summary>
+        /// Mocking and User create used in all test cases
+        /// </summary>
+        /// <returns></returns>
+        private async Task mockAndUserCreate()
+        {
+            var userResponse = Task.FromResult(_stringConstant.UserDetailsFromOauthServer);
+            var userRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl, _stringConstant.StringIdForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, userRequestUrl, _stringConstant.AccessTokenForTest)).Returns(userResponse);
+            var teamLeaderResponse = Task.FromResult(_stringConstant.TeamLeaderDetailsFromOauthServer);
+            var teamLeaderRequestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.TeamLeaderDetailsUrl, _stringConstant.FirstNameForTest);
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, teamLeaderRequestUrl, _stringConstant.AccessTokenForTest)).Returns(teamLeaderResponse);
+            var managementResponse = Task.FromResult(_stringConstant.ManagementDetailsFromOauthServer);
+            var managementRequestUrl = _stringConstant.ManagementDetailsUrl;
+            _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, managementRequestUrl, _stringConstant.AccessTokenForTest)).Returns(managementResponse);
+            UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddLoginAsync(user.Id, info);
         }
         #endregion
     }
