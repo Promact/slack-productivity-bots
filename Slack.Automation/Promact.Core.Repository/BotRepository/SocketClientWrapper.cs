@@ -47,12 +47,22 @@ namespace Promact.Core.Repository.BotRepository
         public void InitializeAndConnectScrumBot(string bottoken)
         {
             ScrumBot = new SlackSocketClient(bottoken);
-            var showMethod = GetShowMethod();
+            Action<MessageReceived> showMethod = GetShowMethod();
             ScrumBot.Connect((connect) => { });
             ScrumBot.OnMessageReceived += async (message) =>
             {
-                var replyText = await _scrumRepository.ConductScrum(message);
-                ScrumBot.SendMessage(showMethod, message.channel, replyText);
+                IScrumBotRepository scrumBotRepository = _component.Resolve<IScrumBotRepository>();
+
+                _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
+                string replyText = await scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+                _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
+
+                if (!String.IsNullOrEmpty(replyText))
+                {
+                    _scrumlogger.Debug("Scrum bot sending reply");
+                    ScrumBot.SendMessage(showMethod, message.channel, replyText);
+                    _scrumlogger.Debug("Scrum bot sent reply");
+                }
             };
         }
 

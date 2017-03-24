@@ -15,6 +15,8 @@ namespace Promact.Erp.DomainModel.Models
 
         public string BotToken { get; set; }
 
+        public string BotUserId { get; set; }
+
         public bool IsSelected { get; set; }
     }
 }

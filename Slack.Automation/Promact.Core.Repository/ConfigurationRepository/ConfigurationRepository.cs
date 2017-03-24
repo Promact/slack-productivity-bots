@@ -76,9 +76,9 @@ namespace Promact.Core.Repository.ConfigurationRepository
             Configuration configuration = await _configurationDataRepository.FirstOrDefaultAsync(x => x.Id == configurationId);
             if (configuration != null)
             {
-                appCredential = await _appCredentialRepository.FetchAppCredentialByModule(configuration.Module);
+                appCredential = await _appCredentialRepository.FetchAppCredentialByModuleAsync(configuration.Module);
                 appCredential.IsSelected = true;
-                await _appCredentialRepository.AddUpdateAppCredentialAsync(appCredential);
+                await _appCredentialRepository.UpdateBotTokenAsync(appCredential);
             }
             return appCredential;
         }

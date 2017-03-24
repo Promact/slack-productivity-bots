@@ -27,7 +27,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to add Slack Users,channels and groups information 
         /// </summary>
         /// <param name="code"></param>
-        /// <returns></returns>
         Task AddSlackUserInformationAsync(string code);
 
         /// <summary>

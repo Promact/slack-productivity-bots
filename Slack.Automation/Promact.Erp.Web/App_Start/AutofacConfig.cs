@@ -57,7 +57,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>();
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<ApplicationSignInManager>().AsSelf();
-               
+
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication);
             // register webapi controller
             builder.RegisterApiControllers(typeof(OAuthController).Assembly);
@@ -102,6 +102,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
+            builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
             builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
@@ -110,7 +111,7 @@ namespace Promact.Erp.Web.App_Start
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
             builder.RegisterType<SocketClientWrapper>().As<ISocketClientWrapper>().SingleInstance();
             var container = builder.Build();
-            
+
             // replace mvc dependancy resolver with autofac
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 

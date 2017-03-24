@@ -17,6 +17,7 @@ using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.BaseRepository;
 using NLog;
 using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Core.Repository.AppCredentialRepository;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -38,6 +39,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly IStringConstantRepository _stringConstant;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IScrumSetUpRepository _scrumSetUpRepository;
+        private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
@@ -48,7 +50,7 @@ namespace Promact.Core.Repository.ScrumRepository
 
 
         public ScrumBotRepository(IRepository<TemporaryScrumDetails> tempScrumDetailsDataRepository,
-            IRepository<ScrumAnswer> scrumAnswerDataRepository,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository, IAppCredentialRepository appCredentialRepository,
             IRepository<Scrum> scrumDataRepository, IRepository<Question> questionDataRepository,
             IRepository<SlackUserDetails> slackUserDetailsDataRepository,
             ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
@@ -70,6 +72,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _botQuestionRepository = botQuestionRepository;
             _applicationUser = applicationUser;
             _scrumSetUpRepository = scrumSetUpRepository;
+            _appCredentialRepository = appCredentialRepository;
             _mapper = mapper;
         }
 
@@ -88,7 +91,7 @@ namespace Promact.Core.Repository.ScrumRepository
         /// <param name="message">message from slack</param>
         /// <param name="scrumBotId">Id of the bot connected for conducting scrum</param>
         /// <returns>reply message</returns>      
-        public async Task<string> ProcessMessagesAsync(string slackUserId, string slackChannelId, string message, string scrumBotId)
+        public async Task<string> ProcessMessagesAsync(string slackUserId, string slackChannelId, string message)
         {
             _logger.Info(DateTime.UtcNow.Date);
             string replyText = string.Empty;
@@ -99,10 +102,11 @@ namespace Promact.Core.Repository.ScrumRepository
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
+            AppCredential appCredential = await _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.Scrum);
 
             #region Added temporarily for testing purpose
 
-            if (messageArray[0] == "delete")
+            if (messageArray[0] == "delete" && messageArray.Length == 1)
             {
                 var date = DateTime.UtcNow.Date;
                 // get access token of user for promact oauth server
@@ -151,134 +155,137 @@ namespace Promact.Core.Repository.ScrumRepository
 
             #endregion
 
-            if (slackUserDetail != null)
+            if (!string.IsNullOrEmpty(appCredential.BotUserId))
             {
-                if (String.Compare(message, _stringConstant.ScrumHelp, StringComparison.OrdinalIgnoreCase) == 0) //when the message obtained is "scrum help"
+                if (slackUserDetail != null)
                 {
-                    _logger.Debug("Scrum help message");
-                    replyText = string.Format(_stringConstant.ScrumHelpMessage, scrumBotId);
-                }
-                else if (slackChannelDetail != null)
-                {
-                    if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
-                        String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0 ||
-                        String.Compare(message, _stringConstant.ListLinks, StringComparison.OrdinalIgnoreCase) == 0)
+                    if (String.Compare(message, _stringConstant.ScrumHelp, StringComparison.OrdinalIgnoreCase) == 0) //when the message obtained is "scrum help"
                     {
-                        replyText = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(slackUserId, slackChannelDetail, message);
-                        if (string.IsNullOrEmpty(replyText))
-                            replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelDetail.ProjectId, slackUserId, true);
+                        _logger.Debug("Scrum help message");
+                        replyText = string.Format(_stringConstant.ScrumHelpMessage, appCredential.BotUserId);
                     }
-                    else
+                    else if (slackChannelDetail != null)
                     {
-                        #region code specific to scrum
-
-                        if (slackChannelDetail.ProjectId != null)
+                        if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
+                            String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0 ||
+                            String.Compare(message, _stringConstant.ListLinks, StringComparison.OrdinalIgnoreCase) == 0)
                         {
-                            //commands could be "scrum halt" or "scrum resume"
-                            if (String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
-                                String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
-                            {
-                                _logger.Debug("Scrum command is :" + message);
-                                replyText = await ScrumAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
-                            }
-                            //a particular user is on leave. command would be like "leave <@userId>"
-                            else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
-                            {
-                                _logger.Debug("Scrum command is leave or start");
-                                //"<@".Length is 2
-                                int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
-                                int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
-                                if (toIndex > 0 && fromIndex > 1)
-                                {
-                                    //the slack userId is fetched
-                                    string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
-                                    _logger.Debug("Scrum command is leave or start. User mentioned is :" + applicantId);
-                                    if (String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0)
-                                    {
-                                        _logger.Debug("Scrum command is leave");
-                                        //fetch the user of the given userId
-                                        SlackUserDetailAc applicantDetailsAc = await _slackUserDetailRepository.GetByIdAsync(applicantId);
-                                        replyText = applicantDetailsAc != null ? await LeaveAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, slackUserDetail.UserId, applicantDetailsAc.Name, applicantId) : _stringConstant.NotAUser;
-                                    }
-                                    else
-                                    {
-                                        if (String.Compare(applicantId, scrumBotId, StringComparison.Ordinal) == 0)
-                                        {
-                                            _logger.Debug("Scrum command is start");
-                                            replyText = await ScrumAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, messageArray[0].ToLower(), slackUserDetail.UserId);
-                                        }
-                                        else
-                                        {
-                                            _logger.Debug("Invalid start command");
-                                            replyText = string.Format(_stringConstant.InValidStartCommand, scrumBotId);
-                                        }
-                                    }
-                                }
-                                else //when command would be like "leave <@>"
-                                {
-                                    _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
-                                    replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
-                                        message, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
-                                }
-                            }
-                            else  //all other texts
-                            {
-                                _logger.Debug("AddScrumAnswerAsync method");
-                                replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
-                                     (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
-                            }
+                            replyText = await _scrumSetUpRepository.ProcessSetUpMessagesAsync(slackUserId, slackChannelDetail, message);
+                            if (string.IsNullOrEmpty(replyText))
+                                replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message, slackChannelDetail.ProjectId, slackUserId, true);
                         }
                         else
                         {
-                            if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
-                              || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
-                              || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
-                            {
-                                replyText = _stringConstant.ProjectChannelNotLinked;
-                            }
-                        }
+                            #region code specific to scrum
 
-                        #endregion
+                            if (slackChannelDetail.ProjectId != null)
+                            {
+                                //commands could be "scrum halt" or "scrum resume"
+                                if (String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0 ||
+                                    String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                                {
+                                    _logger.Debug("Scrum command is :" + message);
+                                    replyText = await ScrumAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, messageArray[1].ToLower(), slackUserDetail.UserId);
+                                }
+                                //a particular user is on leave. command would be like "leave <@userId>"
+                                else if (((String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0) || (String.Compare(messageArray[0], _stringConstant.Start, StringComparison.OrdinalIgnoreCase) == 0)) && messageArray.Length == 2)
+                                {
+                                    _logger.Debug("Scrum command is leave or start");
+                                    //"<@".Length is 2
+                                    int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
+                                    int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
+                                    if (toIndex > 0 && fromIndex > 1)
+                                    {
+                                        //the slack userId is fetched
+                                        string applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                                        _logger.Debug("Scrum command is leave or start. User mentioned is :" + applicantId);
+                                        if (String.Compare(messageArray[0], _stringConstant.Leave, StringComparison.OrdinalIgnoreCase) == 0)
+                                        {
+                                            _logger.Debug("Scrum command is leave");
+                                            //fetch the user of the given userId
+                                            SlackUserDetailAc applicantDetailsAc = await _slackUserDetailRepository.GetByIdAsync(applicantId);
+                                            replyText = applicantDetailsAc != null ? await LeaveAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, slackUserDetail.UserId, applicantDetailsAc.Name, applicantId) : _stringConstant.NotAUser;
+                                        }
+                                        else
+                                        {
+                                            if (String.Compare(applicantId, appCredential.BotUserId, StringComparison.Ordinal) == 0)
+                                            {
+                                                _logger.Debug("Scrum command is start");
+                                                replyText = await ScrumAsync((int)slackChannelDetail.ProjectId, slackUserDetail.Name, messageArray[0].ToLower(), slackUserDetail.UserId);
+                                            }
+                                            else
+                                            {
+                                                _logger.Debug("Invalid start command");
+                                                replyText = string.Format(_stringConstant.InValidStartCommand, appCredential.BotUserId);
+                                            }
+                                        }
+                                    }
+                                    else //when command would be like "leave <@>"
+                                    {
+                                        _logger.Debug("Invalid leave command. So call AddScrumAnswerAsync method");
+                                        replyText = await AddScrumAnswerAsync(slackUserDetail.Name,
+                                            message, (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
+                                    }
+                                }
+                                else  //all other texts
+                                {
+                                    _logger.Debug("AddScrumAnswerAsync method");
+                                    replyText = await AddScrumAnswerAsync(slackUserDetail.Name, message,
+                                         (int)slackChannelDetail.ProjectId, slackUserDetail.UserId, false);
+                                }
+                            }
+                            else
+                            {
+                                if (await IsScrumStartLeaveLinkCommandAsync(appCredential.BotUserId, message, messageArray)
+                                  || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                                  || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                                {
+                                    replyText = _stringConstant.ProjectChannelNotLinked;
+                                }
+                            }
+
+                            #endregion
+                        }
                     }
-                }
-                else   //channel is not registered in the database
-                {
-                    //If channel is not registered in the database and the command encountered is "add channel channelname"
-                    if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
-                        String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
+                    else   //channel is not registered in the database
                     {
-                        _logger.Debug("AddChannelManuallyAsync method");
-                        replyText = await _scrumSetUpRepository.AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
+                        //If channel is not registered in the database and the command encountered is "add channel channelname"
+                        if (String.Compare(messageArray[0], _stringConstant.Add, StringComparison.OrdinalIgnoreCase) == 0 &&
+                            String.Compare(messageArray[1], _stringConstant.Channel, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            _logger.Debug("AddChannelManuallyAsync method");
+                            replyText = await _scrumSetUpRepository.AddChannelManuallyAsync(messageArray[2], slackChannelId, slackUserDetail.UserId);
+                        }
+                        //If any of the commands which scrum bot recognizes is encountered                  
+                        else if (await IsScrumStartLeaveLinkCommandAsync(appCredential.BotUserId, message, messageArray)
+                           || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                           || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            _logger.Debug("Channel is not in our db so give instruction to add channel");
+                            replyText = _stringConstant.ChannelAddInstruction;
+                        }
                     }
-                    //If any of the commands which scrum bot recognizes is encountered                  
-                    else if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
-                       || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
-                       || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        _logger.Debug("Channel is not in our db so give instruction to add channel");
-                        replyText = _stringConstant.ChannelAddInstruction;
-                    }
-                }
-            }
-            else
-            {
-                Scrum scrum;
-                if (slackChannelDetail?.ProjectId != null)
-                {
-                    DateTime today = DateTime.UtcNow.Date;
-                    scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
-                            DbFunctions.TruncateTime(x.ScrumDate) == today);
-                    _logger.Info(scrum?.ScrumDate);
                 }
                 else
-                    scrum = null;
-                if (await IsScrumStartLeaveLinkCommandAsync(scrumBotId, message, messageArray)
-                   || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
-                   || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
-                   || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
                 {
-                    _logger.Debug("Slack user is not in our db.");
-                    replyText = _stringConstant.SlackUserNotFound;
+                    Scrum scrum;
+                    if (slackChannelDetail?.ProjectId != null)
+                    {
+                        DateTime today = DateTime.UtcNow.Date;
+                        scrum = await _scrumDataRepository.FirstOrDefaultAsync(x => x.ProjectId == slackChannelDetail.ProjectId &&
+                                DbFunctions.TruncateTime(x.ScrumDate) == today);
+                        _logger.Info(scrum?.ScrumDate);
+                    }
+                    else
+                        scrum = null;
+                    if (await IsScrumStartLeaveLinkCommandAsync(appCredential.BotUserId, message, messageArray)
+                       || String.Compare(message, _stringConstant.ScrumHalt, StringComparison.OrdinalIgnoreCase) == 0
+                       || String.Compare(message, _stringConstant.ScrumResume, StringComparison.OrdinalIgnoreCase) == 0
+                       || (scrum != null && scrum.IsOngoing && !scrum.IsHalted))
+                    {
+                        _logger.Debug("Slack user is not in our db.");
+                        replyText = _stringConstant.SlackUserNotFound;
+                    }
                 }
             }
             return replyText;
