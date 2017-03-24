@@ -178,7 +178,6 @@
     <Compile Include="SlackChannelRepositoryTest.cs" />
     <Compile Include="SlackRepositoryTest.cs" />
     <Compile Include="SlackUserRepositoryTest.cs" />
-    <Compile Include="TaskMailBotRepositoryTest.cs" />
     <Compile Include="TaskMailRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>

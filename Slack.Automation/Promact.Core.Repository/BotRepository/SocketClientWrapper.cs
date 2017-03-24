@@ -82,7 +82,7 @@ namespace Promact.Core.Repository.BotRepository
             TaskBot.Connect((connect) => { });
             TaskBot.OnMessageReceived += async (message) =>
             {
-                var replyText = await _taskMailBotRepository.ConductTask(message);
+                var replyText = await _taskMailRepository.ProcessTask(message);
                 TaskBot.SendMessage(showMethod, message.channel, replyText);
             };
         }
