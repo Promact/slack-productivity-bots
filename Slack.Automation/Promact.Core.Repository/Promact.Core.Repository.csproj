@@ -162,8 +162,6 @@
     <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
     <Compile Include="BotRepository\ISocketClientWrapper.cs" />
-    <Compile Include="BotRepository\ITaskMailBotRepository.cs" />
-    <Compile Include="BotRepository\ScrumRepository.cs" />
     <Compile Include="BotRepository\SocketClientWrapper.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
