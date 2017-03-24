@@ -1,6 +1,4 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass;
-using System;
-using System.Collections.Generic;
+﻿using SlackAPI.WebSocketMessages;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.TaskMailRepository
@@ -8,18 +6,9 @@ namespace Promact.Core.Repository.TaskMailRepository
     public interface ITaskMailRepository
     {
         /// <summary>
-        /// Method to start task mail
+        /// Method to turn on task mail bot
         /// </summary>
-        /// <param name="userId"></param>
-        /// <returns>questionText in string format containing question statement</returns>
-        Task<string> StartTaskMailAsync(string userId);
-
-        /// <summary>
-        /// Method to conduct task mail after started
-        /// </summary>
-        /// <param name="answer"></param>
-        /// <param name="userId"></param>
-        /// <returns>questionText in string format containing question statement</returns>
-        Task<string> QuestionAndAnswerAsync(string answer,string userId);
+        /// <param name="botToken">message for slack</param>
+        Task<string> ProcessTask(NewMessage message);
     }
 }

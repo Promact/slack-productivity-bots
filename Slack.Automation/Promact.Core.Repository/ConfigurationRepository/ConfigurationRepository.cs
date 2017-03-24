@@ -1,4 +1,5 @@
 ﻿using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
@@ -14,16 +15,18 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
-
+        private readonly ISocketClientWrapper _socketClientWrapper;
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
-            IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository)
+            IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository,
+            ISocketClientWrapper socketClientWrapper)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
             _appCredentialRepository = appCredentialRepository;
+            _socketClientWrapper = socketClientWrapper;
         }
         #endregion
 
@@ -36,6 +39,8 @@ namespace Promact.Core.Repository.ConfigurationRepository
         {
             _configurationDataRepository.Update(configuration);
             await _configurationDataRepository.SaveChangesAsync();
+            if (!configuration.Status)
+                await StopBotByModuleAsync(configuration.Module);
         }
 
         /// <summary>
@@ -99,6 +104,17 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private async Task<bool> StatusOfModule(string module)
         {
             return (await _configurationDataRepository.FirstOrDefaultAsync(x => x.Module == module)).Status;
+        }
+
+        /// <summary>
+        /// Method to Stop bot by module name
+        /// </summary>
+        /// <param name="module">name of module</param>
+        /// <returns></returns>
+        private async Task StopBotByModuleAsync(string module)
+        {
+            _socketClientWrapper.StopBotByModule(module);
+            await _appCredentialRepository.ClearBotTokenByModule(module);
         }
         #endregion
     }

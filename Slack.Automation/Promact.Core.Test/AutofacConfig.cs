@@ -38,6 +38,7 @@ using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 
 namespace Promact.Core.Test
 {
@@ -79,6 +80,10 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
+            var socketWrapperMock = new Mock<ISocketClientWrapper>();
+            var socketWrapperMockObject = socketWrapperMock.Object;
+            builder.RegisterInstance(socketWrapperMock).As<Mock<ISocketClientWrapper>>();
+            builder.RegisterInstance(socketWrapperMockObject).As<ISocketClientWrapper>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
