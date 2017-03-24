@@ -21,7 +21,6 @@ namespace Promact.Core.Test
         private readonly IRepository<Configuration> _configurationDataRepository;
         private readonly IRepository<AppCredential> _appCredentialDataRepository;
         private readonly Mock<ISocketClientWrapper> _mockSocketClientWrapper;
-        private readonly ITaskMailBotRepository _taskMailBotRepository;
         private Configuration taskConfiguration = new Configuration();
         private Configuration leaveConfiguration = new Configuration();
         private Configuration scrumConfiguration = new Configuration();
@@ -36,7 +35,6 @@ namespace Promact.Core.Test
             _configurationDataRepository = _componentContext.Resolve<IRepository<Configuration>>();
             _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
             _mockSocketClientWrapper = _componentContext.Resolve<Mock<ISocketClientWrapper>>();
-            _taskMailBotRepository = _componentContext.Resolve<ITaskMailBotRepository>();
             Initialize();
         }
         #endregion
