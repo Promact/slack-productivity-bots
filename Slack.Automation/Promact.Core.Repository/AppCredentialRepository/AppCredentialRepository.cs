@@ -45,9 +45,7 @@ namespace Promact.Core.Repository.AppCredentialRepository
             }
             else
             {
-                var botToken = credential.BotToken;
                 credential = _mapper.Map(appCredential, credential);
-                credential.BotToken = botToken;
                 _appCredentialDataRepository.Update(credential);
             }
             return await _appCredentialDataRepository.SaveChangesAsync();
