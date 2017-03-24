@@ -80,7 +80,6 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
-            builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
             builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
             var socketWrapperMock = new Mock<ISocketClientWrapper>();
             var socketWrapperMockObject = socketWrapperMock.Object;

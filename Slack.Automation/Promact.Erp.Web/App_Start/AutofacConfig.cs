@@ -80,7 +80,6 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<ScrumSetUpRepository>().As<IScrumSetUpRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<Client>().As<IClient>();
-            builder.RegisterType<Bot>().AsSelf();
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<Util.Email.EmailService>().As<IEmailService>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
@@ -103,7 +102,6 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
-            builder.RegisterType<TaskMailBotRepository>().As<ITaskMailBotRepository>();
             builder.RegisterType<ScrumRepository>().As<IScrumRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();

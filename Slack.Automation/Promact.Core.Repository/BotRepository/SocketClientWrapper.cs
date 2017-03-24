@@ -1,4 +1,5 @@
-﻿using Promact.Erp.Util.StringConstants;
+﻿using Promact.Core.Repository.TaskMailRepository;
+using Promact.Erp.Util.StringConstants;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -9,7 +10,7 @@ namespace Promact.Core.Repository.BotRepository
     {
         #region Private Variable
         private readonly IStringConstantRepository _stringConstant;
-        private readonly ITaskMailBotRepository _taskMailBotRepository;
+        private readonly ITaskMailRepository _taskMailRepository;
         private readonly IScrumRepository _scrumRepository;
         #endregion
 
@@ -29,11 +30,11 @@ namespace Promact.Core.Repository.BotRepository
         /// <summary>
         /// Constructor
         /// </summary>
-        public SocketClientWrapper(IStringConstantRepository stringConstant, ITaskMailBotRepository taskMailBotRepository,
+        public SocketClientWrapper(IStringConstantRepository stringConstant, ITaskMailRepository taskMailRepository,
             IScrumRepository scrumRepository)
         {
             _stringConstant = stringConstant;
-            _taskMailBotRepository = taskMailBotRepository;
+            _taskMailRepository = taskMailRepository;
             _scrumRepository = scrumRepository;
         }
         #endregion
@@ -66,7 +67,7 @@ namespace Promact.Core.Repository.BotRepository
             TaskBot.Connect((connect) => { });
             TaskBot.OnMessageReceived += async (message) =>
             {
-                var replyText = await _taskMailBotRepository.ConductTask(message);
+                var replyText = await _taskMailRepository.ProcessTask(message);
                 TaskBot.SendMessage(showMethod, message.channel, replyText);
             };
         }
