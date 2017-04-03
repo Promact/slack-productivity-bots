@@ -10,7 +10,7 @@ import { StringConstant } from '../shared/stringConstant';
 @Injectable()
 
 export class LeaveReportService {
-    empty: any;
+
     constructor(private http: Http, private stringConstant: StringConstant) { }
 
     getLeaveReports(): Observable<LeaveReport[]> {
@@ -19,13 +19,13 @@ export class LeaveReportService {
             .catch(this.handleError);
     }
 
-    getLeaveReportDetail(Id: string): Observable<LeaveReportDetail[]> {
-        return this.http.get(this.stringConstant.leaveReportDetails + Id)
+    getLeaveReportDetail(id: string): Observable<LeaveReportDetail[]> {
+        return this.http.get(this.stringConstant.leaveReport + this.stringConstant.slash + id)
             .map(res => res.json() || {})
             .catch(this.handleError);
     }
 
-    private handleError(error: any) {
+    private handleError(error: string) {
         let errMsg = this.stringConstant.serverError;
         return Observable.throw(errMsg);
     }

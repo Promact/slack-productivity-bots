@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class LeaveReportDetails
@@ -17,6 +12,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// User Name of the employee
         /// </summary>
         public string EmployeeUserName { get; set; }
+
+        /// <summary>
+        /// Type of leave
+        /// </summary>
+        public string Type { get; set; }
 
         /// <summary>
         /// Leave taken from which date

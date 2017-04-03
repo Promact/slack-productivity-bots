@@ -1,19 +1,30 @@
 ﻿
-import { Component } from '@angular/core';
-//import { SpinnerComponent} from './shared/spinner.component';
+import { Component, OnInit } from '@angular/core';
+import { LoaderService } from './shared/loader.service';
+import { AppComponentService } from './appcomponent.service';
+import { EmailHashCode } from './shared/emailHashCode';
+
 @Component({
     selector: 'my-app',
-    //directives: [SpinnerComponent],
-    template: ` 
-                <h1>Welcome to leave analysis</h1>
-                <spinner-component></spinner-component>
-                <h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
-                <h3><a routerLink="task" routerLinkActive="active">Task Reports</a></h3>
- 
-                <router-outlet></router-outlet>
-`
+    templateUrl: './app/index.html'
 
 })
-    //<h3><a routerLink="/leave" routerLinkActive="active">Leave Reports</a></h3>
-export class AppComponent {
+
+export class AppComponent implements OnInit {
+    userIsAdmin: boolean;
+    hashCode: string;
+    username: string;
+    constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode: EmailHashCode) {
+        this.userIsAdmin = false;
+    }
+
+    ngOnInit() {
+        this.loader.loader = true;
+        this.hashCode = this.emailHashCode.hashCode;
+        this.httpService.getUserIsAdminOrNot().subscribe((result) => {
+            this.userIsAdmin = result.IsAdmin;
+            this.username = result.FirstName;
+            this.loader.loader = false;
+        });
+    }
 }

@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using System.Threading.Tasks;
+using Xunit;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.Util.StringConstants;
-using Xunit;
+
 
 namespace Promact.Core.Test
 {
@@ -21,50 +23,87 @@ namespace Promact.Core.Test
             Initialize();
         }
 
+
         /// <summary>
         /// Method to check the functionality of Slack User add method for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void SlackResponseAttachment()
+        public async Task AddSlackUserAsync()
         {
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            Assert.Equal(slackUserDetails.Id, 1);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUserDetail = await _slackUserRepository.GetBySlackNameAsync(slackUserDetails.Name);
+            Assert.Equal(slackUserDetail.UserId, slackUserDetails.UserId);
         }
+
 
         /// <summary>
         /// Test case to check the functionality of GetbyId method of Slack User Repository for true value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetById()
+        public async Task GetByIdAsync()
         {
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUser = _slackUserRepository.GetById(_stringConstant.StringIdForTest);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest);
             Assert.Equal(slackUser.Name, _stringConstant.FirstNameForTest);
         }
 
-        /// <summary>
-        /// Method to check the functionality of Slack User add method for false value
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public void SlackResponseAttachmentFalse()
-        {
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            Assert.NotEqual(slackUserDetails.Id, 3);
-        }
 
         /// <summary>
         /// Test case to check the functionality of GetbyId method of Slack User Repository for false value
         /// </summary>
         [Fact, Trait("Category", "Required")]
-        public void GetByIdFalse()
+        public async Task GetByIdFalse()
         {
-            _slackUserRepository.AddSlackUser(slackUserDetails);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             slackUserDetails.UserId = _stringConstant.SlackChannelIdForTest;
             slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
-            _slackUserRepository.AddSlackUser(slackUserDetails);
-            var slackUser = _slackUserRepository.GetById(_stringConstant.SlackChannelIdForTest);
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.SlackChannelIdForTest).Result;
             Assert.NotEqual(slackUser.Name, _stringConstant.FirstNameForTest);
         }
+
+
+        /// <summary>
+        /// Test case to check the functionality of Slack User update method of Slack User Repository 
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackUserUpdate()
+        {
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+            Assert.Equal(slackUser.Name, _stringConstant.FalseStringNameForTest);
+        }
+
+
+
+        /// <summary>
+        /// Test case to check the functionality of Slack User update method of Slack User Repository for deleted user
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SlackDeletedUserUpdate()
+        {
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            slackUserDetails.Name = _stringConstant.FalseStringNameForTest;
+            slackUserDetails.Deleted = true;
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUser = _slackUserRepository.GetByIdAsync(_stringConstant.StringIdForTest).Result;
+            Assert.Null(slackUser);
+        }
+
+
+        /// <summary>
+        /// Test case to check the functionality of GetBySlackNameAsync method of Slack User Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetBySlackName()
+        {
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            SlackUserDetailAc slackUser = _slackUserRepository.GetBySlackNameAsync(_stringConstant.FirstNameForTest).Result;
+            Assert.Equal(slackUser.UserId, _stringConstant.StringIdForTest);
+        }
+
 
         /// <summary>
         /// A method is used to initialize variables which are repetitively used
@@ -81,6 +120,7 @@ namespace Promact.Core.Test
             slackUserDetails.UserId = _stringConstant.StringIdForTest;
             slackUserDetails.Name = _stringConstant.FirstNameForTest;
             slackUserDetails.TeamId = _stringConstant.PromactStringName;
+            slackUserDetails.IsBot = false;
             slackUserDetails.Profile = profile;
         }
     }

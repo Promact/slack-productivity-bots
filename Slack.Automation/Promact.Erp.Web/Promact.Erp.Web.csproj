@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.Default.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.Default.props')" />
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.NuGet.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.NuGet.props')" />
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.0.0-rc2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.0.0-rc2\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,7 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,8 +50,8 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Autofac, Version=4.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.4.1.0\lib\net45\Autofac.dll</HintPath>
+    <Reference Include="Autofac, Version=4.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.3.0\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Autofac.Extras.NLog, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -64,33 +63,81 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Autofac.Integration.WebApi, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.WebApi2.4.0.0\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
+      <HintPath>..\packages\Autofac.WebApi2.4.0.1\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IdentityModel, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IdentityModel.2.5.1\lib\net45\IdentityModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Protocol.Extensions, Version=1.0.3.42, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocol.Extensions.1.0.3.308261200\lib\net45\Microsoft.IdentityModel.Protocol.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OpenIdConnect, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OpenIdConnect.3.0.1\lib\net45\Microsoft.Owin.Security.OpenIdConnect.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.8\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SlackAPI, Version=1.0.4.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SlackAPI.Promact.1.0.4.3\lib\net45\SlackAPI.dll</HintPath>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.0-beta05-test\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.30826.1200, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.3.308261200\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -133,8 +180,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
@@ -211,7 +256,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Bot.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -219,31 +263,696 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\Group\GroupAdd\groupAdd.html" />
+    <Content Include="app\Group\GroupEdit\groupEdit.html" />
+    <Content Include="app\Group\GroupList\groupList.html" />
+    <Content Include="app\index.html" />
     <Content Include="app\leaveReport\leaveReport-Details\leaveReport-Details.html" />
     <Content Include="app\leaveReport\leaveReport-List\leaveReport-List.html" />
+    <Content Include="app\shared\MailSetting\mailsetting.html" />
     <Content Include="app\taskmail\taskmail-details\taskmail-details.html" />
     <Content Include="app\taskmail\taskmail-list\taskmail-list.html" />
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Global.asax" />
+    <Content Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.html" />
+    <Content Include="app\ScrumReport\scrumProject-List\scrumProject-List.html" />
+    <Content Include="Content\css\custom.min.css" />
+    <Content Include="Content\css\erp-custom.css" />
+    <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\font-lineicons.css" />
+    <Content Include="Content\css\green.css" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\line-icons.svg" />
+    <Content Include="Content\images\banner.jpg" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\logo-inverted.png" />
+    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\js\custom.js" />
     <Content Include="Content\Site.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
     <Content Include="karma-test-shim.js" />
     <Content Include="karma.config.js" />
     <Content Include="package.json" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="bower.json" />
     <Content Include=".bowerrc" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\line-icons.eot" />
+    <Content Include="Content\fonts\line-icons.ttf" />
+    <Content Include="Content\fonts\line-icons.woff" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="Scripts\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="Scripts\bootstrap\dist\js\npm.js" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\bootstrap\Gruntfile.js" />
+    <Content Include="Scripts\bootstrap\grunt\bs-commonjs-generator.js" />
+    <Content Include="Scripts\bootstrap\grunt\bs-glyphicons-data-generator.js" />
+    <Content Include="Scripts\bootstrap\grunt\bs-lessdoc-parser.js" />
+    <Content Include="Scripts\bootstrap\grunt\bs-raw-files-generator.js" />
+    <Content Include="Scripts\bootstrap\grunt\change-version.js" />
+    <Content Include="Scripts\bootstrap\js\affix.js" />
+    <Content Include="Scripts\bootstrap\js\alert.js" />
+    <Content Include="Scripts\bootstrap\js\button.js" />
+    <Content Include="Scripts\bootstrap\js\carousel.js" />
+    <Content Include="Scripts\bootstrap\js\collapse.js" />
+    <Content Include="Scripts\bootstrap\js\dropdown.js" />
+    <Content Include="Scripts\bootstrap\js\modal.js" />
+    <Content Include="Scripts\bootstrap\js\popover.js" />
+    <Content Include="Scripts\bootstrap\js\scrollspy.js" />
+    <Content Include="Scripts\bootstrap\js\tab.js" />
+    <Content Include="Scripts\bootstrap\js\tooltip.js" />
+    <Content Include="Scripts\bootstrap\js\transition.js" />
+    <Content Include="Scripts\bootstrap\package.js" />
+    <Content Include="Scripts\jquery-validation\build\release.js" />
+    <Content Include="Scripts\jquery-validation\dist\additional-methods.js" />
+    <Content Include="Scripts\jquery-validation\dist\additional-methods.min.js" />
+    <Content Include="Scripts\jquery-validation\dist\jquery.validate.js" />
+    <Content Include="Scripts\jquery-validation\dist\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery-validation\Gruntfile.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\accept.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\additional.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\alphanumeric.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\bankaccountNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\bankorgiroaccountNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\bic.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\cifES.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\cpfBR.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\creditcard.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\creditcardtypes.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\currency.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\dateFA.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\dateITA.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\dateNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\extension.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\giroaccountNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\iban.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\integer.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\ipv4.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\ipv6.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\lettersonly.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\letterswithbasicpunc.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\mobileNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\mobileUK.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\nieES.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\nifES.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\notEqualTo.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\nowhitespace.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\pattern.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\phoneNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\phonesUK.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\phoneUK.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\phoneUS.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\postalcodeBR.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\postalCodeCA.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\postalcodeIT.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\postalcodeNL.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\postcodeUK.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\require_from_group.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\skip_or_fill_minimum.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\statesUS.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\strippedminlength.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\time.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\time12h.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\url2.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\vinUS.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\zipcodeUS.js" />
+    <Content Include="Scripts\jquery-validation\src\additional\ziprange.js" />
+    <Content Include="Scripts\jquery-validation\src\ajax.js" />
+    <Content Include="Scripts\jquery-validation\src\core.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ar.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_az.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_bg.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_bn_BD.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ca.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_cs.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_da.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_de.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_el.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_es.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_es_AR.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_es_PE.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_et.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_eu.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_fa.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_fi.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_fr.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ge.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_gl.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_he.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_hr.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_hu.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_hy_AM.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_id.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_is.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_it.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ja.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ka.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_kk.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ko.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_lt.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_lv.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_mk.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_my.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_nl.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_no.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_pl.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_pt_BR.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_pt_PT.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ro.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ru.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_si.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_sk.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_sl.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_sr.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_sr_lat.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_sv.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_th.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_tj.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_tr.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_uk.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_ur.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_vi.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_zh.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\messages_zh_TW.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\methods_de.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\methods_es_CL.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\methods_fi.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\methods_nl.js" />
+    <Content Include="Scripts\jquery-validation\src\localization\methods_pt.js" />
+    <Content Include="Scripts\jquery\AUTHORS.txt" />
+    <Content Include="Scripts\jquery\dist\core.js" />
+    <Content Include="Scripts\jquery\dist\jquery.js" />
+    <Content Include="Scripts\jquery\dist\jquery.min.js" />
+    <Content Include="Scripts\jquery\dist\jquery.slim.js" />
+    <Content Include="Scripts\jquery\dist\jquery.slim.min.js" />
+    <Content Include="Scripts\jquery\external\sizzle\dist\sizzle.js" />
+    <Content Include="Scripts\jquery\external\sizzle\dist\sizzle.min.js" />
+    <Content Include="Scripts\jquery\external\sizzle\LICENSE.txt" />
+    <Content Include="Scripts\jquery\LICENSE.txt" />
+    <Content Include="Scripts\jquery\src\ajax.js" />
+    <Content Include="Scripts\jquery\src\ajax\jsonp.js" />
+    <Content Include="Scripts\jquery\src\ajax\load.js" />
+    <Content Include="Scripts\jquery\src\ajax\parseXML.js" />
+    <Content Include="Scripts\jquery\src\ajax\script.js" />
+    <Content Include="Scripts\jquery\src\ajax\var\location.js" />
+    <Content Include="Scripts\jquery\src\ajax\var\nonce.js" />
+    <Content Include="Scripts\jquery\src\ajax\var\rquery.js" />
+    <Content Include="Scripts\jquery\src\ajax\xhr.js" />
+    <Content Include="Scripts\jquery\src\attributes.js" />
+    <Content Include="Scripts\jquery\src\attributes\attr.js" />
+    <Content Include="Scripts\jquery\src\attributes\classes.js" />
+    <Content Include="Scripts\jquery\src\attributes\prop.js" />
+    <Content Include="Scripts\jquery\src\attributes\support.js" />
+    <Content Include="Scripts\jquery\src\attributes\val.js" />
+    <Content Include="Scripts\jquery\src\callbacks.js" />
+    <Content Include="Scripts\jquery\src\core.js" />
+    <Content Include="Scripts\jquery\src\core\access.js" />
+    <Content Include="Scripts\jquery\src\core\DOMEval.js" />
+    <Content Include="Scripts\jquery\src\core\init.js" />
+    <Content Include="Scripts\jquery\src\core\parseHTML.js" />
+    <Content Include="Scripts\jquery\src\core\ready-no-deferred.js" />
+    <Content Include="Scripts\jquery\src\core\ready.js" />
+    <Content Include="Scripts\jquery\src\core\readyException.js" />
+    <Content Include="Scripts\jquery\src\core\support.js" />
+    <Content Include="Scripts\jquery\src\core\var\rsingleTag.js" />
+    <Content Include="Scripts\jquery\src\css.js" />
+    <Content Include="Scripts\jquery\src\css\addGetHookIf.js" />
+    <Content Include="Scripts\jquery\src\css\adjustCSS.js" />
+    <Content Include="Scripts\jquery\src\css\curCSS.js" />
+    <Content Include="Scripts\jquery\src\css\hiddenVisibleSelectors.js" />
+    <Content Include="Scripts\jquery\src\css\showHide.js" />
+    <Content Include="Scripts\jquery\src\css\support.js" />
+    <Content Include="Scripts\jquery\src\css\var\cssExpand.js" />
+    <Content Include="Scripts\jquery\src\css\var\getStyles.js" />
+    <Content Include="Scripts\jquery\src\css\var\isHiddenWithinTree.js" />
+    <Content Include="Scripts\jquery\src\css\var\rmargin.js" />
+    <Content Include="Scripts\jquery\src\css\var\rnumnonpx.js" />
+    <Content Include="Scripts\jquery\src\css\var\swap.js" />
+    <Content Include="Scripts\jquery\src\data.js" />
+    <Content Include="Scripts\jquery\src\data\Data.js" />
+    <Content Include="Scripts\jquery\src\data\var\acceptData.js" />
+    <Content Include="Scripts\jquery\src\data\var\dataPriv.js" />
+    <Content Include="Scripts\jquery\src\data\var\dataUser.js" />
+    <Content Include="Scripts\jquery\src\deferred.js" />
+    <Content Include="Scripts\jquery\src\deferred\exceptionHook.js" />
+    <Content Include="Scripts\jquery\src\deprecated.js" />
+    <Content Include="Scripts\jquery\src\dimensions.js" />
+    <Content Include="Scripts\jquery\src\effects.js" />
+    <Content Include="Scripts\jquery\src\effects\animatedSelector.js" />
+    <Content Include="Scripts\jquery\src\effects\Tween.js" />
+    <Content Include="Scripts\jquery\src\event.js" />
+    <Content Include="Scripts\jquery\src\event\ajax.js" />
+    <Content Include="Scripts\jquery\src\event\alias.js" />
+    <Content Include="Scripts\jquery\src\event\focusin.js" />
+    <Content Include="Scripts\jquery\src\event\support.js" />
+    <Content Include="Scripts\jquery\src\event\trigger.js" />
+    <Content Include="Scripts\jquery\src\exports\amd.js" />
+    <Content Include="Scripts\jquery\src\exports\global.js" />
+    <Content Include="Scripts\jquery\src\jquery.js" />
+    <Content Include="Scripts\jquery\src\manipulation.js" />
+    <Content Include="Scripts\jquery\src\manipulation\buildFragment.js" />
+    <Content Include="Scripts\jquery\src\manipulation\getAll.js" />
+    <Content Include="Scripts\jquery\src\manipulation\setGlobalEval.js" />
+    <Content Include="Scripts\jquery\src\manipulation\support.js" />
+    <Content Include="Scripts\jquery\src\manipulation\var\rcheckableType.js" />
+    <Content Include="Scripts\jquery\src\manipulation\var\rscriptType.js" />
+    <Content Include="Scripts\jquery\src\manipulation\var\rtagName.js" />
+    <Content Include="Scripts\jquery\src\manipulation\wrapMap.js" />
+    <Content Include="Scripts\jquery\src\manipulation\_evalUrl.js" />
+    <Content Include="Scripts\jquery\src\offset.js" />
+    <Content Include="Scripts\jquery\src\queue.js" />
+    <Content Include="Scripts\jquery\src\queue\delay.js" />
+    <Content Include="Scripts\jquery\src\selector-native.js" />
+    <Content Include="Scripts\jquery\src\selector-sizzle.js" />
+    <Content Include="Scripts\jquery\src\selector.js" />
+    <Content Include="Scripts\jquery\src\serialize.js" />
+    <Content Include="Scripts\jquery\src\traversing.js" />
+    <Content Include="Scripts\jquery\src\traversing\findFilter.js" />
+    <Content Include="Scripts\jquery\src\traversing\var\dir.js" />
+    <Content Include="Scripts\jquery\src\traversing\var\rneedsContext.js" />
+    <Content Include="Scripts\jquery\src\traversing\var\siblings.js" />
+    <Content Include="Scripts\jquery\src\var\arr.js" />
+    <Content Include="Scripts\jquery\src\var\class2type.js" />
+    <Content Include="Scripts\jquery\src\var\concat.js" />
+    <Content Include="Scripts\jquery\src\var\document.js" />
+    <Content Include="Scripts\jquery\src\var\documentElement.js" />
+    <Content Include="Scripts\jquery\src\var\fnToString.js" />
+    <Content Include="Scripts\jquery\src\var\getProto.js" />
+    <Content Include="Scripts\jquery\src\var\hasOwn.js" />
+    <Content Include="Scripts\jquery\src\var\indexOf.js" />
+    <Content Include="Scripts\jquery\src\var\ObjectFunctionString.js" />
+    <Content Include="Scripts\jquery\src\var\pnum.js" />
+    <Content Include="Scripts\jquery\src\var\push.js" />
+    <Content Include="Scripts\jquery\src\var\rcssNum.js" />
+    <Content Include="Scripts\jquery\src\var\rnotwhite.js" />
+    <Content Include="Scripts\jquery\src\var\slice.js" />
+    <Content Include="Scripts\jquery\src\var\support.js" />
+    <Content Include="Scripts\jquery\src\var\toString.js" />
+    <Content Include="Scripts\jquery\src\wrap.js" />
+    <Content Include="Scripts\modernizr\.gitattributes" />
+    <Content Include="Scripts\modernizr\.gitignore" />
+    <Content Include="Scripts\modernizr\feature-detects\ambientlight.js" />
+    <Content Include="Scripts\modernizr\feature-detects\applicationcache.js" />
+    <Content Include="Scripts\modernizr\feature-detects\audio.js" />
+    <Content Include="Scripts\modernizr\feature-detects\audio\loop.js" />
+    <Content Include="Scripts\modernizr\feature-detects\audio\preload.js" />
+    <Content Include="Scripts\modernizr\feature-detects\audio\webaudio.js" />
+    <Content Include="Scripts\modernizr\feature-detects\a\download.js" />
+    <Content Include="Scripts\modernizr\feature-detects\battery.js" />
+    <Content Include="Scripts\modernizr\feature-detects\battery\lowbattery.js" />
+    <Content Include="Scripts\modernizr\feature-detects\blob.js" />
+    <Content Include="Scripts\modernizr\feature-detects\canvas.js" />
+    <Content Include="Scripts\modernizr\feature-detects\canvastext.js" />
+    <Content Include="Scripts\modernizr\feature-detects\canvas\blending.js" />
+    <Content Include="Scripts\modernizr\feature-detects\canvas\todataurl.js" />
+    <Content Include="Scripts\modernizr\feature-detects\canvas\winding.js" />
+    <Content Include="Scripts\modernizr\feature-detects\contenteditable.js" />
+    <Content Include="Scripts\modernizr\feature-detects\contextmenu.js" />
+    <Content Include="Scripts\modernizr\feature-detects\cookies.js" />
+    <Content Include="Scripts\modernizr\feature-detects\cors.js" />
+    <Content Include="Scripts\modernizr\feature-detects\crypto\getrandomvalues.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\all.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\animations.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\appearance.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backdropfilter.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundblendmode.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundcliptext.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundposition-shorthand.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundposition-xy.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundrepeat.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundsize.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\backgroundsizecover.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\borderimage.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\borderradius.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\boxshadow.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\boxsizing.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\calc.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\checked.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\chunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\columns.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\cubicbezierrange.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\displayrunin.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\displaytable.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\ellipsis.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\escape.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\exunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\filters.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\flexbox.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\flexboxlegacy.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\flexboxtweener.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\flexwrap.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\fontface.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\generatedcontent.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\gradients.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\hsla.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\hyphens.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\invalid.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\lastchild.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\mask.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\mediaqueries.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\multiplebgs.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\nthchild.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\objectfit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\opacity.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\overflow-scrolling.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\pointerevents.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\positionsticky.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\pseudoanimations.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\pseudotransitions.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\reflections.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\regions.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\remunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\resize.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\rgba.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\scrollbars.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\shapes.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\siblinggeneral.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\subpixelfont.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\supports.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\target.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\textalignlast.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\textshadow.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\transforms.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\transforms3d.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\transformstylepreserve3d.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\transitions.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\userselect.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\valid.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\vhunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\vmaxunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\vminunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\vwunit.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\will-change.js" />
+    <Content Include="Scripts\modernizr\feature-detects\css\wrapflow.js" />
+    <Content Include="Scripts\modernizr\feature-detects\custom-protocol-handler.js" />
+    <Content Include="Scripts\modernizr\feature-detects\customevent.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dart.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dataview-api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\classlist.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\createElement-attrs.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\dataset.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\documentfragment.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\hidden.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\microdata.js" />
+    <Content Include="Scripts\modernizr\feature-detects\dom\mutationObserver.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\datalist.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\details.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\output.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\picture.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\progress-meter.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\ruby.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\template.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\time.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\track.js" />
+    <Content Include="Scripts\modernizr\feature-detects\elem\unknown.js" />
+    <Content Include="Scripts\modernizr\feature-detects\emoji.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\array.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\date.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\function.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\object.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\specification.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\strictmode.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\string.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\syntax.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es5\undefined.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\array.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\contains.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\generators.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\math.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\number.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\object.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\promises.js" />
+    <Content Include="Scripts\modernizr\feature-detects\es6\string.js" />
+    <Content Include="Scripts\modernizr\feature-detects\eventlistener.js" />
+    <Content Include="Scripts\modernizr\feature-detects\event\deviceorientation-motion.js" />
+    <Content Include="Scripts\modernizr\feature-detects\event\oninput.js" />
+    <Content Include="Scripts\modernizr\feature-detects\exif-orientation.js" />
+    <Content Include="Scripts\modernizr\feature-detects\file\api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\file\filesystem.js" />
+    <Content Include="Scripts\modernizr\feature-detects\flash.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\capture.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\fileinput.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\fileinputdirectory.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\formattribute.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\inputnumber-l10n.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\placeholder.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\requestautocomplete.js" />
+    <Content Include="Scripts\modernizr\feature-detects\forms\validation.js" />
+    <Content Include="Scripts\modernizr\feature-detects\fullscreen-api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\gamepad.js" />
+    <Content Include="Scripts\modernizr\feature-detects\geolocation.js" />
+    <Content Include="Scripts\modernizr\feature-detects\hashchange.js" />
+    <Content Include="Scripts\modernizr\feature-detects\hiddenscroll.js" />
+    <Content Include="Scripts\modernizr\feature-detects\history.js" />
+    <Content Include="Scripts\modernizr\feature-detects\htmlimports.js" />
+    <Content Include="Scripts\modernizr\feature-detects\ie8compat.js" />
+    <Content Include="Scripts\modernizr\feature-detects\iframe\sandbox.js" />
+    <Content Include="Scripts\modernizr\feature-detects\iframe\seamless.js" />
+    <Content Include="Scripts\modernizr\feature-detects\iframe\srcdoc.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\apng.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\jpeg2000.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\jpegxr.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\sizes.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\srcset.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\webp-alpha.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\webp-animation.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\webp-lossless.js" />
+    <Content Include="Scripts\modernizr\feature-detects\img\webp.js" />
+    <Content Include="Scripts\modernizr\feature-detects\indexeddb.js" />
+    <Content Include="Scripts\modernizr\feature-detects\indexeddbblob.js" />
+    <Content Include="Scripts\modernizr\feature-detects\input.js" />
+    <Content Include="Scripts\modernizr\feature-detects\inputsearchevent.js" />
+    <Content Include="Scripts\modernizr\feature-detects\inputtypes.js" />
+    <Content Include="Scripts\modernizr\feature-detects\input\formaction.js" />
+    <Content Include="Scripts\modernizr\feature-detects\input\formenctype.js" />
+    <Content Include="Scripts\modernizr\feature-detects\input\formmethod.js" />
+    <Content Include="Scripts\modernizr\feature-detects\input\formtarget.js" />
+    <Content Include="Scripts\modernizr\feature-detects\intl.js" />
+    <Content Include="Scripts\modernizr\feature-detects\json.js" />
+    <Content Include="Scripts\modernizr\feature-detects\lists-reversed.js" />
+    <Content Include="Scripts\modernizr\feature-detects\mathml.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\beacon.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\connection.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\eventsource.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\fetch.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype-arraybuffer.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype-blob.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype-document.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype-json.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype-text.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr-responsetype.js" />
+    <Content Include="Scripts\modernizr\feature-detects\network\xhr2.js" />
+    <Content Include="Scripts\modernizr\feature-detects\notification.js" />
+    <Content Include="Scripts\modernizr\feature-detects\pagevisibility-api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\performance.js" />
+    <Content Include="Scripts\modernizr\feature-detects\pointerevents.js" />
+    <Content Include="Scripts\modernizr\feature-detects\pointerlock-api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\postmessage.js" />
+    <Content Include="Scripts\modernizr\feature-detects\proximity.js" />
+    <Content Include="Scripts\modernizr\feature-detects\queryselector.js" />
+    <Content Include="Scripts\modernizr\feature-detects\quota-management-api.js" />
+    <Content Include="Scripts\modernizr\feature-detects\requestanimationframe.js" />
+    <Content Include="Scripts\modernizr\feature-detects\script\async.js" />
+    <Content Include="Scripts\modernizr\feature-detects\script\defer.js" />
+    <Content Include="Scripts\modernizr\feature-detects\serviceworker.js" />
+    <Content Include="Scripts\modernizr\feature-detects\speech\speech-recognition.js" />
+    <Content Include="Scripts\modernizr\feature-detects\speech\speech-synthesis.js" />
+    <Content Include="Scripts\modernizr\feature-detects\storage\localstorage.js" />
+    <Content Include="Scripts\modernizr\feature-detects\storage\sessionstorage.js" />
+    <Content Include="Scripts\modernizr\feature-detects\storage\websqldatabase.js" />
+    <Content Include="Scripts\modernizr\feature-detects\style\scoped.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\asimg.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\clippaths.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\filters.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\foreignobject.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\inline.js" />
+    <Content Include="Scripts\modernizr\feature-detects\svg\smil.js" />
+    <Content Include="Scripts\modernizr\feature-detects\templatestrings.js" />
+    <Content Include="Scripts\modernizr\feature-detects\textarea\maxlength.js" />
+    <Content Include="Scripts\modernizr\feature-detects\touchevents.js" />
+    <Content Include="Scripts\modernizr\feature-detects\typed-arrays.js" />
+    <Content Include="Scripts\modernizr\feature-detects\unicode-range.js" />
+    <Content Include="Scripts\modernizr\feature-detects\unicode.js" />
+    <Content Include="Scripts\modernizr\feature-detects\url\bloburls.js" />
+    <Content Include="Scripts\modernizr\feature-detects\url\data-uri.js" />
+    <Content Include="Scripts\modernizr\feature-detects\url\parser.js" />
+    <Content Include="Scripts\modernizr\feature-detects\userdata.js" />
+    <Content Include="Scripts\modernizr\feature-detects\vibration.js" />
+    <Content Include="Scripts\modernizr\feature-detects\video.js" />
+    <Content Include="Scripts\modernizr\feature-detects\video\autoplay.js" />
+    <Content Include="Scripts\modernizr\feature-detects\video\loop.js" />
+    <Content Include="Scripts\modernizr\feature-detects\video\preload.js" />
+    <Content Include="Scripts\modernizr\feature-detects\vml.js" />
+    <Content Include="Scripts\modernizr\feature-detects\web-intents.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webanimations.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webgl.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webgl\extensions.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webrtc\datachannel.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webrtc\getusermedia.js" />
+    <Content Include="Scripts\modernizr\feature-detects\webrtc\peerconnection.js" />
+    <Content Include="Scripts\modernizr\feature-detects\websockets.js" />
+    <Content Include="Scripts\modernizr\feature-detects\websockets\binary.js" />
+    <Content Include="Scripts\modernizr\feature-detects\window\framed.js" />
+    <Content Include="Scripts\modernizr\feature-detects\window\matchmedia.js" />
+    <Content Include="Scripts\modernizr\feature-detects\workers\blobworkers.js" />
+    <Content Include="Scripts\modernizr\feature-detects\workers\dataworkers.js" />
+    <Content Include="Scripts\modernizr\feature-detects\workers\sharedworkers.js" />
+    <Content Include="Scripts\modernizr\feature-detects\workers\transferables.js" />
+    <Content Include="Scripts\modernizr\feature-detects\workers\webworkers.js" />
+    <Content Include="Scripts\modernizr\Gruntfile.js" />
+    <Content Include="Scripts\modernizr\lib\build-query.js" />
+    <Content Include="Scripts\modernizr\lib\build.js" />
+    <Content Include="Scripts\modernizr\lib\cli.js" />
+    <Content Include="Scripts\modernizr\lib\generate-banner.js" />
+    <Content Include="Scripts\modernizr\lib\metadata.js" />
+    <Content Include="Scripts\modernizr\lib\options.js" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo.png" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo.svg" />
+    <Content Include="Scripts\modernizr\media\Modernizr-2-Logo-vertical-big.png" />
+    <Content Include="Scripts\modernizr\media\Modernizr-2-Logo-vertical-medium.png" />
+    <Content Include="Scripts\modernizr\media\Modernizr-2-Logo-vertical-small.png" />
+    <Content Include="Scripts\modernizr\src\addTest.js" />
+    <Content Include="Scripts\modernizr\src\atRule.js" />
+    <Content Include="Scripts\modernizr\src\classes.js" />
+    <Content Include="Scripts\modernizr\src\contains.js" />
+    <Content Include="Scripts\modernizr\src\createElement.js" />
+    <Content Include="Scripts\modernizr\src\cssomPrefixes.js" />
+    <Content Include="Scripts\modernizr\src\cssToDOM.js" />
+    <Content Include="Scripts\modernizr\src\docElement.js" />
+    <Content Include="Scripts\modernizr\src\domPrefixes.js" />
+    <Content Include="Scripts\modernizr\src\domToCSS.js" />
+    <Content Include="Scripts\modernizr\src\fnBind.js" />
+    <Content Include="Scripts\modernizr\src\generate.js" />
+    <Content Include="Scripts\modernizr\src\getBody.js" />
+    <Content Include="Scripts\modernizr\src\hasEvent.js" />
+    <Content Include="Scripts\modernizr\src\hasOwnProp.js" />
+    <Content Include="Scripts\modernizr\src\html5printshiv.js" />
+    <Content Include="Scripts\modernizr\src\html5shiv.js" />
+    <Content Include="Scripts\modernizr\src\injectElementWithStyles.js" />
+    <Content Include="Scripts\modernizr\src\inputElem.js" />
+    <Content Include="Scripts\modernizr\src\is.js" />
+    <Content Include="Scripts\modernizr\src\isSVG.js" />
+    <Content Include="Scripts\modernizr\src\load.js" />
+    <Content Include="Scripts\modernizr\src\modElem.js" />
+    <Content Include="Scripts\modernizr\src\Modernizr.js" />
+    <Content Include="Scripts\modernizr\src\ModernizrProto.js" />
+    <Content Include="Scripts\modernizr\src\mq.js" />
+    <Content Include="Scripts\modernizr\src\mStyle.js" />
+    <Content Include="Scripts\modernizr\src\nativeTestProps.js" />
+    <Content Include="Scripts\modernizr\src\omPrefixes.js" />
+    <Content Include="Scripts\modernizr\src\prefixed.js" />
+    <Content Include="Scripts\modernizr\src\prefixedCSS.js" />
+    <Content Include="Scripts\modernizr\src\prefixedCSSValue.js" />
+    <Content Include="Scripts\modernizr\src\prefixes.js" />
+    <Content Include="Scripts\modernizr\src\roundedEquals.js" />
+    <Content Include="Scripts\modernizr\src\setClasses.js" />
+    <Content Include="Scripts\modernizr\src\slice.js" />
+    <Content Include="Scripts\modernizr\src\testAllProps.js" />
+    <Content Include="Scripts\modernizr\src\testDOMProps.js" />
+    <Content Include="Scripts\modernizr\src\testProp.js" />
+    <Content Include="Scripts\modernizr\src\testProps.js" />
+    <Content Include="Scripts\modernizr\src\testPropsAll.js" />
+    <Content Include="Scripts\modernizr\src\testRunner.js" />
+    <Content Include="Scripts\modernizr\src\tests.js" />
+    <Content Include="Scripts\modernizr\src\testStyles.js" />
+    <Content Include="Scripts\modernizr\src\testXhrType.js" />
+    <Content Include="Scripts\modernizr\src\toStringFn.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration.css" />
+    <Content Include="Scripts\modernizr\test\browser\integration\bools.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\caniuse.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\classes.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\global.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\iframe.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\prefixed-atRule.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\prefixed-autobind.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\prefixed.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\prefixedCSS.js" />
+    <Content Include="Scripts\modernizr\test\browser\integration\svg.js" />
+    <Content Include="Scripts\modernizr\test\browser\setup.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\addTest.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\atRule.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\classes.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\contains.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\createElement.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\cssomPrefixes.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\cssToDOM.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\docElement.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\domPrefixes.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\domToCSS.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\fnBind.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\generate.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\getBody.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\hasEvent.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\hasOwnProp.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\html5printshiv.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\html5shiv.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\injectElementWithStyles.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\inputElem.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\is.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\load.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\modElem.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\Modernizr.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\ModernizrProto.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\mq.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\mStyle.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\nativeTestProps.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\omPrefixes.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\prefixed.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\prefixedCSS.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\prefixedCSSValue.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\prefixes.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\roundedEquals.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\setClasses.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\slice.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testAllProps.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testDOMProps.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testProp.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testProps.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testPropsAll.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testRunner.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\tests.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testStyles.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\testXhrType.js" />
+    <Content Include="Scripts\modernizr\test\browser\src\toStringFn.js" />
+    <Content Include="Scripts\modernizr\test\browser\svgUnit.js" />
+    <Content Include="Scripts\modernizr\test\cleanup.js" />
+    <Content Include="Scripts\modernizr\test\img\integration.svg" />
+    <Content Include="Scripts\modernizr\test\img\unit.svg" />
+    <Content Include="Scripts\modernizr\test\js\lib\sinon.js" />
+    <Content Include="Scripts\modernizr\test\js\lib\uaparser.js" />
+    <Content Include="Scripts\modernizr\test\mocks\lib\build-query.js" />
+    <Content Include="Scripts\modernizr\test\mocks\lib\metadata.js" />
+    <Content Include="Scripts\modernizr\test\node\lib\build.js" />
+    <Content Include="Scripts\modernizr\test\node\lib\cli.js" />
+    <Content Include="Scripts\modernizr\test\node\lib\metadata.js" />
+    <Content Include="Scripts\modernizr\test\node\lib\options.js" />
+    <Content Include="Scripts\modernizr\test\universal\lib\build-hash.js" />
+    <Content Include="Scripts\modernizr\test\universal\lib\generate-banner.js" />
+    <Content Include="Content\js\nprogress\nprogress.css" />
+    <Content Include="Content\js\nprogress\nprogress.js" />
+    <Content Include="Scripts\respond\cross-domain\example.html" />
+    <Content Include="Scripts\respond\cross-domain\respond-proxy.html" />
+    <Content Include="Scripts\respond\cross-domain\respond.proxy.gif" />
+    <Content Include="Scripts\respond\cross-domain\respond.proxy.js" />
+    <Content Include="Scripts\respond\dest\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond\dest\respond.matchmedia.addListener.src.js" />
+    <Content Include="Scripts\respond\dest\respond.min.js" />
+    <Content Include="Scripts\respond\dest\respond.src.js" />
+    <Content Include="Scripts\respond\Gruntfile.js" />
+    <Content Include="Scripts\respond\src\matchmedia.addListener.js" />
+    <Content Include="Scripts\respond\src\matchmedia.polyfill.js" />
+    <Content Include="Scripts\respond\src\respond.js" />
     <Content Include="styles.css" />
     <Content Include="systemjs.config.js" />
     <Content Include="Web.config">
@@ -254,6 +963,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -285,20 +995,173 @@
     <Content Include="Views\Home\AfterLogIn.cshtml" />
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
+    <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <Content Include="tslint.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\js\theme\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\bootstrap\.bower.json" />
+    <Content Include="Scripts\bootstrap\bower.json" />
+    <Content Include="Scripts\bootstrap\CHANGELOG.md" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="Scripts\bootstrap\dist\css\bootstrap.min.css.map" />
+    <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Scripts\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Scripts\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Scripts\bootstrap\Gemfile" />
+    <Content Include="Scripts\bootstrap\Gemfile.lock" />
+    <Content Include="Scripts\bootstrap\grunt\.jshintrc" />
+    <Content Include="Scripts\bootstrap\grunt\configBridge.json" />
+    <Content Include="Scripts\bootstrap\grunt\npm-shrinkwrap.json" />
+    <Content Include="Scripts\bootstrap\grunt\sauce_browsers.yml" />
+    <Content Include="Scripts\bootstrap\ISSUE_TEMPLATE.md" />
+    <Content Include="Scripts\bootstrap\js\.jscsrc" />
+    <Content Include="Scripts\bootstrap\js\.jshintrc" />
+    <Content Include="Scripts\bootstrap\less\.csscomb.json" />
+    <Content Include="Scripts\bootstrap\less\.csslintrc" />
+    <Content Include="Scripts\bootstrap\less\alerts.less" />
+    <Content Include="Scripts\bootstrap\less\badges.less" />
+    <Content Include="Scripts\bootstrap\less\bootstrap.less" />
+    <Content Include="Scripts\bootstrap\less\breadcrumbs.less" />
+    <Content Include="Scripts\bootstrap\less\button-groups.less" />
+    <Content Include="Scripts\bootstrap\less\buttons.less" />
+    <Content Include="Scripts\bootstrap\less\carousel.less" />
+    <Content Include="Scripts\bootstrap\less\close.less" />
+    <Content Include="Scripts\bootstrap\less\code.less" />
+    <Content Include="Scripts\bootstrap\less\component-animations.less" />
+    <Content Include="Scripts\bootstrap\less\dropdowns.less" />
+    <Content Include="Scripts\bootstrap\less\forms.less" />
+    <Content Include="Scripts\bootstrap\less\glyphicons.less" />
+    <Content Include="Scripts\bootstrap\less\grid.less" />
+    <Content Include="Scripts\bootstrap\less\input-groups.less" />
+    <Content Include="Scripts\bootstrap\less\jumbotron.less" />
+    <Content Include="Scripts\bootstrap\less\labels.less" />
+    <Content Include="Scripts\bootstrap\less\list-group.less" />
+    <Content Include="Scripts\bootstrap\less\media.less" />
+    <Content Include="Scripts\bootstrap\less\mixins.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\alerts.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\background-variant.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\border-radius.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\buttons.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\center-block.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\clearfix.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\forms.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\gradients.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\grid-framework.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\grid.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\hide-text.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\image.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\labels.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\list-group.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\nav-divider.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\nav-vertical-align.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\opacity.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\pagination.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\panels.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\progress-bar.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\reset-filter.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\reset-text.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\resize.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\responsive-visibility.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\size.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\tab-focus.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\table-row.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\text-emphasis.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\text-overflow.less" />
+    <Content Include="Scripts\bootstrap\less\mixins\vendor-prefixes.less" />
+    <Content Include="Scripts\bootstrap\less\modals.less" />
+    <Content Include="Scripts\bootstrap\less\navbar.less" />
+    <Content Include="Scripts\bootstrap\less\navs.less" />
+    <Content Include="Scripts\bootstrap\less\normalize.less" />
+    <Content Include="Scripts\bootstrap\less\pager.less" />
+    <Content Include="Scripts\bootstrap\less\pagination.less" />
+    <Content Include="Scripts\bootstrap\less\panels.less" />
+    <Content Include="Scripts\bootstrap\less\popovers.less" />
+    <Content Include="Scripts\bootstrap\less\print.less" />
+    <Content Include="Scripts\bootstrap\less\progress-bars.less" />
+    <Content Include="Scripts\bootstrap\less\responsive-embed.less" />
+    <Content Include="Scripts\bootstrap\less\responsive-utilities.less" />
+    <Content Include="Scripts\bootstrap\less\scaffolding.less" />
+    <Content Include="Scripts\bootstrap\less\tables.less" />
+    <Content Include="Scripts\bootstrap\less\theme.less" />
+    <Content Include="Scripts\bootstrap\less\thumbnails.less" />
+    <Content Include="Scripts\bootstrap\less\tooltip.less" />
+    <Content Include="Scripts\bootstrap\less\type.less" />
+    <Content Include="Scripts\bootstrap\less\utilities.less" />
+    <Content Include="Scripts\bootstrap\less\variables.less" />
+    <Content Include="Scripts\bootstrap\less\wells.less" />
+    <Content Include="Scripts\bootstrap\LICENSE" />
+    <Content Include="Scripts\bootstrap\nuget\bootstrap.less.nuspec" />
+    <Content Include="Scripts\bootstrap\nuget\bootstrap.nuspec" />
+    <Content Include="Scripts\bootstrap\nuget\MyGet.ps1" />
+    <Content Include="Scripts\bootstrap\package.json" />
+    <Content Include="Scripts\bootstrap\README.md" />
+    <Content Include="Scripts\jquery-validation\.bower.json" />
+    <Content Include="Scripts\jquery-validation\bower.json" />
+    <Content Include="Scripts\jquery-validation\changelog.md" />
+    <Content Include="Scripts\jquery-validation\CONTRIBUTING.md" />
+    <Content Include="Scripts\jquery-validation\LICENSE.md" />
+    <Content Include="Scripts\jquery-validation\package.json" />
+    <Content Include="Scripts\jquery-validation\README.md" />
+    <Content Include="Scripts\jquery-validation\validation.jquery.json" />
+    <Content Include="Scripts\jquery\.bower.json" />
+    <Content Include="Scripts\jquery\bower.json" />
+    <Content Include="Scripts\jquery\dist\jquery.min.map" />
+    <Content Include="Scripts\jquery\dist\jquery.slim.min.map" />
+    <Content Include="Scripts\jquery\external\sizzle\dist\sizzle.min.map" />
+    <Content Include="Scripts\jquery\README.md" />
+    <Content Include="Scripts\jquery\src\.eslintrc" />
+    <Content Include="Scripts\modernizr\.bower.json" />
+    <Content Include="Scripts\modernizr\.coveralls.yml" />
+    <Content Include="Scripts\modernizr\.editorconfig" />
+    <Content Include="Scripts\modernizr\.jscsrc" />
+    <Content Include="Scripts\modernizr\.jshintignore" />
+    <Content Include="Scripts\modernizr\.jshintrc" />
+    <Content Include="Scripts\modernizr\.npmignore" />
+    <Content Include="Scripts\modernizr\.travis.yml" />
+    <Content Include="Scripts\modernizr\appveyor.yml" />
+    <Content Include="Scripts\modernizr\bin\modernizr" />
+    <Content Include="Scripts\modernizr\lib\.jshintrc" />
+    <Content Include="Scripts\modernizr\lib\config-all.json" />
+    <Content Include="Scripts\modernizr\lib\polyfills.json" />
+    <Content Include="Scripts\modernizr\LICENSE" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo vertical big.ai" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo vertical medium.ai" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo vertical small.ai" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo.ai" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo.eps" />
+    <Content Include="Scripts\modernizr\media\Modernizr 2 Logo.pdf" />
+    <Content Include="Scripts\modernizr\package.json" />
+    <Content Include="Scripts\modernizr\readme.md" />
+    <Content Include="Scripts\modernizr\test\.jshintrc" />
+    <Content Include="Scripts\modernizr\test\browser\iframe.jade" />
+    <Content Include="Scripts\modernizr\test\browser\integration.jade" />
+    <Content Include="Scripts\modernizr\test\browser\sauce-browsers.json" />
+    <Content Include="Scripts\modernizr\test\browser\unit.jade" />
+    <Content Include="Scripts\respond\.bower.json" />
+    <Content Include="Scripts\respond\bower.json" />
+    <Content Include="Scripts\respond\LICENSE-MIT" />
+    <Content Include="Scripts\respond\package.json" />
+    <Content Include="Scripts\respond\README.md" />
+  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Project_Readme.html" />
     <Content Include="Views\Home\SlackAuthorize.cshtml" />
   </ItemGroup>
@@ -321,43 +1184,83 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app\app.component.spec.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\app.routes.ts" />
+    <TypeScriptCompile Include="app\appcomponent.service.ts" />
     <TypeScriptCompile Include="app\enums\taskMailStatus.ts" />
+    <TypeScriptCompile Include="app\Group\group.component.spec.ts" />
+    <TypeScriptCompile Include="app\Group\group.model.ts" />
+    <TypeScriptCompile Include="app\Group\group.module.ts" />
+    <TypeScriptCompile Include="app\Group\group.routes.ts" />
+    <TypeScriptCompile Include="app\Group\group.service.ts" />
+    <TypeScriptCompile Include="app\Group\group.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupAdd\groupAdd.component.spec.ts" />
+    <TypeScriptCompile Include="app\Group\GroupAdd\groupAdd.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupEdit\groupEdit.component.spec.ts" />
+    <TypeScriptCompile Include="app\Group\GroupEdit\groupEdit.component.ts" />
+    <TypeScriptCompile Include="app\Group\GroupList\groupList.component.spec.ts" />
+    <TypeScriptCompile Include="app\Group\GroupList\groupList.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\filter.pipe.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-Details\leaveReport-Details.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
+    <TypeScriptCompile Include="app\leaveReport\leaveReport.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.component.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.module.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.routes.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
-    <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.model.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\main.ts" />
-    <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.spec.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-EmployeeScrumDetails.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.spec.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumProject-List\scrumProject-List.model.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.spec.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.component.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.module.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.routes.ts" />
+    <TypeScriptCompile Include="app\ScrumReport\scrumReport.service.ts" />
+    <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
+    <TypeScriptCompile Include="app\shared\jsontopdf.service.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.spec.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.component.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.model.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.module.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsetting.service.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\mailsettingAC.model.ts" />
+    <TypeScriptCompile Include="app\shared\MailSetting\project.model.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.error.model.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.activatedroute.ts" />
+    <TypeScriptCompile Include="app\shared\emailHashCode.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.group.service.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.mailsetting.service.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.md2selectchange.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.md2toast.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.router.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.scrumReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.taskmailReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.routerLink.ts" />
-    <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
+    <TypeScriptCompile Include="app\shared\mock\mock.md2Dialog.ts" />
     <TypeScriptCompile Include="app\shared\shared.module.ts" />
-    <TypeScriptCompile Include="app\shared\stringConstant.ts" />
-    <TypeScriptCompile Include="app\shared\spinner.component.ts" />
-    <TypeScriptCompile Include="app\shared\spinner.service.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-details\taskmail-details.component.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail-list\taskmail-list.component.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.component.spec.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.component.ts" />
-    <TypeScriptCompile Include="app\taskmail\taskmail.model.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmaildetails.model.ts" />
     <TypeScriptCompile Include="app\taskmail\taskMail.module.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.routes.ts" />
     <TypeScriptCompile Include="app\taskmail\taskmail.service.ts" />
-    <TypeScriptCompile Include="app\taskmail\taskmailuser.model.ts" />
+    <TypeScriptCompile Include="app\taskmail\taskmail.model.ts" />
     <TypeScriptCompile Include="app\shared\mock\mock.leaveReport.service.ts" />
     <TypeScriptCompile Include="app\shared\mock\test.connection.ts" />
     <TypeScriptCompile Include="app\shared\stringConstant.ts" />
@@ -370,7 +1273,6 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.1.8.11\tools\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
@@ -398,9 +1300,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.0.0-rc2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.0.0-rc2\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets'))" />
   </Target>
+  <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

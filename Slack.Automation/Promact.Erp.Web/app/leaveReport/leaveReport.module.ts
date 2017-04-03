@@ -5,8 +5,9 @@ import { LeaveReportDetailsComponent } from './leaveReport-Details/leaveReport-D
 import { LeaveReportService } from './leaveReport.service';
 import { leaveReportRoutes } from "./leaveReport.routes";
 import { SharedModule } from '../shared/shared.module';
-
-
+import { FilterPipe } from './filter.pipe';
+import { JsonToPdfService } from '../shared/jsontopdf.service';
+import { StringConstant } from '../shared/stringConstant';
 
 @NgModule({
     imports: [
@@ -17,9 +18,12 @@ import { SharedModule } from '../shared/shared.module';
         LeaveReportComponent,
         LeaveReportListComponent,
         LeaveReportDetailsComponent,
+        FilterPipe,
     ],
     providers: [
-        LeaveReportService
-    ]
+        LeaveReportService,
+        JsonToPdfService,
+        StringConstant
+    ],
 })
 export class LeaveModule { }

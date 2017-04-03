@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Promact.Erp.Util.StringConstants
+﻿namespace Promact.Erp.Util.StringConstants
 {
     public interface IStringConstantRepository
     {
@@ -29,28 +23,51 @@ namespace Promact.Erp.Util.StringConstants
         string CancelLeaveError { get; }
         string SlackHelpMessage { get; }
         string SlackErrorMessage { get; }
-
-        
-       
-        string UsersDetailByGroupUrl { get; }
+        string Link { get; }
+        string Unlink { get; }
+        string NotActiveUser { get; }
+        string NotTeamLeader { get; }
+        string ListOfLinks { get; }
+        string ProjectAndTeamLeaderDetail { get; }
+        string ProjectTeamLeaderDetail { get; }
+        string ProjectLinked { get; }
+        string UnLinkFirst { get; }
+        string InActiveProject { get; }
+        string AlreadyLinked { get; }
+        string NotLinkedYet { get; }
+        string UnlinkedSuccessfully { get; }
+        string  NotLinkedToChannel { get; }
+        string NoLinks { get; }
+        string Links { get; }
+        string NotTeamLeaderOfProject { get; }
+        string UsersDetailByChannelNameUrl { get; }
         string UserDetailsByIdUrl { get; }
-        string UserDetailByUserNameUrl { get; }
         string UrlRtmStart { get; }
         string OAuthAuthorizationScopeAndClientId { get; }
         string UserDetailsUrl { get; }
         string TeamLeaderDetailsUrl { get; }
         string ManagementDetailsUrl { get; }
         string OAuthAcessUrl { get; }
+        string SlackAuthorize { get; }
+        string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
+        string ProjectDetailUrl { get; }
         string ProjectUsersByTeamLeaderId { get; }
         string ProjectUserDetailsUrl { get; }
         string ProjectTeamLeaderDetailsUrl { get; }
         string ProjectManagementDetailsUrl { get; }
         string UserDetailUrl { get; }
-        string LoginUserDetail { get; }
         string ThankYou { get; }
         string InternalError { get; }
         string SlackUserListUrl { get; }
+        string ProjectDetailsFromOauthInValidUser { get; }
+        string ProjectDetailsFromOauthOneEmployee { get; }
+        string ProjectDetailsFromOauthOneInActiveEmployee { get; }
+
+        string ProjectDetailsFromOauthThreeEmployeeInActive { get; }
+        string ProjectDetailsFromOauthThreeEmployee { get; }
+        string ProjectChannelNotLinked { get; }
+
         string SlackChannelListUrl { get; }
         string SlackGroupListUrl { get; }
         string TaskMailBotStatusErrorMessage { get; }
@@ -59,7 +76,7 @@ namespace Promact.Erp.Util.StringConstants
         string TaskMailHours { get; }
         string TaskMailComment { get; }
         string TaskMailStatus { get; }
-        string ScrumTime { get; }
+        string StartBot { get; }
         string ScrumHalt { get; }
         string ScrumHalted { get; }
         string ScrumAlreadyHalted { get; }
@@ -82,9 +99,15 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageHomeControllerAuthorizeStatusPage { get; }
         string LoggerErrorMessageOAuthControllerSlackDetailsAdd { get; }
         string PreviousDayStatus { get; }
+        string PreviousDayScrumAnswer { get; }
+        string InActiveProjectDetailsFromOauthInActiveUser { get; }
+        string NameFormat { get; }
+        string AnswerNotRecorded { get; }
+        string UserNotInOAuthOrProject { get; }
         string ScrumBotToken { get; }
         string ScrumBotName { get; }
         string LoggerScrumBot { get; }
+        string LoggerTaskMailBot { get; }
         string ScrumLaterDone { get; }
         string AlreadyAnswered { get; }
         string NotExpected { get; }
@@ -92,18 +115,31 @@ namespace Promact.Erp.Util.StringConstants
         string NoSlackDetails { get; }
         string ScrumCannotBeHalted { get; }
         string ScrumCannotBeResumed { get; }
+        string ProjectDetailsFromOauthInActiveUser { get; }
         string ProjectInActive { get; }
         string ScrumInProgress { get; }
+        string EmployeesListFromOauthThreeEmployeesInActive { get; }
+        string SlackUserNotFound { get; }
+        string UserNotInSlack { get; }
+        string NotInSlackOrNotExpectedUser { get; }
 
-
+        string InValidStartCommand { get; }
+        string InActiveEmployeesList { get; }
+        string EmployeesListFromOauthOneEmployee { get; }
+        string EmployeesListFromOauthThreeEmployees { get; }
+        string ThirdUserSlackUserId { get; }
+        string UserNotInProject { get; }
         string NoQuestion { get; }
         string NoEmployeeFound { get; }
-        string WrongPerson { get; }
+        string MarkedInActive { get; }
         string Unrecognized { get; }
         string UserChange { get; }
         string ChannelCreated { get; }
+        string ChannelArchive { get; }
+        string GroupArchive { get; }
         string ChannelRename { get; }
         string GroupRename { get; }
+        string ListLinks { get; }
 
         string NoProjectFound { get; }
         string ScrumComplete { get; }
@@ -112,7 +148,6 @@ namespace Promact.Erp.Util.StringConstants
         string GoodDay { get; }
         string Time { get; }
         string PleaseAnswer { get; }
-        string ScrumConcludedButLater { get; }
         string AllAnswerRecorded { get; }
         string NotLaterYet { get; }
         string SendTaskMailConfirmationErrorMessage { get; }
@@ -132,6 +167,8 @@ namespace Promact.Erp.Util.StringConstants
         string CommentAndDescriptionForTest { get; }
         string ManagementDetailsFromOauthServer { get; }
         string TaskMailReport { get; }
+        string ListOfEmployeeForTeamLeader { get; }
+        string EmployeeInformation { get; }
         string TaskMailReportTeamLeader { get; }
         string TeamLeaderEmailForTest { get; }
         string ManagementFirstForTest { get; }
@@ -150,6 +187,7 @@ namespace Promact.Erp.Util.StringConstants
         string Command { get; }
         string ResponseUrl { get; }
         string TeamDomain { get; }
+        string OAuthProjName { get; }
         string TeamId { get; }
         string Text { get; }
         string Token { get; }
@@ -159,6 +197,13 @@ namespace Promact.Erp.Util.StringConstants
         string UnderConstruction { get; }
         string Hello { get; }
         string All { get; }
+        string LinkTest { get; }
+        string LinkChannelNoName { get; }
+        string UnlinkCommand { get; }
+        string UnlinkTest { get; }
+        string ProjectTeamLeaderInActiveDetail { get; }
+        string OAuthProjectName { get; }
+        string InActiveProjectTeamLeaderDetail { get; }
         string StringHourForTest { get; }
         string AfterLogIn { get; }
         string Home { get; }
@@ -180,7 +225,8 @@ namespace Promact.Erp.Util.StringConstants
         string Port { get; }
         string TokenEmpty { get; }
         string ErrorMsg { get; }
-        string From { get; }
+        string ErrorMsgNewPrivateChannel { get; }
+        string MailUserName { get; }
         string Password { get; }
         string EnableSsl { get; }
         string IncomingWebHookUrl { get; }
@@ -192,13 +238,14 @@ namespace Promact.Erp.Util.StringConstants
         string LoggerErrorMessageLeaveRequestControllerSlackRequest { get; }
         string LoggerErrorMessageLeaveRequestControllerSlackButtonRequest { get; }
         string LoggerErrorMessageHomeControllerExtrenalLogin { get; }
+        string LoggerErrorMessageHomeControllerSlackOAuthAuthorization { get; }
         string LoggerErrorMessageHomeControllerExtrenalLoginCallBack { get; }
         string LoggerErrorMessageHomeControllerLogoff { get; }
         string LoggerErrorMessageOAuthControllerRefreshToken { get; }
         string LoggerErrorMessageOAuthControllerSlackOAuth { get; }
         string LoggerErrorMessageOAuthControllerSlackEvent { get; }
         string LoggerErrorMessageTaskMailBot { get; }
-        string SlackBotStringName { get; }
+        string SlackBotName { get; }
         string CasualLeaveUrl { get; }
         string CasualLeaveResponse { get; }
         string SlackChannelIdForTest { get; }
@@ -222,7 +269,7 @@ namespace Promact.Erp.Util.StringConstants
         string UserDetailsResponseText { get; }
         string ChannelDetailsResponseText { get; }
         string GroupDetailsResponseText { get; }
-        string LeaveListTestForOwn { get; }
+        string List { get; }
         string WrongLeaveCancelCommandForTest { get; }
         string LeaveStatusTestForOwn { get; }
         string SecondQuestionForTest { get; }
@@ -265,6 +312,14 @@ namespace Promact.Erp.Util.StringConstants
         string AdminErrorMessageApplySickLeave { get; }
         string UserNotFound { get; }
         string BotNotFound { get; }
+        string PersonNotAvailable { get; }
+        string FormatForDate { get; }
+        string ScrumFirstQuestion { get; }
+        string ScrumSecondQuestion { get; }
+        string ScrumThirdQuestion { get; }
+        string AllProjectUrl { get; }
+        string GetProjectDetails { get; }
+        string Start { get; }
 
         #region String Constants for Test Cases
 
@@ -303,6 +358,32 @@ namespace Promact.Erp.Util.StringConstants
         string NextQuestion { get; }
         string QuestionToNextEmployee { get; }
         string PreviousDayStatusForTest { get; }
+        string AdminLogin { get; }
+        string TeamLeaderLogin { get; }
+        string EmployeeLogin { get; }
+        string TeamLeaderLoginDetails { get; }
+        string ProjectDetail { get; }
+        string ProjectDetailsForAdminFromOauth { get; }
+        string ProjectDetailsForTeamLeaderFromOauth { get; }
+        string ProjectDetailsForEmployeeFromOauth { get; }
+        string TestAnswer { get; }
+        string TestId { get; }
+        string TestGroupName { get; }
+        string TestQuestion { get; }
+        string EmployeesListFromOauthInValid { get; }
+        string UnExpectedInActiveUser { get; }
+        string EmployeesListInValid { get; }
+        string InActiveInOAuth { get; }
+        string OAuthUserDetails { get; }
+        string InValidOAuthUsers { get; }
+        string WrongActionSlashCommand { get; }
+        string LeaveWrongCommandForBackDateCL { get; }
+        string LeaveWrongCommandForBeyondDateFirstExample { get; }
+        string LeaveWrongCommandForBeyondDateSecondExample { get; }
+        string LeaveWrongCommandForBackDateSL { get; }
+        string SlashCommandUpdateForBeyondStartDateFirstExample { get; }
+        string SlashCommandUpdateForBeyondStartDateSecondExample { get; }
+        string LeaveCommand { get; }
 
         #endregion
 
@@ -315,8 +396,139 @@ namespace Promact.Erp.Util.StringConstants
 
         string NotAvailable { get; }
         string NextPage { get; }
-        string PriviousPage { get; }
+        string Previouspage { get; }
+        string HourLimitExceed { get; }
+        string StartWorking { get; }
+        string HourSpentForTesting { get; }
+        string HourSpentExceeded { get; }
+        string BackDateErrorMessage { get; }
+        string InValidDateErrorMessage { get; }
+        string JsonContentString { get; }
+        string UserSlackId { get; }
+        string TeamLeaderSlackId { get; }
+        string ManagementSlackId { get; }
+        string Ok { get; }
+        string LeaveAllowed { get; }
+        string LeaveAlreadyExistOnSameDate { get; }
+        string ReplyTextForUpdateLeave { get; }
+        string ReplyTextForCasualLeaveList { get; }
+        string ReplyTextForSickLeaveList { get; }
+        string ReplyTextForCancelLeave { get; }
+        string ReplyTextForErrorInCancelLeave { get; }
+        string ReplyTextForCasualLeaveStatus { get; }
+        string ReplyTextForSickLeaveStatus { get; }
+        string ReplyTextForCasualLeaveBalance { get; }
+        string ReplyTextForSickLeaveBalance { get; }
+        string ReplyTextForSickLeaveUpdate { get; }
+        string ReplyTextForSMTPExceptionErrorMessage { get; }
+        string SlashCommandErrorMessage { get; }
+        string ReplyTextForCasualLeaveApplied { get; }
+        string ReplyTextForSickLeaveApplied { get; }
+        string UpdateMessageUrl { get; }
+        string AtTheRate { get; }
+        string SlackOauthRequestUrl { get; }
+        string SlackUserDetailsUrl { get; }
+        string EmployeeFirstLastNameFormat { get; }
+        string FirstAndSecondIndexStringFormat { get; }
+        string FirstSecondAndThirdIndexStringFormat { get; }
+        string StringValueOneForTest { get; }
+        string StringValueFiftyFiveForTest { get; }
+        string ControllerErrorMessageStringFormat { get; }
+        string ExternalLoginUrl { get; }
+        string SlackAuthorizeAction { get; }
+        string Default { get; }
+        string CasualLeaveUpdateMessageForUser { get; }
+        string AlreadyUpdatedMessage { get; }
+        string LeaveUpdateResponseJsonString { get; }
+        string Payload { get; }
+        string LeaveUpdateEmailStringFormat { get; }
+        string RequestToAddSlackApp { get; }
+        string Star { get; }
+        string HttpRequestExceptionErrorMessage { get; }
+        string Space { get; }
+        string UserDetailsFromOauthServerFalse { get; }
+        string TaskMailMaximumTime { get; }
+        string Scopes { get; }
+        string AuthenticationType { get; }
+        string AuthenticationTypeOidc { get; }
+        string ResponseType { get; }
+        string Scope { get; }
+        string RedirectUrl { get; }
+        string Sub { get; }
+        string Email { get; }
+        string SlackUserID { get; }
+        string RoleClaimType { get; }
+        string NameClaimType { get; }
+        string Bearer { get; }
+        string TaskModule { get; }
+        string ScrumModule { get; }
+        string LeaveModule { get; }
+        string Management { get; }
+        string TestEmail { get; }
+        string SecondTestEmail { get; }
+        string TeamLeaderGroup { get; }
+        string ManagementGroup { get; }
+        string TeamMembersGroup { get; }
+        string EmailListForGroup { get; }
+        string DetailsAndSlashForUrl { get; }
+        string UserDetailsNotFound { get; }
 
-
+        #region Redmine
+        string RedmineBaseUrl { get; }
+        string RequestToEnterProperRedmineAction { get; }
+        string RedmineHelp { get; }
+        string RedmineApiKey { get; }
+        string RedmineProjectListAssignToMeUrl { get; }
+        string NoProjectFoundForUser { get; }
+        string ProperRedmineIssueAction { get; }
+        string ProperProjectId { get; }
+        string RedmineIssueListAssignToMeByProjectIdUrl { get; }
+        string ProjectDoesNotExistForThisId { get; }
+        string ErrorInCreatingIssue { get; }
+        string JsonApplication { get; }
+        string IssueSuccessfullyCreatedMessage { get; }
+        string RedmineIssueUrl { get; }
+        string NoUserFoundInProject { get; }
+        string IssueDoesNotExist { get; }
+        string IssueDetailsUrl { get; }
+        string RedmineIssueUpdateUrl { get; }
+        string IssueUrl { get; }
+        string ErrorInUpdateIssue { get; }
+        string IssueSuccessfullUpdated { get; }
+        string TimeEntryUrl { get; }
+        string HourIsNotNumericMessage { get; }
+        string TimeEntryActivityErrorMessage { get; }
+        string TimeEnrtyAddSuccessfully { get; }
+        string ErrorInAddingTimeEntry { get; }
+        string RedmineIssueMessageFormat { get; }
+        string RedminePriorityErrorMessage { get; }
+        string RedmineStatusErrorMessage { get; }
+        string RedmineTrackerErrorMessage { get; }
+        string UserByProjectIdUrl { get; }
+        string RedmineTimeEntryDateFormat { get; }
+        string RedmineWrongActionCommand { get; }
+        string RedmineCommandProjectList { get; }
+        string RedmineWrongIssueActionCommand { get; }
+        string RedmineCommandIssueListWrongProjectId { get; }
+        string RedmineCommandIssueList { get; }
+        string RedmineCommandCreateWrongPriority { get; }
+        string RedmineCommandCreateWrongStatus { get; }
+        string RedmineCommandCreateWrongTracker { get; }
+        string RedmineCommandCreateWrongProjectId { get; }
+        string RedmineCommandCreate { get; }
+        string RedmineCommandChangeAssign { get; }
+        string RedmineCommandIssueClose { get; }
+        string RedmineTimeEntryWrongIssueId { get; }
+        string RedmineTimeEntry { get; }
+        string RedmineTimeEntryHourFormatCommand { get; }
+        string RedmineTimeEntryDateFormatCommand { get; }
+        string RedmineTimeEntryTimeEntryActivityFormatCommand { get; }
+        string RedmineCommandHelp { get; }
+        string RedmineApiKeyIsNull { get; }
+        string RedmineKeyAddSuccessfully { get; }
+        string PleaseEnterValidAPIKey { get; }
+        string RedmineAPIKeyCommand { get; }
+        string RedmineProjectListFormat { get; }
+        #endregion
     }
 }

@@ -11,10 +11,10 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// Method to add a new user in Application user table and store user's external login information in UserLogin table
         /// </summary>
         /// <param name="email"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="slackUserName"></param>
+        /// <param name="refreshToken"></param>
+        /// <param name="userId"></param>
         /// <returns>user information</returns>
-        Task<ApplicationUser> AddNewUserFromExternalLogin(string email, string accessToken, string slackUserName,string userId);
+        Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId);
 
         /// <summary>
         /// Method to get OAuth Server's app information
@@ -28,18 +28,25 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        Task AddSlackUserInformation(string code);
+        Task AddSlackUserInformationAsync(string code);
 
         /// <summary>
         /// Method to update slack user table when there is any changes in slack
         /// </summary>
         /// <param name="slackEvent"></param>
-        void SlackEventUpdate(SlackEventApiAC slackEvent);
+        Task SlackEventUpdateAsync(SlackEventApiAC slackEvent);
 
         /// <summary>
         /// Method to update slack channel table when a channel is added or updated in team.
         /// </summary>
         /// <param name="slackEvent"></param>
-        void SlackChannelAdd(SlackEventApiAC slackEvent);
+        Task SlackChannelAddAsync(SlackEventApiAC slackEvent);
+
+        /// <summary>
+        /// Method check user slackid is exists or ot 
+        /// </summary>
+        /// <param name="userId">login user id</param>
+        /// <returns>empty string</returns>
+        Task<string> CheckUserSlackInformation(string userId);
     }
 }

@@ -13,7 +13,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
 
         int Port { get; }
 
-        string From { get; }
+        string MailUserName { get; }
 
         string Password { get; }
 
@@ -26,6 +26,5 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
         string PromactOAuthClientSecret { get; }
 
         string TaskmailAccessToken { get; }
-
     }
 }

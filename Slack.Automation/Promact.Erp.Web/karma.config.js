@@ -22,7 +22,7 @@ module.exports = function (config) {
                   'node_modules/systemjs/dist/system.src.js',
 
                   // Zone.js dependencies
-                    
+
                     'node_modules/zone.js/dist/zone.js',
                     'node_modules/zone.js/dist/proxy.js',
                     'node_modules/zone.js/dist/sync-test.js',
@@ -35,6 +35,10 @@ module.exports = function (config) {
                   { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
                   { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
 
+                  //md2
+                  { pattern: 'node_modules/md2/**/*.js', included: false, watched: true },
+                  { pattern: 'node_modules/md2/**/*.js.map', included: false, watched: true },
+
                   'karma-test-shim.js',
 
                    // paths loaded via module imports
@@ -42,7 +46,8 @@ module.exports = function (config) {
                   { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
                   { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: true },
 
-                  // Our built application code
+                  
+                  // Our built application code                  
                   { pattern: 'app/**/*.ts', included: false, watched: true },
                   { pattern: 'app/**/*.js', included: false, watched: true },
                   { pattern: 'app/**/*.js.map', included: false, watched: true },
@@ -58,18 +63,21 @@ module.exports = function (config) {
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        //preprocessors: {
-        //    "**/app/*spec.js": "coverage"
-        //},
+        preprocessors: { 
+            '**/app/*/*component.js': ['coverage'],
+            '**/app/**/*component.js': ['coverage']
+        },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'coverage', 'coveralls'],
+        reporters: ['progress', 'coverage'],
 
         coverageReporter: {
-            type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
-            dir: 'coverage/'
+            reporters: [
+            { type: 'html', subdir: 'html' },
+            { type: 'lcovonly', subdir: 'lcov' },
+            { type: 'cobertura', subdir: 'cobertura' }]
         },
 
         // proxied base paths
@@ -115,7 +123,6 @@ module.exports = function (config) {
             'karma-jasmine',
             'karma-chrome-launcher',
             'karma-coverage',
-            'karma-coveralls'
         ],
 
     })

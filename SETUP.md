@@ -15,7 +15,7 @@
       Slack's Scrum meeting Bot AccessToken 
 
 2. Email Variables 
-  * ```From``` =  example@examples.com :
+  * ```MailUserName``` =  example@examples.com :
     Your Email Id 
   * ```Password``` =  asjdfjas541sd5 :
     Your Emial's Password 

@@ -29,10 +29,37 @@ namespace Promact.Erp.Util.Email_Templates
         public virtual string TransformText()
         {
             this.Write("\r\n\r\n");
-            this.Write("\r\n<!DOCTYPE> \r\n<html>\r\n<head>\r\n</head>\r\n<body>\r\n    LEAVE APPLICATION\r\n    <table" +
-                    ">\r\n\t\t<tr>\r\n            <td><b>From :</b></td>\r\n            <td>");
+            this.Write(@"
+<!DOCTYPE> 
+<html>
+<head>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table, td, th {
+    border: 1px solid black;
+}
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #9FA3A5}
+</style>
+</head>
+<body>
+    LEAVE ");
             
-            #line 25 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 36 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(Status));
+            
+            #line default
+            #line hidden
+            this.Write("\r\n    <table>\r\n\t\t<tr>\r\n            <td><b>From :</b></td>\r\n            <td>");
+            
+            #line 40 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(FromDate));
             
             #line default
@@ -40,7 +67,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n        <tr>\r\n            <td><b>To :</b></td>\r\n           " +
                     " <td>");
             
-            #line 29 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 44 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EndDate));
             
             #line default
@@ -48,7 +75,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Reason :</b></td>\r\n            <" +
                     "td>");
             
-            #line 33 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 48 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Reason));
             
             #line default
@@ -56,7 +83,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Type :</b></td>\r\n            <td" +
                     ">");
             
-            #line 37 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 52 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             
             #line default
@@ -64,7 +91,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Status :</b></td>\r\n            <" +
                     "td>");
             
-            #line 41 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 56 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Status));
             
             #line default
@@ -72,7 +99,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Re-Join Date :</b></td>\r\n       " +
                     "     <td>");
             
-            #line 45 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 60 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ReJoinDate));
             
             #line default
@@ -80,7 +107,7 @@ namespace Promact.Erp.Util.Email_Templates
             this.Write("</td>\r\n        </tr>\r\n        <tr>\r\n            <td><b>Applied On :</b></td>\r\n   " +
                     "         <td>");
             
-            #line 49 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
+            #line 64 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApproveAndRejected.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreatedOn));
             
             #line default

@@ -1,36 +1,53 @@
-using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
-using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Promact.Erp.Util.StringConstants;
+using System.Net.Http;
+using Promact.Erp.Util.HashingMd5;
+using System;
+using Promact.Erp.DomainModel.ApplicationClass;
+using NLog;
+using Promact.Core.Repository.GroupRepository;
 
 namespace Promact.Erp.Core.Controllers
 {
     public class HomeController : MVCBaseController
     {
+        #region Private Variables
+
         private readonly ApplicationSignInManager _signInManager;
         private readonly ApplicationUserManager _userManager;
-        private readonly ILogger _logger;
         private readonly IOAuthLoginRepository _oAuthLoginRepository;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly IGroupRepository _groupRepository;
+        private readonly ILogger _logger;
+        private readonly IMd5Service _md5Service;
 
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant, ApplicationSignInManager signInManager, ILogger logger, IOAuthLoginRepository oAuthLoginRepository, IEnvironmentVariableRepository envVariableRepository)
+        #endregion
+
+        #region Constructor
+
+        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
+            ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
+            IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository) : base(stringConstant)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
             _oAuthLoginRepository = oAuthLoginRepository;
             _envVariableRepository = envVariableRepository;
-            _stringConstant = stringConstant;
+            _logger = LogManager.GetLogger("AuthenticationModule");
+            _md5Service = md5Service;
+            _groupRepository = groupRepository;
         }
 
+        #endregion
+
+        #region Public Methods
         /**
         * @api {get} Home/Index
         * @apiVersion 1.0.0
@@ -44,14 +61,15 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult Index()
         {
+            _logger.Info("Index: Today " + DateTime.Today+"\n Today's Date :"+ DateTime.Today.Date);
+            _logger.Debug("User is login :" + User.Identity.IsAuthenticated);
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                _logger.Info("User is Authenticated");
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
             return View();
-            
         }
-
         /**
         * @api {get} Home/AfterLogIn
         * @apiVersion 1.0.0
@@ -63,8 +81,19 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"After Login from OAuth server Page will be redirected to this page and will open a view of application"
         * }
         */
-        public ActionResult AfterLogIn()
+        [Authorize]
+        public async Task<ActionResult> AfterLogIn()
         {
+            _logger.Info("AfterLogIn: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
+            string userId = GetUserId(User.Identity);
+            //for check login user is already added in slack 
+            ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
+
+            //this for get login user email address and encrypt hash code.
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
+            ViewBag.emailHashCode = emailHaseCodeAC;
+            await _groupRepository.AddDynamicGroupAsync();
             return View();
         }
 
@@ -83,17 +112,9 @@ namespace Promact.Erp.Core.Controllers
        */
         public ActionResult SlackAuthorize(string message)
         {
-            try
-            {
-                ViewBag.Message = message;
-                return View();
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerAuthorizeStatusPage, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            _logger.Info("SlackAuthorize: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
+            ViewBag.Message = message;
+            return View();
         }
 
 
@@ -110,23 +131,14 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult ExtrenalLogin()
         {
-            try
+            if (User.Identity.IsAuthenticated)
             {
-                if (User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                }
-                //BaseUrl of OAuth and clientId of App to be set 
-                var url = string.Format("{0}?clientId={1}", _stringConstant.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
-                //make call to the OAuth Server
-                return Redirect(url);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
             }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerExtrenalLogin, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            //BaseUrl of OAuth and clientId of App to be set 
+            string url = string.Format("{0}?clientId={1}", _stringConstantRepository.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
+            //make call to the OAuth Server
+            return Redirect(url);
         }
 
         /**
@@ -143,35 +155,30 @@ namespace Promact.Erp.Core.Controllers
         *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
         * }
         */
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserName , string userId)
+        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId, string userId)
         {
-            try
+            ApplicationUser user = _userManager.FindByEmail(email);
+            if (user != null)
             {
-                var user = _userManager.FindByEmail(email);
+                await _signInManager.SignInAsync(user, false, false);
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
+            }
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
+            }
+            if (user == null)
+            {
+                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, userId);
                 if (user != null)
                 {
-                    await _signInManager.SignInAsync(user, false, false);
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                }
-                if (User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
-                }
-                if (user == null)
-                {
-                    user = await _oAuthLoginRepository.AddNewUserFromExternalLogin(email, accessToken, slackUserName ,userId);
                     //Signing user with username or email only
                     await _signInManager.SignInAsync(user, false, false);
-                    return RedirectToAction(_stringConstant.AfterLogIn, _stringConstant.Home);
+                    return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
                 }
-                return View();
+                return RedirectToAction(_stringConstantRepository.SlackAuthorize, _stringConstantRepository.Home, new { message = _stringConstantRepository.UserCouldNotBeAdded });
             }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerExtrenalLoginCallBack, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            return View();
         }
 
         /**
@@ -187,17 +194,9 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult LogOff()
         {
-            try
-            {
-                AuthenticationManager.SignOut();
-                return RedirectToAction(_stringConstant.Index, _stringConstant.Home);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstant.LoggerErrorMessageHomeControllerLogoff, ex.ToString());
-                _logger.Error(errorMessage, ex);
-                throw ex;
-            }
+            //Set the cookie to expire
+            Request.GetOwinContext().Authentication.SignOut("Cookies");
+            return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);
         }
 
         private IAuthenticationManager AuthenticationManager
@@ -221,7 +220,21 @@ namespace Promact.Erp.Core.Controllers
         */
         public ActionResult SlackOAuthAuthorization()
         {
-            return Redirect(_stringConstant.LeaveManagementAuthorizationUrl + _stringConstant.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+            try
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    return Redirect(_stringConstantRepository.LeaveManagementAuthorizationUrl + _stringConstantRepository.OAuthAuthorizationScopeAndClientId + _envVariableRepository.SlackOAuthClientId);
+                }
+                return RedirectToAction(_stringConstantRepository.Index, _stringConstantRepository.Home);
+            }
+            catch (HttpRequestException ex)
+            {
+                var errorMessage = string.Format("{0}. Error -> {1}", _stringConstantRepository.LoggerErrorMessageHomeControllerSlackOAuthAuthorization, ex.ToString());
+                _logger.Error(errorMessage, ex);
+                throw;
+            }
         }
+        #endregion
     }
 }

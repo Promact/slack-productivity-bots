@@ -1,308 +1,341 @@
-﻿using Promact.Core.Repository.ProjectUserCall;
+﻿using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
-using System.Data.Entity;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
-using System.Net.Mail;
 using Promact.Erp.Util.StringConstants;
+using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Autofac.Extras.NLog;
+using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
+using System.Collections.Generic;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
     public class TaskMailRepository : ITaskMailRepository
     {
-        private readonly IRepository<TaskMail> _taskMail;
-        private readonly IRepository<TaskMailDetails> _taskMailDetail;
-        private readonly IProjectUserCallRepository _projectUserRepository;
+        #region Private Variables
+        private readonly IRepository<TaskMail> _taskMailRepository;
+        private readonly IRepository<TaskMailDetails> _taskMailDetailRepository;
+        private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IRepository<ApplicationUser> _user;
+        private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
         private readonly IStringConstantRepository _stringConstant;
-        string questionText = "";
-        public TaskMailRepository(IRepository<TaskMail> taskMail, IStringConstantRepository stringConstant, IProjectUserCallRepository projectUserRepository, IRepository<TaskMailDetails> taskMailDetail, IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> user, IEmailService emailService, IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager)
+        private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
+        private readonly ILogger _logger;
+        private readonly IRepository<MailSetting> _mailSettingDataRepository;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
+        #endregion
+
+        #region Constructor
+        public TaskMailRepository(IRepository<TaskMail> taskMailRepository, IStringConstantRepository stringConstant,
+            IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
+            IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
+            IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
+            IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
-            _taskMail = taskMail;
+            _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
-            _projectUserRepository = projectUserRepository;
-            _taskMailDetail = taskMailDetail;
+            _oauthCallsRepository = oauthCallsRepository;
+            _taskMailDetailRepository = taskMailDetailRepository;
             _attachmentRepository = attachmentRepository;
-            _user = user;
+            _userRepository = userRepository;
             _emailService = emailService;
             _botQuestionRepository = botQuestionRepository;
             _userManager = userManager;
+            _emailServiceTemplate = emailServiceTemplate;
+            _logger = logger;
+            _mailSettingDataRepository = mailSettingDataRepository;
+            _mailSettingDetails = mailSettingDetails;
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
-        /// Method to start task mail
+        /// Method to start task mail and send first question of task mail
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userId">User's slack user Id</param>
         /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> StartTaskMail(string userName)
+        public async Task<string> StartTaskMailAsync(string userId)
         {
-            // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
-            // getting access token for that user
-            if (user != null)
+            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
+            bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText);
+            // if question text is null or not request to start task mail then only allowed
+            if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
-                // get access token of user for promact oauth server
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                // get user details from
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
-                TaskMailQuestion question = new TaskMailQuestion();
-                Question previousQuestion = new Question();
+                _logger.Info("Task Mail Bot Module, task mail process start - StartTaskMailAsync");
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
-                // getting user information from Promact Oauth Server
-                TaskMail taskMail = null;
-                List<TaskMail> taskMailList;
-                // checking for previous task mail exist or not for today
-                taskMailList = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).ToList();
-                if (taskMailList.Count != 0)
-                    taskMail = taskMailList.Last();
-                if (taskMail != null)
+                #region Task Mail Details
+                if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
                 {
-                    // if exist then check the whether the task mail was completed or not
-                    taskMailDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
-                    previousQuestion = _botQuestionRepository.FindById(taskMailDetail.QuestionId);
-                    question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
-                }
-                // if previous task mail completed then it will start a new one
-                if (taskMail == null || question == TaskMailQuestion.TaskMailSend)
-                {
-                    // Before going to create new task it will check whether the user has send mail for today or not.
-                    if (taskMailDetail != null && taskMailDetail.SendEmailConfirmation == SendEmailConfirmation.yes)
-                        // If mail is send then user will not be able to add task mail for that day
-                        questionText = _stringConstant.AlreadyMailSend;
-                    else
+                    taskMailDetail = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                    var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
+                    var questionOrder = previousQuestion.OrderNumber;
+                    // If previous task mail is on the process and user started new task mail then will need to first complete pervious one
+                    if (questionOrder < QuestionOrder.TaskMailSend)
                     {
-                        // If mail is not send then user will be able to add task mail for that day
-                        taskMail = new TaskMail();
-                        taskMail.CreatedOn = DateTime.UtcNow;
-                        taskMail.EmployeeId = oAuthUser.Id;
-                        _taskMail.Insert(taskMail);
-                        _taskMail.Save();
-                        // getting first question of type 2
-                        var firstQuestion = _botQuestionRepository.FindByQuestionType(2);
-                        TaskMailDetails taskDetails = new TaskMailDetails();
-                        taskDetails.QuestionId = firstQuestion.Id;
-                        taskDetails.TaskId = taskMail.Id;
-                        questionText = firstQuestion.QuestionStatement;
-                        _taskMailDetail.Insert(taskDetails);
-                        _taskMailDetail.Save();
+                        userAndTaskMailDetailsWithAccessToken.QuestionText = await QuestionAndAnswerAsync(null, userId);
+                        userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue = true;
                     }
                 }
                 else
                 {
-                    // if previous task mail is not completed then it will go for pervious task mail and ask user to complete it
-                    var questionText = await QuestionAndAnswer(userName, null);
+                    // If task mail is not started for that day
+                    userAndTaskMailDetailsWithAccessToken.TaskMail = await AddTaskMailAsync(userAndTaskMailDetailsWithAccessToken.User.Id);
                 }
+                #endregion
+
+                #region If Task mail not send for that day
+                // if question text is null or not request to start task mail then only allowed
+                if (!userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue && (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText)))
+                {
+                    SendEmailConfirmation confirmation = taskMailDetail.SendEmailConfirmation;
+                    switch (confirmation)
+                    {
+                        case SendEmailConfirmation.yes:
+                            {
+                                // If mail is send then user will not be able to add task mail for that day
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.AlreadyMailSend;
+                            }
+                            break;
+                        case SendEmailConfirmation.no:
+                            {
+                                // If mail is not send then user will be able to add task mail for that day
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = await AddTaskMailDetailAndGetQuestionStatementAsync(userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                            }
+                            break;
+                    }
+                }
+                #endregion
             }
-            else
-                // if user doesn't exist then this message will be shown to user
-                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
-            return questionText;
+            return userAndTaskMailDetailsWithAccessToken.QuestionText;
         }
 
         /// <summary>
-        /// Method to conduct task mail after started
+        /// Method to conduct task mail after been started, and send next question of task mail
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="answer"></param>
-        /// <returns>questionText in string format containing question statement</returns>
-        public async Task<string> QuestionAndAnswer(string userName, string answer)
+        /// <param name="answer">Answer of previous question ask to user</param>
+        /// <param name="userId">User's slack Id</param>
+        /// <returns>questionText in string format containing next question statement</returns>
+        public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
-            // getting user name from user's slack name
-            var user = _user.FirstOrDefault(x => x.SlackUserName == userName);
-            if (user != null)
+            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
+            // if question text is null then only allowed
+            if (string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText))
             {
-                // getting access token for that user
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                List<TaskMailDetails> taskList = new List<TaskMailDetails>();
-                TaskMail taskMail = new TaskMail();
-                // getting user information from Promact Oauth Server
-                var oAuthUser = await _projectUserRepository.GetUserByUsername(userName, accessToken);
-                try
+                _logger.Info("Task Mail Bot Module, task mail process start - QuestionAndAnswerAsync");
+                _logger.Info("Task Mail Bot Module, task mail list count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
+                if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
                 {
-                    // checking for previous task mail exist or not for today
-                    taskMail = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date).Last();
-                    // getting task mail details for pervious started task mail
-                    var taskDetails = _taskMailDetail.FirstOrDefault(x => x.TaskId == taskMail.Id);
-                    // getting inform of previous question asked to user
-                    var previousQuestion = _botQuestionRepository.FindById(taskDetails.QuestionId);
-                    // checking if precious question was last and answer by user and previous task report was completed then asked for new task mail
-                    if (previousQuestion.OrderNumber <= 7)
+                    var taskDetails = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                    // getting inform of previous question was asked to user
+                    var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
+                    // checking if previous question was last and answered by user and previous task report was completed then asked for new task mail
+                    if (previousQuestion.OrderNumber <= QuestionOrder.TaskMailSend)
                     {
                         // getting next question to be asked to user
-                        var nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber((previousQuestion.OrderNumber + 1), 2);
-                        // Converting question Ordr to enum
-                        var question = (TaskMailQuestion)Enum.Parse(typeof(TaskMailQuestion), previousQuestion.OrderNumber.ToString());
-                        switch (question)
+                        var nextQuestion = await NextQuestionForTaskMailAsync(previousQuestion.OrderNumber);
+                        _logger.Info("Previous question ordernumber : " + previousQuestion.OrderNumber);
+                        switch (previousQuestion.OrderNumber)
                         {
-                            case TaskMailQuestion.YourTask:
+                            #region Your Task
+                            case QuestionOrder.YourTask:
                                 {
                                     // if previous question was description of task and it was not null/wrong vale then answer will ask next question
                                     if (answer != null)
                                     {
-                                        taskDetails.Description = answer.ToLower();
-                                        questionText = nextQuestion.QuestionStatement;
+                                        taskDetails.Description = answer;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                     {
                                         // if previous question was description of task and it was null then answer will ask for description again
-                                        questionText = previousQuestion.QuestionStatement;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
                                     }
                                 }
                                 break;
-                            case TaskMailQuestion.HoursSpent:
+                            #endregion
+
+                            #region Hour Spent
+                            case QuestionOrder.HoursSpent:
                                 {
-                                    double answerType;
-                                    // checking whether string can be convert to double type or not
-                                    var answerConvertResult = double.TryParse(answer, out answerType);
-                                    if (answerConvertResult)
+                                    // if previous question was hour of task and it was not null/wrong value then answer will ask next question
+                                    decimal hour;
+                                    // checking whether string can be convert to decimal or not
+                                    var taskMailHourConvertResult = decimal.TryParse(answer, out hour);
+                                    if (taskMailHourConvertResult)
                                     {
-                                        // if previous question was hour of task and it was not null/wrong value then answer will ask next question
-                                        var hour = Convert.ToDecimal(answer);
+                                        decimal totalHourSpented = 0;
                                         // checking range of hours
-                                        if (hour > 0 && hour < 8)
+                                        if (hour > 0 && hour <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
                                         {
-                                            taskDetails.Hours = hour;
-                                            questionText = nextQuestion.QuestionStatement;
-                                            taskDetails.QuestionId = nextQuestion.Id;
+                                            // adding up all hours of task mail
+                                            foreach (var task in userAndTaskMailDetailsWithAccessToken.TaskList)
+                                            {
+                                                totalHourSpented += task.Hours;
+                                            }
+                                            totalHourSpented += hour;
+                                            // checking whether all up hour doesnot exceed task mail hour limit
+                                            if (totalHourSpented <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
+                                            {
+                                                taskDetails.Hours = hour;
+                                                userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                            }
+                                            else
+                                            {
+                                                // getting last question of task mail
+                                                nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.SendEmail);
+                                                taskDetails.QuestionId = nextQuestion.Id;
+                                                userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                    _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                taskDetails.Comment = _stringConstant.StartWorking;
+                                            }
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                     }
                                     else
                                         // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
-                            case TaskMailQuestion.Status:
+                            #endregion
+
+                            #region Status
+                            case QuestionOrder.Status:
                                 {
-                                    TaskMailStatus taskMailStatusType;
+                                    TaskMailStatus status;
                                     // checking whether string can be convert to TaskMailStatus type or not
-                                    var taskMailStatusConvertResult = Enum.TryParse(answer, out taskMailStatusType);
+                                    var taskMailStatusConvertResult = Enum.TryParse(answer, out status);
                                     if (taskMailStatusConvertResult)
                                     {
                                         // if previous question was status of task and it was not null/wrong value then answer will ask next question
-                                        var status = (TaskMailStatus)Enum.Parse(typeof(TaskMailStatus), answer.ToLower());
                                         taskDetails.Status = status;
-                                        questionText = nextQuestion.QuestionStatement;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                         // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.TaskMailBotStatusErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.TaskMailBotStatusErrorMessage,
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
-                            case TaskMailQuestion.Comment:
+                            #endregion
+
+                            #region Comment
+                            case QuestionOrder.Comment:
                                 {
                                     if (answer != null)
                                     {
                                         // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
-                                        taskDetails.Comment = answer.ToLower();
-                                        questionText = nextQuestion.QuestionStatement;
+                                        taskDetails.Comment = answer;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                     {
                                         // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
-                                        questionText = previousQuestion.QuestionStatement;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
                                     }
                                 }
                                 break;
-                            case TaskMailQuestion.SendEmail:
+                            #endregion
+
+                            #region Send Email
+                            case QuestionOrder.SendEmail:
                                 {
-                                    SendEmailConfirmation sendEmailConfirmation;
+                                    SendEmailConfirmation confirmation;
                                     // checking whether string can be convert to TaskMailStatus type or not
-                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
+                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out confirmation);
                                     if (sendEmailConfirmationConvertResult)
                                     {
-                                        // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), answer.ToLower().ToString());
+                                        taskDetails.SendEmailConfirmation = confirmation;
                                         switch (confirmation)
                                         {
                                             case SendEmailConfirmation.yes:
                                                 {
                                                     // if previous question was send email of task and answer was yes then answer will ask next question
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    questionText = nextQuestion.QuestionStatement;
+                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:
                                                 {
                                                     // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
-                                                    nextQuestion = _botQuestionRepository.FindByTypeAndOrderNumber(7, 2);
+                                                    nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.ConfirmSendEmail);
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    questionText = _stringConstant.ThankYou;
+                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
                                                 }
                                                 break;
                                         }
                                     }
                                     else
                                         // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
-                                    break;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
-                            case TaskMailQuestion.ConfirmSendEmail:
+                                break;
+                            #endregion
+
+                            #region Confirm Send Email
+                            case QuestionOrder.ConfirmSendEmail:
                                 {
-                                    SendEmailConfirmation sendEmailConfirmation;
+                                    SendEmailConfirmation confirmation;
                                     // checking whether string can be convert to TaskMailStatus type or not
-                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out sendEmailConfirmation);
+                                    var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out confirmation);
                                     if (sendEmailConfirmationConvertResult)
                                     {
-                                        // convert answer to SendEmailConfirmation type
-                                        var confirmation = (SendEmailConfirmation)Enum.Parse(typeof(SendEmailConfirmation), answer.ToLower().ToString());
-                                        questionText = _stringConstant.ThankYou;
+                                        taskDetails.SendEmailConfirmation = confirmation;
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
                                         switch (confirmation)
                                         {
                                             case SendEmailConfirmation.yes:
                                                 {
+                                                    EmailApplication email = new EmailApplication();
+                                                    email.To = new List<string>();
+                                                    email.CC = new List<string>();
+                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
+                                                    foreach (var projectId in listOfprojectRelatedToUser)
+                                                    {
+                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule, userAndTaskMailDetailsWithAccessToken.User.Id);
+                                                        email.To.AddRange(mailsetting.To);
+                                                        email.CC.AddRange(mailsetting.CC);
+                                                    }
+                                                    email.To = email.To.Distinct().ToList();
+                                                    email.CC = email.CC.Distinct().ToList();
+                                                    email.From = userAndTaskMailDetailsWithAccessToken.User.Email;
+                                                    email.Subject = _stringConstant.TaskMailSubject;
+                                                    // transforming task mail details to template page and getting as string
+                                                    email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetailsWithAccessToken.TaskList);
                                                     // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.yes;
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    // get list of task done and register for today for that user
-                                                    var taskMailList = _taskMail.Fetch(x => x.EmployeeId == oAuthUser.Id && x.CreatedOn.Date == DateTime.UtcNow.Date);
-                                                    foreach (var item in taskMailList)
-                                                    {
-                                                        var taskDetail = _taskMailDetail.FirstOrDefault(x => x.TaskId == item.Id);
-                                                        taskList.Add(taskDetail);
-                                                    }
-                                                    var teamLeaders = await _projectUserRepository.GetTeamLeaderUserName(userName, accessToken);
-                                                    var managements = await _projectUserRepository.GetManagementUserName(accessToken);
-                                                    foreach (var management in managements)
-                                                    {
-                                                        teamLeaders.Add(management);
-                                                    }
-                                                    foreach (var teamLeader in teamLeaders)
-                                                    {
-                                                        // transforming task mail details to template page and getting as string
-                                                        var emailBody = EmailServiceTemplateTaskMail(taskList);
-                                                        EmailApplication email = new EmailApplication();
-                                                        email.Body = emailBody;
-                                                        email.From = oAuthUser.Email;
-                                                        email.To = teamLeader.Email;
-                                                        email.Subject = _stringConstant.TaskMailSubject;
-                                                        // Email send 
+                                                    // Email send 
+                                                    if (email.To.Any())
                                                         _emailService.Send(email);
-                                                    }
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:
                                                 {
                                                     // if previous question was confirm send email of task and it was not null/wrong value then answer will say thank you and task mail stopped
-                                                    taskDetails.SendEmailConfirmation = SendEmailConfirmation.no;
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                 }
                                                 break;
@@ -310,833 +343,144 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                        questionText = string.Format("{0}{1}{2}", _stringConstant.SendTaskMailConfirmationErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
+                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
+                            #endregion
+
+                            #region Default
                             default:
-                                questionText = _stringConstant.RequestToStartTaskMail;
+                                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
                                 break;
+                                #endregion
                         }
-                        _taskMailDetail.Update(taskDetails);
-                        _taskMail.Save();
+                        _taskMailDetailRepository.Update(taskDetails);
+                        await _taskMailDetailRepository.SaveChangesAsync();
                     }
-                }
-                catch (SmtpException ex)
-                {
-                    // error message will be send to email. But leave will be applied
-                    questionText = string.Format("{0}. {1}", _stringConstant.ErrorOfEmailServiceFailureTaskMail, ex.Message.ToString());
-                }
-                catch (Exception)
-                {
-                    // if previous task mail doesnot exist then ask user to start task mail
-                    questionText = _stringConstant.RequestToStartTaskMail;
-                }
-            }
-            else
-                // if user doesn't exist in oAuth server
-                questionText = _stringConstant.YouAreNotInExistInOAuthServer;
-            return questionText;
-        }
-
-        /// <summary>
-        /// Method to generate template body
-        /// </summary>
-        /// <param name="leaveRequest">TaskMail template object</param>
-        /// <returns>template emailBody as string</returns>
-        private string EmailServiceTemplateTaskMail(List<TaskMailDetails> taskMail)
-        {
-            Erp.Util.Email_Templates.TaskMail leaveTemplate = new Erp.Util.Email_Templates.TaskMail();
-            // Assigning Value in template page
-            leaveTemplate.Session = new Dictionary<string, object>
-            {
-                {_stringConstant.TaskMailDescription, taskMail},
-            };
-            leaveTemplate.Initialize();
-            var emailBody = leaveTemplate.TransformText();
-            return emailBody;
-        }
-
-        /// <summary>
-        ///Method geting list of Employee 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> GetAllEmployee(string userId)
-        {
-            var user = _user.FirstOrDefault(x => x.Id == userId);
-            var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-            var jsonResult = await _projectUserRepository.GetUserRole(user.Id, accessToken);
-            var role = jsonResult.FirstOrDefault(x => x.UserName == user.UserName);
-            List<TaskMailUserAc> taskMailUsertAc = new List<TaskMailUserAc>();
-            if (role.Role == _stringConstant.RoleAdmin)
-            {
-                foreach (var j in jsonResult)
-                {
-                    List<TaskMail> taskMails = new List<TaskMail>();
-                    var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
-
-                    if (employeeId != null && employeeId.Id != userId)
-                    {
-                        TaskMailUserAc taskmailUserAc = new TaskMailUserAc
-                        {
-                            UserName = j.Name,
-                            UserId = employeeId.Id,
-                            UserRole = j.Role,
-                            UserEmail = j.UserName
-                        };
-                        taskMailUsertAc.Add(taskmailUserAc);
-                    }
-                }
-            }
-            else if (role.Role == _stringConstant.RoleTeamLeader)
-            {
-                foreach (var j in jsonResult)
-                {
-                    List<TaskMail> taskMails = new List<TaskMail>();
-                    var employeeId = await _userManager.FindByNameAsync(j.UserName);
-                    if (employeeId != null)
-                    {
-                        TaskMailUserAc taskmailUserAc = new TaskMailUserAc
-                        {
-                            UserName = j.Name,
-                            UserId = employeeId.Id,
-                            UserRole = j.Role,
-                            UserEmail = j.UserName
-
-                        };
-                        taskMailUsertAc.Add(taskmailUserAc);
-                    }
-                }
-            }
-            else if (role.Role == _stringConstant.RoleEmployee)
-            {
-                foreach (var j in jsonResult)
-                {
-                    List<TaskMail> taskMails = new List<TaskMail>();
-                    var employeeId = await _userManager.FindByNameAsync(j.UserName);//_user.FirstOrDefault(x => x.UserName == j.UserName);
-                    if (employeeId != null)
-                    {
-                        TaskMailUserAc taskmailUserAc = new TaskMailUserAc
-                        {
-                            UserName = j.Name,
-                            UserId = employeeId.Id,
-                            UserRole = j.Role,
-                            UserEmail = j.UserName
-                        };
-                        taskMailUsertAc.Add(taskmailUserAc);
-                    }
-                }
-            }
-
-            return taskMailUsertAc;
-        }
-
-        /// <summary>
-        /// Task Mail Details Report Information For the User Role Admin and Employee
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="UserName"></param>
-        /// <param name="LoginId"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> GetTaskMailDetailsInformation(string UserId, string UserRole, string UserName, string LoginId)
-        {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
-            if (taskMails.Count() != 0)
-            {
-                var task = taskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                var taskMailMinDate = taskMails.OrderBy(x => x.CreatedOn).FirstOrDefault();
-                IEnumerable<TaskMailDetails> taskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == task.Id);
-                if (taskMailDetails.Count() != 0)
-                {
-                    List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
-                    taskmailDetails = taskMailDetails.ToList();
-                    taskmailDetails.ForEach(taskMail =>
-                    {
-                        TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                        {
-                            Id = taskMail.Id,
-                            Description = taskMail.Description,
-                            Comment = taskMail.Comment,
-                            Status = taskMail.Status,
-                            Hours = taskMail.Hours
-                        };
-                        taskMailReportAc.Add(taskmailReportAc);
-                    });
-
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = task.CreatedOn.Date,
-                        TaskMails = taskMailReportAc,
-                        IsMax = task.CreatedOn.Date,
-                        IsMin = taskMailMinDate.CreatedOn.Date
-                    };
-                    taskMailAc.Add(taskMailUserAc);
                 }
                 else
-                {
-                    List<TaskMailReportAc> taskMailReportObject = new List<TaskMailReportAc>();
-                    TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
-                    {
-                        Id = 0,
-                        Description = _stringConstant.NotAvailable,
-                        Comment = _stringConstant.NotAvailable,
-                        Hours = 0
-                    };
-                    taskMailReportObject.Add(taskmailReportAcForTeamLeader);
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = DateTime.Now.Date,
-                        TaskMails = taskMailReportObject,
-                        IsMax = task.CreatedOn.Date,
-                        IsMin = taskMailMinDate.CreatedOn.Date
-                    };
-                    taskMailAc.Add(taskMailUserAc);
-                }
+                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
             }
-            else
-            {
-                List<TaskMailReportAc> taskMailReportObject = new List<TaskMailReportAc>();
-                TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
-                {
-                    Id = 0,
-                    Description = _stringConstant.NotAvailable,
-                    Comment = _stringConstant.NotAvailable,
-                    Hours = 0
-                };
-                taskMailReportObject.Add(taskmailReportAcForTeamLeader);
-                TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                {
-                    UserId = UserId,
-                    UserName = UserName,
-                    UserRole = UserRole,
-                    CreatedOn = DateTime.Now,
-                    TaskMails = taskMailReportObject
-                };
-                taskMailAc.Add(taskMailUserAc);
-            }
-            return taskMailAc;
+            return userAndTaskMailDetailsWithAccessToken.QuestionText;
         }
+        #endregion
 
+        #region Private Methods
         /// <summary>
-        /// This Method use to featch the task mail detils.
+        /// Private method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="UserName"></param>
-        /// <param name="LoginId"></param>
+        /// <param name="slackUserId">User's SlackId</param>
         /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReport(string UserId, string UserRole, string UserName, string LoginId)
+        private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetailsAsync(string slackUserId)
         {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
+            UserAndTaskMailDetailsWithAccessToken userAndTaskMailDetailsWithAccessToken = new UserAndTaskMailDetailsWithAccessToken();
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
+            if (user != null)
             {
-                taskMailAc = await GetTaskMailDetailsInformation(UserId, UserRole, UserName, LoginId);
-            }
-            else if (UserRole == _stringConstant.RoleTeamLeader)
-            {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
-                DateTime? maxDate = null;
-                DateTime? minDate = null;
-                foreach (var j in json)
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, User : " + user.Email);
+                // getting access token for that user
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, request for access token from oauth");
+                userAndTaskMailDetailsWithAccessToken.AccessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Accesstoken : " + userAndTaskMailDetailsWithAccessToken.AccessToken);
+                // getting user information from Promact Oauth Server
+                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, requested for user details from oauth");
+                userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(user.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
+                if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
                 {
-                    var employeeObject = await _userManager.FindByNameAsync(j.UserName);
-
-                    if (employeeObject != null)
+                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, receive user : " + userAndTaskMailDetailsWithAccessToken.User.Email);
+                    // checking for previous task mail exist or not for today
+                    userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMailRepository.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
+                    x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
+                    x.CreatedOn.Year == DateTime.UtcNow.Year);
+                    if (userAndTaskMailDetailsWithAccessToken.TaskMail != null)
                     {
-                        var taskMailsForTeamLeader = await _taskMail.FetchAsync(y => y.EmployeeId == employeeObject.Id);
-                        if (taskMailsForTeamLeader.Count() != 0)
-                        {
-                            var taskForTeamLeader = taskMailsForTeamLeader.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            if (maxDate == null)
-                            {
-                                maxDate = taskForTeamLeader.CreatedOn;
-                            }
-                            else
-                            {
-                                if (maxDate < taskForTeamLeader.CreatedOn)
-                                {
-                                    maxDate = taskForTeamLeader.CreatedOn;
-                                }
-                            }
-                            var taskMailMinDate = taskMailsForTeamLeader.OrderBy(x => x.CreatedOn).FirstOrDefault();
-                            if (minDate == null)
-                            {
-                                minDate = taskMailMinDate.CreatedOn;
-                            }
-                            else
-                            {
-                                if (minDate > taskMailMinDate.CreatedOn)
-                                {
-                                    minDate = taskMailMinDate.CreatedOn;
-                                }
-                            }
-                        }
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail details for today : " + userAndTaskMailDetailsWithAccessToken.TaskMail.CreatedOn);
+                        // getting task mail details for started task mail
+                        userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetailRepository.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail list have count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
                     }
-
-                }
-                foreach (var j in json)
-                {
-                    var employee = await _userManager.FindByNameAsync(j.UserName);
-                    if (employee != null)
+                    else
                     {
-                        var taskMailsForTeamLeader = await _taskMail.FetchAsync(y => y.EmployeeId == employee.Id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(maxDate));
-                        if (taskMailsForTeamLeader != null && taskMailsForTeamLeader.Count() != 0)
-                        {
-                            var taskTL = taskMailsForTeamLeader.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            IEnumerable<TaskMailDetails> taskMailDetailsTL = await _taskMailDetail.FetchAsync(x => x.TaskId == taskTL.Id);
-                            List<TaskMailDetails> taskmailDetailsForTeamLeader = new List<TaskMailDetails>();
-                            taskmailDetailsForTeamLeader = taskMailDetailsTL.ToList();
-                            List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                            taskmailDetailsForTeamLeader.ForEach(taskMail =>
-                            {
-                                TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
-                                {
-                                    Id = taskMail.Id,
-                                    Description = taskMail.Description,
-                                    Comment = taskMail.Comment,
-                                    Status = taskMail.Status,
-                                    Hours = taskMail.Hours
-                                };
-                                taskMailReport.Add(taskmailReportAcForTeamLeader);
-                            });
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = taskTL.CreatedOn.Date,
-                                TaskMails = taskMailReport,
-                                IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin = Convert.ToDateTime(minDate).Date
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
-                        else
-                        {
-                            List<TaskMailReportAc> taskMailReportObject = new List<TaskMailReportAc>();
-                            TaskMailReportAc taskmailReportAcForTeamLeader = new TaskMailReportAc
-                            {
-                                Id = 0,
-                                Description = _stringConstant.NotAvailable,
-                                Comment = _stringConstant.NotAvailable,
-                                Hours = 0
-                            };
-                            taskMailReportObject.Add(taskmailReportAcForTeamLeader);
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(maxDate).Date,
-                                TaskMails = taskMailReportObject,
-                                IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin = Convert.ToDateTime(minDate).Date
-
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail not started for today");
+                        // if task mail doesnot exist then ask user to start task mail
+                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
                     }
-
-                }
-            }
-            return taskMailAc;
-        }
-
-
-        /// <summary>
-        /// TaskMailDetails Information For the selected date
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="SelectedDate"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportInformationForSelectedDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string SelectedDate)
-        {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            DateTime? maxDateSelectedUser = null;
-            DateTime? minDateSelectedUser = null;
-
-            DateTime slectedDateForAdmin = Convert.ToDateTime(SelectedDate).Date;
-            var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(slectedDateForAdmin));
-            if (taskMails.Count() != 0)
-            {
-                var maxRecord = await _taskMail.FetchAsync(x => x.EmployeeId == UserId);
-                var maxDate = maxRecord.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                maxDateSelectedUser = maxDate.CreatedOn;
-                var minRecord = await _taskMail.FetchAsync(x => x.EmployeeId == UserId);
-                var minDate = minRecord.OrderBy(x => x.CreatedOn).FirstOrDefault();
-                minDateSelectedUser = minDate.CreatedOn;
-                if (taskMails != null)
-                {
-                    var task = taskMails.FirstOrDefault();
-                    IEnumerable<TaskMailDetails> taskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == task.Id);
-                    List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
-                    taskmailDetails = taskMailDetails.ToList();
-                    taskmailDetails.ForEach(taskMail =>
-                    {
-                        TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                        {
-                            Id = taskMail.Id,
-                            Description = taskMail.Description,
-                            Comment = taskMail.Comment,
-                            Status = taskMail.Status,
-                            Hours = taskMail.Hours
-                        };
-                        taskMailReportAc.Add(taskmailReportAc);
-                    });
-
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = task.CreatedOn.Date,
-                        TaskMails = taskMailReportAc,
-                        IsMax = Convert.ToDateTime(maxDateSelectedUser).Date,
-                        IsMin = Convert.ToDateTime(minDateSelectedUser).Date
-                    };
-                    taskMailAc.Add(taskMailUserAc);
                 }
                 else
-                {
-                    List<TaskMailReportAc> taskMailReportList = new List<TaskMailReportAc>();
-                    TaskMailReportAc taskmailReportAcObject = new TaskMailReportAc
-                    {
-                        Id = 0,
-                        Description = _stringConstant.NotAvailable,
-                        Comment = _stringConstant.NotAvailable,
-                        Status = TaskMailStatus.completed,
-                        Hours = 0
-                    };
-                    taskMailReportList.Add(taskmailReportAcObject);
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = Convert.ToDateTime(SelectedDate).Date,
-                        TaskMails = taskMailReportList,
-                        IsMax = Convert.ToDateTime(maxDateSelectedUser).Date,
-                        IsMin = Convert.ToDateTime(minDateSelectedUser).Date
-                    };
-                    taskMailAc.Add(taskMailUserAc);
-                }
+                    // if user doesn't exist in oAuth server
+                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
-            {
-                TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                {
-                    Id = 0,
-                    Description = _stringConstant.NotAvailable,
-                    Comment = _stringConstant.NotAvailable,
-                    Hours = 0
-                };
-                taskMailReportAc.Add(taskmailReportAc);
-                TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                {
-                    UserId = UserId,
-                    UserName = UserName,
-                    UserRole = UserRole,
-                    CreatedOn = Convert.ToDateTime(SelectedDate).Date,
-                    TaskMails = taskMailReportAc,
-                    IsMax = Convert.ToDateTime(SelectedDate).Date,
-                    IsMin = Convert.ToDateTime(SelectedDate).Date,
-                };
-                taskMailAc.Add(taskMailUserAc);
-            }
-            return taskMailAc;
+                // if user doesn't exist in ERP server
+                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
+            return userAndTaskMailDetailsWithAccessToken;
         }
 
         /// <summary>
-        /// this Method use to featch the task mail details for the selected date.
+        /// Method to check whether question text is similar to request to start task mail
         /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="UserName"></param>
-        /// <param name="UserRole"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="LoginId"></param>
-        /// <param name="SelectedDate"></param>
-        /// <returns></returns>
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportSelectedDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string SelectedDate)
+        /// <param name="questionText">task mail question text</param>
+        /// <returns>true or false</returns>
+        private bool CheckQuestionTextIsRequestToStartMailOrNot(string questionText)
         {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
-            { taskMailAc = await TaskMailDetailsReportInformationForSelectedDate(UserId, UserName, UserRole, CreatedOn, LoginId, SelectedDate); }
-            else if (UserRole == _stringConstant.RoleTeamLeader)
-            {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
-                DateTime? maxDate = null;
-                DateTime? minDate = null;
-                foreach (var j in json)
-                {
-                    var employeeObject = await _userManager.FindByNameAsync(j.UserName);
-
-                    if (employeeObject != null)
-                    {
-                        var taskMailsRecodes = await _taskMail.FetchAsync(y => y.EmployeeId == employeeObject.Id);
-                        if (taskMailsRecodes.Count() != 0)
-                        {
-                            var taskMailMaximumDate = taskMailsRecodes.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            if (taskMailMaximumDate != null)
-                            {
-                                if (maxDate == null)
-                                {
-                                    maxDate = taskMailMaximumDate.CreatedOn;
-                                }
-                                else
-                                {
-                                    if (maxDate < taskMailMaximumDate.CreatedOn)
-                                    {
-                                        maxDate = taskMailMaximumDate.CreatedOn;
-                                    }
-                                }
-                            }
-                            var taskMailMinimumDate = taskMailsRecodes.OrderBy(x => x.CreatedOn).FirstOrDefault();
-                            if (taskMailMinimumDate != null)
-                            {
-                                if (minDate == null)
-                                {
-                                    minDate = taskMailMinimumDate.CreatedOn;
-                                }
-                                else
-                                {
-                                    if (minDate > taskMailMinimumDate.CreatedOn)
-                                    {
-                                        minDate = taskMailMinimumDate.CreatedOn;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-
-                }
-                foreach (var j in json)
-                {
-                    var employee = await _userManager.FindByNameAsync(j.UserName);
-                    if (employee != null)
-                    {
-                        DateTime selectedDateTime = Convert.ToDateTime(SelectedDate);
-                        var taskMailsTL = await _taskMail.FetchAsync(y => y.EmployeeId == employee.Id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(selectedDateTime));
-                        if (taskMailsTL != null && taskMailsTL.Count() != 0)
-                        {
-                            var taskTL = taskMailsTL.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            IEnumerable<TaskMailDetails> taskMailDetailsTL = await _taskMailDetail.FetchAsync(x => x.TaskId == taskTL.Id);
-                            List<TaskMailDetails> listTaskmailDetailsReport = new List<TaskMailDetails>();
-                            listTaskmailDetailsReport = taskMailDetailsTL.ToList();
-                            List<TaskMailReportAc> listTaskMailReport = new List<TaskMailReportAc>();
-                            listTaskmailDetailsReport.ForEach(taskMail =>
-                            {
-                                TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                                {
-                                    Id = taskMail.Id,
-                                    Description = taskMail.Description,
-                                    Comment = taskMail.Comment,
-                                    Status = taskMail.Status,
-                                    Hours = taskMail.Hours
-                                };
-                                listTaskMailReport.Add(taskmailReportAc);
-                            });
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = taskTL.CreatedOn,
-                                TaskMails = listTaskMailReport,
-                                IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin = Convert.ToDateTime(minDate).Date
-
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
-                        else
-                        {
-                            List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                            TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
-                            {
-                                Id = 0,
-                                Description = _stringConstant.NotAvailable,
-                                Comment = _stringConstant.NotAvailable,
-                                Status = TaskMailStatus.completed,
-                                Hours = 0
-                            };
-                            taskMailReport.Add(taskmailReportAcTL);
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(SelectedDate).Date,
-                                TaskMails = taskMailReport,
-                                IsMax = Convert.ToDateTime(maxDate).Date,
-                                IsMin = Convert.ToDateTime(minDate).Date
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
-                    }
-                   
-
-                }
-            }
-            return taskMailAc;
+            bool textIsTaskMailOrNot = string.Equals(questionText, _stringConstant.RequestToStartTaskMail);
+            return textIsTaskMailOrNot;
         }
 
-
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportInformationForNextPreviousDate(string UserId, string UserName, string UserRole, DateTime CreatedOn, string LoginId)
+        /// <summary>
+        /// Method to add task mail
+        /// </summary>
+        /// <param name="employeeId">User's Id</param>
+        /// <returns>task mail details</returns>
+        private async Task<TaskMail> AddTaskMailAsync(string employeeId)
         {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            DateTime? minDate = null;
-            DateTime? maxDate = null;
-            var listOfTask = await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
-            if (listOfTask != null)
-            {
-                var taskMails = await _taskMail.FetchAsync(y => y.EmployeeId == UserId && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
-                //var taskMailDetail = taskMails.Where(x => DbFunctions.TruncateTime(x.CreatedOn) == DbFunctions.TruncateTime(CreatedOn));
-                var task = taskMails.OrderByDescending(y => y.CreatedOn).FirstOrDefault();
-                var taskMailDates = await _taskMail.FetchAsync(y => y.EmployeeId == UserId);
-                var taskMinDate = taskMailDates.OrderBy(y => y.CreatedOn).FirstOrDefault();
-                minDate = taskMinDate.CreatedOn;
-                var taskMaxDate = taskMailDates.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                maxDate = taskMaxDate.CreatedOn;
-                if (task != null)
-                {
-                    IEnumerable<TaskMailDetails> taskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == task.Id);
-                    List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
-                    taskmailDetails = taskMailDetails.ToList();
-                    taskmailDetails.ForEach(taskMail =>
-                    {
-                        TaskMailReportAc taskmailReportAc = new TaskMailReportAc
-                        {
-                            Id = taskMail.Id,
-                            Description = taskMail.Description,
-                            Comment = taskMail.Comment,
-                            Status = taskMail.Status,
-                            Hours = taskMail.Hours
-                        };
-                        taskMailReportAc.Add(taskmailReportAc);
-                    });
-
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = task.CreatedOn.Date,
-                        TaskMails = taskMailReportAc,
-                        IsMin = Convert.ToDateTime(minDate).Date,
-                        IsMax = Convert.ToDateTime(maxDate).Date
-                    };
-                    taskMailAc.Add(taskMailUserAc);
-
-                }
-                else
-                {
-                    List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                    TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
-                    {
-                        Id = 0,
-                        Description = _stringConstant.NotAvailable,
-                        Comment = _stringConstant.NotAvailable,
-                        Hours = 0
-                    };
-                    taskMailReport.Add(taskmailReportAcTL);
-                    TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                    {
-                        UserId = UserId,
-                        UserName = UserName,
-                        UserRole = UserRole,
-                        CreatedOn = Convert.ToDateTime(CreatedOn).Date,
-                        TaskMails = taskMailReport,
-                        IsMin = Convert.ToDateTime(minDate).Date,
-                        IsMax = Convert.ToDateTime(maxDate).Date
-
-                    };
-                    taskMailAc.Add(taskMailUserAc);
-                }
-            }
-            else
-            {
-                List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                TaskMailReportAc taskmailReportAcTL = new TaskMailReportAc
-                {
-                    Id = 0,
-                    Description = _stringConstant.NotAvailable,
-                    Comment = _stringConstant.NotAvailable,
-                    Hours = 0
-                };
-                taskMailReport.Add(taskmailReportAcTL);
-                TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                {
-                    UserId = UserId,
-                    UserName = UserName,
-                    UserRole = UserRole,
-                    CreatedOn = Convert.ToDateTime(CreatedOn).Date,
-                    TaskMails = taskMailReport,
-                    IsMin = Convert.ToDateTime(CreatedOn).Date,
-                    IsMax = Convert.ToDateTime(CreatedOn).Date
-
-                };
-                taskMailAc.Add(taskMailUserAc);
-            }
-            return taskMailAc;
+            _logger.Info("Task mail module add task mail start");
+            TaskMail taskMail = new TaskMail();
+            taskMail.CreatedOn = DateTime.UtcNow;
+            taskMail.EmployeeId = employeeId;
+            _taskMailRepository.Insert(taskMail);
+            await _taskMailRepository.SaveChangesAsync();
+            _logger.Info("Task mail module add task mail end");
+            return taskMail;
         }
 
-
-        public async Task<List<TaskMailUserAc>> TaskMailDetailsReportNextPreviousDate(string UserId, string UserName, string UserRole, string CreatedOn, string LoginId, string Type)
+        /// <summary>
+        /// Add task mail details 
+        /// </summary>
+        /// <param name="taskMailId">task mail Id</param>
+        /// <returns>first question statement</returns>
+        private async Task<string> AddTaskMailDetailAndGetQuestionStatementAsync(int taskMailId)
         {
-            List<TaskMailUserAc> taskMailAc = new List<TaskMailUserAc>();
-            List<TaskMailReportAc> taskMailReportAc = new List<TaskMailReportAc>();
-            DateTime? CreatedDate = null;
-            if (Type == _stringConstant.NextPage)
-            { CreatedDate = Convert.ToDateTime(CreatedOn).AddDays(+1); }
-            else
-            { CreatedDate = Convert.ToDateTime(CreatedOn).AddDays(-1); }
-
-            if (UserRole == _stringConstant.RoleAdmin || UserRole == _stringConstant.RoleEmployee)
-            {
-                taskMailAc = await TaskMailDetailsReportInformationForNextPreviousDate(UserId, UserName, UserRole, Convert.ToDateTime(CreatedDate), LoginId);
-            }
-            else if (UserRole == _stringConstant.RoleTeamLeader)
-            {
-                var user = _user.FirstOrDefault(x => x.Id == LoginId);
-                var accessToken = await _attachmentRepository.AccessToken(user.UserName);
-                var json = await _projectUserRepository.GetListOfEmployee(user.Id, accessToken);
-                DateTime? minDate = null;
-                DateTime? maxDate = null;
-
-                foreach (var j in json)
-                {
-                    var employeeObject = await _userManager.FindByNameAsync(j.UserName);
-
-                    if (employeeObject != null)
-                    {
-                        var employeesTaskMails = await _taskMail.FetchAsync(y => y.EmployeeId == employeeObject.Id);
-                        if (employeesTaskMails.Count() != 0)
-                        {
-                            var taskMailMinDate = employeesTaskMails.OrderBy(x => x.CreatedOn).FirstOrDefault();
-                            if (taskMailMinDate != null)
-                            {
-                                if (minDate == null)
-                                {
-                                    minDate = taskMailMinDate.CreatedOn;
-                                }
-                                else
-                                {
-                                    if (minDate > taskMailMinDate.CreatedOn)
-                                    {
-                                        minDate = taskMailMinDate.CreatedOn;
-                                    }
-                                }
-                            }
-
-                            var taskMailMaxate = employeesTaskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            if (taskMailMaxate != null)
-                            {
-                                if (maxDate == null)
-                                {
-                                    maxDate = taskMailMaxate.CreatedOn;
-                                }
-                                else
-                                {
-                                    if (maxDate < taskMailMaxate.CreatedOn)
-                                    {
-                                        maxDate = taskMailMaxate.CreatedOn;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-
-                }
-
-                foreach (var j in json)
-                {
-                    var employee = await _userManager.FindByNameAsync(j.UserName);
-                    if (employee != null)
-                    {
-                        var employeeTaskMails = await _taskMail.FetchAsync(y => y.EmployeeId == employee.Id && DbFunctions.TruncateTime(y.CreatedOn) == DbFunctions.TruncateTime(CreatedDate));
-                        if (employeeTaskMails != null && employeeTaskMails.Count() != 0)
-                        {
-                            var taskMails = employeeTaskMails.OrderByDescending(x => x.CreatedOn).FirstOrDefault();
-                            IEnumerable<TaskMailDetails> employeeTaskMailDetails = await _taskMailDetail.FetchAsync(x => x.TaskId == taskMails.Id);
-                            List<TaskMailDetails> taskmailDetails = new List<TaskMailDetails>();
-                            taskmailDetails = employeeTaskMailDetails.ToList();
-                            List<TaskMailReportAc> taskMailDetailsReport = new List<TaskMailReportAc>();
-                            taskmailDetails.ForEach(taskMail =>
-                            {
-                                TaskMailReportAc taskmailDetailsReportAc = new TaskMailReportAc
-                                {
-                                    Id = taskMail.Id,
-                                    Description = taskMail.Description,
-                                    Comment = taskMail.Comment,
-                                    Status = taskMail.Status,
-                                    Hours = taskMail.Hours
-                                };
-                                taskMailDetailsReport.Add(taskmailDetailsReportAc);
-                            });
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = taskMails.CreatedOn.Date,
-                                TaskMails = taskMailDetailsReport,
-                                IsMin = Convert.ToDateTime(minDate).Date,
-                                IsMax = Convert.ToDateTime(maxDate).Date
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
-                        else
-                        {
-                            List<TaskMailReportAc> taskMailReport = new List<TaskMailReportAc>();
-                            TaskMailReportAc taskmailDetailsReportAc = new TaskMailReportAc
-                            {
-                                Id = 0,
-                                Description = _stringConstant.NotAvailable,
-                                Comment = _stringConstant.NotAvailable,
-                                Hours = 0
-                            };
-                            taskMailReport.Add(taskmailDetailsReportAc);
-                            TaskMailUserAc taskMailUserAc = new TaskMailUserAc
-                            {
-                                UserId = employee.Id,
-                                UserName = j.Name,
-                                UserRole = UserRole,
-                                CreatedOn = Convert.ToDateTime(CreatedDate).Date,
-                                TaskMails = taskMailReport,
-                                IsMin = Convert.ToDateTime(minDate).Date,
-                                IsMax = Convert.ToDateTime(maxDate).Date
-                            };
-                            taskMailAc.Add(taskMailUserAc);
-                        }
-                    }
-
-                }
-
-            }
-            return taskMailAc;
+            _logger.Info("Task mail module add task mail details start");
+            TaskMailDetails taskMailDetails = new TaskMailDetails();
+            // getting first question of task mail type
+            var firstQuestion = await _botQuestionRepository.FindFirstQuestionByTypeAsync(BotQuestionType.TaskMail);
+            taskMailDetails.TaskId = taskMailId;
+            taskMailDetails.QuestionId = firstQuestion.Id;
+            _taskMailDetailRepository.Insert(taskMailDetails);
+            await _taskMailDetailRepository.SaveChangesAsync();
+            _logger.Info("Task mail module add task mail details end");
+            return firstQuestion.QuestionStatement;
         }
+
+        /// <summary>
+        /// Method to get the next question of task mail by previous question order
+        /// </summary>
+        /// <param name="previousQuestionOrder">previous question order</param>
+        /// <returns>question</returns>
+        private async Task<Question> NextQuestionForTaskMailAsync(QuestionOrder previousQuestionOrder)
+        {
+            _logger.Info("Task mail module NextQuestionForTaskMailAsync start");
+            var orderValue = (int)previousQuestionOrder;
+            var typeValue = (int)BotQuestionType.TaskMail;
+            orderValue++;
+            // getting question by order number and question type as task mail
+            var nextQuestion = await _botQuestionRepository.FindByTypeAndOrderNumberAsync(orderValue, typeValue);
+            _logger.Info("Task mail module NextQuestionForTaskMailAsync end");
+            return nextQuestion;
+        }
+        #endregion
     }
 }

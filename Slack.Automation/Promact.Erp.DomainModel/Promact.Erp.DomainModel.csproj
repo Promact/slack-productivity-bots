@@ -71,7 +71,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
@@ -110,7 +110,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.3\lib\net45\WebMatrix.Data.dll</HintPath>
@@ -123,15 +122,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationClass\EmailApplication.cs" />
+    <Compile Include="ApplicationClass\EmployeeScrumDetails.cs" />
     <Compile Include="ApplicationClass\EnumApplicationClass.cs" />
+    <Compile Include="ApplicationClass\GroupAC.cs" />
     <Compile Include="ApplicationClass\LeaveAllowed.cs" />
     <Compile Include="ApplicationClass\LeaveReport.cs" />
     <Compile Include="ApplicationClass\LeaveReportDetails.cs" />
+    <Compile Include="ApplicationClass\MailSettingAC.cs" />
     <Compile Include="ApplicationClass\OAuthApplication.cs" />
     <Compile Include="ApplicationClass\ProjectAc.cs" />
     <Compile Include="ApplicationClass\ProjectUserDetailsApplicationClass.cs" />
+    <Compile Include="ApplicationClass\Redmine\GetRedmineBaseApplicationClass.cs" />
+    <Compile Include="ApplicationClass\Redmine\GetRedmineIssue.cs" />
+    <Compile Include="ApplicationClass\Redmine\GetRedmineProjectsResponse.cs" />
+    <Compile Include="ApplicationClass\Redmine\GetRedmineResponse.cs" />
+    <Compile Include="ApplicationClass\Redmine\PostRedmineResponse.cs" />
+    <Compile Include="ApplicationClass\Redmine\PostRedminIssue.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineBase.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineProject.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineResponseSingleProject.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineTimeEntries.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineTimeEntryApplicationClass.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineUser.cs" />
+    <Compile Include="ApplicationClass\Redmine\RedmineUserResponse.cs" />
+    <Compile Include="ApplicationClass\ScrumProjectDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\IncomingWebHookOAuthResponse.cs" />
-    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackBotUserDetail.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackChannelResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackEventApiAC.cs" />
@@ -139,6 +154,7 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackGroupDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackOAuthResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackProfile.cs" />
+    <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetailAc.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserDetails.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlackUserResponse.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashAttachment.cs" />
@@ -151,9 +167,19 @@
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashIncomingWebhook.cs" />
     <Compile Include="ApplicationClass\SlackRequestAndResponse\SlashResponse.cs" />
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
+    <Compile Include="ApplicationClass\TaskMailDetailReportAc.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
-    <Compile Include="ApplicationClass\TaskMailUserAc.cs" />
+    <Compile Include="ApplicationClass\EmailHashCodeAC.cs" />
+    <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />
+    <Compile Include="ApplicationClass\UserEmailListAc.cs" />
+    <Compile Include="JSonConverterUtil\SlackChannelDetailsConverter.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\GroupEmailMapping.cs" />
+    <Compile Include="Models\MailSetting.cs" />
+    <Compile Include="Models\MailSettingMapping.cs" />
+    <Compile Include="Models\TemporaryScrumDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
+    <Compile Include="ApplicationClass\UserAndTaskMailDetailsWithAccessToken.cs" />
     <Compile Include="ApplicationClass\UserRoleAc.cs" />
     <Compile Include="Context\PromactErpContext.cs" />
     <Compile Include="DataRepository\IRepository.cs" />
@@ -163,6 +189,7 @@
     <Compile Include="Models\ApplicationUserStore.cs" />
     <Compile Include="Models\IdentityConfig.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IncomingWebHook.cs" />
     <Compile Include="Models\LeaveRequest.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ModelBase.cs" />

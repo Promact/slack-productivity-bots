@@ -1,37 +1,68 @@
-﻿
-<div>
-
-    <div>
-        Select Date:<input type="date" name="selectDate"  [(ngModel)]="SelectedDate" [max]="isMaxDate" [min]="isMinDate">
-        <button (click)="getTaskMailForSelectedDate(taskMailUser[0].UserName,taskMailUser[0].UserId,taskMailUser[0].UserRole,taskMailUser[0].CreatedOns,SelectedDate)">Search</button>
-        
+﻿<div class="taskmail-details">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Task Mail Details</h3>
+        </div>
+        <div class="title_right">
+            <div class="form-group pull-right ">
+                <button class="btn btn-back btn-success btn-sm" (click)="getTaskMailList()" *ngIf="isHide==false"><i class="fa fa-arrow-left"></i>Back</button>
+            </div>
+        </div>
     </div>
-    <!--<div *ngIf="!spinner.active" id="container">Nothing is Loading Now</div>-->
-    <div *ngFor="let taskmailUser of taskMailUser">
-        Name: {{taskmailUser.UserName}}
-        Task Mail Date: {{taskmailUser.CreatedOns}}
-        <!--{{taskmailUser.UserRole}}-->
-        <br />
-        <table>
-            <tr><td colspan="4"></td></tr>
-            <tr>
-                <td>Description</td>
-                <td>Hours</td>
-                <td>StatusName</td>
-                <td>Comment</td>
-            </tr>
-            <tr *ngFor="let taskmailDetails of taskmailUser.TaskMails">
-                <!--<td>{{taskmailDetails.Id}}</td>-->
-                <td>{{taskmailDetails.Description}}</td>
-                <td>{{taskmailDetails.Hours}}</td>
-                <td>{{taskmailDetails.StatusName}}</td>
-                <td>{{taskmailDetails.Comment}}</td>
-            </tr>
-        </table>
-        
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="form-group row m-0">
+                        <label class="control-label col-md-2 col-cs-2 selc-date">Select Date:</label>
+                        <div class="col-md-3 p-0">
+                            <md2-datepicker [(ngModel)]="selectedDate" [max]="maxDate" [min]="minDate"></md2-datepicker>
+                        </div>
+                        <div class="col-md-2 pl-0">
+                            <button class="btn btn-success" (click)="getTaskMailForSelectedDate(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns,selectedDate)">Search</button>
+                        </div>
+                    </div>
+                    <div *ngFor="let taskmailUser of taskMail">
+                        <div class="bg-grey">
+                            <div class="row m-0">
+                                <div class="clearfix m-0 pull-left">
+                                    <label class="control-label">Task Mail Date:</label>
+                                    <p style="display:inline-block;">{{taskmailUser.CreatedOns}}</p>
+                                </div>
+                                <div class="clearfix pull-right">
+                                    <label class="control-label  p-0">Name:</label>
+                                    <span class="tsk-name">{{taskmailUser.UserName}}</span>
+                                </div>
+                            </div>
+                            <table class="table table-hover table-bordered tsk-view">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Hours</th>
+                                        <th>Status</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let taskmailDetails of taskmailUser.TaskMails">
+                                        <!--<td>{{taskmailDetails.Id}}</td>-->
+                                       
+                                        <td>{{taskmailDetails.Description}}</td>
+                                        <td>{{taskmailDetails.Hours}}</td>
+                                        <td>{{taskmailDetails.StatusName}}</td>
+                                        <td>{{taskmailDetails.Comment}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="x_title"></div>
+                    <div class="row m-0">
+                        <button [disabled]="isMinDate" (click)="getTaskMailPrevious(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns)" class="btn btn-success pull-left"> Previous</button>
+                        <button [disabled]="isMaxDate" (click)="getTaskMailNext(taskMail[0].UserName,taskMail[0].UserId,taskMail[0].UserRole,taskMail[0].CreatedOns)" class="btn btn-success pull-right"> Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <button [disabled]="isMin" (click)="getTaskMailPrevious(taskMailUser[0].UserName,taskMailUser[0].UserId,taskMailUser[0].UserRole,taskMailUser[0].CreatedOns)"> Previous</button>
-    <button [disabled]="isMax" (click)="getTaskMailNext(taskMailUser[0].UserName,taskMailUser[0].UserId,taskMailUser[0].UserRole,taskMailUser[0].CreatedOns)"> Next</button>
-    <button (click)="getTaskMailList()" [hidden]="isHide"> Back</button>
-   
 </div>

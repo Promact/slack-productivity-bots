@@ -5,12 +5,7 @@ namespace Promact.Erp.DomainModel.Models
 {
     public class Scrum : ModelBase
     {
-        /// <summary>
-        /// Channel Name
-        /// </summary>
-        [Required]
-        public string GroupName { get; set; }
-
+       
         /// <summary>
         /// Team Leader's Id from Oauth
         /// </summary>

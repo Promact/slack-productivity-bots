@@ -1,0 +1,78 @@
+﻿<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Promact ERP</span></a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li>
+                                <a><i class="fa fa-puzzle-piece"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a routerLink="/scrum">Scrum Reports</a></li>
+                                    <li *ngIf="userIsAdmin"><a routerLink="/scrum/mailsetting">Mail Setting</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a><i class="fa fa-tasks"></i> Task List Bot <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a routerLink="task">Task Reports</a></li>
+                                    <li *ngIf="userIsAdmin"><a routerLink="/task/mailsetting">Mail Setting</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a><i class="fa fa-calendar"></i> Leave Management <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a routerLink="leave">Leave Reports</a></li>
+                                    <li *ngIf="userIsAdmin"><a routerLink="/leave/mailsetting">Mail Setting</a></li>
+                                </ul>
+                            </li>
+                            <li *ngIf="userIsAdmin">
+                                <a routerLink="group"><i class="fa fa-group"></i>Group</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <!-- /sidebar menu -->
+            </div>
+        </div>
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav class="" role="navigation">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <img src="https://www.gravatar.com/avatar/{{hashCode}}" alt="">{{username}}
+                                <span class="fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li><a href="/Home/LogOff"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <router-outlet>
+            </router-outlet>
+        </div>
+        <!-- /page content -->
+    </div>
+    <div *ngIf="loader.loader" style="position:relative;">
+        <div class="overlay">
+            <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
+        </div>
+    </div>
+</div>

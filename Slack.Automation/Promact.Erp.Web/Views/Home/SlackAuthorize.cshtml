@@ -1,12 +1,15 @@
 ﻿
-@{
-    ViewBag.Title = "SlackAuthorize";
-}
+<div class="app-container">
+    <div class="text-center">
+        @{
+            ViewBag.Title = "SlackAuthorize";
+        }
 
-<h4>@ViewBag.Message</h4>
-<p>
-    <a href='@Url.Action("Index", "Home")'>
-        <input type='submit' value='Back to Home' />
-    </a>
-</p>
-
+        <p class="info-msg">  @ViewBag.Message</p>
+        <p>
+            <a href='@Url.Action("Index", "Home")'>
+                <input type='submit' class="back-btn" value='Back to Home' />
+            </a>
+        </p>
+    </div>
+</div>

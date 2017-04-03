@@ -1,35 +1,104 @@
-﻿using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+﻿using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
+using System.Collections.Generic;
+
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
     public class SlackChannelRepository : ISlackChannelRepository
     {
-        private readonly IRepository<SlackChannelDetails> _slackChannelDetailsContext;
 
-        public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsContext)
+        #region Private Variable
+
+        private readonly IRepository<SlackChannelDetails> _slackChannelDetailsRepository;
+
+        #endregion
+
+
+        #region Constructor
+
+        public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsRepository)
         {
-            _slackChannelDetailsContext = slackChannelDetailsContext;
+            _slackChannelDetailsRepository = slackChannelDetailsRepository;
         }
 
-        /// <summary>
-        /// Method to add slack channel 
-        /// </summary>
-        /// <param name="slackChannelDetails"></param>
-        public void AddSlackChannel(SlackChannelDetails slackChannelDetails)
-        {
-            _slackChannelDetailsContext.Insert(slackChannelDetails);
-        }
+        #endregion
+
+
+        #region Public Methods
+
 
         /// <summary>
-        /// Method to get slack channel information by their slack channel id
+        /// Method to add slack channel. - JJ
         /// </summary>
-        /// <param name="slackId"></param>
+        /// <param name="slackChannelDetails">object of SlackChannelDetails</param>
+        public async Task AddSlackChannelAsync(SlackChannelDetails slackChannelDetails)
+        {
+            _slackChannelDetailsRepository.Insert(slackChannelDetails);
+            await _slackChannelDetailsRepository.SaveChangesAsync();
+        }
+
+
+        /// <summary>
+        /// Method to get slack channel information by their slack channel id - JJ
+        /// </summary>
+        /// <param name="slackChannelId">Id of slack channel</param>
         /// <returns>object of SlackChannelDetails</returns>
-        public SlackChannelDetails GetById(string slackId)
+        public async Task<SlackChannelDetails> GetByIdAsync(string slackChannelId)
         {
-            var channel = _slackChannelDetailsContext.FirstOrDefault(x => x.ChannelId == slackId);
+            SlackChannelDetails channel = await _slackChannelDetailsRepository.FirstOrDefaultAsync(x => x.ChannelId == slackChannelId);
             return channel;
         }
+
+
+        /// <summary>
+        /// Method to update slack channel details - JJ
+        /// </summary>
+        /// <param name="slackChannelDetails">object of SlackChannelDetails</param>
+        public async Task UpdateSlackChannelAsync(SlackChannelDetails slackChannelDetails)
+        {
+            _slackChannelDetailsRepository.Update(slackChannelDetails);
+            await _slackChannelDetailsRepository.SaveChangesAsync();
+        }
+
+
+        /// <summary>
+        /// Method to delete slack channel by their slack channel id - JJ
+        /// </summary>
+        /// <param name="slackChannelId">Id of slack channel</param>
+        public async Task DeleteChannelAsync(string slackChannelId)
+        {
+            SlackChannelDetails channel = await GetByIdAsync(slackChannelId);
+            if (channel != null)
+            {
+                _slackChannelDetailsRepository.Delete(channel.Id);
+                await _slackChannelDetailsRepository.SaveChangesAsync();
+            }
+        }
+
+
+        /// <summary>
+        /// Method to fetch active slack channels - JJ
+        /// </summary>
+        ///<returns>list of object of SlackChannelDetails</returns>
+        public async Task<IEnumerable<SlackChannelDetails>> FetchChannelAsync()
+        {
+            return await _slackChannelDetailsRepository.FetchAsync(x => !x.Deleted);
+        }
+
+
+        /// <summary>
+        /// Method to fetch active slack channels - JJ
+        /// </summary>
+        /// <param name="projectId">Id of the OAuth Project</param>
+        ///<returns>object of SlackChannelDetails</returns>
+        public async Task<SlackChannelDetails> FetchChannelByProjectIdAsync(int projectId)
+        {
+            return await _slackChannelDetailsRepository.FirstOrDefaultAsync(x => x.ProjectId == projectId);
+        }
+
+            
+        #endregion
     }
 }

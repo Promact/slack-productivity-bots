@@ -4,7 +4,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 
 export class UrlTree {
-    root: any;
     queryParams: {
         [key: string]: string;
     };
@@ -24,6 +23,12 @@ export class MockRouter {
     serializeUrl() {
         return "test";
     }
+    hooks = {
+        beforePreactivation: null,
+        afterPreactivation: null
+    };
+    initialNavigation() {
+    };
 
     private subject = new BehaviorSubject(this.testParams);
     events = this.subject.asObservable();

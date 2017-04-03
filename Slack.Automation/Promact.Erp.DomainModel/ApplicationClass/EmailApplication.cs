@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
     public class EmailApplication
     {
+        public EmailApplication()
+        {
+            To = new List<string>();
+            CC = new List<string>();
+        }
         /// <summary>
         /// Email address from
         /// </summary>
@@ -26,6 +27,11 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         /// <summary>
         /// Email to
         /// </summary>
-        public string To { get; set; }
+        public List<string> To { get; set; }
+
+        /// <summary>
+        /// Email cc
+        /// </summary>
+        public List<string> CC { get; set; }
     }
 }

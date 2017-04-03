@@ -1,6 +1,5 @@
 ﻿
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
@@ -42,7 +41,9 @@ namespace Promact.Erp.DomainModel.ApplicationClass
 
         [JsonProperty("UniqueName")]
         public string UniqueName { get { return FirstName + "-" + Email; } }
-
-        public string SlackUserName { get; set; }
+        
+               
+        [JsonProperty("SlackUserId")]
+        public string SlackUserId { get; set; }
     }
 }

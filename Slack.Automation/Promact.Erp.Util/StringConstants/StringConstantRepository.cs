@@ -77,7 +77,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "dd,MM,yyyy";
+                return "dd-MM-yyyy";
             }
         }
         public string ResponseTypeEphemeral
@@ -133,24 +133,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You are trying with wrong leave id which does not belong to you";
+                return "You are trying with wrong leave id, which does not belong to you";
             }
         }
         public string SlackHelpMessage
         {
             get
             {
-                return string.Format("For leave apply: /leaves apply [Reason] [FromDate: dd-MM-yyyy] [EndDate: dd-MM-yyyy] [LeaveType] [RejoinDate: dd-MM-yyyy]{0}For leave list of Yours : /leaves list{0}For leave list of others : /leaves list [@user]{0}For leave Cancel : /leaves cancel [leave Id number]{0}For leave status of Yours : /leaves status{0}For leave status of others : /leaves status [@user]{0}For leaves balance: /leaves balance", Environment.NewLine);
+                return string.Format(
+                    "To apply casual leave: /leaves apply cl [Reason(for long reason write in \" \")] [FromDate] [EndDate] [RejoinDate]" +
+                    "{0}To apply sick leave: /leaves apply sl [Reason] [FromDate]" +
+                    "{0}To apply sick leave by admin for other: /leaves apply sl [Reason] [FromDate] [username]" +
+                    "{0}For leaves list of yours : /leaves list" +
+                    "{0}For leaves list of others : /leaves list [username]" +
+                    "{0}For leave cancel : /leaves cancel [leave Id number]" +
+                    "{0}For sick leave update(only by admin): / leaves update [leave id] [EndDate] [RejoinDate]" +
+                    "{0}For leave status of yours : /leaves status" +
+                    "{0}For leave status of others : /leaves status [username]" +
+                    "{0}For leaves balance: /leaves balance", Environment.NewLine);
             }
         }
         public string SlackErrorMessage
         {
             get
             {
-                return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order. For help : /leaves help";
+                return "I didn't quite get that. I'm easily confused. Perhaps try the words in a different order." +
+                    " For help : /leaves help";
             }
         }
-        public string UsersDetailByGroupUrl
+        public string UsersDetailByChannelNameUrl
         {
             get
             {
@@ -165,13 +176,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "fetchUserById/";
             }
         }
-        public string UserDetailByUserNameUrl
-        {
-            get
-            {
-                return "fetchbyusername/";
-            }
-        }
         public string UrlRtmStart
         {
             get
@@ -179,32 +183,46 @@ namespace Promact.Erp.Util.StringConstants
                 return "https://slack.com/api/rtm.start";
             }
         }
+        public string UserCouldNotBeAdded
+        {
+            get
+            {
+                return "User could not be added";
+            }
+        }
         public string OAuthAuthorizationScopeAndClientId
         {
             get
             {
-                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read&client_id=";
+                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
+            }
+        }
+        public string SlackAuthorize
+        {
+            get
+            {
+                return "SlackAuthorize";
             }
         }
         public string UserDetailsUrl
         {
             get
             {
-                return "userDetails/";
+                return "user/";
             }
         }
         public string TeamLeaderDetailsUrl
         {
             get
             {
-                return "teamLeaderDetails/";
+                return "teamLeaders/";
             }
         }
         public string ManagementDetailsUrl
         {
             get
             {
-                return "managementDetails";
+                return "managements";
             }
         }
         public string OAuthAcessUrl
@@ -221,11 +239,18 @@ namespace Promact.Erp.Util.StringConstants
                 return "projectByUserName/";
             }
         }
+        public string ProjectDetailUrl
+        {
+            get
+            {
+                return "projectDetail/";
+            }
+        }
         public string ProjectUsersByTeamLeaderId
         {
             get
             {
-                return "projectUsersById/";
+                return "/project";
             }
         }
         public string ProjectUserDetailsUrl
@@ -253,16 +278,10 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userDetail/";
+                return "/detail";
             }
         }
-        public string LoginUserDetail
-        {
-            get
-            {
-                return "getByUserName/";
-            }
-        }
+
         public string ThankYou
         {
             get
@@ -309,7 +328,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please enter numeric value. And it should be in the range of 0.5 to 8";
+                return "Please enter a numeric value. And it should be in the range of 0.5 to 8";
             }
         }
         public string ScrumInProgress
@@ -317,6 +336,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Scrum is in progress";
+            }
+        }
+        public string SlackUserNotFound
+        {
+            get
+            {
+                return "Slack details of user have not been found. Please login with Promact and add our app to Slack";
             }
         }
         public string TaskMailDescription
@@ -347,11 +373,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Status";
             }
         }
-        public string ScrumTime
+        public string StartBot
         {
             get
             {
-                return "scrum time";
+                return "start <@ScrumBotName>";
             }
         }
         public string ScrumHalt
@@ -365,7 +391,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Channel details has been added";
+                return "Channel details have been added";
             }
         }
         public string Add
@@ -390,6 +416,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "This channel is not registered as Project in OAuth. Please add it to OAuth first";
             }
         }
+        public string UserNotInOAuthOrProject
+        {
+            get
+            {
+                return "User not in OAuth or not a user in the project";
+            }
+        }
         public string GroupNameStartsWith
         {
             get
@@ -404,7 +437,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "Only private channels can be added manually.";
             }
         }
-
         public string ScrumHalted
         {
             get
@@ -416,7 +448,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Scrum is halted";
+                return "Scrum is halted\n";
             }
         }
         public string ScrumAlreadyHalted
@@ -461,6 +493,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum was not halted\n";
             }
         }
+        public string InValidStartCommand
+        {
+            get
+            {
+                return "Invalid command . Try *_start <@{0}>_*";
+            }
+        }
         public string ScrumHelp
         {
             get
@@ -472,7 +511,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "To automate your stand up meet.\nAdd me to your channel.\n>If your channel is private and added as project with same slack channel name in Promact-OAuth then start by adding your channel. The command is *add channel _channelname_*\nType *scrum time* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can resume it by typing the keyword *scrum time*.I will resume the stand up meet from where it had stopped.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_";
+                return "To automate your stand up meet.\nLogin with Promact and add our slack app to your slack team.\nAdd me to your channel and link your Slack Channel to OAuth Project (further instructions to link are given below).\nType *start <@{0}>* to start your team's stand up meet.\nTeam members will be asked questions and only the person who is asked question must answer it.\n>If a person is on leave and asked question,then any team member can write *leave _@team member's name_*.\n>Members who are marked as in-active in OAuth will not be asked questions.\nThe stand up meet has to be conducted in one go.\n>If it gets interrupted in any circumstances, you can start from where you left by typing the command *start <@{0}>*.\nScrum can be halted by writing *scrum halt* and it can be resumed by *scrum resume*. \nHope this helped.\n\n_P.S. If these instructions are not followed, I might misbehave_.\n_My apologies in advance :wink:_ \n\n *Steps to link Slack channel to OAuth project (Exclusively for Team Leaders)* \n>Use `link \"projectname\"` to link the slack channel to the OAuth project with name _projectname_\n>Use `unlink \"projectname\"` to unlink Slack channel from OAuth project.\n>Use `list links` to get the list of OAuth projects (of which the user is team leader) and their correspondingly linked Slack channels";
             }
         }
         public string NotAUser
@@ -486,7 +525,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please add Project details of the channel on Promact";
+                return "Please login with Promact and add our slack app to your team first.";
             }
         }
         public string Leave
@@ -494,6 +533,104 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "leave";
+            }
+        }
+        public string Link
+        {
+            get
+            {
+                return "link";
+            }
+        }
+        public string Unlink
+        {
+            get
+            {
+                return "unlink";
+            }
+        }
+        public string NotActiveUser
+        {
+            get
+            {
+                return "<@{0}> is not active in OAuth server.";
+            }
+        }
+        public string NotTeamLeader
+        {
+            get
+            {
+                return "Sorry <@{0}> is not the team leader of this project";
+            }
+        }
+        public string NotTeamLeaderOfProject
+        {
+            get
+            {
+                return "An active project named : *{0}* with <@{1}> as team leader could not be found in OAuth";
+            }
+        }
+        public string ProjectLinked
+        {
+            get
+            {
+                return "Project *{0}* linked to `{1}` successfully";
+            }
+        }
+        public string UnLinkFirst
+        {
+            get
+            {
+                return "Please unlink slack channel first to link to *{0}*";
+            }
+        }
+        public string InActiveProject
+        {
+            get
+            {
+                return "Project is not active in OAuth";
+            }
+        }
+        public string AlreadyLinked
+        {
+            get
+            {
+                return "Project is already linked to another slack channel";
+            }
+        }
+        public string NotLinkedYet
+        {
+            get
+            {
+                return "Slack channel is not linked to *{0}* or any other OAuth projects yet.";
+            }
+        }
+        public string UnlinkedSuccessfully
+        {
+            get
+            {
+                return "Project *{0}* unlinked from `{1}` successfully";
+            }
+        }
+        public string NotLinkedToChannel
+        {
+            get
+            {
+                return "Slack channel is not linked to *{0}*";
+            }
+        }
+        public string NoLinks
+        {
+            get
+            {
+                return "No OAuth Project - Slack Channel Links to show";
+            }
+        }
+        public string Links
+        {
+            get
+            {
+                return "List of OAuth Project - Slack Channel Links :";
             }
         }
         public string Later
@@ -521,7 +658,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "*Your previous day's status is :*\n";
+                return "*Your scrum status of {0} is :*\n";
             }
         }
         public string ScrumBotToken
@@ -545,6 +682,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Scrum Bot : ";
             }
         }
+        public string LoggerTaskMailBot
+        {
+            get
+            {
+                return "Error in Tasl Mail Bot : ";
+            }
+        }
         public string ScrumLaterDone
         {
             get
@@ -556,7 +700,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "But,<@{0}> your answers have been recorded today :worried:\n";
+                return "But,<@{0}>'s answers have been recorded today :worried:\n";
             }
         }
         public string NotExpected
@@ -578,14 +722,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No employees found for this project.";
-            }
-        }
-        public string WrongPerson
-        {
-            get
-            {
-                return "<@{0}> please answer.";
+                return "Sorry. No active member found for this project.";
             }
         }
         public string Unrecognized
@@ -595,12 +732,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry :worried: I don't know who you are. Please contact your administrator";
             }
         }
-
         public string NoProjectFound
         {
             get
             {
-                return "No project found for this channel.";
+                return "No active project with an active team leader found for this channel.";
             }
         }
         public string ScrumComplete
@@ -618,11 +754,34 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
+        public string NameFormat
+        {
+            get
+            {
+                return "<@{0}> ";
+            }
+        }
+        public string AnswerNotRecorded
+        {
+            get
+            {
+                return "Answer could not be recorded";
+            }
+        }
+
+        public string PreviousDayScrumAnswer
+        {
+            get
+            {
+                return "*_Q_*: {0}\r\n*_A_*: {1}\r\n";
+            }
+        }
+
         public string ScrumCannotBeHalted
         {
             get
             {
-                return " So scrum cannot be halted.";
+                return " Scrum cannot be halted.";
             }
         }
 
@@ -630,7 +789,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return " So scrum cannot be resumed.";
+                return "Scrum cannot be resumed.";
             }
         }
 
@@ -638,10 +797,10 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Project is marked as Inactive in Promact OAuth";
+                return "Project is marked as Inactive in Promact OAuth.\n";
             }
-        }             
-        
+        }
+
         public string ScrumAlreadyConducted
         {
             get
@@ -653,7 +812,15 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry we do not have your slack details";
+                return string.Format("Sorry we do not have your slack details." +
+                    " Click here {0}", AppSettingUtil.PromactErpUrl);
+            }
+        }
+        public string MarkedInActive
+        {
+            get
+            {
+                return "<@{0}>,you were marked as In-active or not in OAuth before or did not answer this answer before due to technical glitches.\n Please answer ";
             }
         }
         public string Channel
@@ -667,7 +834,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Good Day ";
+                return "Good Day <@{0}>!\n";
             }
         }
         public string Time
@@ -677,18 +844,25 @@ namespace Promact.Erp.Util.StringConstants
                 return "time";
             }
         }
+        public string UserNotInSlack
+        {
+            get
+            {
+                return "User is not in Slack or has not added app to slack yet\n";
+            }
+        }
+        public string NotInSlackOrNotExpectedUser
+        {
+            get
+            {
+                return "User with email id {0} has not logged in with promact yet. Please authenticate with Promact OAuth server to add app to Slack";
+            }
+        }
         public string PleaseAnswer
         {
             get
             {
-                return "<@{0}> please answer.";
-            }
-        }
-        public string ScrumConcludedButLater
-        {
-            get
-            {
-                return "Scrum wound up for now.\nGood luck team :thumbsup:. \nTo conduct scrum of employees marked as _later_ type *_scrum @username_*";
+                return "I am expecting <@{0}> to answer.";
             }
         }
         public string AllAnswerRecorded
@@ -716,7 +890,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please start task mail";
+                return "To add task please start, write *task mail*";
             }
         }
         public string AlreadyMailSend
@@ -768,6 +942,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Bot Not Found";
             }
         }
+        public string OAuthProjName
+        {
+            get
+            {
+                return "Sci Test Bot";
+            }
+        }
         public string StringIdForTest
         {
             get
@@ -810,19 +991,113 @@ namespace Promact.Erp.Util.StringConstants
                 return "channel_created";
             }
         }
+        public string ChannelArchive
+        {
+            get
+            {
+                return "channel_archive";
+            }
+        }
+        public string GroupArchive
+        {
+            get
+            {
+                return "group_archive";
+            }
+        }
         public string UserDetailsFromOauthServer
         {
             get
             {
-                return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"siddhartha\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
+                return "{\"firstName\":\"siddhartha\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":10.0,\"numberOfSickLeave\":5.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ49KJ4\",\"slackUserName\":\"siddhartha\",\"slackUserId\":\"U0HJ49KJ4\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
             }
         }
 
+        public string UserDetailsFromOauthServerFalse
+        {
+            get
+            {
+                return "{\"firstName\":\"siddhartha\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":10.0,\"numberOfSickLeave\":5.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ49KJ4\",\"slackUserName\":\"siddhartha\",\"slackUserId\":\"U0HJ49KJ4\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Management\",\"claims\":[],\"logins\":[]}";
+            }
+        }
+        public string ProjectAndTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string ProjectTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string ProjectTeamLeaderInActiveDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":true,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":false,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string UnlinkCommand
+        {
+            get
+            {
+                return "unlink \"Two Tester\"";
+
+            }
+        }
+        public string UnlinkTest
+        {
+            get
+            {
+                return "unlink \"Sci bot testing\"";
+
+            }
+        }
+        public string InActiveProjectTeamLeaderDetail
+        {
+            get
+            {
+                return "[{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[]},{\"Id\":2,\"Name\":\"Two Tester\",\"SlackChannelName\":\"twotester\",\"IsActive\":false,\"TeamLeaderId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]},{\"Id\":3,\"Name\":\"test\",\"SlackChannelName\":\"test\",\"IsActive\":true,\"TeamLeaderId\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":null,\"UpdatedDate\":null,\"TeamLeader\":{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},\"ApplicationUsers\":[]}]";
+            }
+        }
+        public string LinkChannelNoName
+        {
+            get
+            {
+                return "Link \"\"";
+            }
+        }
+        public string ListOfLinks
+        {
+            get
+            {
+                return "\r\n*Two Tester* - `testbotgroup`\r\n";
+            }
+        }
+        public string LinkTest
+        {
+            get
+            {
+                return "link \"Two Tester\"";
+            }
+        }
+        public string OAuthProjectName
+        {
+            get
+            {
+                return "Two Tester";
+            }
+        }
         public string SlashCommandText
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}",
+                    DateTime.UtcNow.ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string PromactStringName
@@ -843,7 +1118,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"24954a25-7af6-488e-9c5f-970958c62eeb\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"00836465-b3d0-48ee-acb4-f0bff1c1834b\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+                return "[{ \"firstName\":null,\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0HJ34YU9\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"gourav@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"gourav@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"be27bae7-b292-4c57-917e-abb88793b8c1\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
             }
         }
         public string CommentAndDescriptionForTest
@@ -857,21 +1132,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"5e6d8293-98ad-4249-b4ff-d4baa5da09bb\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
+                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserId\":\"U0525LCJR\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":null,\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"claims\":[],\"logins\":[]}]";
             }
         }
         public string TaskMailReport
         {
             get
             {
-                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string ListOfEmployeeForTeamLeader
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"},{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\",\"name\":\"test test test\",\"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Employee\"}]";
+            }
+        }
+        public string EmployeeInformation
+        {
+            get
+            {
+                return "[{\"userId\":\"null\",\"userName\":\"siddhartha@promactinfo.com\", \"name\":\"Promact\", \"role\":\"Employee\"}]";
             }
         }
         public string TaskMailReportTeamLeader
         {
             get
             {
-                return "[{\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userName\":\"test@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
+                return "[{\"userId\":\"1\",\"userName\":\"roshni@promactinfo.com\", \"name\":\"Admin Promact\", \"role\":\"TeamLeader\"},{\"userId\":\"null\",\"userName\":\"test@promactinfo.com\",\"name\":\"test test test\",\"role\":\"Admin\"},{\"userId\":\"null\",\"userName\":\"user2@promactinfo.com\",\"name\":\"user2 user2\",\"role\":\"Admin\"}]";
             }
         }
         public string TeamLeaderEmailForTest
@@ -1060,35 +1349,35 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("{0}/api/ProjectUser/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string ProjectUrl
         {
             get
             {
-                return string.Format("{0}/api/Project/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/project/", AppSettingUtil.OAuthUrl);
             }
         }
         public string UserUrl
         {
             get
             {
-                return string.Format("{0}/api/User/", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}api/users/", AppSettingUtil.OAuthUrl);
             }
         }
         public string OAuthUrl
         {
             get
             {
-                return string.Format("{0}/OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
+                return string.Format("{0}OAuth/ExternalLogin", AppSettingUtil.OAuthUrl);
             }
         }
         public string ClientReturnUrl
         {
             get
             {
-                return string.Format("{0}/Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
+                return string.Format("{0}Home/ExtrenalLoginCallBack", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveManagementAuthorizationUrl
@@ -1109,7 +1398,8 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves list username{0}/leaves list", Environment.NewLine);
+                return string.Format("Either leave doesn't exist for that user or enter a valid slack username." +
+                    "{0}Example :-{0}/leaves list username - for other user{0}/leaves list - for own", Environment.NewLine);
             }
         }
         public string SlashCommandLeaveCancelErrorMessage
@@ -1123,7 +1413,8 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return string.Format("Leave doesn't exist for that user. Enter a valid slack username. {0}Example :- /leaves status username{0}/leaves status", Environment.NewLine);
+                return string.Format("Either leave doesn't exist for that user or enter a valid slack username." +
+                    " {0}Example :-{0}/leaves status username - for other user{0}/leaves status - for own", Environment.NewLine);
             }
         }
         public string Host
@@ -1154,11 +1445,18 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sorry. Something bad happened :face_with_head_bandage: . Please try after sometime.";
             }
         }
-        public string From
+        public string ErrorMsgNewPrivateChannel
         {
             get
             {
-                return "From";
+                return "Sorry. Something bad happened :face_with_head_bandage: .\nIs this private channel created from an existing private channel ? If yes then this could be the cause of trouble.";
+            }
+        }
+        public string MailUserName
+        {
+            get
+            {
+                return "MailUserName";
             }
         }
         public string Password
@@ -1280,6 +1578,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Home Controller-Extrenal Login CallBack ";
             }
         }
+        public string LoggerErrorMessageHomeControllerSlackOAuthAuthorization
+        {
+            get
+            {
+                return "Error in Home Controller-Slack OAuth Authorization ";
+            }
+        }
         public string LoggerErrorMessageHomeControllerLogoff
         {
             get
@@ -1315,7 +1620,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Error in Task Mail Bot";
             }
         }
-        public string SlackBotStringName
+        public string SlackBotName
         {
             get
             {
@@ -1326,7 +1631,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "casual/leave/";
+                return "leaveAllowed/";
             }
         }
         public string CasualLeaveResponse
@@ -1354,7 +1659,9 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry user can't apply leave. Either user are not in Promact OAuth or yet u haven't login in promact-slack server";
+                return string.Format("Sorry you cannot use leave slash command." +
+                    " Either user is not in Promact OAuth or yet u haven't login in promact-slack server." +
+                    " Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
         public string LeaveListCommandForTest
@@ -1396,7 +1703,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You have taken 0 casual leave out of 10\r\nYou have casual leave left 10";
+                return "You have taken 0 casual leave out of 10\r\nYou are left with 10 casual leave";
             }
         }
         public string OrElseString
@@ -1404,6 +1711,13 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "Or Else";
+            }
+        }
+        public string UserNotInProject
+        {
+            get
+            {
+                return "<@{0}> is not included as a team member/employee in the project i.e OAuth project\n>Remember, team leaders are not expected to answer for other users :wink:";
             }
         }
         public string Admin
@@ -1483,11 +1797,25 @@ namespace Promact.Erp.Util.StringConstants
                 return "{\n    \"ok\": true,\n    \"groups\": [\n        {\n            \"id\": \"G0HJ0SB9R\",\n            \"name\": \"bbit-training-group\",\n            \"is_group\": true,\n            \"created\": 1451628546,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": true,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U051J2RTW\",\n                \"U051J5H4G\",\n                \"U051ZTH8J\",\n                \"U0525M2P1\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0RF4FM09\",\n            \"name\": \"creativecell\",\n            \"is_group\": true,\n            \"created\": 1457515586,\n            \"creator\": \"U051J3RQL\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051J3RQL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LFLT\",\n                \"U0525MNTH\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U05263AL9\",\n                \"U06NVGLPQ\",\n                \"U08GCPE0J\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0MH2SCTG\",\n            \"name\": \"crozi-internal-beta\",\n            \"is_group\": true,\n            \"created\": 1455627169,\n            \"creator\": \"U04K6NL6A\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U051HV8JE\",\n                \"U051J13Q8\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J5H4G\",\n                \"U0525LDMF\",\n                \"U0525M2P1\",\n                \"U0525MNTH\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0L2PBH9N\",\n            \"name\": \"fun-day-2016\",\n            \"is_group\": true,\n            \"created\": 1454416384,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051HV8JE\",\n                \"U051J0GN4\",\n                \"U0525LDMF\",\n                \"U082PJG72\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0FG737TL\",\n            \"name\": \"house-martell\",\n            \"is_group\": true,\n            \"created\": 1448869272,\n            \"creator\": \"U082PJG72\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051J2RTW\",\n                \"U0525LDMF\",\n                \"U0525MFND\",\n                \"U0545BH7Q\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"discussion about olympic 2016\",\n                \"creator\": \"U082PJG72\",\n                \"last_set\": 1448869275\n            }\n        },\n        {\n            \"id\": \"G0Q387150\",\n            \"name\": \"mostcrowdedcube\",\n            \"is_group\": true,\n            \"created\": 1457006375,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G20P4DY8N\",\n            \"name\": \"mpdm-ankit--gourav--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470987087,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @gourav @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            }\n        },\n        {\n            \"id\": \"G2006M214\",\n            \"name\": \"mpdm-ankit--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470822352,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            }\n        },\n        {\n            \"id\": \"G1TPX59C0\",\n            \"name\": \"mpdm-gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1469092626,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            }\n        },\n        {\n            \"id\": \"G0HLD1MBQ\",\n            \"name\": \"mpdm-parth--rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1451912292,\n            \"creator\": \"U0FQH9DB9\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @parth @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            }\n        },\n        {\n            \"id\": \"G0J2SMS4B\",\n            \"name\": \"mpdm-rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1452315477,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            }\n        },\n        {\n            \"id\": \"G24PWMYJ2\",\n            \"name\": \"mpdm-roshni--julie--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1472105114,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U06NVGLPQ\",\n                \"U0525LCJR\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @roshni @julie @siddhartha\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            }\n        },\n        {\n            \"id\": \"G1TQRH34H\",\n            \"name\": \"promact-erp-dev\",\n            \"is_group\": true,\n            \"created\": 1469096642,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0525LCJR\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"only developers\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1469096645\n            }\n        },\n        {\n            \"id\": \"G05207LJY\",\n            \"name\": \"promact-team\",\n            \"is_group\": true,\n            \"created\": 1432703647,\n            \"creator\": \"U05256USX\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051HV8N8\",\n                \"U051HV9KY\",\n                \"U051J094A\",\n                \"U051J0GN4\",\n                \"U051J0M2A\",\n                \"U051J13Q8\",\n                \"U051J17PA\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J44DE\",\n                \"U051J5H4G\",\n                \"U051JE2JW\",\n                \"U051KDCAL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LDMF\",\n                \"U0525LF29\",\n                \"U0525LFLT\",\n                \"U0525LH1B\",\n                \"U0525LLBZ\",\n                \"U0525LW55\",\n                \"U0525M2P1\",\n                \"U0525MFND\",\n                \"U0525MNTH\",\n                \"U0525MXL3\",\n                \"U0525N6FF\",\n                \"U0525N6NB\",\n                \"U0525NC63\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U0526JFLM\",\n                \"U0526N37K\",\n                \"U0545BH7Q\",\n                \"U06CU2VB9\",\n                \"U06NVGLPQ\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U08KM481G\",\n                \"U09G8CUJ3\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\",\n                \"U0U36HKV1\",\n                \"U0VR8DA0Y\",\n                \"U0ZH5UYSJ\",\n                \"U1C74JGTU\",\n                \"U1D6AU01F\",\n                \"U1JBA2Z5G\",\n                \"U1M83P1U0\",\n                \"U1M8GSPPC\",\n                \"U1MVA0H3M\",\n                \"U1MVBJE2X\",\n                \"U1N1CA4C8\",\n                \"U1N1P8X89\",\n                \"U1WTH2LPM\",\n                \"U1Z3M1VNJ\",\n                \"U23EZH2TW\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1T01U11P\",\n            \"name\": \"sci-oauth-dev\",\n            \"is_group\": true,\n            \"created\": 1468914520,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"Team for Slack Custom Integrations + Making OAuth server\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1468914522\n            }\n        },\n        {\n            \"id\": \"G2755U4P6\",\n            \"name\": \"slack-automation-mvc\",\n            \"is_group\": true,\n            \"created\": 1472709560,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"This will show build status and git commits. not meant for discussing anything.\",\n                \"creator\": \"U04KUAFSH\",\n                \"last_set\": 1472709563\n            }\n        },\n        {\n            \"id\": \"G25RU420H\",\n            \"name\": \"slack-integration\",\n            \"is_group\": true,\n            \"created\": 1472451083,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1UPC4057\",\n            \"name\": \"slash-command\",\n            \"is_group\": true,\n            \"created\": 1469441963,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U24QNPAH0\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        }\n    ]\n}\n";
             }
         }
-        public string LeaveListTestForOwn
+        public string BasicUserDetailsResponseText
+        {
+            get
+            {
+                return "{\n    \"ok\": true,\n    \"groups\": [\n        {\n            \"id\": \"G0HJ0SB9R\",\n            \"name\": \"bbit-training-group\",\n            \"is_group\": true,\n            \"created\": 1451628546,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": true,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U051J2RTW\",\n                \"U051J5H4G\",\n                \"U051ZTH8J\",\n                \"U0525M2P1\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0RF4FM09\",\n            \"name\": \"creativecell\",\n            \"is_group\": true,\n            \"created\": 1457515586,\n            \"creator\": \"U051J3RQL\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051J3RQL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LFLT\",\n                \"U0525MNTH\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U05263AL9\",\n                \"U06NVGLPQ\",\n                \"U08GCPE0J\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0MH2SCTG\",\n            \"name\": \"crozi-internal-beta\",\n            \"is_group\": true,\n            \"created\": 1455627169,\n            \"creator\": \"U04K6NL6A\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U051HV8JE\",\n                \"U051J13Q8\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J5H4G\",\n                \"U0525LDMF\",\n                \"U0525M2P1\",\n                \"U0525MNTH\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0L2PBH9N\",\n            \"name\": \"fun-day-2016\",\n            \"is_group\": true,\n            \"created\": 1454416384,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051HV8JE\",\n                \"U051J0GN4\",\n                \"U0525LDMF\",\n                \"U082PJG72\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G0FG737TL\",\n            \"name\": \"house-martell\",\n            \"is_group\": true,\n            \"created\": 1448869272,\n            \"creator\": \"U082PJG72\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U051J2RTW\",\n                \"U0525LDMF\",\n                \"U0525MFND\",\n                \"U0545BH7Q\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"discussion about olympic 2016\",\n                \"creator\": \"U082PJG72\",\n                \"last_set\": 1448869275\n            }\n        },\n        {\n            \"id\": \"G0Q387150\",\n            \"name\": \"mostcrowdedcube\",\n            \"is_group\": true,\n            \"created\": 1457006375,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G20P4DY8N\",\n            \"name\": \"mpdm-ankit--gourav--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470987087,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @gourav @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1470987087\n            }\n        },\n        {\n            \"id\": \"G2006M214\",\n            \"name\": \"mpdm-ankit--rajdeep--siddhartha--ronak.shah-1\",\n            \"is_group\": true,\n            \"created\": 1470822352,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0526N37K\",\n                \"U0HJ48P4Y\",\n                \"U1M8GSPPC\",\n                \"U0HJ49KJ4\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @ankit @rajdeep @siddhartha @ronak.shah\",\n                \"creator\": \"U0526N37K\",\n                \"last_set\": 1470822352\n            }\n        },\n        {\n            \"id\": \"G1TPX59C0\",\n            \"name\": \"mpdm-gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1469092626,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1469092626\n            }\n        },\n        {\n            \"id\": \"G0HLD1MBQ\",\n            \"name\": \"mpdm-parth--rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1451912292,\n            \"creator\": \"U0FQH9DB9\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0FQH9DB9\",\n                \"U0HJ33E49\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @parth @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0FQH9DB9\",\n                \"last_set\": 1451912292\n            }\n        },\n        {\n            \"id\": \"G0J2SMS4B\",\n            \"name\": \"mpdm-rahul--gourav--rajdeep--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1452315477,\n            \"creator\": \"U0HJ48P4Y\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @rahul @gourav @rajdeep @siddhartha\",\n                \"creator\": \"U0HJ48P4Y\",\n                \"last_set\": 1452315477\n            }\n        },\n        {\n            \"id\": \"G24PWMYJ2\",\n            \"name\": \"mpdm-roshni--julie--siddhartha-1\",\n            \"is_group\": true,\n            \"created\": 1472105114,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": true,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U06NVGLPQ\",\n                \"U0525LCJR\"\n            ],\n            \"topic\": {\n                \"value\": \"Group messaging\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            },\n            \"purpose\": {\n                \"value\": \"Group messaging with: @roshni @julie @siddhartha\",\n                \"creator\": \"U0HJ49KJ4\",\n                \"last_set\": 1472105114\n            }\n        },\n        {\n            \"id\": \"G1TQRH34H\",\n            \"name\": \"promact-erp-dev\",\n            \"is_group\": true,\n            \"created\": 1469096642,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0525LCJR\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"only developers\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1469096645\n            }\n        },\n        {\n            \"id\": \"G05207LJY\",\n            \"name\": \"promact-team\",\n            \"is_group\": true,\n            \"created\": 1432703647,\n            \"creator\": \"U05256USX\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04K6NL6A\",\n                \"U04KUAFSH\",\n                \"U051HV7DA\",\n                \"U051HV8JE\",\n                \"U051HV8N8\",\n                \"U051HV9KY\",\n                \"U051J094A\",\n                \"U051J0GN4\",\n                \"U051J0M2A\",\n                \"U051J13Q8\",\n                \"U051J17PA\",\n                \"U051J2QKG\",\n                \"U051J2RTW\",\n                \"U051J3RQL\",\n                \"U051J44DE\",\n                \"U051J5H4G\",\n                \"U051JE2JW\",\n                \"U051KDCAL\",\n                \"U051ZTH8J\",\n                \"U05256USX\",\n                \"U0525LCJR\",\n                \"U0525LDMF\",\n                \"U0525LF29\",\n                \"U0525LFLT\",\n                \"U0525LH1B\",\n                \"U0525LLBZ\",\n                \"U0525LW55\",\n                \"U0525M2P1\",\n                \"U0525MFND\",\n                \"U0525MNTH\",\n                \"U0525MXL3\",\n                \"U0525N6FF\",\n                \"U0525N6NB\",\n                \"U0525NC63\",\n                \"U0525NTFZ\",\n                \"U0525PKAK\",\n                \"U0525QHQ1\",\n                \"U05263AL9\",\n                \"U0526JFLM\",\n                \"U0526N37K\",\n                \"U0545BH7Q\",\n                \"U06CU2VB9\",\n                \"U06NVGLPQ\",\n                \"U082PJG72\",\n                \"U08GCPE0J\",\n                \"U08KM481G\",\n                \"U09G8CUJ3\",\n                \"U09UNVC20\",\n                \"U0FQH9DB9\",\n                \"U0H7R5MPS\",\n                \"U0HJ33E49\",\n                \"U0HJ34YU9\",\n                \"U0HJ48P4Y\",\n                \"U0HJ49KJ4\",\n                \"U0J4V5EEQ\",\n                \"U0U36HKV1\",\n                \"U0VR8DA0Y\",\n                \"U0ZH5UYSJ\",\n                \"U1C74JGTU\",\n                \"U1D6AU01F\",\n                \"U1JBA2Z5G\",\n                \"U1M83P1U0\",\n                \"U1M8GSPPC\",\n                \"U1MVA0H3M\",\n                \"U1MVBJE2X\",\n                \"U1N1CA4C8\",\n                \"U1N1P8X89\",\n                \"U1WTH2LPM\",\n                \"U1Z3M1VNJ\",\n                \"U23EZH2TW\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1T01U11P\",\n            \"name\": \"sci-oauth-dev\",\n            \"is_group\": true,\n            \"created\": 1468914520,\n            \"creator\": \"U0525LCJR\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"Team for Slack Custom Integrations + Making OAuth server\",\n                \"creator\": \"U0525LCJR\",\n                \"last_set\": 1468914522\n            }\n        },\n        {\n            \"id\": \"G2755U4P6\",\n            \"name\": \"slack-automation-mvc\",\n            \"is_group\": true,\n            \"created\": 1472709560,\n            \"creator\": \"U04KUAFSH\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U04KUAFSH\",\n                \"U0525LCJR\",\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0H7R5MPS\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"This will show build status and git commits. not meant for discussing anything.\",\n                \"creator\": \"U04KUAFSH\",\n                \"last_set\": 1472709563\n            }\n        },\n        {\n            \"id\": \"G25RU420H\",\n            \"name\": \"slack-integration\",\n            \"is_group\": true,\n            \"created\": 1472451083,\n            \"creator\": \"U0526N37K\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U05263AL9\",\n                \"U0526N37K\",\n                \"U06NVGLPQ\",\n                \"U0HJ34YU9\",\n                \"U0HJ49KJ4\",\n                \"U1M8GSPPC\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        },\n        {\n            \"id\": \"G1UPC4057\",\n            \"name\": \"slash-command\",\n            \"is_group\": true,\n            \"created\": 1469441963,\n            \"creator\": \"U0HJ49KJ4\",\n            \"is_archived\": false,\n            \"is_mpim\": false,\n            \"members\": [\n                \"U0HJ49KJ4\",\n                \"U24QNPAH0\"\n            ],\n            \"topic\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            },\n            \"purpose\": {\n                \"value\": \"\",\n                \"creator\": \"\",\n                \"last_set\": 0\n            }\n        }\n    ]\n}\n";
+            }
+        }
+        public string List
         {
             get
             {
                 return "list";
+            }
+        }
+        public string ListLinks
+        {
+            get
+            {
+                return "list links";
             }
         }
         public string WrongLeaveCancelCommandForTest
@@ -1550,7 +1878,8 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Either you are not in Promact OAuth or you haven't logged in with Promact OAuth";
+                return string.Format("Either you are not in Promact OAuth or you haven't logged in with Promact OAuth." +
+                    " Click here {0}", AppSettingUtil.PromactErpUrl);
             }
         }
         public string HourSpentForTest
@@ -1592,7 +1921,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Date format should be dd-MM-yyyy";
+                return "Date Format Error. Date format should be of your culture. Format :- {0}";
             }
         }
         public string ErrorWhileSendingEmail
@@ -1606,14 +1935,14 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "userIsAdmin/";
+                return "isAdmin/";
             }
         }
         public string LeaveDoesnotExist
         {
             get
             {
-                return "Leave doesn't exist for this Id";
+                return "Leave doesn't exist for this leave Id";
             }
         }
         public string AdminErrorMessageUpdateSickLeave
@@ -1655,21 +1984,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You have taken 0 sick leave out of 5\r\nYou have sick leave left 5";
+                return "You have taken 0 sick leave out of 5\r\nYou are left with 5 sick leave";
             }
         }
         public string SlashCommandTextSick
         {
             get
             {
-                return "apply sl Testing 14-09-2016";
+                return string.Format("apply sl Testing {0}", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextSickForUser
         {
             get
             {
-                return "apply sl Testing 14-09-2016 siddhartha";
+                return string.Format("apply sl Testing {0} siddhartha", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string NameForTest
@@ -1690,70 +2019,73 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "apply kl Testing 14-09-2016 siddhartha";
+                return string.Format("apply kl Testing {0} siddhartha", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextErrorDateFormatSick
         {
             get
             {
-                return "apply sl Testing 05/04/2016 siddhartha";
+                return "apply sl Testing 05/2016/12 siddhartha";
             }
         }
         public string SlashCommandTextErrorDateFormatCasual
         {
             get
             {
-                return string.Format("apply cl Testing 05-04-2016 05/04/2016 05/04/2016");
+                return string.Format("apply cl Testing {0} 05/2016/12 05/2016/12", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string SlashCommandTextCasual
         {
             get
             {
-                return "apply cl Testing 14-09-2016 14-09-2016 14-09-2016";
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdate
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 1);
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateDateError
         {
             get
             {
-                return string.Format("update {0} 30/09/2016 14-09-2016", 1);
+                return string.Format("update {0} 30/09/2016 {1}", 1, DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SlashCommandUpdateWrongId
         {
             get
             {
-                return string.Format("update {0} 14-09-2016 14-09-2016", 10);
+                return string.Format("update {0} {1} {2}", 10, DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(1).ToShortDateString());
             }
         }
         public string SickLeaveDoesnotExist
         {
             get
             {
-                return "Sick leave doesn't exist for this Id";
+                return "Sick leave doesn't exist for this leave Id";
             }
         }
         public string UpdateEnterAValidLeaveId
         {
             get
             {
-                return "Please enter a valid leave id to update";
+                return "Please enter a valid leave Id to update";
             }
         }
         public string SlashCommandUpdateInValidId
         {
             get
             {
-                return "update abc 14-09-2016";
+                return string.Format("update abc {0}", DateTime.UtcNow.ToShortDateString());
             }
         }
         public string ErrorOfEmailServiceFailureTaskMail
@@ -1767,7 +2099,8 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "You are not authorize to apply leave. Only Admin can apply sick leave for other. You are not admin. Else ";
+                return "You are not authorize to apply leave. Only Admin can apply sick leave for other." +
+                    " You are not admin. Else ";
             }
         }
 
@@ -1794,13 +2127,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Completed bot";
             }
         }
-        //public string LeaveApplicant
-        //{
-        //    get
-        //    {
-        //        return "apoorvapatel";
-        //    }
-        //}
+
         public string ChannelIdForTest
         {
             get
@@ -1815,13 +2142,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "5845155745451";
             }
         }
-        //public string TitleForTest
-        //{
-        //    get
-        //    {
-        //        return "Software Developer";
-        //    }
-        //}
         public string ScrumQuestionForTest
         {
             get
@@ -1840,7 +2160,49 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":true,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthThreeEmployee
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthThreeEmployeeInActive
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthOneEmployee
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthOneInActiveEmployee
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthInValidUser
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsFromOauthInActiveUser
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":true,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
             }
         }
 
@@ -1848,10 +2210,30 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "{\"id\":2,\"name\":\"testbotgroup\",\"slackChannelName\":\"testbotgroup\",\"isActive\":false,\"teamLeaderId\":\"5c84049f-f861-406d-b420-e1bf03c9e06e\",\"createdBy\":\"1bac6614-7a2b-42fa-9f18-b6a19d8e25fb\",\"createdDate\":null,\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":null,\"applicationUsers\":null}";
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":false,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"63d28a0d-b0ad-4356-93c7-a0148a3038a5\",\"FirstName\":\"julie\",\"LastName\":\"julie\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-07T18:30:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"julie@promactinfo.com\",\"Password\":null,\"UserName\":\"julie@promactinfo.com\",\"UniqueName\":\"julie-julie@promactinfo.com\",\"RoleName\":null},{\"Id\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},{\"Id\":\"cb136c2c-afad-4626-932d-613c35d7773e\",\"FirstName\":\"Ronak\",\"LastName\":\"Shah\",\"IsActive\":true,\"Role\":null,\"NumberOfCasualLeave\":6.0,\"NumberOfSickLeave\":3.0,\"JoiningDate\":\"2016-11-15T00:00:00\",\"SlackUserName\":null,\"SlackUserId\":null,\"Email\":\"ronak.shah@promactinfo.com\",\"Password\":null,\"UserName\":\"ronak.shah@promactinfo.com\",\"UniqueName\":\"Ronak-ronak.shah@promactinfo.com\",\"RoleName\":null}]}";
             }
         }
-
+        public string InActiveProjectDetailsFromOauthInActiveUser
+        {
+            get
+            {
+                return "{\"Id\":1,\"Name\":\"Sci bot testing\",\"SlackChannelName\":\"scitestbot\",\"IsActive\":false,\"TeamLeaderId\":\"29c96e32-76fe-4915-bb17-b7bd987535da\",\"CreatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"CreatedDate\":\"0001-01-01T00:00:00\",\"UpdatedBy\":\"ca395fa8-dc28-4702-ab7e-2c99d8efa1eb\",\"UpdatedDate\":null,\"TeamLeader\":null,\"ApplicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectChannelNotLinked
+        {
+            get
+            {
+                return "Please contact your team leader to link slack channel with OAuth Project.\nFeel free to use *_scrum help_* command for further instructions.";
+            }
+        }
+        public string LeaveCommand
+        {
+            get
+            {
+                return "leave <@>";
+            }
+        }
         public string EmployeeDetailsFromOauth
         {
             get
@@ -1863,7 +2245,78 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"Id\":\"577696c8-136f-4865-8328-09e7d48ac58d\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListFromOauthOneEmployee
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListFromOauthThreeEmployees
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListFromOauthThreeEmployeesInActive
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302\",\"FirstName\":\"Nehal\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"nehal@promactinfo.com\",\"Password\":null,\"UserName\":\"nehal\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string ThirdUserSlackUserId
+        {
+            get
+            {
+                return "13b0f2c2f5-4713-a67e-37e50172e148n";
+            }
+        }
+
+        public string EmployeesListFromOauthInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string EmployeesListInValid
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string InActiveEmployeesList
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string InValidOAuthUsers
+        {
+            get
+            {
+                return "[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"apoorvapatel\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":false,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"SlackUserName\":\"pranali\",\"SlackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]";
+            }
+        }
+        public string OAuthUserDetails
+        {
+            get
+            {
+                return "{\"firstName\":\"pranali\",\"lastName\":\"Promact\",\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":\"pranali\",\"slackUserId\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"aac59fbc-7835-4bd7-9080-6b6766302080\",\"userName\":\"pranali@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"pranali@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Admin\",\"claims\":[],\"logins\":[]}";
+            }
+        }
+        public string UnExpectedInActiveUser
+        {
+            get
+            {
+                return "<@pranali> is marked as In-active or not in OAuth server. Please contact your system administrator.\n \r\n<@apoorvapatel> What did you do yesterday?\r\nI am expecting <@apoorvapatel> to answer.";
             }
         }
         public string UserBySlackUserName
@@ -1982,21 +2435,21 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}]";
+                return "[{\"firstName\":\"roshni\",\"lastName\":null,\"isActive\":true,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"22914d35-4125-4c89-b67f-bb2060ed4247\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}]";
             }
         }
         public string TeamLeaderDetailFromOauthServer
         {
             get
             {
-                return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}";
+                return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"TeamLeader\",\"claims\":[],\"logins\":[]}";
             }
         }
         public string EmployeeDetailFromOauthServer
         {
             get
             {
-                return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Employee\",\"claims\":[],\"logins\":[]}";
+                return "{\"firstName\":\"roshni\",\"lastName\":\"Promact\",\"isActive\":false,\"numberOfCasualLeave\":0.0,\"numberOfSickLeave\":0.0,\"joiningDate\":\"0001-01-01T00:00:00\",\"slackUserName\":null,\"projects\":null,\"createdBy\":null,\"createdDateTime\":\"0001-01-01T00:00:00\",\"updatedBy\":null,\"updatedDateTime\":\"0001-01-01T00:00:00\",\"id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"userName\":\"roshni@promactinfo.com\",\"normalizedUserName\":null,\"email\":\"roshni@promactinfo.com\",\"normalizedEmail\":null,\"emailConfirmed\":false,\"passwordHash\":null,\"securityStamp\":null,\"concurrencyStamp\":\"a39b2cff-51e2-4f1d-bde9-096cefb17497\",\"phoneNumber\":null,\"phoneNumberConfirmed\":false,\"twoFactorEnabled\":false,\"lockoutEnd\":null,\"lockoutEnabled\":false,\"accessFailedCount\":0,\"roles\":[],\"Role\":\"Employee\",\"claims\":[],\"logins\":[]}";
             }
         }
         public string IdForTest
@@ -2035,7 +2488,7 @@ namespace Promact.Erp.Util.StringConstants
                 return "Scrum has been resumed\nGood Day <@apoorvapatel>!\n\r\n*Your previous day's status is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: _Sorry I have nothing to ask you._\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
             }
         }
-    
+
         #endregion
 
         public string RoleAdmin
@@ -2059,8 +2512,6 @@ namespace Promact.Erp.Util.StringConstants
                 return "Employee";
             }
         }
-
-
         public string TeamMembersUrl
         {
             get
@@ -2076,9 +2527,62 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
 
-
-
-
+        public string AllProjectUrl
+        {
+            get
+            {
+                return "list";
+            }
+        }
+        public string GetProjectDetails
+        {
+            get
+            {
+                return "/detail";
+            }
+        }
+        public string Start
+        {
+            get
+            {
+                return "start";
+            }
+        }
+        public string PersonNotAvailable
+        {
+            get
+            {
+                return "Person Not Available on {0}";
+            }
+        }
+        public string FormatForDate
+        {
+            get
+            {
+                return "MMM dd,yyyy";
+            }
+        }
+        public string ScrumFirstQuestion
+        {
+            get
+            {
+                return "What did you do to change the world yesterday?";
+            }
+        }
+        public string ScrumSecondQuestion
+        {
+            get
+            {
+                return "How you are going to rock it today?";
+            }
+        }
+        public string ScrumThirdQuestion
+        {
+            get
+            {
+                return "Are there any obstacles unfortunate enough to be standing in your way?";
+            }
+        }
         public string NotAvailable
         {
             get
@@ -2093,13 +2597,1040 @@ namespace Promact.Erp.Util.StringConstants
                 return "Next";
             }
         }
-        public string PriviousPage
+        public string Previouspage
         {
             get
             {
-                return "Privious";
+                return "Previous";
+            }
+        }
+        public string AdminLogin
+        {
+            get
+            {
+                return "{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Admin\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
+            }
+        }
+        public string TestQuestion
+        {
+            get
+            {
+                return "Good Day <@pranali>!\n\r\n*Your scrum status of {0} is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: Sorry I have nothing to ask you.\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
+            }
+        }
+        public string InActiveInOAuth
+        {
+            get
+            {
+                return "<@{0}> is marked as In-active,not added as a member in the project(in OAuth server) or not in OAuth server. Please contact your system administrator.\n ";
+            }
+        }
+        public string TeamLeaderLogin
+        {
+            get
+            {
+                return "{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
+            }
+        }
+        public string EmployeeLogin
+        {
+            get
+            {
+                return "{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
+            }
+        }
+        public string TeamLeaderLoginDetails
+        {
+            get
+            {
+                return "{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null}";
+            }
+        }
+        public string ProjectDetail
+        {
+            get
+            {
+                return "{\"id\":1012,\"name\":\"xvz\",\"slackChannelName\":\"xvz\",\"isActive\":true,\"teamLeaderId\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-09-12\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148f\",\"FirstName\":\"Apoorva\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"apoorvapatel@promactinfo.com\",\"Password\":null,\"UserName\":\"apoorvapatel\",\"UniqueName\":\"Apoorva-apoorvapatel@promactinfo.com\"},{\"Id\":\"13b0f2ca-92f5-4713-a67e-37e50172e148\",\"FirstName\":\"Pranali\",\"LastName\":\"Promact\",\"IsActive\":true,\"Email\":\"pranali@promactinfo.com\",\"Password\":null,\"UserName\":\"pranali\",\"UniqueName\":\"Pranali-pranali@promactinfo.com\"}]}";
+            }
+        }
+        public string ProjectDetailsForAdminFromOauth
+        {
+            get
+            {
+                return "[{\"id\":1011,\"name\":\"abc\",\"slackChannelName\":\"abc\",\"isActive\":true,\"teamLeaderId\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-09-12\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},{\"Id\":\"f83860c3-e0b8-4f80-9aa7-82c71eaf50d7\",\"FirstName\":\"grv\",\"LastName\":\"ase=\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":4.0,\"NumberOfSickLeave\":2.0,\"JoiningDate\":\"2016-01-06T00:00:00\",\"SlackUserName\":\"grv\",\"Email\":\"grv@promactinfo.com\",\"Password\":null,\"UserName\":\"grv@promactinfo.com\",\"UniqueName\":\"grv-grv@promactinfo.com\",\"RoleName\":null}]}]";
+            }
+        }
+        public string ProjectDetailsForTeamLeaderFromOauth
+        {
+            get
+            {
+                return "[{\"id\":1013,\"name\":\"rew\",\"slackChannelName\":\"rew\",\"isActive\":true,\"teamLeaderId\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-01-01\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},{\"Id\":\"2300b67f-69a1-4388-bc3e-56d638a80aaf\",\"FirstName\":\"xyz\",\"LastName\":\"XYZ\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":14.0,\"NumberOfSickLeave\":7.0,\"JoiningDate\":\"2015-01-06T00:00:00\",\"SlackUserName\":\"xyz\",\"Email\":\"xyz@promactinfo.com\",\"Password\":null,\"UserName\":\"xyz@promactinfo.com\",\"UniqueName\":\"xyz-xyz@promactinfo.com\",\"RoleName\":null}]}]";
+            }
+        }
+        public string ProjectDetailsForEmployeeFromOauth
+        {
+            get
+            {
+                return "[{\"id\":1011,\"name\":\"abc\",\"slackChannelName\":\"abc\",\"isActive\":true,\"teamLeaderId\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"createdBy\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"createdDate\":\"2016-09-12\",\"updatedBy\":null,\"updatedDate\":null,\"teamLeader\":{\"Id\":\"01d5e634-f073-49ca-b1b6-c0b04508577b\",\"FirstName\":\"abc\",\"LastName\":\"abc\",\"IsActive\":true,\"Role\":\"TeamLeader\",\"NumberOfCasualLeave\":9.0,\"NumberOfSickLeave\":5.0,\"JoiningDate\":\"2016-07-20T00:00:00\",\"SlackUserName\":\"abc\",\"Email\":\"abc@promactinfo.com\",\"Password\":null,\"UserName\":\"abc@promactinfo.com\",\"UniqueName\":\"abc-abc@promactinfo.com\",\"RoleName\":null},\"applicationUsers\":[{\"Id\":\"2d5f21e0-f7e7-4027-85ad-3faf8e1bf8bf\",\"FirstName\":\"Admin\",\"LastName\":\"Promact\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":0.0,\"NumberOfSickLeave\":0.0,\"JoiningDate\":\"0001-01-01T00:00:00\",\"SlackUserName\":\"roshni\",\"Email\":\"roshni@promactinfo.com\",\"Password\":null,\"UserName\":\"roshni@promactinfo.com\",\"UniqueName\":\"Admin-roshni@promactinfo.com\",\"RoleName\":null},{\"Id\":\"f83860c3-e0b8-4f80-9aa7-82c71eaf50d7\",\"FirstName\":\"grv\",\"LastName\":\"ase=\",\"IsActive\":true,\"Role\":\"Employee\",\"NumberOfCasualLeave\":4.0,\"NumberOfSickLeave\":2.0,\"JoiningDate\":\"2016-01-06T00:00:00\",\"SlackUserName\":\"grv\",\"Email\":\"grv@promactinfo.com\",\"Password\":null,\"UserName\":\"grv@promactinfo.com\",\"UniqueName\":\"grv-grv@promactinfo.com\",\"RoleName\":null}]}]";
+            }
+        }
+        public string TestGroupName
+        {
+            get
+            {
+                return "xyz";
             }
         }
 
+        public string TestId
+        {
+            get
+            {
+                return "01d5e634-f073-49ca-b1b6-c0b04508577b";
+            }
+        }
+        public string TestAnswer
+        {
+            get
+            {
+                return "angular";
+            }
+        }
+        public string HourLimitExceed
+        {
+            get
+            {
+                return string.Format("Your daily limit of task is {0} hour. For today you can't add task. Your working hour is exceeded", TaskMailHours);
+            }
+        }
+        public string StartWorking
+        {
+            get
+            {
+                return "Just start working";
+            }
+        }
+        public string HourSpentForTesting
+        {
+            get
+            {
+                return "5";
+            }
+        }
+        public string HourSpentExceeded
+        {
+            get
+            {
+                return "9";
+            }
+        }
+        public string WrongActionSlashCommand
+        {
+            get
+            {
+                return "applied cl Testing 14-09-2016 14-09-2016 14-09-2016";
+            }
+        }
+        public string BackDateErrorMessage
+        {
+            get
+            {
+                return "Sorry! You cannot apply leave on back date.";
+            }
+        }
+        public string InValidDateErrorMessage
+        {
+            get
+            {
+                return "Please check end date and re-join date. End date cannot beyond start date and" +
+                    " rejoin date cannot beyond and same as end date";
+            }
+        }
+        public string LeaveWrongCommandForBackDateCL
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {0} {0}", DateTime.UtcNow.AddDays(-5).ToShortDateString());
+            }
+        }
+        public string LeaveWrongCommandForBeyondDateFirstExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {1} {2}", DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(-3).ToShortDateString(), DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+        public string LeaveWrongCommandForBeyondDateSecondExample
+        {
+            get
+            {
+                return string.Format("apply cl Testing {0} {0} {1}", DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(-3).ToShortDateString());
+            }
+        }
+        public string LeaveWrongCommandForBackDateSL
+        {
+            get
+            {
+                return string.Format("apply sl Testing {0}", DateTime.UtcNow.AddDays(-2).ToShortDateString());
+            }
+        }
+        public string SlashCommandUpdateForBeyondStartDateFirstExample
+        {
+            get
+            {
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.AddDays(-5).ToShortDateString(),
+                    DateTime.UtcNow.AddDays(1).ToShortDateString());
+            }
+        }
+
+        public string SlashCommandUpdateForBeyondStartDateSecondExample
+        {
+            get
+            {
+                return string.Format("update {0} {1} {2}", 1, DateTime.UtcNow.ToShortDateString(),
+                    DateTime.UtcNow.AddDays(-3).ToShortDateString());
+            }
+        }
+        public string JsonContentString
+        {
+            get
+            {
+                return "application/json";
+            }
+        }
+
+        public string UserSlackId
+        {
+            get
+            {
+                return "U0HJ49KJ4";
+            }
+        }
+        public string TeamLeaderSlackId
+        {
+            get
+            {
+                return "U0HJ34YU9";
+            }
+        }
+
+        public string ManagementSlackId
+        {
+            get
+            {
+                return "U0525LCJR";
+            }
+        }
+        public string Ok
+        {
+            get
+            {
+                return "ok";
+            }
+        }
+
+        public string LeaveAllowed
+        {
+            get
+            {
+                return "{\"casualLeave\":10.0,\"sickLeave\":5.0}";
+            }
+        }
+
+        public string LeaveAlreadyExistOnSameDate
+        {
+            get
+            {
+                return "Leave Already exist on the date you have entered for new leave.";
+            }
+        }
+
+        public string ReplyTextForUpdateLeave
+        {
+            get
+            {
+                return "You have {0} Leave for {1} From {2} To {3} for Reason {4} will re-join by {5}";
+            }
+        }
+
+        public string ReplyTextForCasualLeaveList
+        {
+            get
+            {
+                return "Casual leave {0} {1} {2} {3} {4} {5}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveList
+        {
+            get
+            {
+                return "Sick leave {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string ReplyTextForCancelLeave
+        {
+            get
+            {
+                return "Your leave Id no: {0} From {1} To {2} has been {3}";
+            }
+        }
+
+        public string ReplyTextForErrorInCancelLeave
+        {
+            get
+            {
+                return string.Format("{0}{1}{2}", LeaveDoesnotExist, OrElseString, CancelLeaveError);
+            }
+        }
+
+        public string ReplyTextForCasualLeaveStatus
+        {
+            get
+            {
+                return "Casual leave Id no: {0} From {1} To {2} for {3} is {4}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveStatus
+        {
+            get
+            {
+                return "Sick leave Id no: {0} From {1} for {2} is {3}";
+            }
+        }
+
+        public string ReplyTextForCasualLeaveBalance
+        {
+            get
+            {
+                return "You have taken {0} casual leave out of {1}{2}You are left with {3} casual leave";
+            }
+        }
+
+        public string ReplyTextForSickLeaveBalance
+        {
+            get
+            {
+                return "{2}You have taken {0} sick leave out of {1}{2}You are left with {3} sick leave";
+            }
+        }
+
+        public string ReplyTextForSickLeaveUpdate
+        {
+            get
+            {
+                return "Sick leave of {0} from {1} to {2} for reason {3} has been updated, will rejoin on {4}";
+            }
+        }
+
+        public string ReplyTextForSMTPExceptionErrorMessage
+        {
+            get
+            {
+                return "{0}. {1}";
+            }
+        }
+
+        public string SlashCommandErrorMessage
+        {
+            get
+            {
+                return string.Format("{0}{1}{2}{1}{3}", LeaveNoUserErrorMessage, Environment.NewLine,
+                    OrElseString, SlackErrorMessage);
+            }
+        }
+
+        public string ReplyTextForCasualLeaveApplied
+        {
+            get
+            {
+                return "Leave has been applied by {0} From {1} To {2} for Reason {3} will re-join by {4}";
+            }
+        }
+
+        public string ReplyTextForSickLeaveApplied
+        {
+            get
+            {
+                return "Sick leave has been applied for {0} from {1} for reason {2}";
+            }
+        }
+
+        public string UpdateMessageUrl
+        {
+            get
+            {
+                return "?token={0}&ts={1}&channel={2}&text={3}&pretty=1";
+            }
+        }
+
+        public string AtTheRate
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
+        public string SlackOauthRequestUrl
+        {
+            get
+            {
+                return "?client_id={0}&client_secret={1}&code={2}&pretty=1";
+            }
+        }
+
+        public string SlackUserDetailsUrl
+        {
+            get
+            {
+                return "?token={0}&pretty=1";
+            }
+        }
+
+        public string EmployeeFirstLastNameFormat
+        {
+            get
+            {
+                return "{0} {1}";
+            }
+        }
+
+        public string FirstAndSecondIndexStringFormat
+        {
+            get
+            {
+                return "{0}{1}";
+            }
+        }
+
+        public string FirstSecondAndThirdIndexStringFormat
+        {
+            get
+            {
+                return "{0}{1}{2}";
+            }
+        }
+
+        public string StringValueOneForTest
+        {
+            get
+            {
+                return "1";
+            }
+        }
+
+        public string StringValueFiftyFiveForTest
+        {
+            get
+            {
+                return "55";
+            }
+        }
+
+        public string ControllerErrorMessageStringFormat
+        {
+            get
+            {
+                return "{0}. Error -> {1}";
+            }
+        }
+
+        public string ExternalLoginUrl
+        {
+            get
+            {
+                return "{0}?clientId={1}";
+            }
+        }
+
+        public string SlackAuthorizeAction
+        {
+            get
+            {
+                return "SlackAuthorize";
+            }
+        }
+
+        public string Default
+        {
+            get
+            {
+                return "Default";
+            }
+        }
+
+        public string CasualLeaveUpdateMessageForUser
+        {
+            get
+            {
+                return "Your leave Id {0} from {1} to {2} for reason {3} has been {4} by {5}";
+            }
+        }
+
+        public string AlreadyUpdatedMessage
+        {
+            get
+            {
+                return "Leave has already been {0}";
+            }
+        }
+
+        public string LeaveUpdateResponseJsonString
+        {
+            get
+            {
+                return "{\"actions\":[{\"name\":\"Approved\",\"value\":\"Approved\"}],\"callback_id\":\"3\",\"team\":{\"id\":\"T04K6NL66\",\"domain\":\"promact\"},\"channel\":{\"id\":\"D0HHZPADB\",\"name\":\"directmessage\"},\"user\":{\"id\":\"U0HJ49KJ4\",\"name\":\"siddhartha\"},\"action_ts\":\"1481194632.880940\",\"message_ts\":\"1481194612.000007\",\"attachment_id\":\"1\",\"token\":\"oQ7HPOZziax3MR4pzuImuQBR\",\"original_message\":{\"text\":\"\",\"bot_id\":\"B3C8ARBV2\",\"attachments\":[{\"callback_id\":\"3\",\"fallback\":\"Leave Applied\",\"title\":\"Leave has been applied by prince From 16-12-2016 To 16-12-2016 for Reason hgkjiuyyuiyuiyui will re-join by 17-12-2016\",\"id\":1,\"color\":\"3AA3E3\",\"actions\":[{\"id\":\"1\",\"name\":\"Approved\",\"text\":\"Approved\",\"type\":\"button\",\"value\":\"Approved\",\"style\":\"\"},{\"id\":\"2\",\"name\":\"Rejected\",\"text\":\"Rejected\",\"type\":\"button\",\"value\":\"Rejected\",\"style\":\"\"}]}],\"type\":\"message\",\"subtype\":\"bot_message\",\"ts\":\"1481194612.000007\"},\"response_url\":\"https:\\/\\/hooks.slack.com\\/actions\\/T04K6NL66\\/114318064436\\/QoOBNI8kW8w3prmwxe7ONgA7\"}";
+            }
+        }
+
+        public string Payload
+        {
+            get
+            {
+                return "payload";
+            }
+        }
+        public string LeaveUpdateEmailStringFormat
+        {
+            get
+            {
+                return "{0} {1}";
+            }
+        }
+        public string RequestToAddSlackApp
+        {
+            get
+            {
+                return string.Format("Please add our slack app to your slack slackbot channel. Click here {0}",
+                    AppSettingUtil.PromactErpUrl);
+            }
+        }
+
+        public string Star
+        {
+            get
+            {
+                return "*";
+            }
+        }
+
+        public string HttpRequestExceptionErrorMessage
+        {
+            get
+            {
+                return "An error occurred while sending the request to other server";
+            }
+        }
+        public string Space
+        {
+            get
+            {
+                return " ";
+            }
+        }
+        public string TaskMailMaximumTime
+        {
+            get
+            {
+                return "8";
+            }
+        }
+        public string Scopes
+        {
+            get
+            { return "Scopes"; }
+
+        }
+        public string AuthenticationType
+        {
+            get
+            {
+                return "Cookies";
+            }
+        }
+        public string AuthenticationTypeOidc
+        {
+            get
+            {
+                return "oidc";
+            }
+        }
+
+        public string ResponseType
+        {
+            get
+            {
+                return "code id_token token";
+            }
+        }
+
+        public string Scope { get { return "openid offline_access email profile user_read project_read"; } }
+
+        public string RedirectUrl { get { return "signin-oidc"; } }
+        public string Sub { get { return "sub"; } }
+        public string Email { get { return "email"; } }
+        public string SlackUserID { get { return "slack_user_id"; } }
+        public string RoleClaimType { get { return "role"; } }
+        public string NameClaimType { get { return "name"; } }
+        public string Bearer { get { return "Bearer"; } }
+        public string TaskModule { get { return "task"; } }
+        public string LeaveModule { get { return "leave"; } }
+        public string ScrumModule { get { return "scrum"; } }
+        public string Management { get { return "Management"; } }
+        public string TestEmail { get { return "ankit@promactinfo.com"; } }
+        public string SecondTestEmail { get { return "test@promactinfo.com"; } }
+        public string TeamLeaderGroup { get { return "Team Leader"; } }
+        public string ManagementGroup { get { return "Management"; } }
+        public string TeamMembersGroup { get { return "Team Members"; } }
+        public string EmailListForGroup { get { return "{\"teamLeader\":[],\"tamMemeber\":[],\"management\":[\"julie@promactinfo.com\",\"roshni@promactinfo.com\"]}"; } }
+        public string DetailsAndSlashForUrl { get { return "detail/"; } }
+        public string UserDetailsNotFound { get { return "{0}'s details not found. {0} is not yet logged in from oauth server"; } }
+
+        #region Redmine
+        public string RedmineBaseUrl
+        {
+            get
+            {
+                return "https://redmine.promactinfo.com/";
+            }
+        }
+
+        public string RequestToEnterProperRedmineAction
+        {
+            get
+            {
+                return "Please enter a proper redmine action. Actions are - {0} {1} {2}";
+            }
+        }
+
+        public string RedmineHelp
+        {
+            get
+            {
+                return string.Format("/redmine projects list - list all projects{0}/redmine issues list [projectId] - get all issues assigned to me in particular project{0}/redmine issues create [projectId] [Subject] [Description] [Priority] [Status] [Tracker] [AssignTo] - to create issue{0}/redmine issues changeassignee [issueId] [AssignedTo] - to change assign person{0}/redmine issues close [issueId] - to close the issue{0}/redmine issues timeentry [issueId] [hours] [date] [activity] - to add time entity for task{0}/redmine apikey [API-Key] - to add or update - ", Environment.NewLine);
+            }
+        }
+
+        public string RedmineApiKey
+        {
+            get
+            {
+                return "X-Redmine-API-Key";
+            }
+        }
+
+        public string RedmineProjectListAssignToMeUrl
+        {
+            get
+            {
+                return "/projects.json";
+            }
+        }
+
+        public string NoProjectFoundForUser
+        {
+            get
+            {
+                return "No project found for you";
+            }
+        }
+
+        public string ProperRedmineIssueAction
+        {
+            get
+            {
+                return "Please enter a proper redmine issue action. Actions are - {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string ProperProjectId
+        {
+            get
+            {
+                return "Enter a numeric projectId";
+            }
+        }
+
+        public string RedmineIssueListAssignToMeByProjectIdUrl
+        {
+            get
+            {
+                return "issues.json?project_id={0}&assigned_to_id=me";
+            }
+        }
+
+        public string ProjectDoesNotExistForThisId
+        {
+            get
+            {
+                return "Project does not exist for Id - {0}";
+            }
+        }
+
+        public string ErrorInCreatingIssue
+        {
+            get
+            {
+                return "There are some error while creating issue in Redmine";
+            }
+        }
+
+        public string JsonApplication
+        {
+            get
+            {
+                return "application/json";
+            }
+        }
+
+        public string IssueSuccessfullyCreatedMessage
+        {
+            get
+            {
+                return "Issue successfully created Task no - {0}";
+            }
+        }
+
+        public string RedmineIssueUrl
+        {
+            get
+            {
+                return "issues.json";
+            }
+        }
+
+        public string NoUserFoundInProject
+        {
+            get
+            {
+                return "{0} is not found in project Id - {1}";
+            }
+        }
+
+        public string IssueDoesNotExist
+        {
+            get
+            {
+                return "Issue {0} doesnot exist in Redmine";
+            }
+        }
+
+        public string IssueDetailsUrl
+        {
+            get
+            {
+                return "issues/{0}.json";
+            }
+        }
+
+        public string RedmineIssueUpdateUrl
+        {
+            get
+            {
+                return "{0}{1}{2}.json";
+            }
+        }
+
+        public string IssueUrl
+        {
+            get
+            {
+                return "issues/";
+            }
+        }
+
+        public string ErrorInUpdateIssue
+        {
+            get
+            {
+                return "There are some error while updating issue in Redmine";
+            }
+        }
+
+        public string IssueSuccessfullUpdated
+        {
+            get
+            {
+                return "Issue successfully created Task no - {0}";
+            }
+        }
+
+        public string TimeEntryUrl
+        {
+            get
+            {
+                return "time_entries.json";
+            }
+        }
+
+        public string HourIsNotNumericMessage
+        {
+            get
+            {
+                return "Please enter a numeric value for hour";
+            }
+        }
+
+        public string TimeEntryActivityErrorMessage
+        {
+            get
+            {
+                return "Please enter a proper activity. TimeEntryActivity :- {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string TimeEnrtyAddSuccessfully
+        {
+            get
+            {
+                return "Time entry has been successfully added in issue - {0}";
+            }
+        }
+
+        public string ErrorInAddingTimeEntry
+        {
+            get
+            {
+                return "Error in updating time entry of issue - {0}";
+            }
+        }
+
+        public string RedmineIssueMessageFormat
+        {
+            get
+            {
+                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.";
+            }
+        }
+
+        public string RedminePriorityErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Priority. Priority are :- {0} {1} {2} {3} {4}";
+            }
+        }
+
+        public string RedmineStatusErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Status. Status are :- {0} {1} {2} {3} {4} {5} {6} {7}";
+            }
+        }
+
+        public string RedmineTrackerErrorMessage
+        {
+            get
+            {
+                return "Enter a proper Tracker. Tracker are :- {0} {1} {2} {3}";
+            }
+        }
+
+        public string UserByProjectIdUrl
+        {
+            get
+            {
+                return "/projects/{0}/memberships.json";
+            }
+        }
+
+        public string RedmineTimeEntryDateFormat
+        {
+            get
+            {
+                return "yyyy-MM-dd";
+            }
+        }
+
+        public string RedmineWrongActionCommand
+        {
+            get
+            {
+                return "wrongcommand";
+            }
+        }
+
+        public string RedmineCommandProjectList
+        {
+            get
+            {
+                return "projects list";
+            }
+        }
+
+        public string RedmineWrongIssueActionCommand
+        {
+            get
+            {
+                return "issues wrongcommand";
+            }
+        }
+
+        public string RedmineCommandIssueListWrongProjectId
+        {
+            get
+            {
+                return "issues list abc";
+            }
+        }
+
+        public string RedmineCommandIssueList
+        {
+            get
+            {
+                return "issues list 1";
+            }
+        }
+
+        public string RedmineCommandCreateWrongPriority
+        {
+            get
+            {
+                return "issues create 1 hello hello Wrong New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongStatus
+        {
+            get
+            {
+                return "issues create 1 hello hello Normal Wrong Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongTracker
+        {
+            get
+            {
+                return "issues create 1 hello hello Normal New Wrong siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreateWrongProjectId
+        {
+            get
+            {
+                return "issues create abc hello hello Normal New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandCreate
+        {
+            get
+            {
+                return "issues create 1 Admin Admin Normal New Feature siddhartha";
+            }
+        }
+
+        public string RedmineCommandChangeAssign
+        {
+            get
+            {
+                return "issues changeassignee 1 siddhartha";
+            }
+        }
+
+        public string RedmineCommandIssueClose
+        {
+            get
+            {
+                return "issues close 1";
+            }
+        }
+
+        public string RedmineTimeEntryWrongIssueId
+        {
+            get
+            {
+                return string.Format("issues timeentry abc 2.0 {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntry
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 2.0 {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntryHourFormatCommand
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 abc {0} Development", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineTimeEntryDateFormatCommand
+        {
+            get
+            {
+                return "issues timeentry 1 2.0 15-03-2017 Development";
+            }
+        }
+
+        public string RedmineTimeEntryTimeEntryActivityFormatCommand
+        {
+            get
+            {
+                return string.Format("issues timeentry 1 2.0 {0} Wrong", DateTime.UtcNow.ToString(RedmineTimeEntryDateFormat));
+            }
+        }
+
+        public string RedmineCommandHelp
+        {
+            get
+            {
+                return "help";
+            }
+        }
+
+        public string RedmineApiKeyIsNull
+        {
+            get
+            {
+                return string.Format("To use redmine slash command please add your redmine API Key. {0}To add or update - /redmine apikey [API-Key]", Environment.NewLine);
+            }
+        }
+
+        public string RedmineKeyAddSuccessfully
+        {
+            get
+            {
+                return "Your redmine api key successfully added";
+            }
+        }
+
+        public string PleaseEnterValidAPIKey
+        {
+            get
+            {
+                return string.Format("Please enter a valid redmine API-Key of redmine.{0}Click here to get you redmine API-Key - https://redmine.promactinfo.com/my/account", Environment.NewLine);
+            }
+        }
+
+        public string RedmineAPIKeyCommand
+        {
+            get
+            {
+                return string.Format("apikey {0}", AccessTokenForTest);
+            }
+        }
+
+        public string RedmineProjectListFormat
+        {
+            get
+            {
+                return "{0}. Project - {1},{2}";
+            }
+        }
+        #endregion
     }
 }

@@ -28,65 +28,97 @@ namespace Promact.Erp.Util.Email_Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\n\r\n");
-            this.Write("\r\n<!DOCTYPE> \r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n</head>\r\n<bod" +
-                    "y>\r\n    LEAVE APPLICATION\r\n    <table>\r\n\t\t<tr>\r\n            <td><b>From :</b></t" +
-                    "d>\r\n            <td>");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n\n\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write("\n");
+            this.Write(@"
+
+<!DOCTYPE> 
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+table, td, th {
+    border: 1px solid black;
+}
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #9FA3A5}
+</style>
+</head>
+<body>
+    LEAVE APPLICATION
+	<br/>
+    <table>
+		<tr>
+            <td><b>From :</b></td>
+            <td>");
             
-            #line 25 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(FromDate));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n        <tr>\r\n            <td><b>To :</b></td>\r\n           " +
-                    " <td>");
+            this.Write("</td>\n        </tr>\n        <tr>\n            <td><b>To :</b></td>\n            <td" +
+                    ">");
             
-            #line 29 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(EndDate));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Reason :</b></td>\r\n            <" +
-                    "td>");
+            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Reason :</b></td>\n            <td>");
             
-            #line 33 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Reason));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Type :</b></td>\r\n            <td" +
-                    ">");
+            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Type :</b></td>\n            <td>");
             
-            #line 37 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Type));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Status :</b></td>\r\n            <" +
-                    "td>");
+            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Status :</b></td>\n            <td>");
             
-            #line 41 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Status));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n\t\t<tr>\r\n            <td><b>Re-Join Date :</b></td>\r\n       " +
-                    "     <td>");
+            this.Write("</td>\n        </tr>\n\t\t<tr>\n            <td><b>Re-Join Date :</b></td>\n           " +
+                    " <td>");
             
-            #line 45 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ReJoinDate));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n        <tr>\r\n            <td><b>Applied On :</b></td>\r\n   " +
-                    "         <td>");
+            this.Write("</td>\n        </tr>\n        <tr>\n            <td><b>Applied On :</b></td>\n       " +
+                    "     <td>");
             
-            #line 49 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
+            #line 15 "F:\Siddhartha\slack-automation\slack-erp-custom-integration-mvc\Slack.Automation\Promact.Erp.Util\Email Templates\LeaveApplication.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(CreatedOn));
             
             #line default
             #line hidden
-            this.Write("</td>\r\n        </tr>\r\n    </table>\r\n</body>");
+            this.Write("</td>\n        </tr>\n    </table>\n</body>");
             return this.GenerationEnvironment.ToString();
         }
         

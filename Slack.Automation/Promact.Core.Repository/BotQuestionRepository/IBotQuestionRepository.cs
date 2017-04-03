@@ -1,9 +1,8 @@
-﻿using Promact.Erp.DomainModel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
+
 
 namespace Promact.Core.Repository.BotQuestionRepository
 {
@@ -12,29 +11,37 @@ namespace Promact.Core.Repository.BotQuestionRepository
         /// <summary>
         /// Method to add Question
         /// </summary>
-        /// <param name="question"></param>
-        void AddQuestion(Question question);
+        /// <param name="question">Question object</param>
+        Task AddQuestionAsync(Question question);
 
         /// <summary>
         /// Method to find question by it's id
         /// </summary>
-        /// <param name="questionId"></param>
+        /// <param name="questionId">question Id</param>
         /// <returns>question</returns>
-        Question FindById(int questionId);
+        Task<Question> FindByIdAsync(int questionId);
 
         /// <summary>
         /// Method to find question by it's type
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">question's type</param>
         /// <returns>question</returns>
-        Question FindByQuestionType(int type);
+        Task<Question> FindFirstQuestionByTypeAsync(BotQuestionType type);
 
         /// <summary>
         /// Method to find question by it's type and order number
         /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <param name="type"></param>
+        /// <param name="orderNumber">question's order number</param>
+        /// <param name="type">question's type</param>
         /// <returns>question</returns>
-        Question FindByTypeAndOrderNumber(int orderNumber, int type);
+        Task<Question> FindByTypeAndOrderNumberAsync(int orderNumber, int type);
+
+
+        /// <summary>
+        /// Fetches the Questions based on type of question - JJ
+        /// </summary>
+        /// <param name="botQuestionType">type of question asked by bot</param>
+        /// <returns>list of object of Question</returns>
+        Task<List<Question>> GetQuestionsByTypeAsync(BotQuestionType botQuestionType);
     }
 }

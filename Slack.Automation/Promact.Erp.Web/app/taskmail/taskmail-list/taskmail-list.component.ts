@@ -1,58 +1,49 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import {Router, ActivatedRoute } from '@angular/router';
+import {Router } from '@angular/router';
 import { TaskService }   from '../taskmail.service';
-//import {taskmailModel} from '../taskmail.model';
-import {taskmailuserModel} from '../taskmailuser.model';
-import {TaskMailStatus} from '../../enums/TaskMailStatus';
-import { SpinnerService} from '../../shared/spinner.service';
+import { TaskMailModel } from '../taskmail.model';
+import { TaskMailStatus } from '../../enums/TaskMailStatus';
+import { LoaderService } from '../../shared/loader.service';
 import {StringConstant} from '../../shared/stringConstant';
 
 @Component({
     templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
     providers: [StringConstant]
 })
-export class TaskMailListComponent {
-    listOfUsers: any;
-    constructor(private router: Router, private taskService: TaskService, private spinner: SpinnerService, private stringConstant: StringConstant) {
+export class TaskMailListComponent implements OnInit {
+    taskMailUsers: Array<TaskMailModel>;
+    constructor(private router: Router, private taskService: TaskService, private stringConstant: StringConstant, private loader: LoaderService) {
 
     }
 
     ngOnInit() {
-        this.spinner.start();
+        
         this.getListOfEmployee();
-        this.spinner.stop();
+        
     }
-    getListOfEmployee()
-    {
-
+    getListOfEmployee() {
+        this.loader.loader = true;
         this.taskService.getListOfEmployee().subscribe((result) => {
 
             if (result.length > 0)
-                if (result[0].UserRole == this.stringConstant.RoleAdmin) {
-                    this.listOfUsers = result;
+                if (result[0].UserRole === this.stringConstant.RoleAdmin) {
+                    this.taskMailUsers = result;
                 }
-                else if (result[0].UserRole == this.stringConstant.RoleTeamLeader) {
-                    var UserId = result[0].UserId;
-                    var UserRole = result[0].UserRole;
-                    var UserName = result[0].UserName;
-                    var UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//, UserEmail]);
+                else if (result[0].UserRole === this.stringConstant.RoleTeamLeader) {
+                    this.router.navigate([this.stringConstant.taskDetails, result[0].UserId, result[0].UserRole, result[0].UserName]);
                 }
                 else {
-                    var UserId = result[0].UserId;
-                    var UserRole = result[0].UserRole;
-                    var UserName = result[0].UserName;
-                    var UserEmail = result[0].UserEmail;
-                    this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//]);//,UserEmail]);
+                    this.router.navigate([this.stringConstant.taskDetails, result[0].UserId, result[0].UserRole, result[0].UserName]);
                 }
+            this.loader.loader = false;
         }, err => {
 
-        });
+            });
+       
     }
-    taskmailDetails(UserId, UserName, UserEmail)
-    {
-        var UserRole = this.stringConstant.RoleAdmin;
-        this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);//, UserEmail]);
+    taskmailDetails(UserId, UserName, UserEmail) {
+        let UserRole = this.stringConstant.RoleAdmin;
+        this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
     }
     
 }

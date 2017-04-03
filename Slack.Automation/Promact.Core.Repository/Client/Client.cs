@@ -1,211 +1,227 @@
 ﻿using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
-using Promact.Core.Repository.HttpClientRepository;
-using Promact.Core.Repository.ProjectUserCall;
+using Promact.Core.Repository.SlackUserRepository;
+using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
-using Promact.Erp.Util.Email_Templates;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
+using Promact.Core.Repository.EmailServiceTemplateRepository;
+using Promact.Erp.Util.HttpClient;
+using Promact.Erp.DomainModel.DataRepository;
+using System.Linq;
+using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
+using NLog;
 
 namespace Promact.Core.Repository.Client
 {
     public class Client : IClient
     {
-        private HttpClient _chatUpdateMessage;
-        private readonly IProjectUserCallRepository _projectUser;
-        private readonly IEmailService _email;
+        #region Private Variables
+        private readonly ISlackUserRepository _slackUserRepository;
+        private readonly IOauthCallsRepository _oauthCallRepository;
+        private readonly IEmailService _emailService;
         private readonly IAttachmentRepository _attachmentRepository;
-        private readonly IHttpClientRepository _httpClientRepository;
+        private readonly IHttpClientService _httpClientService;
         private readonly IStringConstantRepository _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        public Client(IProjectUserCallRepository projectUser, IStringConstantRepository stringConstant, IEmailService email, IAttachmentRepository attachmentRepository,IHttpClientRepository httpClientRepository, IEnvironmentVariableRepository envVariableRepository)
-        {
-            _chatUpdateMessage = new HttpClient();
-            _chatUpdateMessage.BaseAddress = new Uri(_stringConstant.SlackChatUpdateUrl);
-            _projectUser = projectUser;
-            _email = email;
-            _stringConstant = stringConstant;
-            _attachmentRepository = attachmentRepository;
-            _httpClientRepository = httpClientRepository;
-            _envVariableRepository = envVariableRepository;
-        }
+        private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
+        private readonly IRepository<IncomingWebHook> _incomingWebHook;
+        private readonly ApplicationUserManager _userManager;
+        private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
+        private readonly ILogger _logger;
+        #endregion
 
-        /// <summary>
-        /// The below method use for updating slack message without attachment. 
-        /// Required field token, channelId and message_ts which we had get at time of response from slack.
-        /// </summary>
-        /// <param name="leaveResponse">SlashChatUpdateResponse object send from slack</param>
-        /// <param name="replyText">Text to be send to slack</param>
-        public async Task UpdateMessage(SlashChatUpdateResponse leaveResponse, string replyText)
+        #region Constructor
+        public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant,
+            IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
+            IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
+            IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook,
+            ApplicationUserManager userManager, IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
-            // Call to an url using HttpClient.
-            var responseUrl = string.Format("?token={0}&channel={1}&text={2}&ts={3}&as_user=true&pretty=1", HttpUtility.UrlEncode(leaveResponse.Token), HttpUtility.UrlEncode(leaveResponse.Channel.Id), HttpUtility.UrlEncode(replyText), HttpUtility.UrlEncode(leaveResponse.MessageTs));
-            var response = await _httpClientRepository.GetAsync(_stringConstant.SlackChatUpdateUrl, responseUrl,leaveResponse.Token);
+            _stringConstant = stringConstant;
+            _oauthCallRepository = oauthCallRepository;
+            _emailService = emailService;
+            _attachmentRepository = attachmentRepository;
+            _httpClientService = httpClientService;
+            _envVariableRepository = envVariableRepository;
+            _slackUserRepository = slackUserRepository;
+            _emailTemplateRepository = emailTemplateRepository;
+            _incomingWebHook = incomingWebHook;
+            _userManager = userManager;
+            _mailSettingDetails = mailSettingDetails;
+            _logger = LogManager.GetLogger("ClientRepository");
+        }
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// The below method use for updating slack message without attachment.
+        /// </summary>
+        /// <param name="responseUrl">Incoming Web-hook url of user to whom message to be send</param>
+        /// <param name="replyText">Reply text to be send</param>
+        public async Task UpdateMessageAsync(string responseUrl, string replyText)
+        {
+            _logger.Debug("UpdateMessageAsync method");
+            var slashResponseText = new SlashResponse() { Text = replyText };
+            var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
+            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString, null, null);
+            _logger.Debug("UpdateMessageAsync method post method done successfully");
         }
 
         /// <summary>
         /// The below method used for sending resposne back to slack for a slash command in ephemeral mood. Required field response_url.
         /// </summary>
-        /// <param name="leave">Slash Command object</param>
+        /// <param name="responseUrl">Incoming Web-hook url of user to whom message to be send</param>
         /// <param name="replyText">Text to be send to slack</param>
-        public void SendMessage(SlashCommand leave, string replyText)
+        public async Task SendMessageAsync(string responseUrl, string replyText)
         {
-            var text = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
-            var textJson = JsonConvert.SerializeObject(text);
-            WebRequestMethod(textJson, leave.ResponseUrl);
+            _logger.Debug("SendMessageAsync method");
+            var slashResponseText = new SlashResponse() { ResponseType = _stringConstant.ResponseTypeEphemeral, Text = replyText };
+            var slashResponseJsonText = JsonConvert.SerializeObject(slashResponseText);
+            await _httpClientService.PostAsync(responseUrl, slashResponseJsonText, _stringConstant.JsonContentString, null, null);
+            _logger.Debug("SendMessageAsync method post method done sucessfully");
         }
 
         /// <summary>
         /// The below method is used for sending meassage to all the TL and management people using Incoming 
         /// Webhook.Required field channel name(whom to send) and here I had override the bot name and its identity.
         /// </summary>
-        /// <param name="leave">Slash Command object</param>
-        /// <param name="replyText">Text to be send to slack</param>
         /// <param name="leaveRequest">LeaveRequest object</param>
-        public async Task SendMessageWithAttachmentIncomingWebhook(LeaveRequest leaveRequest,string accessToken,string replyText, string username)
+        /// <param name="accessToken">OAuth access token of user</param>
+        /// <param name="replyText">Txt to be send to slack</param>
+        /// <param name="userId">userId of user</param>
+        public async Task SendMessageWithAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
+            _logger.Debug("SendMessageWithAttachmentIncomingWebhookAsync method");
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachment(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
+            _logger.Debug("SendMessageWithAttachmentIncomingWebhookAsync Client Repository - GetAttachmentAndSendToTLAndManagementAsync");
+            await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
         /// Method used to send slack message and email to team leader and management without interactive button
         /// </summary>
-        /// <param name="leave"></param>
-        /// <param name="leaveRequest"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="replyText"></param>
-        /// <returns></returns>
-        public async Task SendMessageWithoutButtonAttachmentIncomingWebhook(LeaveRequest leaveRequest, string accessToken,string replyText,string username)
+        /// <param name="leaveRequest">LeaveRequest object</param>
+        /// <param name="accessToken">User's OAuth access token</param>
+        /// <param name="replyText">Reply text to send</param>
+        /// <param name="userId">UserId of user</param>
+        public async Task SendMessageWithoutButtonAttachmentIncomingWebhookAsync(LeaveRequest leaveRequest, string accessToken, string replyText, string userId)
         {
+            _logger.Debug("SendMessageWithoutButtonAttachmentIncomingWebhookAsync method");
             // getting attachment as a string to be send on slack
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            await GetAttachmentAndSendToTLAndManagement(username, leaveRequest, accessToken, attachment);
-        }
-
-        /// <summary>
-        /// Method to generate template body
-        /// </summary>
-        /// <param name="leaveRequest">LeaveRequest template object</param>
-        /// <returns>template emailBody as string</returns>
-        private string EmailServiceTemplate(LeaveRequest leaveRequest)
-        {
-            try
-            {
-                LeaveApplication leaveTemplate = new LeaveApplication();
-                // Assigning Value in template page
-                leaveTemplate.Session = new Dictionary<string, object>
-            {
-                {_stringConstant.FromDate,leaveRequest.FromDate.ToString(_stringConstant.DateFormat) },
-                {_stringConstant.EndDate,leaveRequest.EndDate.Value.ToString(_stringConstant.DateFormat) },
-                {_stringConstant.Reason,leaveRequest.Reason },
-                {_stringConstant.Type,leaveRequest.Type.ToString() },
-                {_stringConstant.Status,leaveRequest.Status.ToString() },
-                {_stringConstant.ReJoinDate,leaveRequest.RejoinDate.Value.ToString(_stringConstant.DateFormat) },
-                {_stringConstant.CreatedOn,leaveRequest.CreatedOn.ToString(_stringConstant.DateFormat) },
-            };
-                leaveTemplate.Initialize();
-                var emailBody = leaveTemplate.TransformText();
-                return emailBody;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// Method to send message on slack using WebRequest 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="url">Json string and url</param>
-        public void WebRequestMethod(string Json, string url)
-        {
-            try
-            {
-                // Call to an url using HttpWebRequest
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = WebRequestMethods.Http.Post;
-                request.ContentType = _stringConstant.WebRequestContentType;
-                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                {
-                    //adding rest portion of url
-                    streamWriter.Write(Json);
-                    streamWriter.Flush();
-                    streamWriter.Close();
-                }
-                var response = (HttpWebResponse)request.GetResponse();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// Private method to get reply text and send to team leader and management
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="leaveRequest"></param>
-        /// <param name="accessToken"></param>
-        /// <param name="attachment"></param>
-        /// <returns></returns>
-        private async Task GetAttachmentAndSendToTLAndManagement(string username, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
-        {
-            var teamLeaders = await _projectUser.GetTeamLeaderUserName(username, accessToken);
-            var management = await _projectUser.GetManagementUserName(accessToken);
-            var userDetail = await _projectUser.GetUserByUsername(username, accessToken);
-            foreach (var user in management)
-            {
-                teamLeaders.Add(user);
-            }
-            foreach (var teamLeader in teamLeaders)
-            {
-                //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
-                var text = new SlashIncomingWebhook() { Channel = "@" + teamLeader.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
-                var textJson = JsonConvert.SerializeObject(text);
-                WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
-                EmailApplication email = new EmailApplication();
-                // creating email templates corresponding to leave applied
-                email.Body = EmailServiceTemplate(leaveRequest);
-                email.From = userDetail.Email;
-                email.Subject = _stringConstant.EmailSubject;
-                email.To = teamLeader.Email;
-                _email.Send(email);
-            }
+            _logger.Debug("SendMessageWithoutButtonAttachmentIncomingWebhookAsync Client Repository - GetAttachmentAndSendToTLAndManagementAsync");
+            await GetAttachmentAndSendToTLAndManagementAsync(userId, leaveRequest, accessToken, attachment);
         }
 
         /// <summary>
         /// Method to send slack message to user whom leave has been applied by admin
         /// </summary>
-        /// <param name="leaveRequest"></param>
-        /// <param name="managementEmail"></param>
-        /// <param name="replyText"></param>
-        /// <param name="user"></param>
-        public void SendSickLeaveMessageToUserIncomingWebhook(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
+        /// <param name="leaveRequest">LeaveRequest object</param>
+        /// <param name="managementEmail">Management email address</param>
+        /// <param name="replyText">Reply text to be send to user</param>
+        /// <param name="user">User details</param>
+        public async Task SendSickLeaveMessageToUserIncomingWebhookAsync(LeaveRequest leaveRequest, string managementEmail, string replyText, User user)
         {
+            _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync method");
             var attachment = _attachmentRepository.SlackResponseAttachmentWithoutButton(Convert.ToString(leaveRequest.Id), replyText);
-            var text = new SlashIncomingWebhook() { Channel = "@" + user.SlackUserName, Username = _stringConstant.LeaveBot, Attachments = attachment };
-            var textJson = JsonConvert.SerializeObject(text);
-            WebRequestMethod(textJson, _envVariableRepository.IncomingWebHookUrl);
+            SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+            if (slackUser != null)
+            {
+                _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync user slack name : " + slackUser.Name);
+                var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+                var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
+                if (incomingWebHook != null)
+                    await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString, null, null);
+            }
             EmailApplication email = new EmailApplication();
+            email.To = new List<string>();
             // creating email templates corresponding to leave applied
-            email.Body = EmailServiceTemplate(leaveRequest);
+            email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
             email.From = managementEmail;
             email.Subject = _stringConstant.EmailSubject;
-            email.To = user.Email;
-            _email.Send(email);
+            email.To.Add(user.Email);
+            _emailService.Send(email);
+            _logger.Debug("SendSickLeaveMessageToUserIncomingWebhookAsync Email sended successfully");
         }
+        #endregion
+
+        #region Private Method
+        /// <summary>
+        /// Private method to get reply text and send to team leader and management
+        /// </summary>
+        /// <param name="userId">User's user Id</param>
+        /// <param name="leaveRequest">LeaveRequest object</param>
+        /// <param name="accessToken">User's OAuth access token</param>
+        /// <param name="attachment">Attachment to be send to team leader and management</param>
+        private async Task GetAttachmentAndSendToTLAndManagementAsync(string userId, LeaveRequest leaveRequest, string accessToken, List<SlashAttachment> attachment)
+        {
+            EmailApplication email = new EmailApplication();
+            email.To = new List<string>();
+            email.CC = new List<string>();
+            var listOfprojectRelatedToUser = (await _oauthCallRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of project, user has enrollement : " + listOfprojectRelatedToUser.Count);
+            foreach (var projectId in listOfprojectRelatedToUser)
+            {
+                var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.LeaveModule, userId);
+                email.To.AddRange(mailsetting.To);
+                email.CC.AddRange(mailsetting.CC);
+            }
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of To : " + email.To.Count);
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of CC : " + email.CC.Count);
+            email.To = email.To.Distinct().ToList();
+            email.CC = email.CC.Distinct().ToList();
+            var teamLeaderIds = (await _oauthCallRepository.GetTeamLeaderUserIdAsync(userId, accessToken)).Select(x => x.Id).ToList();
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of team leaders : " + teamLeaderIds.Count);
+            var managementIds = (await _oauthCallRepository.GetManagementUserNameAsync(accessToken)).Select(x => x.Id).ToList();
+            _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync List of managements : " + managementIds.Count);
+            var userEmail = (await _userManager.FindByIdAsync(userId)).Email;
+            teamLeaderIds.AddRange(managementIds);
+            foreach (var teamLeaderId in teamLeaderIds)
+            {
+                var user = await _userManager.FindByIdAsync(teamLeaderId);
+                if (user != null)
+                {
+                    _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Team leader user name : " + user.UserName);
+                    var slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                    if (slackUser != null)
+                    { 
+                        _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Slack details of team leader : " + slackUser.Name);
+                        var incomingWebHook = await _incomingWebHook.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
+                        //Creating an object of SlashIncomingWebhook as this format of value required while responsing to slack
+                        var slashIncomingWebhookText = new SlashIncomingWebhook() { Channel = _stringConstant.AtTheRate + slackUser.Name, Username = _stringConstant.LeaveBot, Attachments = attachment };
+                        var slashIncomingWebhookJsonText = JsonConvert.SerializeObject(slashIncomingWebhookText);
+                        if (incomingWebHook != null)
+                            await _httpClientService.PostAsync(incomingWebHook.IncomingWebHookUrl, slashIncomingWebhookJsonText, _stringConstant.JsonContentString, null, null);
+                    }
+                }
+            }
+            if (email.To.Any())
+            {
+                if (leaveRequest.EndDate != null)
+                {
+                    // creating email templates corresponding to leave applied for casual leave
+                    email.Body = _emailTemplateRepository.EmailServiceTemplate(leaveRequest);
+                }
+                else
+                {
+                    // creating email templates corresponding to leave applied for casual leave
+                    email.Body = _emailTemplateRepository.EmailServiceTemplateSickLeave(leaveRequest);
+                }
+                email.From = userEmail;
+                email.Subject = _stringConstant.EmailSubject;
+                _emailService.Send(email);
+                _logger.Debug("GetAttachmentAndSendToTLAndManagementAsync Email send successfullt");
+            }
+        }
+        #endregion
     }
 }

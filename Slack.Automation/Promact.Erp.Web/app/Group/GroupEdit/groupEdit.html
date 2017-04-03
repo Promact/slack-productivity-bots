@@ -1,0 +1,58 @@
+﻿<div class="group-edit">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Edit Group</h3>
+        </div>
+        <div class="title_right">
+            <div class="form-group pull-right ">
+                <button class="btn btn-success" (click)="backToGroupList()"><i class="fa fa-arrow-left"></i>Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <form #groupForm="ngForm">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-1">Name:</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" [(ngModel)]="groupModel.Name" name="groupName" (blur)="checkGroupName(groupModel.Name)" required #groupName="ngModel">
+                                    <p [hidden]="!(groupName.touched && !groupName.valid && groupName.errors.required)" class="error">Name is required</p>
+                                    <p [hidden]="!(isExistsGroupName)" class="error">Group name already exists</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-1 emails">Emails:</label>
+                                <div class="col-md-10">
+                                    <md2-chips [(ngModel)]="groupModel.Emails"
+                                               [isRemovable]="true"
+                                               [readonly]="false"
+                                               placeholder="Email"
+                                               [allowedPattern]="validPattern"
+                                               name="emails"
+                                               #emails="ngModel"
+                                               [isAutoComplete]="true"
+                                               [autocompleteDataList]="listOfActiveEmail"
+                                               required>
+                                    </md2-chips>
+                                </div>
+                                <div [hidden]="!(emails.touched && !emails.valid && emails.errors.required)" class="error">Atleast one email is required</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-success update-btn" (click)="updateGroup(groupModel)" [disabled]="!(groupForm.form.valid && !isExistsGroupName)">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
