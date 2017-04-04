@@ -30,43 +30,22 @@
     <!-- Theme Scripts -->
     @Scripts.Render("~/bundles/themejs")
 
-    @if (@ViewBag.userEmail == "")
-    {
-        <script>
-            System.import('app').catch(function (err) { console.error(err); });
-            var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
-        </script>
-    }
+
+    <script>
+        System.import('app').catch(function (err) { console.error(err); });
+        var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
+    </script>
 </head>
-@if (@ViewBag.userEmail != "")
-{
-    <body class="base-page body-grey">
-        <div>
-            <form asp-controller="Home" asp-action="LogOff">
-                <div class="after-login-nav clearfix">
-                    @Html.ActionLink("Logout", "LogOff")
-                </div>
-                <div class="clearfix"></div>
-            </form>
-        </div>
-        <div class="text-center" id="content">
-            <p>Please add user whose email is <span>"@ViewBag.userEmail"</span>  to slack before proceeding to view reports or use app functionalities in slack.</p>
-        </div>
-    </body>
-}
-else
-{
-    <body class="nav-md">
-        <my-app>
-            <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
-        </my-app>
-        <!-- jQuery -->
-        <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
-        <!-- Bootstrap -->
-        <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="~/Content/js/nprogress/nprogress.js"></script>
-        <!-- Custom Theme Scripts -->
-        <script src="../../Content/js/custom.js"></script>
-    </body>
-}
+<body class="nav-md">
+    <my-app>
+        <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
+    </my-app>
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/Content/js/nprogress/nprogress.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="../../Content/js/custom.js"></script>
+</body>
 </html>

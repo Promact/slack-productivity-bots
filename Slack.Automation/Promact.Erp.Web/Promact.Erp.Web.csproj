@@ -1004,6 +1004,7 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="tslint.json" />
     <Content Include="Views\Home\OAuthAppCredential.cshtml" />
+    <Content Include="Views\Home\SetUpError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

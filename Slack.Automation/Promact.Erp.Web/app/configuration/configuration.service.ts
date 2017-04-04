@@ -31,6 +31,6 @@ export class ConfigurationService {
     *
     */
     getListOfConfigurationStatus() {
-        return this.http.get('api/configuration/status').map(res => res.json());
+        return this.http.get(this.configurationUrl + '/status').map(res => res.json());
     }
 }

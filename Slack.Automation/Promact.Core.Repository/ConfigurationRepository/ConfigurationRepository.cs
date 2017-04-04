@@ -16,17 +16,22 @@ namespace Promact.Core.Repository.ConfigurationRepository
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly IStringConstantRepository _stringConstant;
         private readonly ISocketClientWrapper _socketClientWrapper;
+        private readonly ApplicationUserManager _userManager;
+        private readonly IRepository<IncomingWebHook> _incomingWebHookDataRepository;
         #endregion
 
         #region Constructor
         public ConfigurationRepository(IRepository<Configuration> configurationDataRepository,
             IStringConstantRepository stringConstant, IAppCredentialRepository appCredentialRepository,
-            ISocketClientWrapper socketClientWrapper)
+            ISocketClientWrapper socketClientWrapper, ApplicationUserManager userManager,
+            IRepository<IncomingWebHook> incomingWebHookDataRepository)
         {
             _configurationDataRepository = configurationDataRepository;
             _stringConstant = stringConstant;
             _appCredentialRepository = appCredentialRepository;
             _socketClientWrapper = socketClientWrapper;
+            _userManager = userManager;
+            _incomingWebHookDataRepository = incomingWebHookDataRepository;
         }
         #endregion
 
@@ -92,6 +97,22 @@ namespace Promact.Core.Repository.ConfigurationRepository
             var configuration = await _configurationDataRepository.FirstAsync(x => x.Id == configurationId);
             configuration.Status = false;
             await UpdateConfigurationAsync(configuration);
+        }
+
+        /// <summary>
+        /// Method to check leave app is added or not for user
+        /// </summary>
+        /// <param name="userId">user's Id</param>
+        /// <returns>configuration details</returns>
+        public async Task<LeaveAppAddedAC> IsUserAddedLeaveAppAsync(string userId)
+        {
+            LeaveAppAddedAC leaveAppDetail = new LeaveAppAddedAC();
+            var user = await _userManager.FindByIdAsync(userId);
+            var isAddedLeaveApp = await _incomingWebHookDataRepository.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
+            leaveAppDetail.ConfigurationId = (await _configurationDataRepository.FirstOrDefaultAsync(x => x.Module == _stringConstant.LeaveModule)).Id;
+            if (isAddedLeaveApp != null)
+                leaveAppDetail.IsAdded = true;
+            return leaveAppDetail;
         }
         #endregion
 

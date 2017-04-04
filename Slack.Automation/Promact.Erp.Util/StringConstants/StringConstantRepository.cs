@@ -3447,7 +3447,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.";
+                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.{6}";
             }
         }
 
@@ -3675,5 +3675,29 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
         #endregion
+
+        public string RequestToReInstallSlackApp
+        {
+            get
+            {
+                return "Please ask your admin to re-install your slack app";
+            }
+        }
+
+        public string PleaseAskYouAdminToAddSlackAppAndDoSetUp
+        {
+            get
+            {
+                return "Please ask your admin to add slack app and do the basic set for application";
+            }
+        }
+
+        public string SetUpError
+        {
+            get
+            {
+                return "SetUpError";
+            }
+        }
     }
 }

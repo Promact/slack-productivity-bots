@@ -92,6 +92,25 @@ namespace Promact.Erp.Core.Controllers
         {
             return Ok(await _configurationRepository.GetAllConfigurationStatusAsync());
         }
+
+        /**
+        * @api {put} api/configuration/isLeaveAppAdded
+        * @apiVersion 1.0.0
+        * @apiName IsUserAddedLeaveAppAsync
+        * @apiGroup Configuration
+        * @apiSuccessExample {json} Success-Response:
+        * HTTP/1.1 200 OK :
+        *     {
+        *         ConfigurationId : 2,
+        *         IsAdded : true
+        *     }
+        */
+        [HttpGet]
+        [Route("isLeaveAppAdded")]
+        public async Task<IHttpActionResult> IsUserAddedLeaveAppAsync()
+        {
+            return Ok(await _configurationRepository.IsUserAddedLeaveAppAsync(GetUserId(User.Identity)));
+        }
         #endregion
     }
 }
