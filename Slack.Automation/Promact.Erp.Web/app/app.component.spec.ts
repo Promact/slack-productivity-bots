@@ -15,6 +15,8 @@ import { Project } from './shared/MailSetting/project.model';
 import { StringConstant } from './shared/stringconstant';
 import { ConfigurationService } from './configuration/configuration.service';
 import { ConfigurationStatusAC } from './configuration/configuration.model';
+import { Md2Toast, Md2DialogConfig, Md2Dialog } from 'md2';
+import { MockDialog } from './shared/mock/mock.md2Dialog';
 let promise: TestBed;
 
 describe('AppComponent Test', () => {
@@ -30,6 +32,7 @@ describe('AppComponent Test', () => {
             providers: [
                 { provide: EmailHashCode, useClass: MockEmailHash },
                 { provide: LoaderService, useClass: MockLoaderService },
+                { provide: Md2Dialog, useClass: MockDialog }
             ]
         }).compileComponents();
     }));
@@ -45,6 +48,7 @@ describe('AppComponent Test', () => {
             config.TaskOn = true;
             spyOn(configurationService, "getListOfConfigurationStatus").and.returnValue(new BehaviorSubject(config).asObservable());
             spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: true }).asObservable());
+            spyOn(appService, "isUserAddedLeaveAppAsync").and.returnValue(new BehaviorSubject({ IsAdded: false, ConfigurationId: 1 }).asObservable());
             appComponent.ngOnInit();
             expect(appComponent.userIsAdmin).toBe(true);
     });
@@ -59,6 +63,7 @@ describe('AppComponent Test', () => {
         config.TaskOn = true;
         spyOn(configurationService, "getListOfConfigurationStatus").and.returnValue(new BehaviorSubject(config).asObservable());
         spyOn(appService, "getUserIsAdminOrNot").and.returnValue(new BehaviorSubject({ FirstName: "siddhartha", IsAdmin: false }).asObservable());
+        spyOn(appService, "isUserAddedLeaveAppAsync").and.returnValue(new BehaviorSubject({ IsAdded: false, ConfigurationId: 1 }).asObservable());
         appComponent.ngOnInit();
         expect(appComponent.userIsAdmin).toBe(false);
     });

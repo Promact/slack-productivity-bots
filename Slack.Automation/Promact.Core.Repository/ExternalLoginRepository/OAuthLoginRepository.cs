@@ -14,6 +14,7 @@ using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.ExternalLoginRepository
@@ -68,22 +69,25 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <param name="refreshToken"></param>
         /// <param name="userId"></param>
         /// <returns>user information</returns>
-        public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
+        public async Task AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
             _logger.Debug("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
             {
-                userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
-                //Creating a user with email only. Password not required
-                IdentityResult result = await _userManager.CreateAsync(userInfo);
+                var userList = _userManager.Users.ToList();
+                var userSlackDetail = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.Email == email);
+                if (userSlackDetail != null || !userList.Any())
+                {
+                    userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId, SlackUserId = userSlackDetail?.UserId };
+                    //Creating a user with email only. Password not required
+                    await _userManager.CreateAsync(userInfo);
 
-                //Adding external Oauth details
-                UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-                var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
+                    //Adding external Oauth details
+                    UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
+                    await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
+                }
             }
-            await UpdateApplicationUserAsync(email);
-            return userInfo;
         }
 
 
@@ -320,7 +324,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private async Task StartBotByModuleAsync(string module)
         {
             var appCredential = await _appCredentialRepository.FetchAppCredentialByModuleAsync(module);
-            if(!string.IsNullOrEmpty(appCredential?.BotToken))
+            if (!string.IsNullOrEmpty(appCredential?.BotToken))
             {
                 if (module == _stringConstant.TaskModule)
                     _socketClientWrapper.InitializeAndConnectTaskBot(appCredential.BotToken);

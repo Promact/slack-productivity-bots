@@ -37,5 +37,12 @@ namespace Promact.Core.Repository.ConfigurationRepository
         /// </summary>
         /// <param name="configurationId">setting configuration Id</param>
         Task DisableAppByConfigurationIdAsync(int configurationId);
+
+        /// <summary>
+        /// Method to check leave app is added or not for user
+        /// </summary>
+        /// <param name="userId">user's Id</param>
+        /// <returns>configuration details</returns>
+        Task<LeaveAppAddedAC> IsUserAddedLeaveAppAsync(string userId);
     }
 }

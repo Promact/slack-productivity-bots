@@ -89,14 +89,20 @@ namespace Promact.Erp.Core.Controllers
         {
             _logger.Info("AfterLogIn: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             string userId = GetUserId(User.Identity);
-            //for check login user is already added in slack 
-            ViewBag.userEmail = await _oAuthLoginRepository.CheckUserSlackInformation(userId);
             //this for get login user email address and encrypt hash code.
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
-            ViewBag.emailHashCode = emailHaseCodeAC;
-            await _groupRepository.AddDynamicGroupAsync();
-            return View();
+            if (user != null)
+            {
+                EmailHashCodeAC emailHaseCodeAC = new EmailHashCodeAC(_md5Service.GetMD5HashData(user.Email.ToLower()));
+                ViewBag.emailHashCode = emailHaseCodeAC;
+                await _groupRepository.AddDynamicGroupAsync();
+                return View();
+            }
+            else
+            {
+                Request.GetOwinContext().Authentication.SignOut("Cookies");
+                return RedirectToAction(_stringConstantRepository.SetUpError, _stringConstantRepository.Home);
+            }
         }
 
 
@@ -116,70 +122,6 @@ namespace Promact.Erp.Core.Controllers
         {
             _logger.Info("SlackAuthorize: Today " + DateTime.Today + "\n Today's Date :" + DateTime.Today.Date);
             ViewBag.Message = message;
-            return View();
-        }
-
-
-        /**
-        * @api {get} Home/ExtrenalLogin
-        * @apiVersion 1.0.0
-        * @apiName ExtrenalLogin
-        * @apiGroup ExtrenalLogin    
-        * @apiSuccessExample {json} Success-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *     "Description":"Will redirect to OAuth server for external login"
-        * }
-        */
-        public ActionResult ExtrenalLogin()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
-            }
-            //BaseUrl of OAuth and clientId of App to be set 
-            string url = string.Format("{0}?clientId={1}", _stringConstantRepository.OAuthUrl, _envVariableRepository.PromactOAuthClientId);
-            //make call to the OAuth Server
-            return Redirect(url);
-        }
-
-        /**
-        * @api {get} Home/ExtrenalLoginCallBack
-        * @apiVersion 1.0.0
-        * @apiName ExtrenalLoginCallBack
-        * @apiGroup ExtrenalLoginCallBack 
-        * @apiParam {string} Name  accessToken
-        * @apiParam {string} Name  email
-        * @apiParam {string} Name  slackUserName
-        * @apiSuccessExample {json} Success-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *     "Description":"Redirect to a view page of application and user will be added from external OAuth to our application"
-        * }
-        */
-        public async Task<ActionResult> ExtrenalLoginCallBack(string accessToken, string email, string slackUserId, string userId)
-        {
-            ApplicationUser user = _userManager.FindByEmail(email);
-            if (user != null)
-            {
-                await _signInManager.SignInAsync(user, false, false);
-                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
-            }
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
-            }
-            if (user == null)
-            {
-                user = await _oAuthLoginRepository.AddNewUserFromExternalLoginAsync(email, accessToken, userId);
-                if (user != null)
-                {
-                    //Signing user with username or email only
-                    await _signInManager.SignInAsync(user, false, false);
-                    return RedirectToAction(_stringConstantRepository.AfterLogIn, _stringConstantRepository.Home);
-                }
-                return RedirectToAction(_stringConstantRepository.SlackAuthorize, _stringConstantRepository.Home, new { message = _stringConstantRepository.UserCouldNotBeAdded });
-            }
             return View();
         }
 
@@ -250,6 +192,12 @@ namespace Promact.Erp.Core.Controllers
                 _logger.Error(errorMessage, ex);
                 throw;
             }
+        }
+
+        public ActionResult SetUpError()
+        {
+            ViewBag.Message = _stringConstantRepository.PleaseAskYouAdminToAddSlackAppAndDoSetUp;
+            return View();
         }
         #endregion
     }

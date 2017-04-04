@@ -536,5 +536,8 @@
         #endregion
         string TestSlackClientId { get; }
         string TestSlackClientSecret { get; }
+        string RequestToReInstallSlackApp { get; }
+        string PleaseAskYouAdminToAddSlackAppAndDoSetUp { get; }
+        string SetUpError { get; }
     }
 }
