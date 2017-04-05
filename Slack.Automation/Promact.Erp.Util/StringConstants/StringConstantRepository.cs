@@ -758,7 +758,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No active member found for this project.";
+                return "Sorry. No active member who has logged in with Promact could be found for this project.";
             }
         }
         public string Unrecognized
@@ -1760,9 +1760,10 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is not included as a team member/employee in the project i.e OAuth project\n>Remember, team leaders are not expected to answer for other users :wink:";
+                return "<@{0}> is not included as a team member/employee in the project (i.e in OAuth)\n>Remember, team leaders are not expected to answer for other users :wink:";
             }
         }
+
         public string Admin
         {
             get

@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Autofac;
+using NLog;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.StringConstants;
@@ -13,8 +14,8 @@ namespace Promact.Core.Repository.BotRepository
         #region Private Variable
         private readonly IStringConstantRepository _stringConstant;
         private readonly ITaskMailRepository _taskMailRepository;
-        private readonly IScrumBotRepository _scrumBotRepository;
         private readonly ILogger _scrumlogger;
+        private readonly IComponentContext _component;
         #endregion
 
         #region Private property
@@ -34,11 +35,11 @@ namespace Promact.Core.Repository.BotRepository
         /// Constructor
         /// </summary>
         public SocketClientWrapper(IStringConstantRepository stringConstant, ITaskMailRepository taskMailRepository,
-            IScrumBotRepository scrumBotRepository)
+            IComponentContext component)
         {
             _stringConstant = stringConstant;
             _taskMailRepository = taskMailRepository;
-            _scrumBotRepository = scrumBotRepository;
+            _component = component;
             _scrumlogger = LogManager.GetLogger("scrumBotModule");
         }
         #endregion
@@ -56,7 +57,10 @@ namespace Promact.Core.Repository.BotRepository
             ScrumBot.OnMessageReceived += async (message) =>
             {
                 _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                string replyText = await _scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
+
+                IScrumBotRepository scrumBotRepository = _component.Resolve<IScrumBotRepository>();
+
+                string replyText = await scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text);
                 _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
                 if (!String.IsNullOrEmpty(replyText))
                 {

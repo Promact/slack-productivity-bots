@@ -126,7 +126,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 appCredential.BotToken = slackOAuth?.Bot?.BotAccessToken;
                 appCredential.BotUserId = slackOAuth?.Bot?.BotUserId;
                 await _appCredentialRepository.UpdateBotTokenAsync(appCredential);
-                await StartBotByModuleAsync(appCredential.Module);
+
                 _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
                 bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
                 if (!checkUserIncomingWebHookExist && !string.IsNullOrEmpty(slackOAuth.IncomingWebhook?.Url))
@@ -162,12 +162,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                             _logger.Debug("Update Application User succeeded" + succeeded.Succeeded);
                             _logger.Debug("Update Application User Errors" + succeeded.Errors);
 
-                            ApplicationUser testApllicationUser = await _userManager.FindByEmailAsync(applicationUser.Email);
-                            _logger.Debug("Test Application Slcak UserId" + testApllicationUser.SlackUserId);
-                            _logger.Debug("Test ApplicationUser Object:" + JsonConvert.SerializeObject(testApllicationUser));
-                            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
-                            _logger.Debug("Add Slack User Id Done");
-
                             foreach (var user in slackUsers.Members)
                             {
                                 await _slackUserRepository.AddSlackUserAsync(user);
@@ -178,6 +172,11 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                             //the public channels' details
                             string channelDetailsResponse = await _httpClientService.GetAsync(_stringConstant.SlackChannelListUrl, detailsRequest, null, _stringConstant.Bearer);
                             SlackChannelResponse channels = JsonConvert.DeserializeObject<SlackChannelResponse>(channelDetailsResponse);
+
+                            await StartBotByModuleAsync(appCredential.Module);
+
+                            _logger.Debug("Bot Started");
+
                             if (channels.Ok)
                             {
                                 _logger.Info("Channels error:" + channels.ErrorMessage);
@@ -272,27 +271,9 @@ namespace Promact.Core.Repository.ExternalLoginRepository
 
         #endregion
 
+
         #region Private Region
-        /// <summary>
-        /// Used to update application user details with slack id - JJ
-        /// </summary>
-        /// <param name="email">Email id of the logged in user</param>
-        /// <returns>true if successfully updated</returns>
-        private async Task<bool> UpdateApplicationUserAsync(string email)
-        {
-            ApplicationUser userInfo = await _userManager.FindByEmailAsync(email);
-            if (userInfo != null)
-            {
-                SlackUserDetails slackUser = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.Email == email);
-                if (slackUser != null)
-                {
-                    userInfo.SlackUserId = slackUser.UserId;
-                    await _userManager.UpdateAsync(userInfo);
-                    return true;
-                }
-            }
-            return false;
-        }
+
 
         /// <summary>
         /// Add slack channel details to the database - JJ
@@ -316,6 +297,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
             }
         }
+
 
         /// <summary>
         /// Method to start bot as per module name
