@@ -1,17 +1,17 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
-using Promact.Erp.Util.StringConstants;
 using System.Web.Http;
 using System.Linq;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Core.Controllers
 {
     public class BaseController : ApiController
     {
-        public readonly IStringConstantRepository _stringConstantRepository;
-        public BaseController(IStringConstantRepository stringConstantRepository)
+        public readonly AppStringLiteral _stringConstantRepository;
+        public BaseController(ISingletonStringLiteral stringConstantRepository)
         {
-            _stringConstantRepository = stringConstantRepository;
+            _stringConstantRepository = stringConstantRepository.StringConstant;
         }
 
 

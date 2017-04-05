@@ -2,7 +2,7 @@
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +15,15 @@ namespace Promact.Core.Repository.LeaveReportRepository
         #region Private Variables
         private readonly IRepository<LeaveRequest> _leaveRequest;
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         #endregion
 
         #region Constructor
-        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, IStringConstantRepository stringConstant, 
+        public LeaveReportRepository(IRepository<LeaveRequest> leaveRequest, ISingletonStringLiteral stringConstant, 
             IOauthCallHttpContextRespository oauthCallsRepository)
         {
             _leaveRequest = leaveRequest;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _oauthCallsRepository = oauthCallsRepository;
         }
         #endregion

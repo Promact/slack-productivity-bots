@@ -11,11 +11,11 @@ using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Test
 {
@@ -36,7 +36,7 @@ namespace Promact.Core.Test
         private readonly IScrumSetUpRepository _scrumSetUpRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelReposiroty;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
 
         private Question question = new Question();
@@ -70,7 +70,7 @@ namespace Promact.Core.Test
             _scrumAnswerDataRepository = _componentContext.Resolve<IRepository<ScrumAnswer>>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _slackChannelReposiroty = _componentContext.Resolve<ISlackChannelRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _temporaryScrumDetailsRepository = _componentContext.Resolve<IRepository<TemporaryScrumDetails>>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialization();

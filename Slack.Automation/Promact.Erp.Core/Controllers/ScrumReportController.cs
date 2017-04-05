@@ -1,7 +1,7 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -19,7 +19,7 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public ScrumReportController(IScrumReportRepository scrumRepository, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager, IStringConstantRepository stringConstant) : base(stringConstant)
+        public ScrumReportController(IScrumReportRepository scrumRepository, IAttachmentRepository attachmentRepository, ApplicationUserManager userManager, ISingletonStringLiteral stringConstant) : base(stringConstant)
         {
             _scrumReportRepository = scrumRepository;
             _attachmentRepository = attachmentRepository;

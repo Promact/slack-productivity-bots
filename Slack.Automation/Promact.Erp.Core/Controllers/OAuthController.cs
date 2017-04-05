@@ -9,7 +9,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -35,7 +35,7 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public OAuthController(IHttpClientService httpClientService, IStringConstantRepository stringConstantRepository,
+        public OAuthController(IHttpClientService httpClientService, ISingletonStringLiteral stringConstantRepository,
             ISlackUserRepository slackUserRepository, ILogger logger,
             IRepository<SlackChannelDetails> slackChannelDetails, IOAuthLoginRepository oAuthLoginRepository,
             ApplicationUserManager userManager, ISlackChannelRepository slackChannelRepository,

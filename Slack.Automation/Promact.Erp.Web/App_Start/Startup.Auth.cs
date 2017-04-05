@@ -5,7 +5,6 @@ using Microsoft.Owin.Security.OpenIdConnect;
 using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Autofac;
-using Promact.Erp.Util.StringConstants;
 using System.IdentityModel.Tokens;
 using Promact.Core.Repository.ExternalLoginRepository;
 using IdentityModel.Client;
@@ -13,14 +12,14 @@ using System.Collections.Generic;
 using Microsoft.Owin.Security.Cookies;
 using System.Threading.Tasks;
 using System.Linq;
-using Autofac.Extras.NLog;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Web
 {
     public partial class Startup
     {
         private IEnvironmentVariableRepository _environmentVariable;
-        private IStringConstantRepository _stringConstantRepository;
+        private AppStringLiteral _stringConstantRepository;
         private IOAuthLoginRepository _oAuthLoginRepository;
         private string _redirectUrl = null;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
@@ -29,7 +28,7 @@ namespace Promact.Erp.Web
         {
             _environmentVariable = context.Resolve<IEnvironmentVariableRepository>();
             _oAuthLoginRepository = context.Resolve<IOAuthLoginRepository>();
-            _stringConstantRepository = context.Resolve<IStringConstantRepository>();
+            _stringConstantRepository = context.Resolve<ISingletonStringLiteral>().StringConstant;
             _redirectUrl = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);

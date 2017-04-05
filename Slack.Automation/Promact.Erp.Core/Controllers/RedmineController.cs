@@ -1,6 +1,6 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.RedmineRepository;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -15,7 +15,7 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public RedmineController(IStringConstantRepository stringConstant, IRedmineRepository redmineRepository,
+        public RedmineController(ISingletonStringLiteral stringConstant, IRedmineRepository redmineRepository,
             IAttachmentRepository attachmentRepository)
             : base(stringConstant)
         {

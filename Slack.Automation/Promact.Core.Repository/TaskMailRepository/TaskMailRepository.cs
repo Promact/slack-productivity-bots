@@ -8,11 +8,11 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.Util.Email;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.DataRepository;
-using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Autofac.Extras.NLog;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using System.Collections.Generic;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -27,7 +27,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         private readonly ILogger _logger;
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
@@ -35,7 +35,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         #endregion
 
         #region Constructor
-        public TaskMailRepository(IRepository<TaskMail> taskMailRepository, IStringConstantRepository stringConstant,
+        public TaskMailRepository(IRepository<TaskMail> taskMailRepository, ISingletonStringLiteral stringConstant,
             IOauthCallsRepository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
@@ -43,7 +43,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _taskMailRepository = taskMailRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _oauthCallsRepository = oauthCallsRepository;
             _taskMailDetailRepository = taskMailDetailRepository;
             _attachmentRepository = attachmentRepository;
