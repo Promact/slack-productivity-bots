@@ -18,4 +18,4 @@ namespace Promact.Erp.Web.App_Start
             socketClientWrapper.InitializeAndConnectScrumBot((await appCredential.FetchAppCredentialByModuleAsync(stringConstant.Scrum)).BotToken);
         }
     }
-}
+} 
