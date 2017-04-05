@@ -110,6 +110,17 @@ namespace Promact.Core.Test
             var configuration = await _configurationDataRepository.FirstAsync(x=>x.Id == configurationId);
             Assert.False(configuration.Status);
         }
+
+        /// <summary>
+        /// Test case to test the method DisableAppByConfigurationIdAsync of ConfigurationRepository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task GetConfigurationBymoduleAsync()
+        {
+            await AddConfigurationAsync();
+            var result = await _configurationRepository.GetConfigurationBymoduleAsync(_stringConstant.TaskModule);
+            Assert.False(result.Status);
+        }
         #endregion
 
         #region Initialization

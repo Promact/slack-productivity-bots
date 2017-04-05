@@ -31,13 +31,13 @@ export class ConfigurationComponent implements OnInit {
     openModel(configuration: Configuration, popup) {
         this.loader.loader = true;
         this.configurationId = configuration.Id;
-        this.updateConfiguration(configuration);
         this.loader.loader = false;
         if (configuration.Status === true) {
             popup.open(this.dialogConfig);
         }
         else {
             this.loader.loader = true;
+            this.updateConfiguration(configuration);
             this.configurationStatus = this.sharedService.getConfigurationStatusAC();
             if (configuration.Module === this.stringConstant.leaveModule)
             { this.configurationStatus.LeaveOn = configuration.Status; }

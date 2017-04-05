@@ -44,5 +44,12 @@ namespace Promact.Core.Repository.ConfigurationRepository
         /// <param name="userId">user's Id</param>
         /// <returns>configuration details</returns>
         Task<LeaveAppAddedAC> IsUserAddedLeaveAppAsync(string userId);
+
+        /// <summary>
+        /// Method to get configuration detail by module name
+        /// </summary>
+        /// <param name="module">name of module</param>
+        /// <returns></returns>
+        Task<Configuration> GetConfigurationBymoduleAsync(string module);
     }
 }

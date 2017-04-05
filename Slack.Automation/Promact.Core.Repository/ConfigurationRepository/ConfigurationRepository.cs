@@ -114,6 +114,16 @@ namespace Promact.Core.Repository.ConfigurationRepository
                 leaveAppDetail.IsAdded = true;
             return leaveAppDetail;
         }
+
+        /// <summary>
+        /// Method to get configuration detail by module name
+        /// </summary>
+        /// <param name="module">name of module</param>
+        /// <returns></returns>
+        public async Task<Configuration> GetConfigurationBymoduleAsync(string module)
+        {
+            return await _configurationDataRepository.FirstOrDefaultAsync(x => x.Module == module);
+        }
         #endregion
 
         #region Private Method

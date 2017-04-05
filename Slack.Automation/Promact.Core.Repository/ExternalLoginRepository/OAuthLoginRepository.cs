@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NLog;
 using Promact.Core.Repository.AppCredentialRepository;
 using Promact.Core.Repository.BotRepository;
+using Promact.Core.Repository.ConfigurationRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
@@ -34,6 +35,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IAppCredentialRepository _appCredentialRepository;
         private readonly ILogger _logger;
         private readonly ISocketClientWrapper _socketClientWrapper;
+        private readonly IConfigurationRepository _configurationRepository;
         #endregion
 
         #region Constructor
@@ -42,7 +44,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
-             IAppCredentialRepository appCredentialRepository, ISocketClientWrapper socketClientWrapper)
+             IAppCredentialRepository appCredentialRepository, ISocketClientWrapper socketClientWrapper,
+             IConfigurationRepository configurationRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -56,6 +59,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _appCredentialRepository = appCredentialRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
             _socketClientWrapper = socketClientWrapper;
+            _configurationRepository = configurationRepository;
         }
 
         #endregion
@@ -117,6 +121,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task AddSlackUserInformationAsync(string code)
         {
             AppCredential appCredential = await _appCredentialRepository.FetchSelectedAppAsync();
+            Configuration configuration = await _configurationRepository.GetConfigurationBymoduleAsync(appCredential.Module);
             if (appCredential != null)
             {
                 string slackOAuthRequest = string.Format(_stringConstant.SlackOauthRequestUrl, appCredential.ClientId, appCredential.ClientSecret, code);
@@ -126,7 +131,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 appCredential.BotToken = slackOAuth?.Bot?.BotAccessToken;
                 appCredential.BotUserId = slackOAuth?.Bot?.BotUserId;
                 await _appCredentialRepository.UpdateBotTokenAsync(appCredential);
-
+                configuration.Status = true;
+                await _configurationRepository.UpdateConfigurationAsync(configuration);
                 _logger.Info("slackOAuth UserID" + slackOAuth.UserId);
                 bool checkUserIncomingWebHookExist = _incomingWebHookRepository.Any(x => x.UserId == slackOAuth.UserId);
                 if (!checkUserIncomingWebHookExist && !string.IsNullOrEmpty(slackOAuth.IncomingWebhook?.Url))

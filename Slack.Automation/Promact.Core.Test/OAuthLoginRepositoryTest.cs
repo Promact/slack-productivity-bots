@@ -8,6 +8,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
+using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.HttpClient;
@@ -38,6 +39,7 @@ namespace Promact.Core.Test
         private SlackProfile profile = new SlackProfile();
         private ApplicationUser user = new ApplicationUser();
         private AppCredential appCredential = new AppCredential();
+        private readonly IRepository<Configuration> _configurationDataRepository;
         #endregion
 
         #region Constructor
@@ -54,6 +56,7 @@ namespace Promact.Core.Test
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _appCredentialRepository = _componentContext.Resolve<IAppCredentialRepository>();
+            _configurationDataRepository = _componentContext.Resolve<IRepository<Configuration>>();
             Initialize();
         }
         #endregion
@@ -103,6 +106,9 @@ namespace Promact.Core.Test
         [Fact, Trait("Category", "Required")]
         public async Task AddSlackUserInformation()
         {
+            Configuration configuration = new Configuration() {CreatedOn = DateTime.UtcNow, Module = _stringConstant.LeaveModule, Status = false };
+            _configurationDataRepository.Insert(configuration);
+            await _configurationDataRepository.SaveChangesAsync();
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
