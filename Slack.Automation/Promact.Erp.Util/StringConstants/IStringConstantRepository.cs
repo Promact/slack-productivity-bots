@@ -35,24 +35,20 @@
         string InActiveProject { get; }
         string AlreadyLinked { get; }
         string NotLinkedYet { get; }
-        string SeedDataPath { get; }
         string UnlinkedSuccessfully { get; }
-        string NotLinkedToChannel { get; }
+        string  NotLinkedToChannel { get; }
         string NoLinks { get; }
         string Links { get; }
         string NotTeamLeaderOfProject { get; }
         string UsersDetailByChannelNameUrl { get; }
         string UserDetailsByIdUrl { get; }
         string UrlRtmStart { get; }
+        string OAuthAuthorizationScopeAndClientId { get; }
         string UserDetailsUrl { get; }
         string TeamLeaderDetailsUrl { get; }
         string ManagementDetailsUrl { get; }
         string OAuthAcessUrl { get; }
         string SlackAuthorize { get; }
-        string ScrumBotScopeAndClientId { get; }
-        string TaskBotScopeAndClientId { get; }
-        string LeaveSlashCommandScopeAndClientId { get; }
-        string RedmineSlashCommandScopeAndClientId { get; }
         string UserCouldNotBeAdded { get; }
         string ProjectDetailsByUserNameUrl { get; }
         string ProjectDetailUrl { get; }
@@ -465,7 +461,7 @@
         string NameClaimType { get; }
         string Bearer { get; }
         string TaskModule { get; }
-        string RedmineModule { get; }
+        string ScrumModule { get; }
         string LeaveModule { get; }
         string Management { get; }
         string TestEmail { get; }
@@ -534,10 +530,5 @@
         string RedmineAPIKeyCommand { get; }
         string RedmineProjectListFormat { get; }
         #endregion
-        string TestSlackClientId { get; }
-        string TestSlackClientSecret { get; }
-        string RequestToReInstallSlackApp { get; }
-        string PleaseAskYouAdminToAddSlackAppAndDoSetUp { get; }
-        string SetUpError { get; }
     }
 }

@@ -16,9 +16,6 @@ import { AppComponentService } from './appcomponent.service';
 import { EmailHashCode } from './shared/emailHashCode';
 import { MailSettingModule } from './shared/MailSetting/mailsetting.module';
 import { GroupModule } from './Group/group.module';
-import { ConfigurationModule } from './configuration/configuration.module';
-import { SharedService } from './shared/shared.service';
-import { Md2Module } from 'md2';
 
 @NgModule({
     declarations: [AppComponent],
@@ -32,11 +29,9 @@ import { Md2Module } from 'md2';
         ScrumModule,
         FormsModule,
         MailSettingModule,
-        ConfigurationModule,
-        Md2Module.forRoot()
     ],
     bootstrap: [AppComponent],
-    providers: [StringConstant, AppComponentService, LoaderService, SharedService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
+    providers: [StringConstant, AppComponentService, LoaderService, { provide: LocationStrategy, useClass: HashLocationStrategy }, EmailHashCode]
 })
 
 export class AppModule { }

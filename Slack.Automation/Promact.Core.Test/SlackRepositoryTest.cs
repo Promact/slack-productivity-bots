@@ -65,8 +65,6 @@ namespace Promact.Core.Test
         MailSettingMapping mailSettingMapping = new MailSettingMapping();
         Group group = new Group();
         GroupEmailMapping groupEmailMapping = new GroupEmailMapping();
-        private readonly IRepository<AppCredential> _appCredentialDataRepository;
-        private AppCredential appCredential = new AppCredential();
         #endregion
 
         #region Constructor
@@ -90,9 +88,7 @@ namespace Promact.Core.Test
             _mailSettingMappingDataRepository = _componentContext.Resolve<IRepository<MailSettingMapping>>();
             _groupDataRepository = _componentContext.Resolve<IRepository<Group>>();
             _groupEmailMappingDataRepository = _componentContext.Resolve<IRepository<GroupEmailMapping>>();
-            _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
             Initialize();
-            AddLeaveAppAsync().Wait();
         }
         #endregion
 
@@ -1313,13 +1309,6 @@ namespace Promact.Core.Test
             group.Type = 1;
             groupEmailMapping.CreatedOn = DateTime.UtcNow;
             groupEmailMapping.Email = _stringConstant.Email;
-
-            appCredential.BotToken = _stringConstant.AccessTokenForTest;
-            appCredential.BotUserId = _stringConstant.IdForTest;
-            appCredential.ClientId = _stringConstant.TestSlackClientId;
-            appCredential.ClientSecret = _stringConstant.TestSlackClientSecret;
-            appCredential.CreatedOn = DateTime.UtcNow;
-            appCredential.Module = _stringConstant.LeaveModule;
         }
         #endregion
 
@@ -1486,15 +1475,6 @@ namespace Promact.Core.Test
             groupEmailMapping.GroupId = group.Id;
             _groupEmailMappingDataRepository.Insert(groupEmailMapping);
             await _groupEmailMappingDataRepository.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Method to add redmine app
-        /// </summary>
-        private async Task AddLeaveAppAsync()
-        {
-            _appCredentialDataRepository.Insert(appCredential);
-            await _appCredentialDataRepository.SaveChangesAsync();
         }
         #endregion
     }

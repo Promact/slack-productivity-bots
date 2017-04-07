@@ -329,7 +329,7 @@
     <Compile Include="ActionFilters\ExceptionLoggerFilter.cs" />
     <Compile Include="ActionFilters\SampleActionFilter.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Controllers\Bot.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LeaveReportController.cs" />

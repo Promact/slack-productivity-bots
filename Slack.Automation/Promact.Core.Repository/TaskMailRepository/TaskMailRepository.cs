@@ -13,8 +13,6 @@ using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Autofac.Extras.NLog;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using System.Collections.Generic;
-using SlackAPI.WebSocketMessages;
-using Promact.Core.Repository.SlackUserRepository;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -34,7 +32,6 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly ILogger _logger;
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
         private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
-        private readonly ISlackUserRepository _slackUserDetailsRepository;
         #endregion
 
         #region Constructor
@@ -43,7 +40,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
-            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails, ISlackUserRepository slackUserDetailsRepository)
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant;
@@ -58,40 +55,16 @@ namespace Promact.Core.Repository.TaskMailRepository
             _logger = logger;
             _mailSettingDataRepository = mailSettingDataRepository;
             _mailSettingDetails = mailSettingDetails;
-            _slackUserDetailsRepository = slackUserDetailsRepository;
         }
         #endregion
 
         #region Public Methods
         /// <summary>
-        /// Method to turn on task mail bot
-        /// </summary>
-        /// <param name="botToken">message from slack</param>
-        public async Task<string> ProcessTask(NewMessage message)
-        {
-            var user = await _slackUserDetailsRepository.GetByIdAsync(message.user);
-            string replyText = string.Empty;
-            var text = message.text.ToLower();
-            if (user != null)
-            {
-                if (text == _stringConstant.TaskMailSubject.ToLower())
-                    replyText = await StartTaskMailAsync(user.UserId);
-                else
-                    replyText = await QuestionAndAnswerAsync(text, user.UserId);
-            }
-            else
-                replyText = _stringConstant.NoSlackDetails;
-            return replyText;
-        }
-        #endregion
-
-        #region Private Methods
-        /// <summary>
         /// Method to start task mail and send first question of task mail
         /// </summary>
         /// <param name="userId">User's slack user Id</param>
         /// <returns>questionText in string format containing question statement</returns>
-        private async Task<string> StartTaskMailAsync(string userId)
+        public async Task<string> StartTaskMailAsync(string userId)
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
             var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
@@ -154,7 +127,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <param name="answer">Answer of previous question ask to user</param>
         /// <param name="userId">User's slack Id</param>
         /// <returns>questionText in string format containing next question statement</returns>
-        private async Task<string> QuestionAndAnswerAsync(string answer, string userId)
+        public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
             // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
             var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
@@ -181,7 +154,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             case QuestionOrder.YourTask:
                                 {
                                     // if previous question was description of task and it was not null/wrong vale then answer will ask next question
-                                    if (!string.IsNullOrEmpty(answer))
+                                    if (answer != null)
                                     {
                                         taskDetails.Description = answer;
                                         userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
@@ -270,7 +243,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                             #region Comment
                             case QuestionOrder.Comment:
                                 {
-                                    if (!string.IsNullOrEmpty(answer))
+                                    if (answer != null)
                                     {
                                         // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
                                         taskDetails.Comment = answer;
@@ -392,8 +365,9 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             return userAndTaskMailDetailsWithAccessToken.QuestionText;
         }
+        #endregion
 
-
+        #region Private Methods
         /// <summary>
         /// Private method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
         /// </summary>

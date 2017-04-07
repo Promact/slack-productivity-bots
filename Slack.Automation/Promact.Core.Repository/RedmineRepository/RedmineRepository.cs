@@ -12,7 +12,6 @@ using Promact.Core.Repository.Client;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Collections.Generic;
-using Promact.Core.Repository.AppCredentialRepository;
 
 namespace Promact.Core.Repository.RedmineRepository
 {
@@ -25,20 +24,17 @@ namespace Promact.Core.Repository.RedmineRepository
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IClient _clientRepository;
         private string replyText = null;
-        private readonly IAppCredentialRepository _appCredentialRepository;
         #endregion
 
         #region Constructor
         public RedmineRepository(IRepository<ApplicationUser> userDataRepository, IHttpClientService httpClientService,
-            IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IClient clientRepository,
-            IAppCredentialRepository appCredentialRepository)
+            IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IClient clientRepository)
         {
             _userDataRepository = userDataRepository;
             _httpClientService = httpClientService;
             _stringConstant = stringConstant;
             _attachmentRepository = attachmentRepository;
             _clientRepository = clientRepository;
-            _appCredentialRepository = appCredentialRepository;
         }
         #endregion
 
@@ -50,112 +46,107 @@ namespace Promact.Core.Repository.RedmineRepository
         /// <returns>reply message</returns>
         public async Task SlackRequestAsync(SlashCommand slashCommand)
         {
-            if ((await _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.RedmineModule)).BotToken != null)
+            // Way to break string by spaces only if spaces are not between quotes
+            var text = _attachmentRepository.SlackText(slashCommand.Text);
+            // Get user details from SlackUserId
+            var user = await _userDataRepository.FirstOrDefaultAsync(x => x.SlackUserId == slashCommand.UserId);
+            if (user != null)
             {
-                // Way to break string by spaces only if spaces are not between quotes
-                var text = _attachmentRepository.SlackText(slashCommand.Text);
-                // Get user details from SlackUserId
-                var user = await _userDataRepository.FirstOrDefaultAsync(x => x.SlackUserId == slashCommand.UserId);
-                if (user != null)
+                SlackAction action;
+                if (SlackAction.TryParse(text[0], out action))
                 {
-                    SlackAction action;
-                    if (SlackAction.TryParse(text[0], out action))
+                    if (action != SlackAction.apikey)
                     {
-                        if (action != SlackAction.apikey)
+                        if (!string.IsNullOrEmpty(user.RedmineApiKey))
                         {
-                            if (!string.IsNullOrEmpty(user.RedmineApiKey))
+                            switch (action)
                             {
-                                switch (action)
-                                {
-                                    // To get redmine project list
-                                    #region Project list
-                                    case SlackAction.projects:
-                                        await GetRedmineProjectList(user);
-                                        break;
-                                    #endregion
+                                // To get redmine project list
+                                #region Project list
+                                case SlackAction.projects:
+                                    await GetRedmineProjectList(user);
+                                    break;
+                                #endregion
 
-                                    // Redmine issue related
-                                    #region Issues
-                                    case SlackAction.issues:
+                                // Redmine issue related
+                                #region Issues
+                                case SlackAction.issues:
+                                    {
+                                        RedmineAction redmineAction;
+                                        if (RedmineAction.TryParse(text[1], out redmineAction))
                                         {
-                                            RedmineAction redmineAction;
-                                            if (RedmineAction.TryParse(text[1], out redmineAction))
+                                            switch (redmineAction)
                                             {
-                                                switch (redmineAction)
-                                                {
-                                                    // To get redmine issue list assignee to me
-                                                    #region Issues List
-                                                    case RedmineAction.list:
-                                                        await GetRedmineIssueList(user, text);
-                                                        break;
-                                                    #endregion
+                                                // To get redmine issue list assignee to me
+                                                #region Issues List
+                                                case RedmineAction.list:
+                                                    await GetRedmineIssueList(user, text);
+                                                    break;
+                                                #endregion
 
-                                                    // To create redmine issue
-                                                    #region Issue Create
-                                                    case RedmineAction.create:
-                                                        await CreateRedmineIssue(user, text);
-                                                        break;
-                                                    #endregion
+                                                // To create redmine issue
+                                                #region Issue Create
+                                                case RedmineAction.create:
+                                                    await CreateRedmineIssue(user, text);
+                                                    break;
+                                                #endregion
 
-                                                    // To change assignee in redmine issue
-                                                    #region Change Assignee
-                                                    case RedmineAction.changeassignee:
-                                                        await UpdateChangeAssignee(user, text);
-                                                        break;
-                                                    #endregion
+                                                // To change assignee in redmine issue
+                                                #region Change Assignee
+                                                case RedmineAction.changeassignee:
+                                                    await UpdateChangeAssignee(user, text);
+                                                    break;
+                                                #endregion
 
-                                                    // To close the issue of redmine
-                                                    #region Issue close
-                                                    case RedmineAction.close:
-                                                        await UpdateByPropertyAsync(true, 0, text[2], user.RedmineApiKey);
-                                                        break;
-                                                    #endregion
+                                                // To close the issue of redmine
+                                                #region Issue close
+                                                case RedmineAction.close:
+                                                    await UpdateByPropertyAsync(true, 0, text[2], user.RedmineApiKey);
+                                                    break;
+                                                #endregion
 
-                                                    // To add time entry in redmine issue
-                                                    #region Issue Time Entry
-                                                    case RedmineAction.timeentry:
-                                                        await AddTimeEntryToRedmineIssue(user, text);
-                                                        break;
-                                                        #endregion
-                                                }
+                                                // To add time entry in redmine issue
+                                                #region Issue Time Entry
+                                                case RedmineAction.timeentry:
+                                                    await AddTimeEntryToRedmineIssue(user, text);
+                                                    break;
+                                                    #endregion
                                             }
-                                            else
-                                                // If command action is not in format
-                                                replyText = string.Format(_stringConstant.ProperRedmineIssueAction, RedmineAction.list.ToString(),
-                                                    RedmineAction.create.ToString(), RedmineAction.changeassignee.ToString(), RedmineAction.close.ToString(),
-                                                    RedmineAction.timeentry.ToString());
                                         }
-                                        break;
-                                    #endregion
+                                        else
+                                            // If command action is not in format
+                                            replyText = string.Format(_stringConstant.ProperRedmineIssueAction, RedmineAction.list.ToString(),
+                                                RedmineAction.create.ToString(), RedmineAction.changeassignee.ToString(), RedmineAction.close.ToString(),
+                                                RedmineAction.timeentry.ToString());
+                                    }
+                                    break;
+                                #endregion
 
-                                    // To get help in redmine slash command
-                                    #region Help
-                                    case SlackAction.help:
-                                        replyText = _stringConstant.RedmineHelp;
-                                        break;
-                                        #endregion
-                                }
+                                // To get help in redmine slash command
+                                #region Help
+                                case SlackAction.help:
+                                    replyText = _stringConstant.RedmineHelp;
+                                    break;
+                                    #endregion
                             }
-                            else
-                                // If user's redmine API key is not yet set
-                                replyText = _stringConstant.RedmineApiKeyIsNull;
                         }
-                        #region Api Key
                         else
-                            await AddRedmineAPIKey(user, text);
-                        #endregion
+                            // If user's redmine API key is not yet set
+                            replyText = _stringConstant.RedmineApiKeyIsNull;
                     }
+                    #region Api Key
                     else
-                        // If command action is not in format
-                        replyText = string.Format(_stringConstant.RequestToEnterProperRedmineAction, SlackAction.list.ToString(),
-                            SlackAction.projects.ToString(), SlackAction.help.ToString());
+                        await AddRedmineAPIKey(user, text);
+                    #endregion
                 }
                 else
-                    // If user not found
-                    replyText = _stringConstant.SlackUserNotFound;
+                    // If command action is not in format
+                    replyText = string.Format(_stringConstant.RequestToEnterProperRedmineAction, SlackAction.list.ToString(),
+                        SlackAction.projects.ToString(), SlackAction.help.ToString());
             }
             else
-                replyText = _stringConstant.RequestToReInstallSlackApp;
+                // If user not found
+                replyText = _stringConstant.SlackUserNotFound;
             await _clientRepository.SendMessageAsync(slashCommand.ResponseUrl, replyText);
         }
         #endregion
@@ -399,7 +390,7 @@ namespace Promact.Core.Repository.RedmineRepository
                     {
                         // Issue list in string format
                         replyText += string.Format(_stringConstant.RedmineIssueMessageFormat, issue.Project.Name, issue.IssueId,
-                            issue.Subject, issue.Status.Name, issue.Priority.Name, issue.Tracker.Name, Environment.NewLine);
+                            issue.Subject, issue.Status.Name, issue.Priority.Name, issue.Tracker.Name);
                     }
                 }
                 else

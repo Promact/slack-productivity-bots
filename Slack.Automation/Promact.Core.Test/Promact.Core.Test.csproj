@@ -101,7 +101,6 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SlackAPI, Version=1.0.5.93, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -161,7 +160,6 @@
     <Compile Include="AttachmentRepositoryTest.cs" />
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="BotQuestionRepositoryTest.cs" />
-    <Compile Include="ConfigurationRepositoryTest.cs" />
     <Compile Include="EnvironmentVariableRepository\EnvironmentVariableTestRepository.cs" />
     <Compile Include="GroupRepositoryTest.cs" />
     <Compile Include="LeaveReportRepositoryTest.cs" />
