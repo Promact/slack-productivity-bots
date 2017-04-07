@@ -19,6 +19,7 @@ using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.ExceptionHandler;
 using NLog;
+using Promact.Core.Repository.AppCredentialRepository;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -37,6 +38,7 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IEmailService _emailService;
         private readonly ILogger _logger;
+        private readonly IAppCredentialRepository _appCredentialRepository;
         #endregion
 
         #region Constructor
@@ -44,7 +46,7 @@ namespace Promact.Core.Repository.SlackRepository
             ISlackUserRepository slackUserRepository, IClient clientRepository, IStringConstantRepository stringConstant,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManagerRepository,
             IRepository<IncomingWebHook> incomingWebHookRepository, IEmailServiceTemplateRepository emailTemplateRepository,
-            IEmailService emailService)
+            IEmailService emailService, IAppCredentialRepository appCredentialRepository)
         {
             _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
@@ -57,6 +59,7 @@ namespace Promact.Core.Repository.SlackRepository
             _emailTemplateRepository = emailTemplateRepository;
             _emailService = emailService;
             _logger = LogManager.GetLogger("SlackRepository");
+            _appCredentialRepository = appCredentialRepository;
         }
         #endregion
 
@@ -67,78 +70,83 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leaveResponse">leave update response from slack</param>
         public async Task UpdateLeaveAsync(SlashChatUpdateResponse leaveResponse)
         {
-            try
+            if ((await _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.LeaveModule)).BotToken != null)
             {
-                _logger.Debug("UpdateLeaveAsync Leave update method");
-                // method to get leave by its id
-                LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
-                _logger.Debug("UpdateLeaveAsync leave applied by : " + leave.EmployeeId);
-                ApplicationUser user = await _userManagerRepository.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
-                _logger.Debug("UpdateLeaveAsync User name : " + user.UserName);
-                SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
-                _logger.Debug("UpdateLeaveAsync User slack name : " + slackUser.Name);
-                ApplicationUser updaterUser = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
-                if (updaterUser != null)
+                try
                 {
-                    _logger.Debug("UpdateLeaveAsync User want to update the leave : " + updaterUser.UserName);
-                    // only pending status can be modified
-                    if (leave.Status == Condition.Pending)
+                    _logger.Debug("UpdateLeaveAsync Leave update method");
+                    // method to get leave by its id
+                    LeaveRequest leave = await _leaveRepository.LeaveByIdAsync(Convert.ToInt32(leaveResponse.CallbackId));
+                    _logger.Debug("UpdateLeaveAsync leave applied by : " + leave.EmployeeId);
+                    ApplicationUser user = await _userManagerRepository.FirstOrDefaultAsync(x => x.Id == leave.EmployeeId);
+                    _logger.Debug("UpdateLeaveAsync User name : " + user.UserName);
+                    SlackUserDetailAc slackUser = await _slackUserRepository.GetByIdAsync(user.SlackUserId);
+                    _logger.Debug("UpdateLeaveAsync User slack name : " + slackUser.Name);
+                    ApplicationUser updaterUser = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == leaveResponse.User.Id);
+                    if (updaterUser != null)
                     {
-                        if (leaveResponse.Actions[0].Value == _stringConstant.Approved)
+                        _logger.Debug("UpdateLeaveAsync User want to update the leave : " + updaterUser.UserName);
+                        // only pending status can be modified
+                        if (leave.Status == Condition.Pending)
                         {
-                            leave.Status = Condition.Approved;
+                            if (leaveResponse.Actions[0].Value == _stringConstant.Approved)
+                            {
+                                leave.Status = Condition.Approved;
+                            }
+                            else
+                            {
+                                leave.Status = Condition.Rejected;
+                            }
+                            await _leaveRepository.UpdateLeaveAsync(leave);
+                            _logger.Debug("UpdateLeaveAsync leave updated successfully");
+                            _logger.Debug("Leave details : " + leave.ToString());
+                            replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
+                                        leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
+                                        leave.Reason, leave.Status, leaveResponse.User.Name);
+                            _logger.Debug("Reply text to user : " + replyText);
+                            IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
+                            _logger.Debug("UpdateLeaveAsync user incoming webhook is null : " + string.IsNullOrEmpty(incomingWebHook.IncomingWebHookUrl));
+                            // Used to send slack message to the user about leave updation
+                            _logger.Debug("UpdateLeaveAsync Client repository - UpdateMessageAsync");
+                            await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
+                            _logger.Debug("Creating Email object");
+                            // Used to send email to the user about leave updation
+                            EmailApplication email = new EmailApplication();
+                            email.To = new List<string>();
+                            email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
+                            _logger.Debug("Email body is null : " + email.Body);
+                            email.From = updaterUser.Email;
+                            _logger.Debug("Email from : " + email.From);
+                            email.To.Add(user.Email);
+                            _logger.Debug("Email from : " + email.To);
+                            email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
+                            replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
+                            leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
+                            leave.RejoinDate.Value.ToShortDateString());
+                            _logger.Debug("Reply text to updator : " + replyText);
+                            _logger.Debug("UpdateLeaveAsync Email sending");
+                            _emailService.Send(email);
+                            _logger.Debug("UpdateLeaveAsync Email successfully send");
                         }
                         else
                         {
-                            leave.Status = Condition.Rejected;
+                            _logger.Debug("UpdateLeaveAsync leave already updated");
+                            replyText = string.Format(_stringConstant.AlreadyUpdatedMessage, leave.Status);
                         }
-                        await _leaveRepository.UpdateLeaveAsync(leave);
-                        _logger.Debug("UpdateLeaveAsync leave updated successfully");
-                        _logger.Debug("Leave details : " + leave.ToString());
-                        replyText = string.Format(_stringConstant.CasualLeaveUpdateMessageForUser,
-                                    leave.Id, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(),
-                                    leave.Reason, leave.Status, leaveResponse.User.Name);
-                        _logger.Debug("Reply text to user : " + replyText);
-                        IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == slackUser.UserId);
-                        _logger.Debug("UpdateLeaveAsync user incoming webhook is null : " + string.IsNullOrEmpty(incomingWebHook.IncomingWebHookUrl));
-                        // Used to send slack message to the user about leave updation
-                        _logger.Debug("UpdateLeaveAsync Client repository - UpdateMessageAsync");
-                        await _clientRepository.UpdateMessageAsync(incomingWebHook.IncomingWebHookUrl, replyText);
-                        _logger.Debug("Creating Email object");
-                        // Used to send email to the user about leave updation
-                        EmailApplication email = new EmailApplication();
-                        email.To = new List<string>();
-                        email.Body = _emailTemplateRepository.EmailServiceTemplateLeaveUpdate(leave);
-                        _logger.Debug("Email body is null : " + email.Body);
-                        email.From = updaterUser.Email;
-                        _logger.Debug("Email from : " + email.From);
-                        email.To.Add(user.Email);
-                        _logger.Debug("Email from : " + email.To);
-                        email.Subject = string.Format(_stringConstant.LeaveUpdateEmailStringFormat, _stringConstant.Leave, leave.Status);
-                        replyText = string.Format(_stringConstant.ReplyTextForUpdateLeave, leave.Status, slackUser.Name,
-                        leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Reason,
-                        leave.RejoinDate.Value.ToShortDateString());
-                        _logger.Debug("Reply text to updator : " + replyText);
-                        _logger.Debug("UpdateLeaveAsync Email sending");
-                        _emailService.Send(email);
-                        _logger.Debug("UpdateLeaveAsync Email successfully send");
                     }
                     else
-                    {
-                        _logger.Debug("UpdateLeaveAsync leave already updated");
-                        replyText = string.Format(_stringConstant.AlreadyUpdatedMessage, leave.Status);
-                    }
+                        replyText = _stringConstant.YouAreNotInExistInOAuthServer;
                 }
-                else
-                    replyText = _stringConstant.YouAreNotInExistInOAuthServer;
+                catch (SmtpException ex)
+                {
+                    replyText += string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
+                        _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
+                }
+                _logger.Debug("UpdateLeaveAsync Client Repository - SendMessageAsync");
+                // updating leave applied text of slack
             }
-            catch (SmtpException ex)
-            {
-                replyText += string.Format(_stringConstant.ReplyTextForSMTPExceptionErrorMessage,
-                    _stringConstant.ErrorWhileSendingEmail, ex.Message.ToString());
-            }
-            _logger.Debug("UpdateLeaveAsync Client Repository - SendMessageAsync");
-            // updating leave applied text of slack
+            else
+                replyText = _stringConstant.RequestToReInstallSlackApp;
             await _clientRepository.SendMessageAsync(leaveResponse.ResponseUrl, replyText);
         }
 
@@ -148,60 +156,65 @@ namespace Promact.Core.Repository.SlackRepository
         /// <param name="leave">slash command object</param>
         public async Task LeaveRequestAsync(SlashCommand leave)
         {
-            SlackAction actionType;
-            // method to convert slash command to list of string
-            List<string> slackText = _attachmentRepository.SlackText(leave.Text);
-            // to get user details by slack user name
-            ApplicationUser user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
-            if (user != null)
+            if ((await _appCredentialRepository.FetchAppCredentialByModuleAsync(_stringConstant.LeaveModule)).BotToken != null)
             {
-                _logger.Debug("LeaveRequestAsync leave request user name : " + user.UserName);
-                IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
-                if (incomingWebHook != null)
+                SlackAction actionType;
+                // method to convert slash command to list of string
+                List<string> slackText = _attachmentRepository.SlackText(leave.Text);
+                // to get user details by slack user name
+                ApplicationUser user = await _userManagerRepository.FirstOrDefaultAsync(x => x.SlackUserId == leave.UserId);
+                if (user != null)
                 {
-                    _logger.Debug("LeaveRequestAsync leave request user incoming webhook is null : " + incomingWebHook.IncomingWebHookUrl);
-                    leave.Text.ToLower();
-                    // getting access token of user of promact oauth server
-                    string accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-                    // checking whether string ca convert to Slack Action or not, if true then further process will be conduct
-                    bool actionConvertorResult = Enum.TryParse(slackText[0], out actionType);
-                    if (actionConvertorResult)
+                    _logger.Debug("LeaveRequestAsync leave request user name : " + user.UserName);
+                    IncomingWebHook incomingWebHook = await _incomingWebHookRepository.FirstOrDefaultAsync(x => x.UserId == user.SlackUserId);
+                    if (incomingWebHook != null)
                     {
-                        switch (actionType)
+                        _logger.Debug("LeaveRequestAsync leave request user incoming webhook is null : " + incomingWebHook.IncomingWebHookUrl);
+                        leave.Text.ToLower();
+                        // getting access token of user of promact oauth server
+                        string accessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
+                        // checking whether string ca convert to Slack Action or not, if true then further process will be conduct
+                        bool actionConvertorResult = Enum.TryParse(slackText[0], out actionType);
+                        if (actionConvertorResult)
                         {
-                            case SlackAction.apply:
-                                replyText = await LeaveApplyAsync(slackText, leave, accessToken, user.Id);
-                                break;
-                            case SlackAction.list:
-                                replyText = await SlackLeaveListAsync(slackText, leave, accessToken);
-                                break;
-                            case SlackAction.cancel:
-                                replyText = await SlackLeaveCancelAsync(slackText, leave, accessToken);
-                                break;
-                            case SlackAction.status:
-                                replyText = await SlackLeaveStatusAsync(slackText, leave, accessToken);
-                                break;
-                            case SlackAction.balance:
-                                replyText = await SlackLeaveBalanceAsync(leave, accessToken);
-                                break;
-                            case SlackAction.update:
-                                replyText = await UpdateSickLeaveAsync(slackText, user, accessToken);
-                                break;
-                            default:
-                                replyText = SlackLeaveHelp(leave);
-                                break;
+                            switch (actionType)
+                            {
+                                case SlackAction.apply:
+                                    replyText = await LeaveApplyAsync(slackText, leave, accessToken, user.Id);
+                                    break;
+                                case SlackAction.list:
+                                    replyText = await SlackLeaveListAsync(slackText, leave, accessToken);
+                                    break;
+                                case SlackAction.cancel:
+                                    replyText = await SlackLeaveCancelAsync(slackText, leave, accessToken);
+                                    break;
+                                case SlackAction.status:
+                                    replyText = await SlackLeaveStatusAsync(slackText, leave, accessToken);
+                                    break;
+                                case SlackAction.balance:
+                                    replyText = await SlackLeaveBalanceAsync(leave, accessToken);
+                                    break;
+                                case SlackAction.update:
+                                    replyText = await UpdateSickLeaveAsync(slackText, user, accessToken);
+                                    break;
+                                default:
+                                    replyText = SlackLeaveHelp(leave);
+                                    break;
+                            }
                         }
+                        else
+                            // if error in converting then user will get message to enter proper action command
+                            replyText = _stringConstant.RequestToEnterProperAction;
                     }
                     else
-                        // if error in converting then user will get message to enter proper action command
-                        replyText = _stringConstant.RequestToEnterProperAction;
+                        replyText = _stringConstant.RequestToAddSlackApp;
                 }
                 else
-                    replyText = _stringConstant.RequestToAddSlackApp;
+                    // if user doesn't exist then will get message of user doesn't exist and ask to externally logic from Oauth server
+                    replyText = _stringConstant.SorryYouCannotApplyLeave;
             }
             else
-                // if user doesn't exist then will get message of user doesn't exist and ask to externally logic from Oauth server
-                replyText = _stringConstant.SorryYouCannotApplyLeave;
+                replyText = _stringConstant.RequestToReInstallSlackApp;
             _logger.Debug("LeaveRequestAsync Client Repository - SendMessageAsync");
             await _clientRepository.SendMessageAsync(leave.ResponseUrl, replyText);
         }
@@ -824,7 +837,3 @@ namespace Promact.Core.Repository.SlackRepository
         #endregion
     }
 }
-
-
-
-

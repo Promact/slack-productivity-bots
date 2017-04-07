@@ -13,7 +13,11 @@ using System.Collections.Generic;
 using Microsoft.Owin.Security.Cookies;
 using System.Threading.Tasks;
 using System.Linq;
-using Autofac.Extras.NLog;
+using System.IO;
+using System.Web.Hosting;
+using Newtonsoft.Json;
+using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Core.Repository.AppCredentialRepository;
 
 namespace Promact.Erp.Web
 {
@@ -22,6 +26,7 @@ namespace Promact.Erp.Web
         private IEnvironmentVariableRepository _environmentVariable;
         private IStringConstantRepository _stringConstantRepository;
         private IOAuthLoginRepository _oAuthLoginRepository;
+        private IAppCredentialRepository _appCredentialRepository;
         private string _redirectUrl = null;
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
 
@@ -31,16 +36,35 @@ namespace Promact.Erp.Web
             _oAuthLoginRepository = context.Resolve<IOAuthLoginRepository>();
             _stringConstantRepository = context.Resolve<IStringConstantRepository>();
             _redirectUrl = string.Format("{0}{1}", AppSettingUtil.PromactErpUrl, _stringConstantRepository.RedirectUrl);
+            _appCredentialRepository = context.Resolve<IAppCredentialRepository>();
+
+            #region Reads app credentials from json file
+
+            using (StreamReader str = new StreamReader(HostingEnvironment.MapPath(_stringConstantRepository.SeedDataPath)))
+            {
+                string text = str.ReadToEnd();
+                var seedData = JsonConvert.DeserializeObject<SeedData>(text);
+                foreach (var credential in seedData.AppCredential)
+                {
+                    var status = _appCredentialRepository.AddUpdateAppCredentialAsync(credential).Result;
+                }
+            }
+
+            #endregion
+
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(PromactErpContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
+
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = _stringConstantRepository.AuthenticationType
             });
+
+
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
 
@@ -71,7 +95,7 @@ namespace Promact.Erp.Web
                         var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
                         var user = await userInfoClient.GetAsync(accessToken);
                         var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
-                        var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);      
+                        var response = await tokenClient.RequestAuthorizationCodeAsync(tokenReceived.ProtocolMessage.Code, _redirectUrl);
                         var refreshToken = response.RefreshToken;
                         string userId = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Sub).Value;
                         string email = user.Claims.ToList().Single(x => x.Type == _stringConstantRepository.Email).Value;

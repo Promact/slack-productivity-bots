@@ -78,6 +78,10 @@
       <HintPath>..\packages\NLog.5.0.0-beta05-test\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SlackAPI, Version=1.0.5.93, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SlackAPI.1.0.5.93\lib\net45\SlackAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -149,14 +153,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCredentialRepository\AppCredentialRepository.cs" />
+    <Compile Include="AppCredentialRepository\IAppCredentialRepository.cs" />
     <Compile Include="BaseRepository\RepositoryBase.cs" />
     <Compile Include="AttachmentRepository\AttachmentRepository.cs" />
     <Compile Include="AttachmentRepository\IAttachmentRepository.cs" />
     <Compile Include="AutoMapperConfig\AutoMapperConfiguration.cs" />
     <Compile Include="BotQuestionRepository\BotQuestionRepository.cs" />
     <Compile Include="BotQuestionRepository\IBotQuestionRepository.cs" />
+    <Compile Include="BotRepository\ISocketClientWrapper.cs" />
+    <Compile Include="BotRepository\SocketClientWrapper.cs" />
     <Compile Include="Client\Client.cs" />
     <Compile Include="Client\IClient.cs" />
+    <Compile Include="ConfigurationRepository\ConfigurationRepository.cs" />
+    <Compile Include="ConfigurationRepository\IConfigurationRepository.cs" />
     <Compile Include="EmailServiceTemplateRepository\EmailServiceTemplateRepository.cs" />
     <Compile Include="EmailServiceTemplateRepository\IEmailServiceTemplateRepository.cs" />
     <Compile Include="ExternalLoginRepository\OAuthLoginRepository.cs" />

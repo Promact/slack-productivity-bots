@@ -4,10 +4,8 @@ using Promact.Erp.Web.App_Start;
 using Autofac;
 using Autofac.Extras.NLog;
 using Promact.Erp.Core.ActionFilters;
-using Promact.Erp.Core.Controllers;
 using System.Web.Http;
 using System.Web.Mvc;
-
 
 [assembly: OwinStartupAttribute(typeof(Promact.Erp.Web.Startup))]
 namespace Promact.Erp.Web
@@ -20,10 +18,8 @@ namespace Promact.Erp.Web
             DatabaseConfig.Initialize(container);
             GlobalFilters.Filters.Add(new ExceptionLoggerFilter(container.Resolve<ILogger>()));
             GlobalConfiguration.Configuration.Filters.Add(new ApiExceptionLoggerFilter(container.Resolve<ILogger>()));
-            Bot bot = container.Resolve<Bot>();
-            bot.Scrum();
-            bot.TaskMailBot();
             ConfigureAuth(app, container);
+            BotStartUp.StartUpAsync(container).Wait();
         }
     }
 }

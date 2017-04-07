@@ -36,6 +36,9 @@ using Promact.Core.Repository.MailSettingRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Core.Repository.ConfigurationRepository;
+using Promact.Core.Repository.AppCredentialRepository;
+using Promact.Core.Repository.BotRepository;
 using Promact.Core.Repository.RedmineRepository;
 
 namespace Promact.Core.Test
@@ -68,6 +71,7 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallsRepository>().As<IOauthCallsRepository>();
             builder.RegisterType<SlackRepository>().As<ISlackRepository>();
             builder.RegisterType<AttachmentRepository>().As<IAttachmentRepository>();
+            builder.RegisterType<AppCredentialRepository>().As<IAppCredentialRepository>();
             builder.RegisterType<SlackUserRepository>().As<ISlackUserRepository>();
             builder.RegisterType<StringConstantRepository>().As<IStringConstantRepository>();
             builder.RegisterType<SlackChannelRepository>().As<ISlackChannelRepository>();
@@ -77,6 +81,10 @@ namespace Promact.Core.Test
             builder.RegisterType<OauthCallHttpContextRespository>().As<IOauthCallHttpContextRespository>();
             builder.RegisterType<TaskMailReportRepository>().As<ITaskMailReportRepository>();
             builder.RegisterType<MailSettingRepository>().As<IMailSettingRepository>();
+            var socketWrapperMock = new Mock<ISocketClientWrapper>();
+            var socketWrapperMockObject = socketWrapperMock.Object;
+            builder.RegisterInstance(socketWrapperMock).As<Mock<ISocketClientWrapper>>();
+            builder.RegisterInstance(socketWrapperMockObject).As<ISocketClientWrapper>();
             var emailServiceMock = new Mock<IEmailService>();
             var emailServiceMockObject = emailServiceMock.Object;
             builder.RegisterInstance(emailServiceMock).As<Mock<IEmailService>>();
@@ -99,7 +107,9 @@ namespace Promact.Core.Test
             var httpContextObject = httpContext.Object;
             builder.RegisterInstance(httpContext).As<Mock<HttpContextBase>>();
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
+            builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
+            builder.RegisterType<ConfigurationRepository>().As<IConfigurationRepository>();
 
             var container = builder.Build();
             return container;

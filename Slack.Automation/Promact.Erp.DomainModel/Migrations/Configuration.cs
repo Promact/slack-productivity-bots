@@ -19,6 +19,19 @@ namespace Promact.Erp.DomainModel.Migrations
 
         protected override void Seed(Promact.Erp.DomainModel.Context.PromactErpContext context)
         {
+            if(context.Configuration.Count() == 0)
+            {
+                Models.Configuration taskConfiguration = new Models.Configuration() { Module = "task", CreatedOn = DateTime.UtcNow, Status = false };
+                Models.Configuration leaveConfiguration = new Models.Configuration() { Module = "leave", CreatedOn = DateTime.UtcNow, Status = false };
+                Models.Configuration scrumConfiguration = new Models.Configuration() { Module = "scrum", CreatedOn = DateTime.UtcNow, Status = false };
+                Models.Configuration redmineConfiguration = new Models.Configuration() { Module = "redmine", CreatedOn = DateTime.UtcNow, Status = false };
+                context.Configuration.AddOrUpdate(x => x.Id,
+                    taskConfiguration,
+                    leaveConfiguration,
+                    scrumConfiguration,
+                    redmineConfiguration);
+                context.SaveChanges();
+            }
             if (context.Question.Count() == 0)
             {
                 Question firstQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.YourTask, QuestionStatement = "On which task did you work today?", Type = BotQuestionType.TaskMail };

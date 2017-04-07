@@ -13,9 +13,7 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
         }
 
         #endregion
-
-
-
+        
 
         public string Host
         {
@@ -25,27 +23,11 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
             }
         }
 
-        public string ScrumBotToken
-        {
-            get
-            {
-                return "YourScrumBotToken";
-            }
-        }
-
         public string PromactOAuthClientId
         {
             get
             {
                 return "YourPromactOAuthClientId";
-            }
-        }
-
-        public string SlackOAuthClientId
-        {
-            get
-            {
-                return "YourSlackOAuthClientId";
             }
         }
 
@@ -86,15 +68,6 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
         }
 
 
-        public string SlackOAuthClientSecret
-        {
-            get
-            {
-                return "YourSlackOAuthClientSecret";
-            }
-        }
-
-
         public string IncomingWebHookUrl
         {
             get
@@ -112,13 +85,5 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
             }
         }
 
-
-        public string TaskmailAccessToken
-        {
-            get
-            {
-                return "YourTaskmailAccessToken";
-            }
-        }
     }
 }
