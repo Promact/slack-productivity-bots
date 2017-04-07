@@ -5,7 +5,6 @@ using Promact.Core.Repository.RedmineRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.Redmine;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
@@ -32,8 +31,6 @@ namespace Promact.Core.Test
         private RedmineResponseSingleProject singleIssue = new RedmineResponseSingleProject();
         private PostRedmineResponse redmineIssue = new PostRedmineResponse();
         private RedmineTimeEntryApplicationClass timeEntry = new RedmineTimeEntryApplicationClass();
-        private readonly IRepository<AppCredential> _appCredentialDataRepository;
-        private AppCredential appCredential = new AppCredential();
         #endregion
 
         #region Constructor
@@ -44,9 +41,7 @@ namespace Promact.Core.Test
             _redmineRepository = _componentContext.Resolve<IRedmineRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
-            _appCredentialDataRepository = _componentContext.Resolve<IRepository<AppCredential>>();
             Initialize();
-            AddRedmineAppAsync().Wait();
         }
         #endregion
 
@@ -564,25 +559,6 @@ namespace Promact.Core.Test
             await _redmineRepository.SlackRequestAsync(slashCommand);
             _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
         }
-
-        /// <summary>
-        /// Test case for RequestToReInstallSlackApp
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task RequestToReInstallSlackAppAsync()
-        {
-            await CreateUserAsync();
-            GetAsyncMethodMocking(_stringConstant.Ok, _stringConstant.RedmineBaseUrl, _stringConstant.RedmineIssueUrl,
-                _stringConstant.AccessTokenForTest);
-            slashCommand.Text = _stringConstant.RedmineAPIKeyCommand;
-            var replyText = _stringConstant.RequestToReInstallSlackApp;
-            var slashResponseJsonText = MockingSendMessageAsync(replyText);
-            appCredential.BotToken = null;
-            _appCredentialDataRepository.Update(appCredential);
-            await _appCredentialDataRepository.SaveChangesAsync();
-            await _redmineRepository.SlackRequestAsync(slashCommand);
-            _mockHttpClient.Verify(x => x.PostAsync(It.IsAny<string>(), slashResponseJsonText, _stringConstant.JsonContentString, null, null), Times.Once);
-        }
         #endregion
 
         #region Initialization
@@ -654,12 +630,6 @@ namespace Promact.Core.Test
                 Hours = 2.0,
                 IssueId = 1
             };
-            appCredential.BotToken = _stringConstant.AccessTokenForTest;
-            appCredential.BotUserId = _stringConstant.IdForTest;
-            appCredential.ClientId = _stringConstant.TestSlackClientId;
-            appCredential.ClientSecret = _stringConstant.TestSlackClientSecret;
-            appCredential.CreatedOn = DateTime.UtcNow;
-            appCredential.Module = _stringConstant.RedmineModule;
         }
         #endregion
 
@@ -735,7 +705,7 @@ namespace Promact.Core.Test
         private string MessageForIssue(GetRedmineIssue issue)
         {
             return string.Format(_stringConstant.RedmineIssueMessageFormat, issue.Project.Name, issue.IssueId,
-                issue.Subject, issue.Status.Name, issue.Priority.Name, issue.Tracker.Name, Environment.NewLine);
+                issue.Subject, issue.Status.Name, issue.Priority.Name, issue.Tracker.Name);
         }
 
         /// <summary>
@@ -782,15 +752,6 @@ namespace Promact.Core.Test
         private string RedmineTimeEntryApplicationClassInJson()
         {
             return JsonConvert.SerializeObject(timeEntry);
-        }
-
-        /// <summary>
-        /// Method to add redmine app
-        /// </summary>
-        private async Task AddRedmineAppAsync()
-        {
-            _appCredentialDataRepository.Insert(appCredential);
-            await _appCredentialDataRepository.SaveChangesAsync();
         }
         #endregion
     }

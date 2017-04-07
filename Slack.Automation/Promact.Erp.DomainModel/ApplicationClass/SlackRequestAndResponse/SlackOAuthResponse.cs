@@ -1,4 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
@@ -40,12 +45,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         [JsonProperty("team_id")]
         public string TeamId { get; set; }
 
-        /// <summary>
-        /// App's bot details
-        /// </summary>
-        [JsonProperty("bot")]
-        public BotDetail Bot { get; set; }
-        
         /// <summary>
         /// Incoming Webhook information for app
         /// </summary>

@@ -11,23 +11,20 @@
                     <div class="menu_section">
                         <ul class="nav side-menu">
                             <li>
-                                <a routerLink="/configuration" *ngIf="userIsAdmin"><i class="glyphicon glyphicon-wrench"></i> Configuration</a>
-                            </li>
-                            <li *ngIf="configurationStatus.ScrumOn">
                                 <a><i class="fa fa-puzzle-piece"></i> Scrum Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="/scrum">Scrum Reports</a></li>
                                     <li *ngIf="userIsAdmin"><a routerLink="/scrum/mailsetting">Mail Setting</a></li>
                                 </ul>
                             </li>
-                            <li *ngIf="configurationStatus.TaskOn">
+                            <li>
                                 <a><i class="fa fa-tasks"></i> Task List Bot <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="task">Task Reports</a></li>
                                     <li *ngIf="userIsAdmin"><a routerLink="/task/mailsetting">Mail Setting</a></li>
                                 </ul>
                             </li>
-                            <li *ngIf="configurationStatus.LeaveOn">
+                            <li>
                                 <a><i class="fa fa-calendar"></i> Leave Management <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a routerLink="leave">Leave Reports</a></li>
@@ -79,12 +76,3 @@
         </div>
     </div>
 </div>
-
-<md2-dialog #confirm class="add-slack-modal">
-    <md2-dialog-title>Add To Slack is mandatory</md2-dialog-title>
-    <p>While adding app to slack, Please select channel where you want</p>
-    <p>leave management app to post message related to leave.</p>
-    <md2-dialog-footer>
-        <p><img alt="Add to Slack" height="40" width="139" (click)="AddToSlack(confirm)" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></p>
-    </md2-dialog-footer>
-</md2-dialog>

@@ -190,33 +190,11 @@ namespace Promact.Erp.Util.StringConstants
                 return "User could not be added";
             }
         }
-
-        public string ScrumBotScopeAndClientId
+        public string OAuthAuthorizationScopeAndClientId
         {
             get
             {
-                return "?scope=bot,users:read,groups:read,users:read.email,channels:read,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
-        public string TaskBotScopeAndClientId
-        {
-            get
-            {
-                return "?scope=bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
-        public string LeaveSlashCommandScopeAndClientId
-        {
-            get
-            {
-                return "?scope=incoming-webhook,commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
-            }
-        }
-        public string RedmineSlashCommandScopeAndClientId
-        {
-            get
-            {
-                return "?scope=commands,bot,users:read,users:read.email,chat:write:bot,chat:write:user&client_id=";
+                return "?scope=incoming-webhook,commands,bot,users:read,groups:read,channels:read,chat:write:bot,chat:write:user&client_id=";
             }
         }
         public string SlackAuthorize
@@ -245,20 +223,6 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "managements";
-            }
-        }
-        public string TestSlackClientId
-        {
-            get
-            {
-                return "YourSlackOAuthClientId";
-            }
-        }
-        public string TestSlackClientSecret
-        {
-            get
-            {
-                return "YourSlackOAuthClientSecret";
             }
         }
         public string OAuthAcessUrl
@@ -758,7 +722,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sorry. No active member who has logged in with Promact could be found for this project.";
+                return "Sorry. No active member found for this project.";
             }
         }
         public string Unrecognized
@@ -1438,13 +1402,6 @@ namespace Promact.Erp.Util.StringConstants
                     "{0}Example :-{0}/leaves list username - for other user{0}/leaves list - for own", Environment.NewLine);
             }
         }
-        public string SeedDataPath
-        {
-            get
-            {
-                return "~/CredentialSeedData/credentialSeedData.json";
-            }
-        }
         public string SlashCommandLeaveCancelErrorMessage
         {
             get
@@ -1760,10 +1717,9 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@{0}> is not included as a team member/employee in the project (i.e in OAuth)\n>Remember, team leaders are not expected to answer for other users :wink:";
+                return "<@{0}> is not included as a team member/employee in the project i.e OAuth project\n>Remember, team leaders are not expected to answer for other users :wink:";
             }
         }
-
         public string Admin
         {
             get
@@ -3224,7 +3180,7 @@ namespace Promact.Erp.Util.StringConstants
         public string Bearer { get { return "Bearer"; } }
         public string TaskModule { get { return "task"; } }
         public string LeaveModule { get { return "leave"; } }
-        public string RedmineModule { get { return "redmine"; } }
+        public string ScrumModule { get { return "scrum"; } }
         public string Management { get { return "Management"; } }
         public string TestEmail { get { return "ankit@promactinfo.com"; } }
         public string SecondTestEmail { get { return "test@promactinfo.com"; } }
@@ -3448,7 +3404,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.{6}";
+                return "Redmine Project - *{0}*, Issue no *{1}* - *{2}* having status *{3}* with *{4}* priority of *{5}* tracker.";
             }
         }
 
@@ -3676,29 +3632,5 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
         #endregion
-
-        public string RequestToReInstallSlackApp
-        {
-            get
-            {
-                return "Please ask your admin to re-install your slack app";
-            }
-        }
-
-        public string PleaseAskYouAdminToAddSlackAppAndDoSetUp
-        {
-            get
-            {
-                return "Please ask your admin to add slack app and do the basic set for application";
-            }
-        }
-
-        public string SetUpError
-        {
-            get
-            {
-                return "SetUpError";
-            }
-        }
     }
 }
