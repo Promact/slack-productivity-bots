@@ -18,6 +18,6 @@ export class AppComponentService {
     This service to check is leave app is added for user or not.
     */
     isUserAddedLeaveAppAsync() {
-        return this.http.get('api/configuration/isLeaveAppAdded').map(res => res.json());
+        return this.http.get('api/configuration/available/leaveapp').map(res => res.json());
     }
 }

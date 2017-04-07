@@ -94,7 +94,7 @@ namespace Promact.Erp.Core.Controllers
         }
 
         /**
-        * @api {put} api/configuration/isLeaveAppAdded
+        * @api {put} api/configuration/available/leaveapp
         * @apiVersion 1.0.0
         * @apiName IsUserAddedLeaveAppAsync
         * @apiGroup Configuration
@@ -106,7 +106,7 @@ namespace Promact.Erp.Core.Controllers
         *     }
         */
         [HttpGet]
-        [Route("isLeaveAppAdded")]
+        [Route("available/leaveapp")]
         public async Task<IHttpActionResult> IsUserAddedLeaveAppAsync()
         {
             return Ok(await _configurationRepository.IsUserAddedLeaveAppAsync(GetUserId(User.Identity)));
