@@ -52,7 +52,7 @@
         <div class="text-center" id="content">
             @Html.ActionLink("Add To Slack", "SlackOAuthAuthorization", "Home")
             @*<img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />*@
-            <p>Please add user whose email is <span>"@ViewBag.userEmail"</span>  to slack before proceeding to view reports or use app functionalities in slack.</p>
+            <p>User whose email is <span>"@ViewBag.userEmail"</span> must add app to slack before proceeding to view reports or use app functionalities in slack. Also select the channel in which you want the app to post messages to.</p>
         </div>
     </body>
 }
