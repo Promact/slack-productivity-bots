@@ -15,6 +15,7 @@ namespace Promact.Erp.Util.StringLiteral
         private readonly string directoryPath;
         private readonly ISingletonStringLiteral _stringLiteralSingleton;
         private readonly string StringLiteralJson = "StringLiteral.json";
+        private readonly string StringLiteralExternalFolder = "StringLiteral//";
         #endregion
 
         #region Constructor
@@ -22,7 +23,7 @@ namespace Promact.Erp.Util.StringLiteral
         {
             _stringLiteralSingleton = stringLiteralSingleton;
             directoryPath = AppDomain.CurrentDomain.BaseDirectory;
-            stringConstantJsonFilePath = directoryPath + StringLiteralJson;
+            stringConstantJsonFilePath = directoryPath + StringLiteralExternalFolder + StringLiteralJson;
             _stringConstant = stringConstant;
         }
         #endregion
@@ -108,6 +109,10 @@ namespace Promact.Erp.Util.StringLiteral
                 {
                     stringConstant.Add(item.Key, item.Value);
                 }
+                foreach (var item in jsonStringConstant.Redmine)
+                {
+                    stringConstant.Add(item.Key, item.Value);
+                }
             }
             return stringConstant;
         }
@@ -127,29 +132,23 @@ namespace Promact.Erp.Util.StringLiteral
             {
                 if (!stringLiteral.ContainsKey(constant.Name))
                 {
-                    var variableName = constant.Name;
-                    var userFlag = variableName.Contains("User");
-                    var scrumFlag = variableName.Contains("Scrum");
-                    var taskFlag = variableName.Contains("Task");
-                    var leaveFlag = variableName.Contains("Leave");
-                    var redmineFlag = variableName.Contains("Redmine");
-                    if (userFlag)
+                    if (constant.Name.Contains("User"))
                     {
                         jsonStringConstant.User.Add(constant.Name, constant.GetValue(_stringConstant).ToString());
                     }
-                    else if (leaveFlag)
+                    else if (constant.Name.Contains("Leave"))
                     {
                         jsonStringConstant.Leave.Add(constant.Name, constant.GetValue(_stringConstant).ToString());
                     }
-                    else if (taskFlag)
+                    else if (constant.Name.Contains("Task"))
                     {
                         jsonStringConstant.TaskMail.Add(constant.Name, constant.GetValue(_stringConstant).ToString());
                     }
-                    else if (scrumFlag)
+                    else if (constant.Name.Contains("Scrum"))
                     {
                         jsonStringConstant.Scrum.Add(constant.Name, constant.GetValue(_stringConstant).ToString());
                     }
-                    else if (redmineFlag)
+                    else if (constant.Name.Contains("Redmine"))
                     {
                         jsonStringConstant.Redmine.Add(constant.Name, constant.GetValue(_stringConstant).ToString());
                     }

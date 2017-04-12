@@ -997,7 +997,7 @@
     <Content Include="typings.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="tslint.json" />
-    <Content Include="StringLiteral.json" />
+    <Content Include="StringLiteral\StringLiteral.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
