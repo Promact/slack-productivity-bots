@@ -11,12 +11,12 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.BaseRepository;
 using NLog;
 using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -35,7 +35,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserDetailRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IScrumSetUpRepository _scrumSetUpRepository;
         private readonly IMapper _mapper;
@@ -52,7 +52,7 @@ namespace Promact.Core.Repository.ScrumRepository
             IRepository<Scrum> scrumDataRepository, IRepository<Question> questionDataRepository,
             IRepository<SlackUserDetails> slackUserDetailsDataRepository,
             ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
-            ISlackUserRepository slackUserDetailRepository, IStringConstantRepository stringConstant,
+            ISlackUserRepository slackUserDetailRepository, ISingletonStringLiteral stringConstant,
             IBotQuestionRepository botQuestionRepository, IMapper mapper, IScrumSetUpRepository scrumSetUpRepository,
             IRepository<ApplicationUser> applicationUser, IAttachmentRepository attachmentRepository)
             : base(applicationUser, attachmentRepository)
@@ -66,7 +66,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _slackChannelRepository = slackChannelRepository;
             _oauthCallsRepository = oauthCallsRepository;
             _slackUserDetailsDataRepository = slackUserDetailsDataRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _botQuestionRepository = botQuestionRepository;
             _applicationUser = applicationUser;
             _scrumSetUpRepository = scrumSetUpRepository;

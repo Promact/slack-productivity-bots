@@ -12,13 +12,13 @@ using System.Linq;
 using System.Globalization;
 using Promact.Erp.DomainModel.DataRepository;
 using System.Net.Mail;
-using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.SlackUserRepository;
 using System.Threading;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.ExceptionHandler;
 using NLog;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.SlackRepository
 {
@@ -29,7 +29,7 @@ namespace Promact.Core.Repository.SlackRepository
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ILeaveRequestRepository _leaveRepository;
         private readonly IClient _clientRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IRepository<ApplicationUser> _userManagerRepository;
         string replyText = null;
@@ -41,7 +41,7 @@ namespace Promact.Core.Repository.SlackRepository
 
         #region Constructor
         public SlackRepository(ILeaveRequestRepository leaveRepository, IOauthCallsRepository oauthCallsRepository,
-            ISlackUserRepository slackUserRepository, IClient clientRepository, IStringConstantRepository stringConstant,
+            ISlackUserRepository slackUserRepository, IClient clientRepository, ISingletonStringLiteral stringConstant,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userManagerRepository,
             IRepository<IncomingWebHook> incomingWebHookRepository, IEmailServiceTemplateRepository emailTemplateRepository,
             IEmailService emailService)
@@ -49,7 +49,7 @@ namespace Promact.Core.Repository.SlackRepository
             _oauthCallsRepository = oauthCallsRepository;
             _leaveRepository = leaveRepository;
             _clientRepository = clientRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _attachmentRepository = attachmentRepository;
             _userManagerRepository = userManagerRepository;
             _slackUserRepository = slackUserRepository;

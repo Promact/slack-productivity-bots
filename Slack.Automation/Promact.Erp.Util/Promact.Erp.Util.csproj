@@ -148,6 +148,11 @@
     <Compile Include="ExceptionHandler\SlackAuthorizeException.cs" />
     <Compile Include="StringConstants\IStringConstantRepository.cs" />
     <Compile Include="StringConstants\StringConstantRepository.cs" />
+    <Compile Include="StringLiteral\AppStringLiteral.cs" />
+    <Compile Include="StringLiteral\ISingletonStringLiteral.cs" />
+    <Compile Include="StringLiteral\IStringLiteral.cs" />
+    <Compile Include="StringLiteral\SingletonStringLiteral.cs" />
+    <Compile Include="StringLiteral\StringLiteral.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

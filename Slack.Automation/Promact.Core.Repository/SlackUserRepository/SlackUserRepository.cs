@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
-using Promact.Erp.Util.StringConstants;
-
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.SlackUserRepository
 {
@@ -15,7 +14,7 @@ namespace Promact.Core.Repository.SlackUserRepository
 
 
         private readonly IRepository<SlackUserDetails> _slackUserDetailsRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IMapper _mapper;
 
 
@@ -26,10 +25,10 @@ namespace Promact.Core.Repository.SlackUserRepository
 
 
         public SlackUserRepository(IRepository<SlackUserDetails> slackUserDetailsRepository,
-        IStringConstantRepository stringConstant, IMapper mapper)
+        ISingletonStringLiteral stringConstant, IMapper mapper)
         {
             _slackUserDetailsRepository = slackUserDetailsRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _mapper = mapper;
         }
         #endregion

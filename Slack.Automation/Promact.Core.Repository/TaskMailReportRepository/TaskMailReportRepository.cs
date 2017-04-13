@@ -7,7 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -27,20 +27,20 @@ namespace Promact.Core.Repository.TaskMailReportRepository
         private readonly IRepository<ApplicationUser> _userRepository;
         private readonly IEmailService _emailService;
         private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEmailServiceTemplateRepository _emailServiceTemplate;
         private readonly ILogger _logger;
         #endregion
 
         #region Constructor
-        public TaskMailReportRepository(IRepository<TaskMail> taskMailRepository, IStringConstantRepository stringConstant,
+        public TaskMailReportRepository(IRepository<TaskMail> taskMailRepository, ISingletonStringLiteral stringConstant,
             IOauthCallHttpContextRespository oauthCallsRepository, IRepository<TaskMailDetails> taskMailDetailRepository,
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate)
         {
             _taskMailRepository = taskMailRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _oauthCallsRepository = oauthCallsRepository;
             _taskMailDetailRepository = taskMailDetailRepository;
             _attachmentRepository = attachmentRepository;

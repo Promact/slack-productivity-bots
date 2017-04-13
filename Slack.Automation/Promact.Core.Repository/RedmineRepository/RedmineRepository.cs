@@ -4,7 +4,6 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.Redmine;
 using Promact.Core.Repository.AttachmentRepository;
@@ -12,6 +11,7 @@ using Promact.Core.Repository.Client;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Collections.Generic;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.RedmineRepository
 {
@@ -20,7 +20,7 @@ namespace Promact.Core.Repository.RedmineRepository
         #region Private Variables
         private readonly IRepository<ApplicationUser> _userDataRepository;
         private readonly IHttpClientService _httpClientService;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IClient _clientRepository;
         private string replyText = null;
@@ -28,11 +28,11 @@ namespace Promact.Core.Repository.RedmineRepository
 
         #region Constructor
         public RedmineRepository(IRepository<ApplicationUser> userDataRepository, IHttpClientService httpClientService,
-            IStringConstantRepository stringConstant, IAttachmentRepository attachmentRepository, IClient clientRepository)
+            ISingletonStringLiteral stringConstant, IAttachmentRepository attachmentRepository, IClient clientRepository)
         {
             _userDataRepository = userDataRepository;
             _httpClientService = httpClientService;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _attachmentRepository = attachmentRepository;
             _clientRepository = clientRepository;
         }

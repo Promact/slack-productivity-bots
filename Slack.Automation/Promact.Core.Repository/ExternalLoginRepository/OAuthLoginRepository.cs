@@ -10,7 +10,7 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Threading.Tasks;
 
@@ -27,7 +27,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly ILogger _logger;
@@ -37,14 +37,14 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         #region Constructor
         public OAuthLoginRepository(ApplicationUserManager userManager,
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
-            IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
+            IRepository<SlackChannelDetails> slackChannelDetailsRepository, ISingletonStringLiteral stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
             IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
             _slackUserDetailsRepository = slackUserDetailsRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _slackUserRepository = slackUserRepository;
             _slackChannelDetails = slackChannelDetailsRepository;
             _envVariableRepository = envVariableRepository;

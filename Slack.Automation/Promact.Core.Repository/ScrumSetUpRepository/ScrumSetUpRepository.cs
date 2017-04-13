@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using NLog;
+﻿using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BaseRepository;
 using Promact.Core.Repository.OauthCallsRepository;
@@ -8,7 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         private readonly IRepository<ApplicationUser> _applicationUser;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly ILogger _logger;
 
 
@@ -38,14 +37,14 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
         public ScrumSetUpRepository(
                       ISlackChannelRepository slackChannelRepository,
             IOauthCallsRepository oauthCallsRepository,
-            IStringConstantRepository stringConstant,
+            ISingletonStringLiteral stringConstant,
             IRepository<ApplicationUser> applicationUser,
             IAttachmentRepository attachmentRepository)
             : base(applicationUser, attachmentRepository)
         {
             _slackChannelRepository = slackChannelRepository;
             _oauthCallsRepository = oauthCallsRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _applicationUser = applicationUser;
             _logger = LogManager.GetLogger("ScrumBotModule");
         }
