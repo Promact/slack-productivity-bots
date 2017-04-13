@@ -4,7 +4,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -19,18 +19,18 @@ namespace Promact.Core.Repository.GroupRepository
         private readonly IRepository<Group> _groupRepository;
         private readonly IRepository<GroupEmailMapping> _groupEmailMappingRepository;
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
-        private readonly IStringConstantRepository _stringConstantRepository;
+        private readonly AppStringLiteral _stringConstantRepository;
         private readonly IMapper _mapper;
         #endregion
 
         #region Constructor
-        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository, IOauthCallHttpContextRespository oauthCallsRepository, IStringConstantRepository stringConstantRepository)
+        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository, IOauthCallHttpContextRespository oauthCallsRepository, ISingletonStringLiteral stringConstantRepository)
         {
             _groupRepository = groupRepository;
             _mapper = mapper;
             _oauthCallsRepository = oauthCallsRepository;
             _groupEmailMappingRepository = groupEmailMappingRepository;
-            _stringConstantRepository = stringConstantRepository;
+            _stringConstantRepository = stringConstantRepository.StringConstant;
         }
         #endregion
 

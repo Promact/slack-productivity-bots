@@ -6,13 +6,13 @@ using Promact.Erp.Util.EnvironmentVariableRepository;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Promact.Erp.Util.StringConstants;
 using System.Net.Http;
 using Promact.Erp.Util.HashingMd5;
 using System;
 using Promact.Erp.DomainModel.ApplicationClass;
 using NLog;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -32,7 +32,7 @@ namespace Promact.Erp.Core.Controllers
 
         #region Constructor
 
-        public HomeController(ApplicationUserManager userManager, IStringConstantRepository stringConstant,
+        public HomeController(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant,
             ApplicationSignInManager signInManager, IOAuthLoginRepository oAuthLoginRepository,
             IEnvironmentVariableRepository envVariableRepository, IMd5Service md5Service, IGroupRepository groupRepository) : base(stringConstant)
         {

@@ -5,7 +5,7 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Specialized;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
@@ -30,7 +30,7 @@ namespace Promact.Core.Test
             _componentContext = AutofacConfig.RegisterDependancies();
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
         }
         #endregion

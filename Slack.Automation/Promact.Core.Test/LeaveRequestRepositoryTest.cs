@@ -2,8 +2,7 @@
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace Promact.Core.Test
         #region Private Varaibles
         private readonly IComponentContext _componentContext;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private LeaveRequest leave = new LeaveRequest();
         #endregion
 
@@ -29,7 +28,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             Initialize();
         }
         #endregion

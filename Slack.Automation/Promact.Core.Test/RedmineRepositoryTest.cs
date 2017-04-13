@@ -7,7 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass.Redmine;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace Promact.Core.Test
     {
         #region Private Variables
         private readonly IComponentContext _componentContext;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IRedmineRepository _redmineRepository;
         private readonly ApplicationUserManager _userManager;
         private readonly Mock<IHttpClientService> _mockHttpClient;
@@ -37,7 +37,7 @@ namespace Promact.Core.Test
         public RedmineRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _redmineRepository = _componentContext.Resolve<IRedmineRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();

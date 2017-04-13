@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,16 +13,16 @@ namespace Promact.Core.Repository.OauthCallsRepository
         #region Private Variables
 
         private readonly IHttpClientService _httpClientService;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         #endregion
 
 
         #region Constructor
 
-        public OauthCallsRepository(IHttpClientService httpClientService, IStringConstantRepository stringConstant)
+        public OauthCallsRepository(IHttpClientService httpClientService, ISingletonStringLiteral stringConstant)
         {
             _httpClientService = httpClientService;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
         }
 
         #endregion

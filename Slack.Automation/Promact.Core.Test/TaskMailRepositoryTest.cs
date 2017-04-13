@@ -13,7 +13,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -35,7 +35,7 @@ namespace Promact.Core.Test
         private readonly IRepository<TaskMail> _taskMailDataRepository;
         private readonly IRepository<TaskMailDetails> _taskMailDetailsDataRepository;
         private readonly Mock<IEmailService> _mockEmailService;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
         private readonly ITaskMailReportRepository _taskMailReportRepository;
         private SlackProfile profile = new SlackProfile();
@@ -68,7 +68,7 @@ namespace Promact.Core.Test
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _taskMailDataRepository = _componentContext.Resolve<IRepository<TaskMail>>();
             _taskMailDetailsDataRepository = _componentContext.Resolve<IRepository<TaskMailDetails>>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockEmailService = _componentContext.Resolve<Mock<IEmailService>>();
             _loggerMock = _componentContext.Resolve<Mock<ILogger>>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();

@@ -4,7 +4,7 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
 using System;
@@ -23,7 +23,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _scrumlogger;
         private readonly ILogger _logger;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         private static string _scrumBotId;
         private readonly IComponentContext _component;
@@ -35,14 +35,14 @@ namespace Promact.Erp.Core.Controllers
 
         public Bot(ITaskMailRepository taskMailRepository,
            ISlackUserRepository slackUserDetailsRepository,
-           IStringConstantRepository stringConstant,
+           ISingletonStringLiteral stringConstant,
            IEnvironmentVariableRepository environmentVariableRepository, IComponentContext component)
         {
             _taskMailRepository = taskMailRepository;
             _slackUserDetailsRepository = slackUserDetailsRepository;
             _logger = LogManager.GetLogger("TaskBotModule");
             _scrumlogger = LogManager.GetLogger("ScrumBotModule");
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _environmentVariableRepository = environmentVariableRepository;
             _component = component;
         }

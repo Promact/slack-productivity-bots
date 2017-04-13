@@ -1,7 +1,7 @@
 ﻿using Promact.Core.Repository.GroupRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.Util.ExceptionHandler;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -16,7 +16,7 @@ namespace Promact.Erp.Core.Controllers
         #endregion
 
         #region Constructor
-        public GroupController(IStringConstantRepository stringConstant, IGroupRepository groupRepository) : base(stringConstant)
+        public GroupController(ISingletonStringLiteral stringConstant, IGroupRepository groupRepository) : base(stringConstant)
         {
             _groupRepository = groupRepository;
         }

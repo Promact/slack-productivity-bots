@@ -7,7 +7,6 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
-using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,6 +16,7 @@ using Promact.Erp.DomainModel.DataRepository;
 using System.Linq;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using NLog;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.Client
 {
@@ -28,7 +28,7 @@ namespace Promact.Core.Repository.Client
         private readonly IEmailService _emailService;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly IHttpClientService _httpClientService;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IEmailServiceTemplateRepository _emailTemplateRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHook;
@@ -38,13 +38,13 @@ namespace Promact.Core.Repository.Client
         #endregion
 
         #region Constructor
-        public Client(IOauthCallsRepository oauthCallRepository, IStringConstantRepository stringConstant,
+        public Client(IOauthCallsRepository oauthCallRepository, ISingletonStringLiteral stringConstant,
             IEmailService emailService, IAttachmentRepository attachmentRepository, IHttpClientService httpClientService,
             IEnvironmentVariableRepository envVariableRepository, ISlackUserRepository slackUserRepository,
             IEmailServiceTemplateRepository emailTemplateRepository, IRepository<IncomingWebHook> incomingWebHook,
             ApplicationUserManager userManager, IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
         {
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _oauthCallRepository = oauthCallRepository;
             _emailService = emailService;
             _attachmentRepository = attachmentRepository;

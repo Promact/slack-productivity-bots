@@ -15,7 +15,7 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -37,7 +37,7 @@ namespace Promact.Core.Test
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ApplicationUserManager _userManager;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private static string incomingWebhookURL;
         private User user = new User();
         private SlackUserDetails slackUser = new SlackUserDetails();
@@ -78,7 +78,7 @@ namespace Promact.Core.Test
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             incomingWebhookURL = _envVariableRepository.IncomingWebHookUrl;
             _emailTemplateRepository = _componentContext.Resolve<IEmailServiceTemplateRepository>();
             _mockEmail = _componentContext.Resolve<Mock<IEmailService>>();

@@ -1,4 +1,4 @@
-﻿using Promact.Erp.Util.StringConstants;
+﻿using Promact.Erp.Util.StringLiteral;
 using System;
 
 namespace Promact.Erp.Util.EnvironmentVariableRepository
@@ -9,17 +9,17 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
         #region Private Variable
 
         private readonly EnvironmentVariableTarget _EnvVariableTarget;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
 
         #endregion
 
 
         #region Constructor
 
-        public EnvironmentVariableRepository(IStringConstantRepository stringConstant)
+        public EnvironmentVariableRepository(ISingletonStringLiteral stringConstant)
         {
             _EnvVariableTarget = EnvironmentVariableTarget.Process;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
         }
 
         #endregion

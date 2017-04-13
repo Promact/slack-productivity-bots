@@ -5,7 +5,7 @@ using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -24,7 +24,7 @@ namespace Promact.Core.Test
         private readonly IRepository<MailSettingMapping> _mailSettingMappingDataRepository;
         private readonly IRepository<Group> _groupDataRepository;
         private readonly IRepository<GroupEmailMapping> _groupEmailMappingDataRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly ApplicationUserManager _userManager;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
@@ -42,7 +42,7 @@ namespace Promact.Core.Test
             _mailSettingMappingDataRepository = _componentContext.Resolve<IRepository<MailSettingMapping>>();
             _groupDataRepository = _componentContext.Resolve<IRepository<Group>>();
             _groupEmailMappingDataRepository = _componentContext.Resolve<IRepository<GroupEmailMapping>>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mailSettingDetailsRepository = _componentContext.Resolve<IMailSettingDetailsByProjectAndModuleRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();

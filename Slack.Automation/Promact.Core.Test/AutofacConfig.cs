@@ -37,6 +37,8 @@ using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.RedmineRepository;
+using Promact.Erp.Util.StringLiteral;
+using Newtonsoft.Json;
 
 namespace Promact.Core.Test
 {
@@ -101,9 +103,22 @@ namespace Promact.Core.Test
             builder.RegisterInstance(httpContextObject).As<HttpContextBase>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
 
+            builder.RegisterType<StringLiteral>().As<IStringLiteral>();
+            builder.RegisterType<SingletonStringLiteral>().As<ISingletonStringLiteral>().SingleInstance();
+
             var container = builder.Build();
+            StringConstantSetUp(container);
             return container;
 
+        }
+
+        private static void StringConstantSetUp(IComponentContext container)
+        {
+            IStringConstantRepository stringConstant = container.Resolve<IStringConstantRepository>();
+            ISingletonStringLiteral stringLiteral = container.Resolve<ISingletonStringLiteral>();
+            var stringConstantJson = JsonConvert.SerializeObject(stringConstant);
+            var appStringLiteral = JsonConvert.DeserializeObject<AppStringLiteral>(stringConstantJson);
+            stringLiteral.Initialize(appStringLiteral);
         }
     }
 }

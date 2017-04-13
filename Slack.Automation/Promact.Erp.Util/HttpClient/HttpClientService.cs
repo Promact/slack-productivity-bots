@@ -3,19 +3,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Promact.Erp.Util.StringConstants;
 using Autofac.Extras.NLog;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Util.HttpClient
 {
     public class HttpClientService : IHttpClientService
     {
         private System.Net.Http.HttpClient _client;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly ILogger _logger;
-        public HttpClientService(IStringConstantRepository stringConstant, ILogger logger)
+        public HttpClientService(ISingletonStringLiteral stringConstant, ILogger logger)
         {
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _logger = logger;
         }
 

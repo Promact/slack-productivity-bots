@@ -1,6 +1,6 @@
 ﻿using Promact.Core.Repository.MailSettingRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -11,7 +11,7 @@ namespace Promact.Erp.Core.Controllers
     public class MailSettingController : BaseController
     {
         private IMailSettingRepository _mailSettingRepository;
-        public MailSettingController(IStringConstantRepository stringConstant, IMailSettingRepository mailSettingRepository)
+        public MailSettingController(ISingletonStringLiteral stringConstant, IMailSettingRepository mailSettingRepository)
             : base(stringConstant)
         {
             _mailSettingRepository = mailSettingRepository;

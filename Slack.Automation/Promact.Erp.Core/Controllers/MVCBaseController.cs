@@ -1,17 +1,17 @@
-﻿using Promact.Erp.Util.StringConstants;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Principal;
 using System.Web.Mvc;
 using System.Linq;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Core.Controllers
 {
     public abstract class MVCBaseController : Controller
     {
-        public readonly IStringConstantRepository _stringConstantRepository;
-        public MVCBaseController(IStringConstantRepository stringConstantRepository)
+        public readonly AppStringLiteral _stringConstantRepository;
+        public MVCBaseController(ISingletonStringLiteral stringConstantRepository)
         {
-            _stringConstantRepository = stringConstantRepository;
+            _stringConstantRepository = stringConstantRepository.StringConstant;
         }
         /// <summary>
         /// get login user id.
