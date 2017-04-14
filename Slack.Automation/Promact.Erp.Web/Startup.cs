@@ -27,6 +27,7 @@ namespace Promact.Erp.Web
             bot.Scrum();
             bot.TaskMailBot();
             ConfigureAuth(app, container);
+
         }
     }
 }
