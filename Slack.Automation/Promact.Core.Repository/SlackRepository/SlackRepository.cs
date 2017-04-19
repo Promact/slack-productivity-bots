@@ -149,6 +149,8 @@ namespace Promact.Core.Repository.SlackRepository
         public async Task LeaveRequestAsync(SlashCommand leave)
         {
             SlackAction actionType;
+            leave.Text = leave.Text.Replace('”', '"');
+            leave.Text = leave.Text.Replace('“', '"');
             // method to convert slash command to list of string
             List<string> slackText = _attachmentRepository.SlackText(leave.Text);
             // to get user details by slack user name
