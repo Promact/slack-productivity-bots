@@ -466,6 +466,7 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
                         String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
             {
+                message = message.Replace("“", "\"").Replace("”", "\"");
                 string[] msgArray = message.Split(null);
                 int messageLength = message.Length - 1;
                 int first = message.IndexOf('"') + 1; //first index of ".
