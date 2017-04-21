@@ -70,6 +70,7 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
 
             else
             {
+                message = message.Replace("“", "\"").Replace("”", "\"");
                 string[] messageArray = message.Split(null);
                 int messageLength = message.Length - 1;
                 int first = message.IndexOf('"') + 1; //first index of ".
