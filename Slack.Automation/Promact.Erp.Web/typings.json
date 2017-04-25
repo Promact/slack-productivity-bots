@@ -1,7 +1,0 @@
-{
-  "globalDependencies": {
-    "angular-protractor": "registry:dt/angular-protractor#1.5.0+20161101133457",
-    "core-js": "registry:dt/core-js#0.9.7+20161130133742",    
-    "selenium-webdriver": "registry:dt/selenium-webdriver#2.44.0+20160317120654"
-  }
-}
