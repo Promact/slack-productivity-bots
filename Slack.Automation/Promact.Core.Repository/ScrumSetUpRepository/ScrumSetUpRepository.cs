@@ -70,7 +70,9 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
 
             else
             {
+                _logger.Debug("Link message in ScrumSetUp before replacing " + message);
                 message = message.Replace("“", "\"").Replace("”", "\"");
+                _logger.Debug("Link message in ScrumSetUp after replacing " + message);
                 string[] messageArray = message.Split(null);
                 int messageLength = message.Length - 1;
                 int first = message.IndexOf('"') + 1; //first index of ".

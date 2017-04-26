@@ -17,6 +17,7 @@ using Promact.Core.Repository.BaseRepository;
 using NLog;
 using Promact.Core.Repository.ScrumSetUpRepository;
 using Promact.Erp.Util.StringLiteral;
+using Newtonsoft.Json;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -466,7 +467,9 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
                         String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
             {
+                _logger.Debug("Link message in Scrum Repo before replacing " + message);
                 message = message.Replace("“", "\"").Replace("”", "\"");
+                _logger.Debug("Link message in Scrum Repo after replacing " + message);
                 string[] msgArray = message.Split(null);
                 int messageLength = message.Length - 1;
                 int first = message.IndexOf('"') + 1; //first index of ".
@@ -892,6 +895,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 //list of active users who have not answered yet  
                 List<string> slackUserIdList = await _slackUserDetailsDataRepository.GetAll().Select(x => x.UserId).ToListAsync();
                 List<User> activeUnAnsweredUserList = users.Where(x => x.IsActive && slackUserIdList.Contains(x.SlackUserId) && !scrumAnswers.Select(y => y.EmployeeId).ToList().Contains(x.Id)).ToList();
+                _logger.Debug("Unanswered user list" + JsonConvert.SerializeObject(activeUnAnsweredUserList));
                 if (scrumAnswers.Any())
                 {
                     int questionCount = questions.Count();
