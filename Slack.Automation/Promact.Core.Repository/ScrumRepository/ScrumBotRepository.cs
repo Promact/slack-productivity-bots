@@ -94,9 +94,9 @@ namespace Promact.Core.Repository.ScrumRepository
             _logger.Info(DateTime.UtcNow.Date);
             string replyText = string.Empty;
             SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(slackUserId);
-            _logger.Info("\nSlack User Detail\n " + slackUserDetail);
+            _logger.Info("\nSlack User Detail\n " + JsonConvert.SerializeObject(slackUserDetail));
             SlackChannelDetails slackChannelDetail = await _slackChannelRepository.GetByIdAsync(slackChannelId);
-            _logger.Info("\nSlack Channel Detail\n " + slackChannelDetail);
+            _logger.Info("\nSlack Channel Detail\n " + JsonConvert.SerializeObject(slackChannelDetail));
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
@@ -1047,12 +1047,16 @@ namespace Promact.Core.Repository.ScrumRepository
 
             User prevUser = users.FirstOrDefault(x => x.SlackUserId == temporaryScrumDetails.SlackUserId);
             if (prevUser == null || !prevUser.IsActive)//the previous user is either in-active or not a member of the project in OAuth
-                // the next user is chosen from the list of users who have not answer yet and are still active                 
+
+            {// the next user is chosen from the list of users who have not answer yet and are still active                 
                 // could be null too    
+                _logger.Debug("ExpectedUserAsync, list of users" + JsonConvert.SerializeObject(users));
                 user = users.FirstOrDefault(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id));
+            }
             else
                 user = prevUser;
-
+            if (user != null)
+                _logger.Debug("ExpectedUserAsync, user found" + JsonConvert.SerializeObject(user));
             return await ProcessExpectedUserResultAsync(user, applicantId, users, projectId, applicant, scrumId, questions);
         }
 
