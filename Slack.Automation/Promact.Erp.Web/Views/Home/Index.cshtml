@@ -26,8 +26,17 @@
     <meta name="author" content="">
     <link rel="icon" type="image/x-icon" href="../../Content/images/favicon.ico">
     <title>Slack ERP</title>
-    <!-- Bootstrap CSS -->
-    <link href="~/Scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </environment>
+    <environment names="Development">
+        <link href="~/Scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
+        <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+    </environment>
+
     <!-- Additionals -->
     <link href="../../Content/css/font-lineicons.css" rel="stylesheet">
     <link href="../../Content/Site.css" rel="stylesheet">
@@ -359,11 +368,11 @@
         <div class="copyright">Copyright ©2017 Promact Infotech Pvt. Ltd. All Rights Reserved.</div>
     </section>
     <!-- jQuery -->
-    <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
+
     <!-- Bootstrap JS -->
-    <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+    
     <!-- Custom JS -->
-   
+
     <script src="../../Content/js/custom.js"></script>
 </body>
 </html>
