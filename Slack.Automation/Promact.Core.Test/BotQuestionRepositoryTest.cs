@@ -2,8 +2,7 @@
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,7 +14,7 @@ namespace Promact.Core.Test
         #region Private Variables
         private readonly IComponentContext _componentContext;
         private readonly IBotQuestionRepository _botQuestionRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private Question question = new Question();
         #endregion
 
@@ -24,7 +23,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _botQuestionRepository = _componentContext.Resolve<IBotQuestionRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             Initialize();
         }
         #endregion

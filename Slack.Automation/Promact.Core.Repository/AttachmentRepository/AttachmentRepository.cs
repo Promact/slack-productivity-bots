@@ -2,7 +2,7 @@
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -17,15 +17,15 @@ namespace Promact.Core.Repository.AttachmentRepository
         #region Private Variables
 
         private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IServiceRepository _serviceRepository;
         #endregion
 
         #region Constructor
-        public AttachmentRepository(ApplicationUserManager userManager, IStringConstantRepository stringConstant, IServiceRepository serviceRepository)
+        public AttachmentRepository(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant, IServiceRepository serviceRepository)
         {
             _userManager = userManager;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _serviceRepository = serviceRepository;
         }
         #endregion

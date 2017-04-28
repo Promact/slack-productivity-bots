@@ -2,10 +2,10 @@
 using System.Web.Http;
 using System.Collections.Generic;
 using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.Util.StringConstants;
 using System;
 using Promact.Core.Repository.TaskMailReportRepository;
 using NLog;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Erp.Core.Controllers
 {
@@ -16,7 +16,7 @@ namespace Promact.Erp.Core.Controllers
     {
         private readonly ITaskMailReportRepository _taskMailReport;
         private readonly ILogger _logger;
-        public TaskReportController(ITaskMailReportRepository taskMailReport, IStringConstantRepository stringConstant)
+        public TaskReportController(ITaskMailReportRepository taskMailReport, ISingletonStringLiteral stringConstant)
             :base(stringConstant)
         {
             _taskMailReport = taskMailReport;

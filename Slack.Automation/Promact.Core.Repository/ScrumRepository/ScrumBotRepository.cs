@@ -11,12 +11,13 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.BaseRepository;
 using NLog;
 using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Erp.Util.StringLiteral;
+using Newtonsoft.Json;
 
 namespace Promact.Core.Repository.ScrumRepository
 {
@@ -35,7 +36,7 @@ namespace Promact.Core.Repository.ScrumRepository
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly ISlackUserRepository _slackUserDetailRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IBotQuestionRepository _botQuestionRepository;
         private readonly IScrumSetUpRepository _scrumSetUpRepository;
         private readonly IMapper _mapper;
@@ -52,7 +53,7 @@ namespace Promact.Core.Repository.ScrumRepository
             IRepository<Scrum> scrumDataRepository, IRepository<Question> questionDataRepository,
             IRepository<SlackUserDetails> slackUserDetailsDataRepository,
             ISlackChannelRepository slackChannelRepository, IOauthCallsRepository oauthCallsRepository,
-            ISlackUserRepository slackUserDetailRepository, IStringConstantRepository stringConstant,
+            ISlackUserRepository slackUserDetailRepository, ISingletonStringLiteral stringConstant,
             IBotQuestionRepository botQuestionRepository, IMapper mapper, IScrumSetUpRepository scrumSetUpRepository,
             IRepository<ApplicationUser> applicationUser, IAttachmentRepository attachmentRepository)
             : base(applicationUser, attachmentRepository)
@@ -66,7 +67,7 @@ namespace Promact.Core.Repository.ScrumRepository
             _slackChannelRepository = slackChannelRepository;
             _oauthCallsRepository = oauthCallsRepository;
             _slackUserDetailsDataRepository = slackUserDetailsDataRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _botQuestionRepository = botQuestionRepository;
             _applicationUser = applicationUser;
             _scrumSetUpRepository = scrumSetUpRepository;
@@ -93,9 +94,9 @@ namespace Promact.Core.Repository.ScrumRepository
             _logger.Info(DateTime.UtcNow.Date);
             string replyText = string.Empty;
             SlackUserDetailAc slackUserDetail = await _slackUserDetailRepository.GetByIdAsync(slackUserId);
-            _logger.Info("\nSlack User Detail\n " + slackUserDetail);
+            _logger.Info("\nSlack User Detail\n " + JsonConvert.SerializeObject(slackUserDetail));
             SlackChannelDetails slackChannelDetail = await _slackChannelRepository.GetByIdAsync(slackChannelId);
-            _logger.Info("\nSlack Channel Detail\n " + slackChannelDetail);
+            _logger.Info("\nSlack Channel Detail\n " + JsonConvert.SerializeObject(slackChannelDetail));
             //the command is split to individual words
             //commnads ex: "scrum time", "leave @userId"
             string[] messageArray = message.Split(null);
@@ -466,6 +467,9 @@ namespace Promact.Core.Repository.ScrumRepository
             else if (String.Compare(messageArray[0], _stringConstant.Link, StringComparison.OrdinalIgnoreCase) == 0 ||
                         String.Compare(messageArray[0], _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
             {
+                _logger.Debug("Link message in Scrum Repo before replacing " + message);
+                message = message.Replace("“", "\"").Replace("”", "\"");
+                _logger.Debug("Link message in Scrum Repo after replacing " + message);
                 string[] msgArray = message.Split(null);
                 int messageLength = message.Length - 1;
                 int first = message.IndexOf('"') + 1; //first index of ".
@@ -891,6 +895,7 @@ namespace Promact.Core.Repository.ScrumRepository
                 //list of active users who have not answered yet  
                 List<string> slackUserIdList = await _slackUserDetailsDataRepository.GetAll().Select(x => x.UserId).ToListAsync();
                 List<User> activeUnAnsweredUserList = users.Where(x => x.IsActive && slackUserIdList.Contains(x.SlackUserId) && !scrumAnswers.Select(y => y.EmployeeId).ToList().Contains(x.Id)).ToList();
+                _logger.Debug("Unanswered user list" + JsonConvert.SerializeObject(activeUnAnsweredUserList));
                 if (scrumAnswers.Any())
                 {
                     int questionCount = questions.Count();
@@ -1042,12 +1047,16 @@ namespace Promact.Core.Repository.ScrumRepository
 
             User prevUser = users.FirstOrDefault(x => x.SlackUserId == temporaryScrumDetails.SlackUserId);
             if (prevUser == null || !prevUser.IsActive)//the previous user is either in-active or not a member of the project in OAuth
-                // the next user is chosen from the list of users who have not answer yet and are still active                 
+
+            {// the next user is chosen from the list of users who have not answer yet and are still active                 
                 // could be null too    
+                _logger.Debug("ExpectedUserAsync, list of users" + JsonConvert.SerializeObject(users));
                 user = users.FirstOrDefault(x => x.IsActive && !scrumAnswer.Select(y => y.EmployeeId).ToList().Contains(x.Id));
+            }
             else
                 user = prevUser;
-
+            if (user != null)
+                _logger.Debug("ExpectedUserAsync, user found" + JsonConvert.SerializeObject(user));
             return await ProcessExpectedUserResultAsync(user, applicantId, users, projectId, applicant, scrumId, questions);
         }
 

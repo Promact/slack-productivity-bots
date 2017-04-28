@@ -37,6 +37,7 @@ using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.HashingMd5;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Data.Entity;
 using System.Net.Http;
 using System.Web;
@@ -105,6 +106,8 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+            builder.RegisterType<StringLiteral>().As<IStringLiteral>();
+            builder.RegisterType<SingletonStringLiteral>().As<ISingletonStringLiteral>().SingleInstance();
             var container = builder.Build();
             
             // replace mvc dependancy resolver with autofac

@@ -5,7 +5,7 @@ using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,7 +23,7 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IOauthCallsRepository _oauthCallsRepository;
         private readonly Mock<IHttpClientService> _mockHttpClient;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IOauthCallHttpContextRespository _oauthCallHttpContextRepository;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
         private readonly ApplicationUserManager _userManager;
@@ -36,7 +36,7 @@ namespace Promact.Core.Test
             _componentContext = AutofacConfig.RegisterDependancies();
             _oauthCallsRepository = _componentContext.Resolve<IOauthCallsRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _oauthCallHttpContextRepository = _componentContext.Resolve<IOauthCallHttpContextRespository>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();

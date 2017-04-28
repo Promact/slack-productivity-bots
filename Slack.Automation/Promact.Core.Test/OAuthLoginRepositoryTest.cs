@@ -10,7 +10,7 @@ using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -27,7 +27,7 @@ namespace Promact.Core.Test
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
         private readonly ApplicationUserManager _userManager;
         private SlackEventApiAC slackEvent = new SlackEventApiAC();
@@ -46,7 +46,7 @@ namespace Promact.Core.Test
             _slackChannelRepository = _componentContext.Resolve<ISlackChannelRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _envVariableRepository = _componentContext.Resolve<IEnvironmentVariableRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             Initialize();

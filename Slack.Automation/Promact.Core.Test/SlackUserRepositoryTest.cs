@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util.StringConstants;
-
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Test
 {
@@ -12,14 +11,14 @@ namespace Promact.Core.Test
     {
         private readonly IComponentContext _componentContext;
         private readonly ISlackUserRepository _slackUserRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private SlackProfile profile = new SlackProfile();
         private SlackUserDetails slackUserDetails = new SlackUserDetails();
         public SlackUserRepositoryTest()
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             Initialize();
         }
 
