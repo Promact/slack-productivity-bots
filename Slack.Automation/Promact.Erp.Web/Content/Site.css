@@ -9,7 +9,7 @@
     background-color: #fff;
 }
 .navbar .navbar-brand {
-    background: url('images/logo.png') center center no-repeat;
+    background: url('../Content/images/logo.png') center center no-repeat;
     background-size: contain;
     width: 200px;
     margin-left: 15px !important;
@@ -51,7 +51,7 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); 
 }
 .navbar.affix .navbar-brand {
-    background-image: url('images/logo-inverted.png');
+    background-image: url('../Content/images/logo-inverted.png');
 }
 .navbar.affix .navbar-nav > li > a, .navbar.affix .navbar-nav > li > a:focus, .navbar.affix .navbar-nav > li:hover > a, .navbar.affix .navbar-nav > li.active > a, .navbar.affix .navbar-nav > li.active > a:hover, .navbar.affix .navbar-nav > li.active a:focus {
     color: #5C3A58;
@@ -107,7 +107,7 @@
     height: 100vh;
     min-height: 200px;
     padding: 100px 0;
-    background-image: url("images/banner.jpg"); 
+    background-image: url("../Content/images/banner.jpg"); 
     color: #fff;
 }
 .section-home h1 {

@@ -22,11 +22,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reflect-metadata/0.1.9/Reflect.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.42/system.js"></script>
     <!-- Font Awesome -->
-    @Styles.Render("~/Content/afterlogin")
-    @Styles.Render("~/Content/css")
-    @*Polyfill(s) for older browsers*@
+    @Styles.Render("~/bundles/afterlogin")
+    @Styles.Render("~/bundles/css")
     <script src="systemjs.config.js"></script>
-    <!-- Theme Scripts -->
     @if (@ViewBag.userEmail == "")
     {
         <script>
