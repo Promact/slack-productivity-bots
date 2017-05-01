@@ -1,4 +1,4 @@
-﻿declare var describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect, spyOn;
 import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Observable } from 'rxjs/Observable';

@@ -7,7 +7,8 @@ import { GroupModel } from '../group.model';
 import { Md2Toast } from 'md2';
 
 @Component({
-    templateUrl: './app/Group/GroupEdit/groupEdit.html',
+    moduleId: module.id,
+    templateUrl: 'groupEdit.html',
 })
 export class GroupEditComponent implements OnInit {
     validPattern: any;
