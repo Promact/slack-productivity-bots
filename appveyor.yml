@@ -11,6 +11,11 @@ cache:
 - "%LOCALAPPDATA%\\Yarn"
 - "%APPVEYOR_BUILD_FOLDER%\\Slack.Automation\\packages"
 build_script:
+- nvm install 6.3.1
+- nvm use 6.3.1
+- npm i -g npm@4.5.0
+- npm i -g typescript typings
+- cd ./slack-productivity-bots/Slack.Automation/Promact.Erp.Web/
 - npm install
 - npm run aot
 - npm run rollup
