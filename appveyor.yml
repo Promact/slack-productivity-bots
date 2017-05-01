@@ -13,7 +13,7 @@ cache:
 build_script:
 - npm i -g npm@4.5.0
 - npm i -g typescript typings
-- cd ./slack-productivity-bots/Slack.Automation/Promact.Erp.Web/
+- cd .\\slack-productivity-bots\\Slack.Automation\\Promact.Erp.Web\\
 - npm install
 - npm run aot
 - npm run rollup
