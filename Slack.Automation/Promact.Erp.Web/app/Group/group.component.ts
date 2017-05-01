@@ -4,6 +4,7 @@ import { GroupService } from "./group.service";
 
 @Component
     ({
+        moduleId: module.id,
         template: `<router-outlet></router-outlet>`,
         providers: [GroupService]
     })

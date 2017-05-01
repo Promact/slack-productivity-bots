@@ -9,8 +9,9 @@ import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
  
 @Component({
+    moduleId: module.id,
     selector: 'date-pipe',
-    templateUrl: "app/taskmail/taskmail-details/taskmail-details.html",
+    templateUrl: "taskmail-details.html",
     providers: [StringConstant]
 })
 export class TaskMailDetailsComponent implements OnInit {
@@ -60,7 +61,7 @@ export class TaskMailDetailsComponent implements OnInit {
     getTaskMailList() {
         this.router.navigate([this.stringConstant.taskList]);
     }
-    getTaskMailPrevious(UserName, UserId, UserRole, CreatedOn) {
+    getTaskMailPrevious(UserName: any, UserId: any, UserRole: any, CreatedOn: any) {
         this.loader.loader = true;
         this.selectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportPreviousDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
@@ -81,7 +82,7 @@ export class TaskMailDetailsComponent implements OnInit {
         });
         this.isMaxDate = false;
     }
-    getTaskMailNext(UserName, UserId, UserRole, CreatedOn) {
+    getTaskMailNext(UserName: any, UserId: any, UserRole: any, CreatedOn: any) {
         this.loader.loader = true;
         this.selectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
@@ -102,7 +103,7 @@ export class TaskMailDetailsComponent implements OnInit {
             this.loader.loader = false;
         });
     }
-    getTaskMailForSelectedDate(UserName, UserId, UserRole, CreatedOn, SelectedDate) {
+    getTaskMailForSelectedDate(UserName: any, UserId: any, UserRole: any, CreatedOn: any, SelectedDate: any) {
         this.loader.loader = true;
         let datePipeSelectedDate = new DatePipe(this.stringConstant.medium);
         let selectedDate = datePipeSelectedDate.transform(SelectedDate, this.stringConstant.dateDefaultFormat);

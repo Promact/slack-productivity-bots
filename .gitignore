@@ -258,9 +258,10 @@ paket-files/
 typings/
 opencoverCoverage.xml
 /Slack.Automation/Promact.Erp.Web/Scripts
-**/*.js
+./coverage/html/*.js
 +/Slack.Automation/Promact.Erp.Web/coverage/Chrome 54.0.2840 (Windows 10 0.0.0)
 *.ruleset
 /Slack.Automation/Sonar
 /Slack.Automation/SonarQube/SolutionBinding.sqconfig
 !**/Content/**/*.js
+**/app/aot/

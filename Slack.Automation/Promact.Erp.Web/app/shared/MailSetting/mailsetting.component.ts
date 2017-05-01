@@ -10,7 +10,8 @@ import { MailSettingAC } from './mailsettingAC.model';
 import { StringConstant } from '../stringConstant';
 
 @Component({
-    templateUrl: './app/shared/MailSetting/mailsetting.html',
+    moduleId: module.id,
+    templateUrl: 'mailsetting.html',
 })
 export class MailSettingComponent implements OnInit {
     mailSetting: MailSetting = new MailSetting;

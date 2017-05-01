@@ -7,7 +7,8 @@ import { GroupModel } from '../group.model';
 import { Md2Toast } from 'md2';
 
 @Component({
-    templateUrl: './app/Group/GroupAdd/groupAdd.html'
+    moduleId : module.id,
+    templateUrl: 'groupAdd.html'
 })
 export class GroupAddComponent implements OnInit {
     groupModel: GroupModel;

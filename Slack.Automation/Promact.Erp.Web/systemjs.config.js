@@ -12,7 +12,10 @@
         'rxjs': 'node_modules/rxjs',
         'jspdf': 'node_modules/jspdf',
         'jspdf-autotable': 'node_modules/jspdf-autotable',
-        'md2': 'node_modules/md2/bundles/md2.umd.js'
+        'md2': 'node_modules/md2/bundles/md2.umd.js',
+        '@angular/animations': 'node_modules/@angular/animations/bundles/animations.umd.js',
+        '@angular/platform-browser/animations': 'node_modules/@angular/platform-browser/bundles/platform-browser-animations.umd.js',
+        '@angular/animations/browser': 'node_modules/@angular/animations/bundles/animations-browser.umd.js'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension

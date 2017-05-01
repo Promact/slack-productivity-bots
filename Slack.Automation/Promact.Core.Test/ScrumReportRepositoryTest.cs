@@ -60,7 +60,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is admin
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsAdminTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -77,7 +77,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is team leader
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsTeamLeaderTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -96,7 +96,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is employee
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsEmployeeTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -116,7 +116,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the person is not available on the scrum date
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsPersonUnavailableTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -138,7 +138,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is employee 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsEmployeeTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -164,7 +164,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is admin 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsAdminTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -190,7 +190,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is teamLeader 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsTeamLeaderTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();

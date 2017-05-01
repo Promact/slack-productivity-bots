@@ -7,7 +7,8 @@ import { LoaderService } from '../../shared/loader.service';
 import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReport-Details/leaveReport-Details.html',
+    moduleId: module.id,
+    templateUrl: 'leaveReport-Details.html',
 })
 
 export class LeaveReportDetailsComponent implements OnInit {

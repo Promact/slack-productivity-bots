@@ -5,8 +5,9 @@ import { AppComponentService } from './appcomponent.service';
 import { EmailHashCode } from './shared/emailHashCode';
 
 @Component({
+    moduleId: module.id,
     selector: 'my-app',
-    templateUrl: './app/index.html'
+    templateUrl: 'index.html'
 
 })
 
@@ -14,7 +15,7 @@ export class AppComponent implements OnInit {
     userIsAdmin: boolean;
     hashCode: string;
     username: string;
-    constructor(private loader: LoaderService, private httpService: AppComponentService, private emailHashCode: EmailHashCode) {
+    constructor(public loader: LoaderService, private httpService: AppComponentService, private emailHashCode: EmailHashCode) {
         this.userIsAdmin = false;
     }
 

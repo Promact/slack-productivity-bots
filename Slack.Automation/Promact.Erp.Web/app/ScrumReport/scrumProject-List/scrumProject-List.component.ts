@@ -6,7 +6,8 @@ import { StringConstant } from '../../shared/stringConstant';
 import { LoaderService } from '../../shared/loader.service';
 
 @Component({
-    templateUrl: './app/ScrumReport/scrumProject-List/scrumProject-List.html',
+    moduleId: module.id,
+    templateUrl: 'scrumProject-List.html',
 })
 
 export class ScrumProjectListComponent implements OnInit {
