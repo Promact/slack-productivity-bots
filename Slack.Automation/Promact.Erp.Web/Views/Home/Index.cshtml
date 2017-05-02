@@ -1,17 +1,6 @@
-﻿@using System.Collections
-@{
+﻿@{
     Layout = null;
 }
-@*<div>
-        <div>
-            <div>
-                <h1>Reports Management</h1>
-            </div>
-            <div>
-                @Html.ActionLink("Log In With Promact", "AfterLogIn", "Home")
-            </div>
-        </div>
-    </div>*@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,17 +15,11 @@
     <meta name="author" content="">
     <link rel="icon" type="image/x-icon" href="../../Content/images/favicon.ico">
     <title>Slack ERP</title>
-    <!-- Bootstrap CSS -->
-    <link href="~/Scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- Additionals -->
-    <link href="../../Content/css/font-lineicons.css" rel="stylesheet">
-    <link href="../../Content/Site.css" rel="stylesheet">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    @Styles.Render("~/bundles/css")
 </head>
 <body>
     <div class="slack-loader" style="display: none;">
@@ -358,12 +341,6 @@
         </div>
         <div class="copyright">Copyright ©2017 Promact Infotech Pvt. Ltd. All Rights Reserved.</div>
     </section>
-    <!-- jQuery -->
-    <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Custom JS -->
-   
-    <script src="../../Content/js/custom.js"></script>
+    @Scripts.Render("~/bundles/customjs")
 </body>
 </html>
