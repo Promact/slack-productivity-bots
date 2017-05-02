@@ -2,33 +2,27 @@
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using System.Collections.Generic;
-
+using NLog;
 
 namespace Promact.Core.Repository.SlackChannelRepository
 {
     public class SlackChannelRepository : ISlackChannelRepository
     {
-
         #region Private Variable
-
         private readonly IRepository<SlackChannelDetails> _slackChannelDetailsRepository;
-
+        private readonly ILogger _loggerSlackEvent;
         #endregion
 
-
         #region Constructor
-
         public SlackChannelRepository(IRepository<SlackChannelDetails> slackChannelDetailsRepository)
         {
             _slackChannelDetailsRepository = slackChannelDetailsRepository;
+            _loggerSlackEvent = LogManager.GetLogger("SlackEvent");
         }
 
         #endregion
 
-
         #region Public Methods
-
-
         /// <summary>
         /// Method to add slack channel. - JJ
         /// </summary>
@@ -70,10 +64,13 @@ namespace Promact.Core.Repository.SlackChannelRepository
         public async Task DeleteChannelAsync(string slackChannelId)
         {
             SlackChannelDetails channel = await GetByIdAsync(slackChannelId);
+            _loggerSlackEvent.Debug("Channel : " + channel);
             if (channel != null)
             {
+                _loggerSlackEvent.Debug("Deleting channel");
                 _slackChannelDetailsRepository.Delete(channel.Id);
                 await _slackChannelDetailsRepository.SaveChangesAsync();
+                _loggerSlackEvent.Debug("Channel deleted");
             }
         }
 
