@@ -31,7 +31,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly ILogger _logger;
-
+        private readonly ILogger _loggerSlackEvent;
         #endregion
 
         #region Constructor
@@ -51,6 +51,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _incomingWebHookRepository = incomingWebHook;
             _slackChannelRepository = slackChannelRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
+            _loggerSlackEvent = LogManager.GetLogger("SlackEvent");
         }
         #endregion
 
@@ -222,8 +223,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
         {
             SlackUserDetails user = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
+            _logger.Debug("User details : " + user);
             if (user == null)
+            {
+                _logger.Debug("SlackUserRepository - AddSlackUserAsync");
                 await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
+            }
         }
 
 
@@ -234,17 +239,22 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
         {
             SlackChannelDetails channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
+            _logger.Debug("Channel : " + channel);
             if (channel == null)
             {
+                _loggerSlackEvent.Debug("New channel adding");
                 slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
                 _slackChannelDetails.Insert(slackEvent.Event.Channel);
                 await _slackChannelDetails.SaveChangesAsync();
+                _loggerSlackEvent.Debug("Channel added successfully");
             }
             else
             {
+                _loggerSlackEvent.Debug("Updating channel");
                 channel.Name = slackEvent.Event.Channel.Name;
                 _slackChannelDetails.Update(channel);
                 await _slackChannelDetails.SaveChangesAsync();
+                _loggerSlackEvent.Debug("Channel updated successfully");
             }
         }
 
