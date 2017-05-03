@@ -180,7 +180,7 @@
     <Compile Include="Models\MailSettingMapping.cs" />
     <Compile Include="Models\TemporaryScrumDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
-    <Compile Include="ApplicationClass\UserAndTaskMailDetailsWithAccessToken.cs" />
+    <Compile Include="ApplicationClass\UserAndTaskMailDetailsAC.cs" />
     <Compile Include="ApplicationClass\UserRoleAc.cs" />
     <Compile Include="Context\PromactErpContext.cs" />
     <Compile Include="DataRepository\IRepository.cs" />
