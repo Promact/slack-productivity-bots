@@ -320,7 +320,10 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(null, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, forthQuestion.QuestionStatement);
+            var expectedReply = forthQuestion.QuestionStatement;
+            expectedReply += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+            Assert.Equal(response, expectedReply);
         }
 
         /// <summary>
@@ -340,7 +343,10 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, _stringConstant.FifthQuestionForTest);
+            var expectedReply = _stringConstant.FifthQuestionForTest;
+            expectedReply += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+            Assert.Equal(response, expectedReply);
         }
 
         /// <summary>

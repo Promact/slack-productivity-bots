@@ -529,5 +529,7 @@
         public string RedmineAPIKeyCommand { get; set; }
         public string RedmineProjectListFormat { get; set; }
         #endregion
+
+        public string TaskMailRestartSuggestionMessage { get; set; }
     }
 }
