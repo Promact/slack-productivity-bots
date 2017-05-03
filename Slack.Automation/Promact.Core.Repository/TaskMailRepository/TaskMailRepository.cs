@@ -255,6 +255,8 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
                                         userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
                                     }
+                                    userAndTaskMailDetailsWithAccessToken.QuestionText += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
                                 }
                                 break;
                             #endregion
