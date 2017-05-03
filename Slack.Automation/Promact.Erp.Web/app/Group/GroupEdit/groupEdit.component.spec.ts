@@ -13,6 +13,7 @@ import { MockToast } from "../../shared/mock/mock.md2toast";
 import { GroupModel } from "../group.model";
 import { ActivatedRouteStub } from "../../shared/mock/mock.activatedroute";
 import { Md2Toast } from 'md2';
+import { Observable } from 'rxjs/Observable';
 
 let stringConstant = new StringConstant();
 describe('Group Edit Component Test', () => {
@@ -42,7 +43,7 @@ describe('Group Edit Component Test', () => {
     it("ng OnInit", fakeAsync(() => {
         let fixture = TestBed.createComponent(GroupEditComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { id: stringConstant.id };
+        activatedRoute.params = Observable.of({ id: stringConstant.id });
         let groupEditComponent = fixture.componentInstance;
         groupEditComponent.ngOnInit();
         tick();
@@ -53,7 +54,7 @@ describe('Group Edit Component Test', () => {
         let fixture = TestBed.createComponent(GroupEditComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
         let toast = fixture.debugElement.injector.get(Md2Toast);
-        activatedRoute.testParams = { id: 2 };
+        activatedRoute.params = Observable.of({ id: 2 });
         let groupEditComponent = fixture.componentInstance;
         let name = stringConstant.groupName;
         groupEditComponent.ngOnInit();

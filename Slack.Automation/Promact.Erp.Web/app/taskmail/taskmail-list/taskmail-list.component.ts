@@ -7,7 +7,8 @@ import { LoaderService } from '../../shared/loader.service';
 import {StringConstant} from '../../shared/stringConstant';
 
 @Component({
-    templateUrl: "app/taskmail/taskmail-list/taskmail-list.html",
+    moduleId: module.id,
+    templateUrl: "taskmail-list.html",
     providers: [StringConstant]
 })
 export class TaskMailListComponent implements OnInit {
@@ -41,7 +42,7 @@ export class TaskMailListComponent implements OnInit {
             });
        
     }
-    taskmailDetails(UserId, UserName, UserEmail) {
+    taskmailDetails(UserId: any, UserName: any, UserEmail: any) {
         let UserRole = this.stringConstant.RoleAdmin;
         this.router.navigate([this.stringConstant.taskDetails, UserId, UserRole, UserName]);
     }

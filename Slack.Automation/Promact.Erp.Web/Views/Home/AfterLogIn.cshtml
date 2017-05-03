@@ -24,11 +24,11 @@
     <!-- Font Awesome -->
     @Styles.Render("~/bundles/afterlogin")
     @Styles.Render("~/bundles/css")
-    <script src="systemjs.config.js"></script>
+    <!--Use below commented code for debug-->
+    @*<script src="systemjs.config.js"></script>*@
     @if (@ViewBag.userEmail == "")
     {
         <script>
-            System.import('app').catch(function (err) { console.error(err); });
             var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
         </script>
     }
@@ -57,6 +57,8 @@ else
         <my-app>
             <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
         </my-app>
+        <script>window.module = "aot";</script>
+        <script src="~/app/build.js"></script>
         @Scripts.Render("~/bundles/customjs");
     </body>
 }

@@ -8,7 +8,8 @@ import { LoaderService } from '../../shared/loader.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
-    templateUrl: './app/ScrumReport/scrumProject-Details/scrumProject-Details.html',
+    moduleId: module.id,
+    templateUrl: 'scrumProject-Details.html',
 })
 
 
@@ -22,6 +23,7 @@ export class ScrumProjectDetailComponent implements OnInit {
     status: boolean;
     minDateForDateRange: Date;
     maxDateForDateRange: Date;
+    date: string;
 
     constructor(private scrumReportService: ScrumReportService, private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService) {
         this.maxDateForDateRange = new Date();

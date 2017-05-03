@@ -305,6 +305,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="rollup-config.js" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
@@ -998,6 +999,7 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="tslint.json" />
     <Content Include="StringLiteral\StringLiteral.json" />
+    <Content Include="tsconfig-aot.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1216,6 +1218,7 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\main-aot.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />

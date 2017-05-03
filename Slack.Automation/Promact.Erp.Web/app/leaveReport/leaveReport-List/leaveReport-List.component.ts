@@ -7,14 +7,15 @@ import { LoaderService } from '../../shared/loader.service';
 import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReport-List/leaveReport-List.html',
+    moduleId: module.id,
+    templateUrl: 'leaveReport-List.html',
 })
 
 export class LeaveReportListComponent implements OnInit {
     leaveReports: LeaveReport[] = [];
     errorMessage: string;
-    private EmployeeName: string;
-    private Role: string;
+    EmployeeName: string;
+    Role: string;
     noLeaves: boolean;
 
 

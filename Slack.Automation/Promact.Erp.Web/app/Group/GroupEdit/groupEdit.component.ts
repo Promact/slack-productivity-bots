@@ -7,7 +7,8 @@ import { GroupModel } from '../group.model';
 import { Md2Toast } from 'md2';
 
 @Component({
-    templateUrl: './app/Group/GroupEdit/groupEdit.html',
+    moduleId: module.id,
+    templateUrl: 'groupEdit.html',
 })
 export class GroupEditComponent implements OnInit {
     validPattern: any;
@@ -26,7 +27,7 @@ export class GroupEditComponent implements OnInit {
         this.loader.loader = true;
         this.getActiveUserEmailList();
         this.route.params.subscribe(params => {
-            this.id = +this.route.snapshot.params[this.stringConstant.paramsId];
+            this.id = params[this.stringConstant.paramsId];
             this.groupService.getGroupbyId(this.id).then((result) => {
                 this.groupModel = result;
                 this.loader.loader = false;
