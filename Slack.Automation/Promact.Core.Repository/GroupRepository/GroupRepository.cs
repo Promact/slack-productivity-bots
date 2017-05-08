@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
@@ -21,6 +23,7 @@ namespace Promact.Core.Repository.GroupRepository
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
         private readonly AppStringLiteral _stringConstantRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -31,6 +34,7 @@ namespace Promact.Core.Repository.GroupRepository
             _oauthCallsRepository = oauthCallsRepository;
             _groupEmailMappingRepository = groupEmailMappingRepository;
             _stringConstantRepository = stringConstantRepository.StringConstant;
+            _logger = LogManager.GetLogger("AuthenticationModule");
         }
         #endregion
 
@@ -157,6 +161,7 @@ namespace Promact.Core.Repository.GroupRepository
         public async Task AddDynamicGroupAsync()
         {
             UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
+            _logger.Trace("UserEmailListAc" + JsonConvert.SerializeObject(userEmailListAc));
             if (userEmailListAc != null)
             {
                 //create team leader group
