@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
@@ -19,6 +20,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         private readonly ApplicationUserManager _userManager;
         private readonly AppStringLiteral _stringConstant;
         private readonly IServiceRepository _serviceRepository;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
@@ -27,6 +29,7 @@ namespace Promact.Core.Repository.AttachmentRepository
             _userManager = userManager;
             _stringConstant = stringConstant.StringConstant;
             _serviceRepository = serviceRepository;
+            _logger = LogManager.GetLogger("AuthenticationModule");
         }
         #endregion
 
@@ -135,6 +138,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <returns>access token from AspNetUserLogin table</returns>
         public async Task<string> UserAccessTokenAsync(string username)
         {
+            _logger.Debug("User Acces Token Async" + username);
             var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
             var refreshToken = string.Empty;
             foreach (var provider in providerInfo)
@@ -144,6 +148,7 @@ namespace Promact.Core.Repository.AttachmentRepository
                     refreshToken = provider.ProviderKey;
                 }
             }
+            _logger.Debug("RefreshToken" + refreshToken);
             return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken);
         }
 
