@@ -160,8 +160,9 @@ namespace Promact.Core.Repository.GroupRepository
         /// <returns></returns>
         public async Task AddDynamicGroupAsync()
         {
+            _logger.Debug("request to get all details from oauth server for AddDynamicGroupAsync");
             UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
-            _logger.Trace("UserEmailListAc" + JsonConvert.SerializeObject(userEmailListAc));
+            _logger.Debug("get all details from oauth server for AddDynamicGroupAsync");
             if (userEmailListAc != null)
             {
                 //create team leader group
