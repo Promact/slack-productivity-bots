@@ -33,7 +33,11 @@ namespace Promact.Core.Repository.ServiceRepository
             var doc = await discovery.GetAsync();
             var tokenClient = new TokenClient(doc.TokenEndpoint, _environmentVariable.PromactOAuthClientId, _environmentVariable.PromactOAuthClientSecret);
             var requestRefreshToken = tokenClient.RequestRefreshTokenAsync(refreshToken).Result;
-            _logger.Debug("RequestRefreshToken" + requestRefreshToken);
+            _logger.Debug("Request RequestRefreshTokenAsync response : " + requestRefreshToken.IsError);
+            _logger.Debug("Request RequestRefreshTokenAsync Error : " + requestRefreshToken.Error);
+            _logger.Debug("Request RequestRefreshTokenAsync Error Description : " + requestRefreshToken.ErrorDescription);
+            _logger.Debug("Request RequestRefreshTokenAsync Error Type: " + requestRefreshToken.ErrorType);
+            _logger.Debug("Access Token : " + requestRefreshToken.AccessToken);
             return requestRefreshToken.AccessToken;
         }
 
