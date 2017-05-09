@@ -38,7 +38,7 @@ namespace Promact.Core.Repository.ServiceRepository
             _logger.Debug("Request RequestRefreshTokenAsync Error Description : " + requestRefreshToken.ErrorDescription);
             _logger.Debug("Request RequestRefreshTokenAsync Error Type: " + requestRefreshToken.ErrorType);
             _logger.Debug("Access Token : " + requestRefreshToken.AccessToken);
-            return requestRefreshToken.AccessToken;
+            return requestRefreshToken.AccessToken; 
         }
 
     }
