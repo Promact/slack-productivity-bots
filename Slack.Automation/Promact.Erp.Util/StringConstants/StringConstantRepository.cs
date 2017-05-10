@@ -3632,5 +3632,13 @@ namespace Promact.Erp.Util.StringConstants
             }
         }
         #endregion
+
+        public string TaskMailRestartSuggestionMessage
+        {
+            get
+            {
+                return "To add more task in your mail please write no and wait for completion of this process. Then ";
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ using Autofac.Extras.NLog;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using System.Collections.Generic;
 using Promact.Erp.Util.StringLiteral;
+using AutoMapper;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -32,6 +33,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly ILogger _logger;
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
         private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Constructor
@@ -40,7 +42,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
-            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails)
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails, IMapper mapper)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant.StringConstant;
@@ -55,6 +57,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _logger = logger;
             _mailSettingDataRepository = mailSettingDataRepository;
             _mailSettingDetails = mailSettingDetails;
+            _mapper = mapper;
         }
         #endregion
 
@@ -66,38 +69,38 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing question statement</returns>
         public async Task<string> StartTaskMailAsync(string userId)
         {
-            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
-            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
-            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
-            bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText);
+            // method to get user's details, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetails = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetails.QuestionText);
+            bool questionTextIsNull = string.IsNullOrEmpty(userAndTaskMailDetails.QuestionText);
             // if question text is null or not request to start task mail then only allowed
-            if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText))
+            if (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetails.QuestionText))
             {
                 _logger.Info("Task Mail Bot Module, task mail process start - StartTaskMailAsync");
                 TaskMailDetails taskMailDetail = new TaskMailDetails();
                 #region Task Mail Details
-                if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
+                if (userAndTaskMailDetails.TaskList != null)
                 {
-                    taskMailDetail = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                    taskMailDetail = userAndTaskMailDetails.TaskList.Last();
                     var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskMailDetail.QuestionId);
                     var questionOrder = previousQuestion.OrderNumber;
                     // If previous task mail is on the process and user started new task mail then will need to first complete pervious one
                     if (questionOrder < QuestionOrder.TaskMailSend)
                     {
-                        userAndTaskMailDetailsWithAccessToken.QuestionText = await QuestionAndAnswerAsync(null, userId);
-                        userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue = true;
+                        userAndTaskMailDetails.QuestionText = await QuestionAndAnswerAsync(null, userId);
+                        userAndTaskMailDetails.IsTaskMailContinue = true;
                     }
                 }
                 else
                 {
                     // If task mail is not started for that day
-                    userAndTaskMailDetailsWithAccessToken.TaskMail = await AddTaskMailAsync(userAndTaskMailDetailsWithAccessToken.User.Id);
+                    userAndTaskMailDetails.TaskMail = await AddTaskMailAsync(userAndTaskMailDetails.User.Id);
                 }
                 #endregion
 
                 #region If Task mail not send for that day
                 // if question text is null or not request to start task mail then only allowed
-                if (!userAndTaskMailDetailsWithAccessToken.IsTaskMailContinue && (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetailsWithAccessToken.QuestionText)))
+                if (!userAndTaskMailDetails.IsTaskMailContinue && (questionTextIsNull || CheckQuestionTextIsRequestToStartMailOrNot(userAndTaskMailDetails.QuestionText)))
                 {
                     SendEmailConfirmation confirmation = taskMailDetail.SendEmailConfirmation;
                     switch (confirmation)
@@ -105,20 +108,20 @@ namespace Promact.Core.Repository.TaskMailRepository
                         case SendEmailConfirmation.yes:
                             {
                                 // If mail is send then user will not be able to add task mail for that day
-                                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.AlreadyMailSend;
+                                userAndTaskMailDetails.QuestionText = _stringConstant.AlreadyMailSend;
                             }
                             break;
                         case SendEmailConfirmation.no:
                             {
                                 // If mail is not send then user will be able to add task mail for that day
-                                userAndTaskMailDetailsWithAccessToken.QuestionText = await AddTaskMailDetailAndGetQuestionStatementAsync(userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
+                                userAndTaskMailDetails.QuestionText = await AddTaskMailDetailAndGetQuestionStatementAsync(userAndTaskMailDetails.TaskMail.Id);
                             }
                             break;
                     }
                 }
                 #endregion
             }
-            return userAndTaskMailDetailsWithAccessToken.QuestionText;
+            return userAndTaskMailDetails.QuestionText;
         }
 
         /// <summary>
@@ -129,17 +132,17 @@ namespace Promact.Core.Repository.TaskMailRepository
         /// <returns>questionText in string format containing next question statement</returns>
         public async Task<string> QuestionAndAnswerAsync(string answer, string userId)
         {
-            // method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
-            var userAndTaskMailDetailsWithAccessToken = await GetUserAndTaskMailDetailsAsync(userId);
-            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetailsWithAccessToken.QuestionText);
+            // method to get user's details, user's task mail details and list or else appropriate message will be send
+            var userAndTaskMailDetails = await GetUserAndTaskMailDetailsAsync(userId);
+            _logger.Info("Task Mail Bot Module, Is task mail question text : " + userAndTaskMailDetails.QuestionText);
             // if question text is null then only allowed
-            if (string.IsNullOrEmpty(userAndTaskMailDetailsWithAccessToken.QuestionText))
+            if (string.IsNullOrEmpty(userAndTaskMailDetails.QuestionText))
             {
                 _logger.Info("Task Mail Bot Module, task mail process start - QuestionAndAnswerAsync");
-                _logger.Info("Task Mail Bot Module, task mail list count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
-                if (userAndTaskMailDetailsWithAccessToken.TaskList != null)
+                _logger.Info("Task Mail Bot Module, task mail list count : " + userAndTaskMailDetails.TaskList.Count());
+                if (userAndTaskMailDetails.TaskList != null)
                 {
-                    var taskDetails = userAndTaskMailDetailsWithAccessToken.TaskList.Last();
+                    var taskDetails = userAndTaskMailDetails.TaskList.Last();
                     // getting inform of previous question was asked to user
                     var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
                     // checking if previous question was last and answered by user and previous task report was completed then asked for new task mail
@@ -157,13 +160,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     if (answer != null)
                                     {
                                         taskDetails.Description = answer;
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                        userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                     {
                                         // if previous question was description of task and it was null then answer will ask for description again
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
+                                        userAndTaskMailDetails.QuestionText = previousQuestion.QuestionStatement;
                                     }
                                 }
                                 break;
@@ -183,7 +186,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         if (hour > 0 && hour <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
                                         {
                                             // adding up all hours of task mail
-                                            foreach (var task in userAndTaskMailDetailsWithAccessToken.TaskList)
+                                            foreach (var task in userAndTaskMailDetails.TaskList)
                                             {
                                                 totalHourSpented += task.Hours;
                                             }
@@ -192,7 +195,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             if (totalHourSpented <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
                                             {
                                                 taskDetails.Hours = hour;
-                                                userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                                userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                                 taskDetails.QuestionId = nextQuestion.Id;
                                             }
                                             else
@@ -200,19 +203,19 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 // getting last question of task mail
                                                 nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.SendEmail);
                                                 taskDetails.QuestionId = nextQuestion.Id;
-                                                userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                                     _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
                                                 taskDetails.Comment = _stringConstant.StartWorking;
                                             }
                                         }
                                         else
                                             // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                            userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                                 _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                     }
                                     else
                                         // if previous question was hour of task and it was null or wrong value then answer will ask for hour again
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                             _stringConstant.TaskMailBotHourErrorMessage, Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
@@ -228,12 +231,12 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     {
                                         // if previous question was status of task and it was not null/wrong value then answer will ask next question
                                         taskDetails.Status = status;
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                        userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                         // if previous question was status of task and it was null or wrong value then answer will ask for status again
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                             _stringConstant.TaskMailBotStatusErrorMessage,
                                             Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
@@ -247,14 +250,16 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     {
                                         // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
                                         taskDetails.Comment = answer;
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                        userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
                                     else
                                     {
                                         // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = previousQuestion.QuestionStatement;
+                                        userAndTaskMailDetails.QuestionText = previousQuestion.QuestionStatement;
                                     }
+                                    userAndTaskMailDetails.QuestionText += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
                                 }
                                 break;
                             #endregion
@@ -274,7 +279,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 {
                                                     // if previous question was send email of task and answer was yes then answer will ask next question
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = nextQuestion.QuestionStatement;
+                                                    userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:
@@ -282,14 +287,14 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
                                                     nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.ConfirmSendEmail);
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
+                                                    userAndTaskMailDetails.QuestionText = _stringConstant.ThankYou;
                                                 }
                                                 break;
                                         }
                                     }
                                     else
                                         // if previous question was send email of task and answer was null/wrong value then answer will say thank you and task mail stopped
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                             _stringConstant.SendTaskMailConfirmationErrorMessage,
                                             Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
@@ -305,7 +310,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     if (sendEmailConfirmationConvertResult)
                                     {
                                         taskDetails.SendEmailConfirmation = confirmation;
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.ThankYou;
+                                        userAndTaskMailDetails.QuestionText = _stringConstant.ThankYou;
                                         switch (confirmation)
                                         {
                                             case SendEmailConfirmation.yes:
@@ -313,19 +318,22 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                     EmailApplication email = new EmailApplication();
                                                     email.To = new List<string>();
                                                     email.CC = new List<string>();
-                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetailsWithAccessToken.User.Id, userAndTaskMailDetailsWithAccessToken.AccessToken)).Select(x => x.Id).ToList();
+                                                    var listOfprojectRelatedToUser = (await _oauthCallsRepository.
+                                                        GetListOfProjectsEnrollmentOfUserByUserIdAsync(userAndTaskMailDetails.User.Id,
+                                                        (await _attachmentRepository.UserAccessTokenAsync(userAndTaskMailDetails.User.UserName))))
+                                                        .Select(x => x.Id).ToList();
                                                     foreach (var projectId in listOfprojectRelatedToUser)
                                                     {
-                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule, userAndTaskMailDetailsWithAccessToken.User.Id);
+                                                        var mailsetting = await _mailSettingDetails.GetMailSettingAsync(projectId, _stringConstant.TaskModule, userAndTaskMailDetails.User.Id);
                                                         email.To.AddRange(mailsetting.To);
                                                         email.CC.AddRange(mailsetting.CC);
                                                     }
                                                     email.To = email.To.Distinct().ToList();
                                                     email.CC = email.CC.Distinct().ToList();
-                                                    email.From = userAndTaskMailDetailsWithAccessToken.User.Email;
+                                                    email.From = userAndTaskMailDetails.User.Email;
                                                     email.Subject = _stringConstant.TaskMailSubject;
                                                     // transforming task mail details to template page and getting as string
-                                                    email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetailsWithAccessToken.TaskList);
+                                                    email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetails.TaskList);
                                                     // if previous question was confirm send email of task and it was not null/wrong value then answer will send email and reply back with thank you and task mail stopped
                                                     taskDetails.QuestionId = nextQuestion.Id;
                                                     // Email send 
@@ -343,7 +351,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     }
                                     else
                                         // if previous question was send email of task and it was null or wrong value then it will ask for send task mail confirm again
-                                        userAndTaskMailDetailsWithAccessToken.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                        userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                             _stringConstant.SendTaskMailConfirmationErrorMessage,
                                             Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
@@ -352,7 +360,7 @@ namespace Promact.Core.Repository.TaskMailRepository
 
                             #region Default
                             default:
-                                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
+                                userAndTaskMailDetails.QuestionText = _stringConstant.RequestToStartTaskMail;
                                 break;
                                 #endregion
                         }
@@ -361,61 +369,67 @@ namespace Promact.Core.Repository.TaskMailRepository
                     }
                 }
                 else
-                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
+                    userAndTaskMailDetails.QuestionText = _stringConstant.RequestToStartTaskMail;
             }
-            return userAndTaskMailDetailsWithAccessToken.QuestionText;
+            return userAndTaskMailDetails.QuestionText;
         }
         #endregion
 
         #region Private Methods
         /// <summary>
-        /// Private method to get user's details, user's accesstoken, user's task mail details and list or else appropriate message will be send
+        /// Private method to get user's details, user's task mail details and list or else appropriate message will be send
         /// </summary>
         /// <param name="slackUserId">User's SlackId</param>
         /// <returns></returns>
-        private async Task<UserAndTaskMailDetailsWithAccessToken> GetUserAndTaskMailDetailsAsync(string slackUserId)
+        private async Task<UserAndTaskMailDetailsAC> GetUserAndTaskMailDetailsAsync(string slackUserId)
         {
-            UserAndTaskMailDetailsWithAccessToken userAndTaskMailDetailsWithAccessToken = new UserAndTaskMailDetailsWithAccessToken();
+            UserAndTaskMailDetailsAC userAndTaskMailDetails = new UserAndTaskMailDetailsAC();
             var user = await _userRepository.FirstOrDefaultAsync(x => x.SlackUserId == slackUserId);
             if (user != null)
             {
                 _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, User : " + user.Email);
-                // getting access token for that user
-                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, request for access token from oauth");
-                userAndTaskMailDetailsWithAccessToken.AccessToken = await _attachmentRepository.UserAccessTokenAsync(user.UserName);
-                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Accesstoken : " + userAndTaskMailDetailsWithAccessToken.AccessToken);
-                // getting user information from Promact Oauth Server
-                _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, requested for user details from oauth");
-                userAndTaskMailDetailsWithAccessToken.User = await _oauthCallsRepository.GetUserByUserIdAsync(user.Id, userAndTaskMailDetailsWithAccessToken.AccessToken);
-                if (userAndTaskMailDetailsWithAccessToken.User.Id != null)
+                if (_taskMailRepository.Any(x => x.EmployeeId == user.Id && x.CreatedOn.Day == DateTime.UtcNow.Day &&
+                 x.CreatedOn.Month == DateTime.UtcNow.Month && x.CreatedOn.Year == DateTime.UtcNow.Year))
                 {
-                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, receive user : " + userAndTaskMailDetailsWithAccessToken.User.Email);
+                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, get user details from promact slack table");
+                    userAndTaskMailDetails.User = _mapper.Map<ApplicationUser, User>(user);
+                }
+                else
+                {
+                    // getting user information from Promact Oauth Server
+                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, requested for user details from oauth");
+                    userAndTaskMailDetails.User = await _oauthCallsRepository.GetUserByUserIdAsync(user.Id,
+                        (await _attachmentRepository.UserAccessTokenAsync(user.UserName)));
+                }
+                if (userAndTaskMailDetails.User.Id != null)
+                {
+                    _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, receive user : " + userAndTaskMailDetails.User.Email);
                     // checking for previous task mail exist or not for today
-                    userAndTaskMailDetailsWithAccessToken.TaskMail = await _taskMailRepository.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetailsWithAccessToken.User.Id &&
+                    userAndTaskMailDetails.TaskMail = await _taskMailRepository.FirstOrDefaultAsync(x => x.EmployeeId == userAndTaskMailDetails.User.Id &&
                     x.CreatedOn.Day == DateTime.UtcNow.Day && x.CreatedOn.Month == DateTime.UtcNow.Month &&
                     x.CreatedOn.Year == DateTime.UtcNow.Year);
-                    if (userAndTaskMailDetailsWithAccessToken.TaskMail != null)
+                    if (userAndTaskMailDetails.TaskMail != null)
                     {
-                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail details for today : " + userAndTaskMailDetailsWithAccessToken.TaskMail.CreatedOn);
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail details for today : " + userAndTaskMailDetails.TaskMail.CreatedOn);
                         // getting task mail details for started task mail
-                        userAndTaskMailDetailsWithAccessToken.TaskList = await _taskMailDetailRepository.FetchAsync(x => x.TaskId == userAndTaskMailDetailsWithAccessToken.TaskMail.Id);
-                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail list have count : " + userAndTaskMailDetailsWithAccessToken.TaskList.Count());
+                        userAndTaskMailDetails.TaskList = await _taskMailDetailRepository.FetchAsync(x => x.TaskId == userAndTaskMailDetails.TaskMail.Id);
+                        _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail list have count : " + userAndTaskMailDetails.TaskList.Count());
                     }
                     else
                     {
                         _logger.Info("Task Mail Bot Module GetUserAndTaskMailDetailsAsync, Task mail not started for today");
                         // if task mail doesnot exist then ask user to start task mail
-                        userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.RequestToStartTaskMail;
+                        userAndTaskMailDetails.QuestionText = _stringConstant.RequestToStartTaskMail;
                     }
                 }
                 else
                     // if user doesn't exist in oAuth server
-                    userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
+                    userAndTaskMailDetails.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
             }
             else
                 // if user doesn't exist in ERP server
-                userAndTaskMailDetailsWithAccessToken.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
-            return userAndTaskMailDetailsWithAccessToken;
+                userAndTaskMailDetails.QuestionText = _stringConstant.YouAreNotInExistInOAuthServer;
+            return userAndTaskMailDetails;
         }
 
         /// <summary>
