@@ -146,7 +146,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     // getting inform of previous question was asked to user
                     var previousQuestion = await _botQuestionRepository.FindByIdAsync(taskDetails.QuestionId);
                     // checking if previous question was last and answered by user and previous task report was completed then asked for new task mail
-                    if (previousQuestion.OrderNumber <= QuestionOrder.TaskMailSend)
+                    if (previousQuestion.OrderNumber <= QuestionOrder.TaskMailSend || previousQuestion.OrderNumber == QuestionOrder.RestartTask)
                     {
                         // getting next question to be asked to user
                         var nextQuestion = await NextQuestionForTaskMailAsync(previousQuestion.OrderNumber);
@@ -203,6 +203,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 // getting last question of task mail
                                                 nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.SendEmail);
                                                 taskDetails.QuestionId = nextQuestion.Id;
+                                                taskDetails.Hours = (Convert.ToDecimal(_stringConstant.TaskMailMaximumTime) - (totalHourSpented - hour));
                                                 userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
                                                     _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
                                                 taskDetails.Comment = _stringConstant.StartWorking;
@@ -250,6 +251,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                     {
                                         // if previous question was comment of task and answer was not null/wrong value then answer will ask next question
                                         taskDetails.Comment = answer;
+                                        nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.RoadBlock);
                                         userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
                                         taskDetails.QuestionId = nextQuestion.Id;
                                     }
@@ -258,8 +260,39 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // if previous question was comment of task and answer was null or wrong value then answer will ask for comment again
                                         userAndTaskMailDetails.QuestionText = previousQuestion.QuestionStatement;
                                     }
-                                    userAndTaskMailDetails.QuestionText += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                        Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+                                }
+                                break;
+                            #endregion
+
+                            #region Restart Task
+                            case QuestionOrder.RestartTask:
+                                {
+                                    SendEmailConfirmation restartTaskConfirmation;
+                                    if(Enum.TryParse(answer, out restartTaskConfirmation))
+                                    {
+                                        switch(restartTaskConfirmation)
+                                        {
+                                            case SendEmailConfirmation.yes:
+                                                {
+                                                    // if previous question was send email of task and answer was no then answer will say thank you and task mail stopped
+                                                    nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.ConfirmSendEmail);
+                                                    taskDetails.QuestionId = nextQuestion.Id;
+                                                    _taskMailDetailRepository.Update(taskDetails);
+                                                    await _taskMailDetailRepository.SaveChangesAsync();
+                                                    userAndTaskMailDetails.QuestionText = await StartTaskMailAsync(userAndTaskMailDetails.User.SlackUserId);
+                                                }
+                                                break;
+                                            case SendEmailConfirmation.no:
+                                                {
+                                                    nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.Comment);
+                                                    taskDetails.QuestionId = nextQuestion.Id;
+                                                    userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
+                                                    userAndTaskMailDetails.QuestionText += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                        Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+                                                }
+                                                break;
+                                        }
+                                    }
                                 }
                                 break;
                             #endregion
