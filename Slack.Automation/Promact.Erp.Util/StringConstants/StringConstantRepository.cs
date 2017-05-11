@@ -3640,5 +3640,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "To add more task in your mail please write no and wait for completion of this process. Then ";
             }
         }
+
+        public string EighthQuestionTaskMail
+        {
+            get
+            {
+                return "Do you want to add another task?";
+            }
+        }
     }
 }

@@ -293,6 +293,10 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 break;
                                         }
                                     }
+                                    else
+                                        userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                            Environment.NewLine, previousQuestion.QuestionStatement);
                                 }
                                 break;
                             #endregion

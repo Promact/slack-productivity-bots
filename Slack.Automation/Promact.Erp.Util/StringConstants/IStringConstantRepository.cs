@@ -532,5 +532,6 @@
         #endregion
 
         string TaskMailRestartSuggestionMessage { get; }
+        string EighthQuestionTaskMail { get; }
     }
 }
