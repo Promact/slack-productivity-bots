@@ -74,6 +74,6 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// </summary>
         /// <param name="taskMailDetails">list of task mail details</param>
         /// <returns>task mail in string</returns>
-        string GetTaskMailInStringFormat(IEnumerable<TaskMailDetails> taskMailDetails);
+        string GetTaskMailInStringFormat(IEnumerable<TaskMailDetails> taskMailDetails); 
     }
 }
