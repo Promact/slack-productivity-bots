@@ -681,7 +681,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                     Environment.NewLine, previousQuestion.QuestionStatement);
             await UpdateTaskMailAsync(taskDetails);
             return userAndTaskMailDetails.QuestionText;
-        }
+        } 
         #endregion
     }
 }
