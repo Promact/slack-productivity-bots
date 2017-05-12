@@ -2,6 +2,7 @@
 using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Moq;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -55,7 +56,7 @@ namespace Promact.Core.Test
         private EmailApplication email = new EmailApplication();
         private readonly Mock<ILogger> _loggerMock;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
-
+        private readonly IAttachmentRepository _attachmentRepository;
         #endregion
 
         #region Constructor
@@ -75,6 +76,7 @@ namespace Promact.Core.Test
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             _taskMailReportRepository = _componentContext.Resolve<ITaskMailReportRepository>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
+            _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             Initialize();
         }
         #endregion
@@ -383,8 +385,12 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
+            var taskMailDetail = _taskMailDetailsDataRepository.GetAll();
+            var expectedReply = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                _attachmentRepository.GetTaskMailInStringFormat(taskMailDetail), Environment.NewLine, Environment.NewLine);
+            expectedReply += _stringConstant.SixthQuestionForTest;
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, _stringConstant.SixthQuestionForTest);
+            Assert.Equal(response, expectedReply);
         }
 
         /// <summary>
@@ -931,9 +937,14 @@ namespace Promact.Core.Test
             newTaskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
-            var expectedResponse = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
+            var taskMailDetail = await _taskMailDetailsDataRepository.FetchAsync(x => x.Status == TaskMailStatus.completed);
+            var expectedResponse = string.Format(_stringConstant.HourLimitExceed, Convert.ToDecimal(_stringConstant.TaskMailMaximumTime));
+            expectedResponse += Environment.NewLine;
+            expectedResponse += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                    _attachmentRepository.GetTaskMailInStringFormat(taskMailDetail), Environment.NewLine, Environment.NewLine);
+            expectedResponse += SixthQuestion.QuestionStatement;
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, expectedResponse);
+            Assert.NotEqual(response, string.Empty);
         }
 
 

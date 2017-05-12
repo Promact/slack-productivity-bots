@@ -24,7 +24,8 @@ namespace Promact.Core.Repository.AttachmentRepository
         #endregion
 
         #region Constructor
-        public AttachmentRepository(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant, IServiceRepository serviceRepository)
+        public AttachmentRepository(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant,
+            IServiceRepository serviceRepository)
         {
             _userManager = userManager;
             _stringConstant = stringConstant.StringConstant;
@@ -201,6 +202,25 @@ namespace Promact.Core.Repository.AttachmentRepository
             var decodeResponse = HttpUtility.UrlDecode(value[_stringConstant.Payload]);
             var response = JsonConvert.DeserializeObject<SlashChatUpdateResponse>(decodeResponse);
             return response;
+        }
+
+        /// <summary>
+        /// Method to get task mail in slack message format in string
+        /// </summary>
+        /// <param name="taskMailDetails">list of task mail details</param>
+        /// <returns>task mail in string</returns>
+        public string GetTaskMailInStringFormat(IEnumerable<TaskMailDetails> taskMailDetails)
+        {
+            string body = string.Empty;
+            int serialNumber = 1;
+            foreach (var taskMailDetail in taskMailDetails)
+            {
+                body += string.Format(_stringConstant.TaskMailUserViewBodyFormat, serialNumber,
+                    taskMailDetail.Description, taskMailDetail.Hours, taskMailDetail.Comment, taskMailDetail.Status.ToString(),
+                    Environment.NewLine);
+                serialNumber++;
+            }
+            return string.Format(_stringConstant.TaskMailUserViewHeaderFormat, Environment.NewLine, body);
         }
         #endregion
     }

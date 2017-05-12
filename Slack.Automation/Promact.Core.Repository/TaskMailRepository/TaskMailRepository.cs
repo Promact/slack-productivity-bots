@@ -185,6 +185,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                         // checking range of hours
                                         if (hour > 0 && hour <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
                                         {
+                                            decimal taskMailMaximumTime = Convert.ToDecimal(_stringConstant.TaskMailMaximumTime);
                                             // adding up all hours of task mail
                                             foreach (var task in userAndTaskMailDetails.TaskList)
                                             {
@@ -192,7 +193,7 @@ namespace Promact.Core.Repository.TaskMailRepository
                                             }
                                             totalHourSpented += hour;
                                             // checking whether all up hour doesnot exceed task mail hour limit
-                                            if (totalHourSpented <= Convert.ToInt32(_stringConstant.TaskMailMaximumTime))
+                                            if (totalHourSpented <= taskMailMaximumTime)
                                             {
                                                 taskDetails.Hours = hour;
                                                 userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
@@ -203,10 +204,13 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 // getting last question of task mail
                                                 nextQuestion = await NextQuestionForTaskMailAsync(QuestionOrder.SendEmail);
                                                 taskDetails.QuestionId = nextQuestion.Id;
-                                                taskDetails.Hours = (Convert.ToDecimal(_stringConstant.TaskMailMaximumTime) - (totalHourSpented - hour));
-                                                userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                                                    _stringConstant.HourLimitExceed, Environment.NewLine, nextQuestion.QuestionStatement);
+                                                taskDetails.Hours = (taskMailMaximumTime - (totalHourSpented - hour));
                                                 taskDetails.Comment = _stringConstant.StartWorking;
+                                                userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.HourLimitExceed, taskMailMaximumTime);
+                                                userAndTaskMailDetails.QuestionText += Environment.NewLine;
+                                                userAndTaskMailDetails.QuestionText += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                        _attachmentRepository.GetTaskMailInStringFormat(userAndTaskMailDetails.TaskList), Environment.NewLine, Environment.NewLine);
+                                                userAndTaskMailDetails.QuestionText += nextQuestion.QuestionStatement;
                                             }
                                         }
                                         else
@@ -316,7 +320,9 @@ namespace Promact.Core.Repository.TaskMailRepository
                                                 {
                                                     // if previous question was send email of task and answer was yes then answer will ask next question
                                                     taskDetails.QuestionId = nextQuestion.Id;
-                                                    userAndTaskMailDetails.QuestionText = nextQuestion.QuestionStatement;
+                                                    userAndTaskMailDetails.QuestionText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                                        _attachmentRepository.GetTaskMailInStringFormat(userAndTaskMailDetails.TaskList), Environment.NewLine, Environment.NewLine);
+                                                    userAndTaskMailDetails.QuestionText += nextQuestion.QuestionStatement;
                                                 }
                                                 break;
                                             case SendEmailConfirmation.no:
