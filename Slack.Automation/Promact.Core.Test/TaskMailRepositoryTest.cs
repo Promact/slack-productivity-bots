@@ -2,6 +2,7 @@
 using Autofac.Extras.NLog;
 using Microsoft.AspNet.Identity;
 using Moq;
+using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.SlackUserRepository;
@@ -51,10 +52,11 @@ namespace Promact.Core.Test
         private Question fifthQuestion = new Question();
         private Question SixthQuestion = new Question();
         private Question SeventhQuestion = new Question();
+        private Question EighthQuestion = new Question();
         private EmailApplication email = new EmailApplication();
         private readonly Mock<ILogger> _loggerMock;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
-
+        private readonly IAttachmentRepository _attachmentRepository;
         #endregion
 
         #region Constructor
@@ -74,6 +76,7 @@ namespace Promact.Core.Test
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             _taskMailReportRepository = _componentContext.Resolve<ITaskMailReportRepository>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
+            _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             Initialize();
         }
         #endregion
@@ -321,8 +324,6 @@ namespace Promact.Core.Test
             await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(null, _stringConstant.FirstNameForTest);
             var expectedReply = forthQuestion.QuestionStatement;
-            expectedReply += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
             Assert.Equal(response, expectedReply);
         }
 
@@ -336,6 +337,7 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
             await _botQuestionRepository.AddQuestionAsync(forthQuestion);
             await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(EighthQuestion);
             _taskMailDataRepository.Insert(taskMail);
             await _taskMailDataRepository.SaveChangesAsync();
             taskMailDetails.TaskId = taskMail.Id;
@@ -343,9 +345,7 @@ namespace Promact.Core.Test
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.StatusOfWorkForTest, _stringConstant.FirstNameForTest);
-            var expectedReply = _stringConstant.FifthQuestionForTest;
-            expectedReply += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
-                Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+            var expectedReply = _stringConstant.EighthQuestionTaskMail;
             Assert.Equal(response, expectedReply);
         }
 
@@ -385,8 +385,12 @@ namespace Promact.Core.Test
             taskMailDetails.QuestionId = fifthQuestion.Id;
             _taskMailDetailsDataRepository.Insert(taskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
+            var taskMailDetail = _taskMailDetailsDataRepository.GetAll();
+            var expectedReply = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                _attachmentRepository.GetTaskMailInStringFormat(taskMailDetail), Environment.NewLine, Environment.NewLine);
+            expectedReply += _stringConstant.SixthQuestionForTest;
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, _stringConstant.SixthQuestionForTest);
+            Assert.Equal(response, expectedReply);
         }
 
         /// <summary>
@@ -933,9 +937,14 @@ namespace Promact.Core.Test
             newTaskMailDetails.QuestionId = secondQuestion.Id;
             _taskMailDetailsDataRepository.Insert(newTaskMailDetails);
             await _taskMailDetailsDataRepository.SaveChangesAsync();
-            var expectedResponse = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.HourLimitExceed, Environment.NewLine, SixthQuestion.QuestionStatement);
+            var taskMailDetail = await _taskMailDetailsDataRepository.FetchAsync(x => x.Status == TaskMailStatus.completed);
+            var expectedResponse = string.Format(_stringConstant.HourLimitExceed, Convert.ToDecimal(_stringConstant.TaskMailMaximumTime));
+            expectedResponse += Environment.NewLine;
+            expectedResponse += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                    _attachmentRepository.GetTaskMailInStringFormat(taskMailDetail), Environment.NewLine, Environment.NewLine);
+            expectedResponse += SixthQuestion.QuestionStatement;
             var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.HourSpentForTesting, _stringConstant.FirstNameForTest);
-            Assert.Equal(response, expectedResponse);
+            Assert.NotEqual(response, string.Empty);
         }
 
 
@@ -980,7 +989,75 @@ namespace Promact.Core.Test
             await _userManager.CreateAsync(user);
             await _userManager.AddLoginAsync(user.Id, info);
         }
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started for restart task
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task QuestionAndAnswerRestartTaskAsync()
+        {
+            await mockAndUserCreateAsync();
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(firstQuestion);
+            await _botQuestionRepository.AddQuestionAsync(EighthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = EighthQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailYesForTest, _stringConstant.FirstNameForTest);
+            var text = firstQuestion.QuestionStatement;
+            Assert.Equal(response, text);
+        }
 
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started for restart task with answer no
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task QuestionAndAnswerRestartTaskForNextStepAsync()
+        {
+            await mockAndUserCreateAsync();
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(EighthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(SeventhQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = EighthQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(_stringConstant.SendEmailNoForTest, _stringConstant.FirstNameForTest);
+            var text = fifthQuestion.QuestionStatement;
+            text += string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                Environment.NewLine, _stringConstant.TaskMailRestartSuggestionMessage, _stringConstant.RequestToStartTaskMail.ToLower());
+            Assert.Equal(response, text);
+        }
+
+        /// <summary>
+        /// Test case for conduct task mail after started for task mail started for restart task with null answer
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task QuestionAndAnswerRestartTaskForNullAnswerAsync()
+        {
+            await mockAndUserCreateAsync();
+            await _slackUserRepository.AddSlackUserAsync(slackUserDetails);
+            await _botQuestionRepository.AddQuestionAsync(EighthQuestion);
+            await _botQuestionRepository.AddQuestionAsync(fifthQuestion);
+            _taskMailDataRepository.Insert(taskMail);
+            await _taskMailDataRepository.SaveChangesAsync();
+            taskMailDetails.TaskId = taskMail.Id;
+            taskMailDetails.QuestionId = EighthQuestion.Id;
+            _taskMailDetailsDataRepository.Insert(taskMailDetails);
+            await _taskMailDetailsDataRepository.SaveChangesAsync();
+            var response = await _taskMailRepository.QuestionAndAnswerAsync(null, _stringConstant.FirstNameForTest);
+            var text = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,
+                                            _stringConstant.SendTaskMailConfirmationErrorMessage,
+                                            Environment.NewLine, EighthQuestion.QuestionStatement);
+            Assert.Equal(response, text);
+        }
         #endregion
 
         #region Initialisation
@@ -1062,6 +1139,11 @@ namespace Promact.Core.Test
             email.Subject = _stringConstant.TaskMailSubject;
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
             _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+
+            EighthQuestion.CreatedOn = DateTime.UtcNow;
+            EighthQuestion.OrderNumber = QuestionOrder.RestartTask;
+            EighthQuestion.QuestionStatement = _stringConstant.EighthQuestionTaskMail;
+            EighthQuestion.Type = BotQuestionType.TaskMail;
         }
 
         private void LoggerMocking()

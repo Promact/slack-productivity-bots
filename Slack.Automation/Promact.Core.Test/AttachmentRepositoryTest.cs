@@ -7,6 +7,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringLiteral;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -202,6 +203,26 @@ namespace Promact.Core.Test
             value[_stringConstant.Payload] = _stringConstant.LeaveUpdateResponseJsonString;
             var response = _attachmentRepository.SlashChatUpdateResponseTransfrom(value);
             Assert.Equal(response.User.Id, _stringConstant.UserSlackId);
+        }
+
+        /// <summary>
+        /// Test case to check method SlashChatUpdateResponseTransfrom of Attachment Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetTaskMailInStringFormat()
+        {
+            List<TaskMailDetails> taskMailDetails = new List<TaskMailDetails>()
+            {
+                new TaskMailDetails()
+                {
+                    Description = _stringConstant.TaskMailDescription,
+                    Comment = _stringConstant.TaskMailComment,
+                    Hours = Convert.ToDecimal(_stringConstant.HourSpentForTest),
+                    Status = TaskMailStatus.completed
+                }
+            };
+            var response = _attachmentRepository.GetTaskMailInStringFormat(taskMailDetails);
+            Assert.NotEqual(response, string.Empty);
         }
         #endregion
     }
