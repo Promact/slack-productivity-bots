@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 
 namespace Promact.Core.Test.EnvironmentVariableRepository
@@ -118,6 +119,14 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
             get
             {
                 return "YourTaskmailAccessToken";
+            }
+        }
+
+        public string LeaveManagementBotAccessToken
+        {
+            get
+            {
+                return "LeaveManagementBotAccessToken";
             }
         }
     }

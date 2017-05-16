@@ -535,5 +535,27 @@
         string EighthQuestionTaskMail { get; }
         string TaskMailUserViewBodyFormat { get; }
         string TaskMailUserViewHeaderFormat { get; }
+        string LeaveManagementBotAccessToken { get; }
+        string IncorrectLeaveCancelCommandMessage { get; }
+        string ProperActionErrorMessage { get; }
+        string LeaveBotDoesNotUnderStandErrorMessage { get; }
+        string EndDateBeyondStartDateErrorMessage { get; }
+        string RejoinDateBeyondEndDateErrorMessage { get; }
+        string LeaveDoesNotExistErrorMessage { get; }
+        string LeaveCancelSuccessfulMessage { get; }
+        string LeaveDoesNotExistErrorMessageWithLeaveIdFormat { get; }
+        string LeaveCancelCommandErrorFormatMessage { get; }
+        string LeaveHelpBotCommands { get; }
+        string LeaveStatusAlreadyUpdatedErrorMessge { get; }
+        string LeaveListForOtherErrorMessage { get; }
+        string UserIsNotAllowedToListOtherLeaveDetailsMessage { get; }
+        string MessageToRequestToAddToSlackOtherUser { get; }
+        string UserNotFoundRequestToAddToSlackOtherUser { get; }
+        string LeaveUpdateMessage { get; }
+        string LeaveUpdateLeaveIdErrorFormatErrorMessage { get; }
+        string LeaveUpdateFormatMessage { get; }
+        string RejoinDateMessage { get; }
+        string EndDateMessage { get; }
+        string DateFormatError { get; }
     }
 }

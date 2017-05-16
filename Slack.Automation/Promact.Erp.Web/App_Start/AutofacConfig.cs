@@ -12,6 +12,7 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Core.Repository.LeaveManagementBotRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
@@ -101,6 +102,7 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
+            builder.RegisterType<LeaveManagementBotRepository>().As<ILeaveManagementBotRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using NLog;
+using Promact.Core.Repository.LeaveManagementBotRepository;
 using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
@@ -16,9 +17,7 @@ namespace Promact.Erp.Core.Controllers
 {
     public class Bot
     {
-
         #region Private Variables
-
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
         private readonly ILogger _scrumlogger;
@@ -27,16 +26,13 @@ namespace Promact.Erp.Core.Controllers
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         private static string _scrumBotId;
         private readonly IComponentContext _component;
-
+        private readonly ILeaveManagementBotRepository _leaveManagementBotRepository;
         #endregion
 
-
         #region Constructor
-
-        public Bot(ITaskMailRepository taskMailRepository,
-           ISlackUserRepository slackUserDetailsRepository,
-           ISingletonStringLiteral stringConstant,
-           IEnvironmentVariableRepository environmentVariableRepository, IComponentContext component)
+        public Bot(ITaskMailRepository taskMailRepository, ISlackUserRepository slackUserDetailsRepository,
+            ISingletonStringLiteral stringConstant, IEnvironmentVariableRepository environmentVariableRepository,
+            IComponentContext component, ILeaveManagementBotRepository leaveManagementBotRepository)
         {
             _taskMailRepository = taskMailRepository;
             _slackUserDetailsRepository = slackUserDetailsRepository;
@@ -45,14 +41,11 @@ namespace Promact.Erp.Core.Controllers
             _stringConstant = stringConstant.StringConstant;
             _environmentVariableRepository = environmentVariableRepository;
             _component = component;
+            _leaveManagementBotRepository = leaveManagementBotRepository;
         }
-
         #endregion
 
-        
         #region Public Methods
-
-
         /// <summary>
         /// Used to connect task mail bot and to capture task mail
         /// </summary>
@@ -110,7 +103,6 @@ namespace Promact.Erp.Core.Controllers
                 throw ex;
             }
         }
-
 
         /// <summary>
         /// Used for Scrum meeting bot connection and to conduct scrum meeting. - JJ 
@@ -175,7 +167,42 @@ namespace Promact.Erp.Core.Controllers
             };
         }
 
-
+        /// <summary>
+        /// Used to connect leave management bot & send and recieve - SS
+        /// </summary>
+        public void LeaveManagement()
+        {
+            SlackSocketClient client = new SlackSocketClient(_environmentVariableRepository.LeaveManagementBotAccessToken);
+            // assigning bot token on Slack Socket Client
+            // Creating a Action<MessageReceived> for Slack Socket Client to get connect. No use in task mail bot
+            MessageReceived messageReceive = new MessageReceived();
+            messageReceive.ok = true;
+            Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
+            // Telling Slack Socket Client to the bot whose access token was given early
+            client.Connect((connected) => { });
+            try
+            {
+                // Method will hit when someone send some text in task mail bot
+                client.OnMessageReceived += async (message) =>
+                {
+                    var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                    string replyText = string.Empty;
+                    var text = message.text.ToLower();
+                    if (user != null)
+                        replyText = await _leaveManagementBotRepository.ProcessLeaveAsync(user.UserId, text);
+                    else
+                        replyText = _stringConstant.NoSlackDetails;
+                    // Method to send back response to task mail bot
+                    client.SendMessage(showMethod, message.channel, replyText);
+                };
+            }
+            catch (Exception ex)
+            {
+                client.CloseSocket();
+                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
+                    Environment.NewLine + ex.StackTrace);
+            }
+        }
         #endregion
     }
 }

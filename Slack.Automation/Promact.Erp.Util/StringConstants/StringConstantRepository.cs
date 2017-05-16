@@ -2071,7 +2071,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sick leave doesn't exist for this leave Id";
+                return "Sick leave doesn't exist for leave Id - {0}";
             }
         }
         public string UpdateEnterAValidLeaveId
@@ -2859,7 +2859,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Casual leave {0} {1} {2} {3} {4} {5}";
+                return "Casual leave Id - {0} for {1} from {2} to {3} is {4} {5}";
             }
         }
 
@@ -2867,7 +2867,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Sick leave {0} {1} {2} {3} {4}";
+                return "Sick leave Id - {0} for {1} from {2} to {3} is {4} {5}";
             }
         }
 
@@ -3662,6 +3662,182 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "*Here is your today's task mail details* :{0}{1}";
+            }
+        }
+
+        public string LeaveManagementBotAccessToken
+        {
+            get
+            {
+                return "LeaveManagementBotAccessToken";
+            }
+        }
+
+        public string IncorrectLeaveCancelCommandMessage
+        {
+            get
+            {
+                return "Incorrect format. Please write leave cancel [leaveId]";
+            }
+        }
+
+        public string ProperActionErrorMessage
+        {
+            get
+            {
+                return "Please enter proper command for leave. Fo help write - *leave help*";
+            }
+        }
+
+        public string LeaveBotDoesNotUnderStandErrorMessage
+        {
+            get
+            {
+                return "Uhm… I didn't get that, sorry. If you want to see a list of commands I understand type *leave help*";
+            }
+        }
+
+        public string EndDateBeyondStartDateErrorMessage
+        {
+            get
+            {
+                return EndDateMessage + "{0}{1}";
+            }
+        }
+
+        public string RejoinDateBeyondEndDateErrorMessage
+        {
+            get
+            {
+                return RejoinDateMessage + "{0}{1}";
+            }
+        }
+
+        public string LeaveDoesNotExistErrorMessage
+        {
+            get
+            {
+                return "No leave record found.";
+            }
+        }
+
+        public string LeaveCancelSuccessfulMessage
+        {
+            get
+            {
+                return "Leave successfully cancelled";
+            }
+        }
+
+        public string LeaveDoesNotExistErrorMessageWithLeaveIdFormat
+        {
+            get
+            {
+                return "Leave doesnot exist for Id - {0}.";
+            }
+        }
+
+        public string LeaveCancelCommandErrorFormatMessage
+        {
+            get
+            {
+                return string.Format("Please enter a numeric value of leave Id.{0}Example - leave cancel [leaveId-numeric]", Environment.NewLine);
+            }
+        }
+
+        public string LeaveHelpBotCommands
+        {
+            get
+            {
+                return string.Format("To apply leave - *leave apply*{0}For leave list - *leave list*{0}For leave list of other - *leave list [username]*{0}For leave cancel - *leave cancel [leaveId]*{0}For last leave status - *leave status*{0}For leave balance - *leave balance*{0}", Environment.NewLine);
+            }
+        }
+
+        public string LeaveStatusAlreadyUpdatedErrorMessge
+        {
+            get
+            {
+                return "Your leave - {0} for {1} has been already {2}. So you cannot cancel it.";
+            }
+        }
+
+        public string LeaveListForOtherErrorMessage
+        {
+            get
+            {
+                return "No leave record found for {0}";
+            }
+        }
+
+        public string UserIsNotAllowedToListOtherLeaveDetailsMessage
+        {
+            get
+            {
+                return "You are not authorize to view other user's leave detail";
+            }
+        }
+
+        public string MessageToRequestToAddToSlackOtherUser
+        {
+            get
+            {
+                return "Please ask user to LogIn with promact";
+            }
+        }
+
+        public string UserNotFoundRequestToAddToSlackOtherUser
+        {
+            get
+            {
+                return "{0}'s slack detail is not found. Ask user to Add to slack.";
+            }
+        }
+
+        public string LeaveUpdateMessage
+        {
+            get
+            {
+                return "Leave Id - {0} has been updated.{1}Thank you!";
+            }
+        }
+
+        public string LeaveUpdateLeaveIdErrorFormatErrorMessage
+        {
+            get
+            {
+                return "Please enter a numeric value of leave Id.{0}Example - leave update [leaveId] [End-Date] [Rejoin-Date]";
+            }
+        }
+
+        public string LeaveUpdateFormatMessage
+        {
+            get
+            {
+                return "To update sick leave - leave update [leaveId] [End-Date] [Rejoin-Date]";
+            }
+        }
+
+        public string RejoinDateMessage
+        {
+            get
+            {
+                return "Re-join Date cannot be beyond the end date.";
+            }
+        }
+
+        public string EndDateMessage
+        {
+            get
+            {
+                return "End Date cannot be beyond the start date.";
+            }
+        }
+
+        public string DateFormatError
+        {
+            get
+            {
+                return "Date Format Error";
             }
         }
     }

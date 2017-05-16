@@ -26,6 +26,7 @@ namespace Promact.Erp.Web
             Bot bot = container.Resolve<Bot>();
             bot.Scrum();
             bot.TaskMailBot();
+            bot.LeaveManagement();
             ConfigureAuth(app, container);
 
         }

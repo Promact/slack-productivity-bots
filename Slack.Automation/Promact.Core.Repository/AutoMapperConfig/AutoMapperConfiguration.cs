@@ -16,7 +16,7 @@ namespace Promact.Core.Repository.AutoMapperConfig
                 cfg.CreateMap<GroupAC, Group>().ReverseMap();    
                 cfg.CreateMap<MailSetting, MailSettingAC>().ReverseMap();
                 cfg.CreateMap<User, ApplicationUser>().ReverseMap();
-              
+                cfg.CreateMap<TemporaryLeaveRequestDetail, LeaveRequest>().ReverseMap();
                  
                 cfg.CreateMap<SlackUserDetails, SlackUserDetails>()
                      .ForMember(des => des.Id, opt =>
