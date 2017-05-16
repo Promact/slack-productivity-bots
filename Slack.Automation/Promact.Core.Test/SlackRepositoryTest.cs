@@ -858,7 +858,8 @@ namespace Promact.Core.Test
             await _slackUserRepository.AddSlackUserAsync(slackUser);
             leave.Type = LeaveType.sl;
             await _leaveRequestRepository.ApplyLeaveAsync(leave);
-            var replyText = string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason, leave.FromDate.ToShortDateString(), leave.Status, System.Environment.NewLine);
+            var replyText = string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason, 
+                leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, System.Environment.NewLine);
             MockingOfUserDetails();
             MockingUserDetialFromSlackUserId();
             slackLeave.Text = _stringConstant.LeaveListCommandForTest;
