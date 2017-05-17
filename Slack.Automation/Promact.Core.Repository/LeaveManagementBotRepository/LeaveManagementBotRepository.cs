@@ -69,7 +69,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             var user = await GetUserDetailsFromOAuthAsync(slackUserId);
             if (user != null)
             {
-                if (slackText[0] == _stringConstant.Leave)
+                if (slackText[0] == _stringConstant.Leave && slackText.Count > 1)
                 {
                     SlackAction slackAction;
                     if (Enum.TryParse(slackText[1], out slackAction))
@@ -124,6 +124,41 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             else
                 replyText = _stringConstant.SorryYouCannotApplyLeave;
             return replyText;
+        }
+
+        /// <summary>
+        /// method to convert slack user id to slack user's name - SS
+        /// </summary>
+        /// <param name="message">message from slack</param>
+        /// <param name="userNotFound">if user is not found</param>
+        /// <returns>message after conversation</returns>
+        public string ProcessToConvertSlackIdToSlackUserName(string message, out bool userNotFound)
+        {
+            // method to convert user id to user's name
+            if (message.Contains("<@"))
+            {
+                int fromIndex = message.IndexOf("<@", StringComparison.Ordinal) + 2;
+                int toIndex = message.LastIndexOf(">", StringComparison.Ordinal);
+                //the slack userId is fetched
+                var applicantId = message.Substring(fromIndex, toIndex - fromIndex);
+                var applicant = _slackUserRepository.GetByIdAsync(applicantId).Result;
+                toIndex += 1;
+                fromIndex -= 2;
+                var selectedText = message.Substring(fromIndex, toIndex - fromIndex);
+                if (applicant != null)
+                {
+                    userNotFound = false;
+                    message = message.Replace(selectedText, applicant.Name);
+                }
+                else
+                {
+                    userNotFound = true;
+                    message = string.Format(_stringConstant.UserNotFoundRequestToAddToSlackOtherUser, selectedText);
+                }
+            }
+            else
+                userNotFound = false;
+            return message;
         }
         #endregion
 

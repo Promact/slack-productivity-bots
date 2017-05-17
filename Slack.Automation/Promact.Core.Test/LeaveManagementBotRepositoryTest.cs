@@ -939,6 +939,45 @@ namespace Promact.Core.Test
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, message);
             Assert.Equal(result, _stringConstant.AdminErrorMessageUpdateSickLeave);
         }
+
+        /// <summary>
+        /// Method to convert slack user id to slack user's name for user found - SS
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public async Task ProcessToConvertSlackIdToSlackUserNameForUserFoundAsync()
+        {
+            await AddEmployeeSlackDetailAsync();
+            bool result;
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok + " <@" +
+                _stringConstant.TeamLeaderSlackId + ">", out result);
+            Assert.False(result);
+        }
+
+        /// <summary>
+        /// Method to convert slack user id to slack user's name for user not found - SS
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public void ProcessToConvertSlackIdToSlackUserNameForUserNotFound()
+        {
+            bool result;
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok + " <@" +
+                _stringConstant.TeamLeaderSlackId + ">", out result);
+            Assert.True(result);
+        }
+
+        /// <summary>
+        /// Method to convert slack user id to slack user's name for local string - SS
+        /// </summary>
+        /// <returns></returns>
+        [Fact, Trait("Category", "Required")]
+        public void ProcessToConvertSlackIdToSlackUserNameNormalString()
+        {
+            bool result;
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok, out result);
+            Assert.False(result);
+        }
         #endregion
 
         #region Initialisation

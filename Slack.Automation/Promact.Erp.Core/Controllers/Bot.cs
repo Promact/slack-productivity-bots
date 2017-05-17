@@ -185,13 +185,20 @@ namespace Promact.Erp.Core.Controllers
                 // Method will hit when someone send some text in task mail bot
                 client.OnMessageReceived += async (message) =>
                 {
-                    var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                    bool errorInUserConversion;
                     string replyText = string.Empty;
-                    var text = message.text.ToLower();
-                    if (user != null)
-                        replyText = await _leaveManagementBotRepository.ProcessLeaveAsync(user.UserId, text);
+                    message.text = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(message.text, out errorInUserConversion);
+                    if (!errorInUserConversion)
+                    {
+                        var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
+                        var text = message.text.ToLower();
+                        if (user != null)
+                            replyText = await _leaveManagementBotRepository.ProcessLeaveAsync(user.UserId, text);
+                        else
+                            replyText = _stringConstant.NoSlackDetails;
+                    }
                     else
-                        replyText = _stringConstant.NoSlackDetails;
+                        replyText = message.text;
                     // Method to send back response to task mail bot
                     client.SendMessage(showMethod, message.channel, replyText);
                 };

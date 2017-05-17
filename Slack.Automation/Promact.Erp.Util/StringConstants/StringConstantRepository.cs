@@ -3685,7 +3685,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please enter proper command for leave. Fo help write - *leave help*";
+                return "Please enter proper command for leave. For help write - *leave help*";
             }
         }
 
@@ -3789,7 +3789,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "{0}'s slack detail is not found. Ask user to Add to slack.";
+                return "{0} 's slack detail is not found. Ask {0} to Add to slack.";
             }
         }
 
