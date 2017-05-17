@@ -556,5 +556,21 @@
         public string RejoinDateMessage { get; set; }
         public string EndDateMessage { get; set; }
         public string DateFormatError { get; set; }
+        public string FirstQuestionLeaveManagement { get; set; }
+        public string SecondQuestionLeaveManagement { get; set; }
+        public string ThirdQuestionLeaveManagement { get; set; }
+        public string FourthQuestionLeaveManagement { get; set; }
+        public string FifthQuestionLeaveManagement { get; set; }
+        public string SixthQuestionLeaveManagement { get; set; }
+        public string LeaveApplyCommand { get; set; }
+        public string ManagementIdForTest { get; set; }
+        public string LeaveCancelUnAuthorizeErrorMessage { get; set; }
+        public string LeaveUpdatedMessage { get; set; }
+        public string LeaveProcessWrongCommand { get; set; }
+        public string LeaveListCommand { get; set; }
+        public string LeaveCancelCommand { get; set; }
+        public string LeaveStatusCommand { get; set; }
+        public string LeaveBalanceCommand { get; set; }
+        public string LeaveHelpCommand { get; set; }
     }
 }

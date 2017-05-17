@@ -8,7 +8,6 @@ using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
 using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
@@ -106,7 +105,13 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                                 replyText = await UpdateSickLeaveByAdminAsync(slackText, user.Id);
                                 break;
                             default:
-                                replyText = _stringConstant.LeaveHelpBotCommands;
+                                {
+                                    if (await _oauthCallRepository.UserIsAdminAsync(user.Id, (await _attachmentRepository.UserAccessTokenAsync(user.UserName))))
+                                        replyText = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
+                                            _stringConstant.LeaveHelpBotCommands, _stringConstant.LeaveUpdateFormatMessage);
+                                    else
+                                        replyText = _stringConstant.LeaveHelpBotCommands;
+                                }
                                 break;
                         }
                     }
@@ -487,14 +492,19 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                 var leave = await _leaveRequestRepository.LeaveByIdAsync(leaveId);
                 if (leave != null)
                 {
-                    if (leave.Status == Condition.Pending)
+                    if (leave.EmployeeId == userId)
                     {
-                        leave.Status = Condition.Cancel;
-                        await _leaveRequestRepository.UpdateLeaveAsync(leave);
-                        return _stringConstant.LeaveCancelSuccessfulMessage;
+                        if (leave.Status == Condition.Pending)
+                        {
+                            leave.Status = Condition.Cancel;
+                            await _leaveRequestRepository.UpdateLeaveAsync(leave);
+                            return _stringConstant.LeaveCancelSuccessfulMessage;
+                        }
+                        else
+                            return string.Format(_stringConstant.LeaveStatusAlreadyUpdatedErrorMessge, leave.Id, leave.Reason, leave.Status);
                     }
                     else
-                        return string.Format(_stringConstant.LeaveStatusAlreadyUpdatedErrorMessge, leave.Id, leave.Reason, leave.Status);
+                        return string.Format(_stringConstant.LeaveCancelUnAuthorizeErrorMessage, leaveId);
                 }
                 else
                     return string.Format(_stringConstant.LeaveDoesNotExistErrorMessageWithLeaveIdFormat, leaveId);
@@ -514,7 +524,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             var leave = (_leaveRequestRepository.LeaveListByUserId(userId).ToList()).LastOrDefault();
             if (leave != null)
             {
-                replyText += string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id,
+                replyText = string.Format(_stringConstant.ReplyTextForCasualLeaveList, leave.Id,
                             leave.Reason, leave.FromDate.ToShortDateString(),
                             leave.EndDate.Value.ToShortDateString(), leave.Status,
                             Environment.NewLine);
@@ -546,9 +556,10 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         }
 
         /// <summary>
-        /// Method to check leave's start date is not beyond today. Back date checking - SS
+        /// Method to check leave's first date is not beyond toCheckDate. Back date checking - SS
         /// </summary>
-        /// <param name="startDate">leave start date</param>
+        /// <param name="firstDate">date with which date to be check</param>
+        /// <param name="toCheckDate">date to be check</param>
         /// <returns>true or false</returns>
         private bool LeaveDateValid(DateTime firstDate, DateTime toCheckDate)
         {
@@ -572,7 +583,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             foreach (var leave in leaves)
             {
                 var res = leave.FromDate.CompareTo(date);
-                if (date >= leave.FromDate && date <= leave.EndDate.Value)
+                if (date.Date >= leave.FromDate.Date && date.Date <= leave.EndDate.Value.Date)
                 {
                     leaveExist = true;
                     break;
@@ -627,11 +638,11 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                                 }
                                 else if (replyText.Contains(_stringConstant.RejoinDateMessage))
                                 {
-                                    replyText = string.Format(_stringConstant.RejoinDateBeyondEndDateErrorMessage, Environment.NewLine, 
+                                    replyText = string.Format(_stringConstant.RejoinDateBeyondEndDateErrorMessage, Environment.NewLine,
                                         _stringConstant.LeaveUpdateFormatMessage);
                                     return replyText;
                                 }
-                                else if (replyText.Contains(_stringConstant.DateFormatError))
+                                else
                                 {
                                     string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                                     var dateErrorMessage = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
@@ -639,12 +650,10 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                                         Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
                                     return replyText;
                                 }
-                                else
-                                    return replyText;
                             }
                             else if (replyText.Contains(_stringConstant.EndDateMessage))
                             {
-                                replyText = string.Format(_stringConstant.EndDateBeyondStartDateErrorMessage,Environment.NewLine,
+                                replyText = string.Format(_stringConstant.EndDateBeyondStartDateErrorMessage, Environment.NewLine,
                                     _stringConstant.LeaveUpdateFormatMessage);
                                 return replyText;
                             }
@@ -652,7 +661,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                             {
                                 string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                                 var dateErrorMessage = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
-                                replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat,dateErrorMessage,
+                                replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, dateErrorMessage,
                                     Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
                                 return replyText;
                             }

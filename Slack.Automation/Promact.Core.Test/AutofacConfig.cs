@@ -39,6 +39,7 @@ using Promact.Core.Repository.GroupRepository;
 using Promact.Core.Repository.RedmineRepository;
 using Promact.Erp.Util.StringLiteral;
 using Newtonsoft.Json;
+using Promact.Core.Repository.LeaveManagementBotRepository;
 
 namespace Promact.Core.Test
 {
@@ -105,6 +106,7 @@ namespace Promact.Core.Test
 
             builder.RegisterType<StringLiteral>().As<IStringLiteral>();
             builder.RegisterType<SingletonStringLiteral>().As<ISingletonStringLiteral>().SingleInstance();
+            builder.RegisterType<LeaveManagementBotRepository>().As<ILeaveManagementBotRepository>();
 
             var container = builder.Build();
             StringConstantSetUp(container);

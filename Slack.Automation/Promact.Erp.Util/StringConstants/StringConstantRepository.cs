@@ -3840,5 +3840,133 @@ namespace Promact.Erp.Util.StringConstants
                 return "Date Format Error";
             }
         }
+
+        public string FirstQuestionLeaveManagement
+        {
+            get
+            {
+                return "Which type of leave you want to apply for - cl or sl?";
+            }
+        }
+
+        public string SecondQuestionLeaveManagement
+        {
+            get
+            {
+                return "Mention the reason for your leave";
+            }
+        }
+
+        public string ThirdQuestionLeaveManagement
+        {
+            get
+            {
+                return "Mention the date from, you want to apply leave";
+            }
+        }
+
+        public string FourthQuestionLeaveManagement
+        {
+            get
+            {
+                return "Mention the date upto, you want to apply leave";
+            }
+        }
+
+        public string FifthQuestionLeaveManagement
+        {
+            get
+            {
+                return "Mention the date, you want to rejoing your duties";
+            }
+        }
+
+        public string SixthQuestionLeaveManagement
+        {
+            get
+            {
+                return "Your leave is ready. Do you want to apply?";
+            }
+        }
+
+        public string LeaveApplyCommand
+        {
+            get
+            {
+                return "leave apply";
+            }
+        }
+
+        public string ManagementIdForTest
+        {
+            get
+            {
+                return "96f42a76-0356-4add-ba41-9f811ae22e2e";
+            }
+        }
+
+        public string LeaveCancelUnAuthorizeErrorMessage
+        {
+            get
+            {
+                return "Leave Id - {0} doesn't belong to you. You are not allowed cancel leave";
+            }
+        }
+
+        public string LeaveUpdatedMessage
+        {
+            get
+            {
+                return "leave update {0} {1} {2}";
+            }
+        }
+
+        public string LeaveProcessWrongCommand
+        {
+            get
+            {
+                return "leave abc";
+            }
+        }
+
+        public string LeaveListCommand
+        {
+            get
+            {
+                return "leave list ";
+            }
+        }
+
+        public string LeaveCancelCommand
+        {
+            get
+            {
+                return "leave cancel ";
+            }
+        }
+
+        public string LeaveStatusCommand
+        {
+            get
+            {
+                return "leave status";
+            }
+        }
+
+        public string LeaveBalanceCommand
+        {
+            get
+            {
+                return "leave balance";
+            }
+        }
+
+        public string LeaveHelpCommand
+        {
+            get
+            {
+                return "leave help";
+            }
+        }
     }
 }
