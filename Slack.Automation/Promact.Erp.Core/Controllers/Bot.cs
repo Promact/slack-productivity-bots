@@ -26,13 +26,13 @@ namespace Promact.Erp.Core.Controllers
         private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         private static string _scrumBotId;
         private readonly IComponentContext _component;
-        private readonly ILeaveManagementBotRepository _leaveManagementBotRepository;
+        private ILeaveManagementBotRepository _leaveManagementBotRepository;
         #endregion
 
         #region Constructor
         public Bot(ITaskMailRepository taskMailRepository, ISlackUserRepository slackUserDetailsRepository,
             ISingletonStringLiteral stringConstant, IEnvironmentVariableRepository environmentVariableRepository,
-            IComponentContext component, ILeaveManagementBotRepository leaveManagementBotRepository)
+            IComponentContext component)
         {
             _taskMailRepository = taskMailRepository;
             _slackUserDetailsRepository = slackUserDetailsRepository;
@@ -41,7 +41,6 @@ namespace Promact.Erp.Core.Controllers
             _stringConstant = stringConstant.StringConstant;
             _environmentVariableRepository = environmentVariableRepository;
             _component = component;
-            _leaveManagementBotRepository = leaveManagementBotRepository;
         }
         #endregion
 
@@ -185,6 +184,7 @@ namespace Promact.Erp.Core.Controllers
                 // Method will hit when someone send some text in task mail bot
                 client.OnMessageReceived += async (message) =>
                 {
+                    _leaveManagementBotRepository = _component.Resolve<ILeaveManagementBotRepository>();
                     bool errorInUserConversion;
                     string replyText = string.Empty;
                     message.text = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(message.text, out errorInUserConversion);
