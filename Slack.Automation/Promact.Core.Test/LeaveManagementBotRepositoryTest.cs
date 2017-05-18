@@ -561,6 +561,7 @@ namespace Promact.Core.Test
             await AddQuestionAsync();
             await AddUserAndMockAccessTokenReturnAsync();
             MockGetUserDetails();
+            MockingUserIsAdmin();
             await AddEmployeeSlackDetailAsync();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
                 + _stringConstant.TeamLeader);
@@ -576,6 +577,7 @@ namespace Promact.Core.Test
             await AddQuestionAsync();
             await AddUserAndMockAccessTokenReturnAsync();
             MockGetUserDetails();
+            MockingUserIsAdmin();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
                 + _stringConstant.TeamLeader);
             var expectedResult = string.Format(_stringConstant.UserNotFoundRequestToAddToSlackOtherUser, _stringConstant.TeamLeader);
