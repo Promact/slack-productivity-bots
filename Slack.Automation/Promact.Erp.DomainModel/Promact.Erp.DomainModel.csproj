@@ -178,6 +178,7 @@
     <Compile Include="Models\GroupEmailMapping.cs" />
     <Compile Include="Models\MailSetting.cs" />
     <Compile Include="Models\MailSettingMapping.cs" />
+    <Compile Include="Models\TemporaryLeaveRequestDetail.cs" />
     <Compile Include="Models\TemporaryScrumDetails.cs" />
     <Compile Include="ApplicationClass\User.cs" />
     <Compile Include="ApplicationClass\UserAndTaskMailDetailsAC.cs" />

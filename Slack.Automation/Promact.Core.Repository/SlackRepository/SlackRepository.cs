@@ -426,7 +426,7 @@ namespace Promact.Core.Repository.SlackRepository
                     else
                     {
                         replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id,
-                            leave.Reason, leave.FromDate.ToShortDateString(), leave.Status,
+                            leave.Reason, leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status,
                             Environment.NewLine);
                     }
                 }

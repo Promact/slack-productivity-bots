@@ -100,7 +100,8 @@ namespace Promact.Erp.DomainModel.ApplicationClass
     public enum BotQuestionType
     {
         Scrum = 1,
-        TaskMail = 2
+        TaskMail = 2,
+        LeaveManagement = 3
     }
 
     /// <summary>
@@ -118,7 +119,13 @@ namespace Promact.Erp.DomainModel.ApplicationClass
         Yesterday = 8,
         Today = 9,
         RoadBlock = 10,
-        RestartTask = 11
+        RestartTask = 11,
+        LeaveType = 12,
+        Reason = 13,
+        FromDate = 14,
+        EndDate = 15,
+        RejoinDate = 16,
+        SendLeaveMail = 17
     }
 
     public enum TaskMailCondition

@@ -534,5 +534,45 @@
         public string EighthQuestionTaskMail { get; set; }
         public string TaskMailUserViewBodyFormat { get; set; }
         public string TaskMailUserViewHeaderFormat { get; set; }
+        public string LeaveManagementBotAccessToken { get; set; }
+        public string IncorrectLeaveCancelCommandMessage { get; set; }
+        public string ProperActionErrorMessage { get; set; }
+        public string LeaveBotDoesNotUnderStandErrorMessage { get; set; }
+        public string EndDateBeyondStartDateErrorMessage { get; set; }
+        public string RejoinDateBeyondEndDateErrorMessage { get; set; }
+        public string LeaveDoesNotExistErrorMessage { get; set; }
+        public string LeaveCancelSuccessfulMessage { get; set; }
+        public string LeaveDoesNotExistErrorMessageWithLeaveIdFormat { get; set; }
+        public string LeaveCancelCommandErrorFormatMessage { get; set; }
+        public string LeaveHelpBotCommands { get; set; }
+        public string LeaveStatusAlreadyUpdatedErrorMessge { get; set; }
+        public string LeaveListForOtherErrorMessage { get; set; }
+        public string UserIsNotAllowedToListOtherLeaveDetailsMessage { get; set; }
+        public string MessageToRequestToAddToSlackOtherUser { get; set; }
+        public string UserNotFoundRequestToAddToSlackOtherUser { get; set; }
+        public string LeaveUpdateMessage { get; set; }
+        public string LeaveUpdateLeaveIdErrorFormatErrorMessage { get; set; }
+        public string LeaveUpdateFormatMessage { get; set; }
+        public string RejoinDateMessage { get; set; }
+        public string EndDateMessage { get; set; }
+        public string DateFormatError { get; set; }
+        public string FirstQuestionLeaveManagement { get; set; }
+        public string SecondQuestionLeaveManagement { get; set; }
+        public string ThirdQuestionLeaveManagement { get; set; }
+        public string FourthQuestionLeaveManagement { get; set; }
+        public string FifthQuestionLeaveManagement { get; set; }
+        public string SixthQuestionLeaveManagement { get; set; }
+        public string LeaveApplyCommand { get; set; }
+        public string ManagementIdForTest { get; set; }
+        public string LeaveCancelUnAuthorizeErrorMessage { get; set; }
+        public string LeaveUpdatedMessage { get; set; }
+        public string LeaveProcessWrongCommand { get; set; }
+        public string LeaveListCommand { get; set; }
+        public string LeaveCancelCommand { get; set; }
+        public string LeaveStatusCommand { get; set; }
+        public string LeaveBalanceCommand { get; set; }
+        public string LeaveHelpCommand { get; set; }
+        public string InActiveUserErrorMessage { get; set; }
+        public string UserIdPattern { get; set; }
     }
 }

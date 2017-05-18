@@ -4,7 +4,6 @@ namespace Promact.Erp.DomainModel.Migrations
     using Models;
     using System;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     public class Configuration : DbMigrationsConfiguration<Promact.Erp.DomainModel.Context.PromactErpContext>
     {
@@ -30,6 +29,12 @@ namespace Promact.Erp.DomainModel.Migrations
             Question secondQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Today, QuestionStatement = "What are you going to do today?", Type = BotQuestionType.Scrum };
             Question thirdQuestionScrumBot = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.RoadBlock, QuestionStatement = "Any roadblock?", Type = BotQuestionType.Scrum };
             Question eighthQuestionTaskMail = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.RestartTask, QuestionStatement = "Do you want to add another task?", Type = BotQuestionType.TaskMail };
+            Question firstQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.LeaveType, QuestionStatement = "Which type of leave you want to apply for - cl or sl?", Type = BotQuestionType.LeaveManagement };
+            Question secondQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.Reason, QuestionStatement = "Mention the reason for your leave", Type = BotQuestionType.LeaveManagement };
+            Question thirdQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.FromDate, QuestionStatement = "Mention the date from, you want to apply leave", Type = BotQuestionType.LeaveManagement };
+            Question fourthQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.EndDate, QuestionStatement = "Mention the date upto, you want to apply leave", Type = BotQuestionType.LeaveManagement };
+            Question fifthQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.RejoinDate, QuestionStatement = "Mention the date, you want to rejoing your duties", Type = BotQuestionType.LeaveManagement };
+            Question sixthQuestionLeaveManagement = new Question() { CreatedOn = DateTime.UtcNow, OrderNumber = QuestionOrder.SendLeaveMail, QuestionStatement = "Your leave is ready. Do you want to apply?", Type = BotQuestionType.LeaveManagement };
             context.Question.AddOrUpdate(x => x.OrderNumber,
                 firstQuestionTaskMail,
                 secondQuestionTaskMail,
@@ -41,7 +46,13 @@ namespace Promact.Erp.DomainModel.Migrations
                 firstQuestionScrumBot,
                 secondQuestionScrumBot,
                 thirdQuestionScrumBot,
-                eighthQuestionTaskMail
+                eighthQuestionTaskMail,
+                firstQuestionLeaveManagement,
+                secondQuestionLeaveManagement,
+                thirdQuestionLeaveManagement,
+                fourthQuestionLeaveManagement,
+                fifthQuestionLeaveManagement,
+                sixthQuestionLeaveManagement
                 );
             context.SaveChanges();
         }
