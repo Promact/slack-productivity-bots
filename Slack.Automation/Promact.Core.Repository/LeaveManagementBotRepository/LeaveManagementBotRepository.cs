@@ -69,57 +69,62 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             var user = await GetUserDetailsFromOAuthAsync(slackUserId);
             if (user != null)
             {
-                if (slackText[0] == _stringConstant.Leave && slackText.Count > 1)
+                if (!string.IsNullOrEmpty(user.Id))
                 {
-                    SlackAction slackAction;
-                    if (Enum.TryParse(slackText[1], out slackAction))
+                    if (slackText[0] == _stringConstant.Leave && slackText.Count > 1)
                     {
-                        switch (slackAction)
+                        SlackAction slackAction;
+                        if (Enum.TryParse(slackText[1], out slackAction))
                         {
-                            case SlackAction.apply:
-                                replyText = await StartLeaveProcessAsync(user.Id, answer);
-                                break;
-                            case SlackAction.list:
-                                {
-                                    if (slackText.Count > 2)
-                                        replyText = await GetLeaveListAsync(user.Id, slackText[2]);
-                                    else
-                                        replyText = await GetLeaveListAsync(user.Id, null);
-                                }
-                                break;
-                            case SlackAction.cancel:
-                                {
-                                    if (slackText.Count > 2)
-                                        replyText = await LeaveCancelAsync(user.Id, slackText[2]);
-                                    else
-                                        replyText = _stringConstant.IncorrectLeaveCancelCommandMessage;
-                                }
-                                break;
-                            case SlackAction.status:
-                                replyText = GetLeaveStatus(user.Id);
-                                break;
-                            case SlackAction.balance:
-                                replyText = await GetUserLeaveBalanceAsync(user.Id);
-                                break;
-                            case SlackAction.update:
-                                replyText = await UpdateSickLeaveByAdminAsync(slackText, user.Id);
-                                break;
-                            default:
-                                {
-                                    if (await _oauthCallRepository.UserIsAdminAsync(user.Id, (await _attachmentRepository.UserAccessTokenAsync(user.UserName))))
-                                        replyText = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
-                                            _stringConstant.LeaveHelpBotCommands, _stringConstant.LeaveUpdateFormatMessage);
-                                    else
-                                        replyText = _stringConstant.LeaveHelpBotCommands;
-                                }
-                                break;
+                            switch (slackAction)
+                            {
+                                case SlackAction.apply:
+                                    replyText = await StartLeaveProcessAsync(user.Id, answer);
+                                    break;
+                                case SlackAction.list:
+                                    {
+                                        if (slackText.Count > 2)
+                                            replyText = await GetLeaveListAsync(user.Id, slackText[2]);
+                                        else
+                                            replyText = await GetLeaveListAsync(user.Id, null);
+                                    }
+                                    break;
+                                case SlackAction.cancel:
+                                    {
+                                        if (slackText.Count > 2)
+                                            replyText = await LeaveCancelAsync(user.Id, slackText[2]);
+                                        else
+                                            replyText = _stringConstant.IncorrectLeaveCancelCommandMessage;
+                                    }
+                                    break;
+                                case SlackAction.status:
+                                    replyText = GetLeaveStatus(user.Id);
+                                    break;
+                                case SlackAction.balance:
+                                    replyText = await GetUserLeaveBalanceAsync(user.Id);
+                                    break;
+                                case SlackAction.update:
+                                    replyText = await UpdateSickLeaveByAdminAsync(slackText, user.Id);
+                                    break;
+                                default:
+                                    {
+                                        if (await _oauthCallRepository.UserIsAdminAsync(user.Id, (await _attachmentRepository.UserAccessTokenAsync(user.UserName))))
+                                            replyText = string.Format(_stringConstant.FirstAndSecondIndexStringFormat,
+                                                _stringConstant.LeaveHelpBotCommands, _stringConstant.LeaveUpdateFormatMessage);
+                                        else
+                                            replyText = _stringConstant.LeaveHelpBotCommands;
+                                    }
+                                    break;
+                            }
                         }
+                        else
+                            replyText = _stringConstant.ProperActionErrorMessage;
                     }
                     else
-                        replyText = _stringConstant.ProperActionErrorMessage;
+                        replyText = await LeaveApplyProcessAsync(answer, user.Id);
                 }
                 else
-                    replyText = await LeaveApplyProcessAsync(answer, user.Id);
+                    replyText = _stringConstant.InActiveUserErrorMessage;
             }
             else
                 replyText = _stringConstant.SorryYouCannotApplyLeave;
@@ -174,8 +179,14 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             if (user != null)
             {
                 if (!_temporaryLeaveRequestDetailDataRepository.Any(x => x.EmployeeId == user.Id))
-                    user = _mapper.Map<User, ApplicationUser>(await _oauthCallRepository.GetUserByUserIdAsync(user.Id,
-                        (await _attachmentRepository.UserAccessTokenAsync(user.UserName))));
+                {
+                    var oauthUser = await _oauthCallRepository.GetUserByUserIdAsync(user.Id,
+                        (await _attachmentRepository.UserAccessTokenAsync(user.UserName)));
+                    if (oauthUser.IsActive)
+                        user = _mapper.Map<User, ApplicationUser>(oauthUser);
+                    else
+                        user.Id = null;
+                }
             }
             return user;
         }

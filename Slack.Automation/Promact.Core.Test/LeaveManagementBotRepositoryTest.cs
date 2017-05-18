@@ -978,6 +978,33 @@ namespace Promact.Core.Test
             var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok, out result);
             Assert.False(result);
         }
+
+        /// <summary>
+        /// Method to leave process for in-active user - SS
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task InActiveUserProcessLeaveAsync()
+        {
+            await AddUserAndMockAccessTokenReturnAsync();
+            var requestUrl = string.Format(_stringConstant.FirstAndSecondIndexStringFormat, _stringConstant.DetailsAndSlashForUrl,
+                _stringConstant.StringIdForTest);
+            var expectedUserDetail = new User()
+            {
+                Email = _stringConstant.EmailForTest,
+                UserName = _stringConstant.EmailForTest,
+                NumberOfCasualLeave = 14,
+                NumberOfSickLeave = 7,
+                FirstName = _stringConstant.NameForTest,
+                SlackUserId = _stringConstant.SlackUserID,
+                IsActive = false,
+                Id = _stringConstant.StringIdForTest
+            };
+            _httpClientMock.Setup(x => x.GetAsync(_stringConstant.UserUrl, requestUrl, _stringConstant.AccessTokenForTest, 
+                _stringConstant.Bearer)).Returns(Task.FromResult(JsonConvert.SerializeObject(expectedUserDetail)));
+            var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID,
+                _stringConstant.LeaveApplyCommand);
+            Assert.Equal(result, _stringConstant.InActiveUserErrorMessage);
+        }
         #endregion
 
         #region Initialisation

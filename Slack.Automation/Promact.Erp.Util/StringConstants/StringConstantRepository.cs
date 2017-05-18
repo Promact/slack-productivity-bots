@@ -3805,7 +3805,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Please enter a numeric value of leave Id.{0}Example - leave update [leaveId] [End-Date] [Rejoin-Date]";
+                return "Please enter a numeric value of leave Id.{0}Example - *leave update [leaveId] [End-Date] [Rejoin-Date]*";
             }
         }
 
@@ -3813,7 +3813,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "To update sick leave - leave update [leaveId] [End-Date] [Rejoin-Date]";
+                return "To update sick leave - *leave update [leaveId] [End-Date] [Rejoin-Date]*";
             }
         }
 
@@ -3966,6 +3966,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "leave help";
+            }
+        }
+
+        public string InActiveUserErrorMessage
+        {
+            get
+            {
+                return "You are marked as InActive member in promact oauth server. Please contact admin.";
             }
         }
     }
