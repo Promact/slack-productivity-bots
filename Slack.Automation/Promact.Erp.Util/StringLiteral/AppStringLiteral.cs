@@ -573,5 +573,6 @@
         public string LeaveBalanceCommand { get; set; }
         public string LeaveHelpCommand { get; set; }
         public string InActiveUserErrorMessage { get; set; }
+        public string UserIdPattern { get; set; }
     }
 }

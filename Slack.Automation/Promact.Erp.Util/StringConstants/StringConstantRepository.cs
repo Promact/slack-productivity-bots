@@ -3976,5 +3976,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "You are marked as InActive member in promact oauth server. Please contact admin.";
             }
         }
+
+        public string UserIdPattern
+        {
+            get
+            {
+                return "<@(?<user_id>\\w+)>";
+            }
+        }
     }
 }
