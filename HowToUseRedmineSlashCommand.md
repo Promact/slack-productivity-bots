@@ -21,4 +21,4 @@ You may skip Step 1 if it's already done.
 #### Rules and Limitation
   * To use redmine slash command user need to add their redmine api key. 
   * To get api key - **Login with redmine** > **My account** > (on right side panel) **API access key** > click on **show** to get user redmine api key
-  * User are able to get, create, update and change the issue on which user are assigned.
+  * User are able to get, create, update and change the issue on which user are assigned. 
