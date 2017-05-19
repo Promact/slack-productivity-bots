@@ -3984,5 +3984,29 @@ namespace Promact.Erp.Util.StringConstants
                 return "<@(?<user_id>\\w+)>";
             }
         }
+
+        public string LeaveUpdateFormatErrorMessage
+        {
+            get
+            {
+                return "Incorrect leave update command";
+            }
+        }
+
+        public string LeaveUpdateCommandWrongFormatForTest
+        {
+            get
+            {
+                return "leave update 1 19-05-2017";
+            }
+        }
+
+        public string ReplyTextForSickLeaveListWithoutEndDate
+        {
+            get
+            {
+                return "Sick leave Id - {0} for {1} from {2} is {3}{4}";
+            }
+        }
     }
 }
