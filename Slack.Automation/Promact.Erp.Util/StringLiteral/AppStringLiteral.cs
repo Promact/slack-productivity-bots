@@ -574,5 +574,8 @@
         public string LeaveHelpCommand { get; set; }
         public string InActiveUserErrorMessage { get; set; }
         public string UserIdPattern { get; set; }
+        public string LeaveUpdateFormatErrorMessage { get; set; }
+        public string LeaveUpdateCommandWrongFormatForTest { get; set; }
+        public string ReplyTextForSickLeaveListWithoutEndDate { get; set; }
     }
 }

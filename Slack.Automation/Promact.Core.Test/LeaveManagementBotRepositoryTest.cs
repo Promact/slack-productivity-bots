@@ -49,6 +49,7 @@ namespace Promact.Core.Test
         private TemporaryLeaveRequestDetail temporaryLeaveDetail = new TemporaryLeaveRequestDetail();
         private LeaveRequest leaveRequest = new LeaveRequest();
         private LeaveRequest secondLeaveRequest = new LeaveRequest();
+        private LeaveRequest thirdLeaveRequest = new LeaveRequest();
         #endregion
 
         #region Constructor
@@ -514,6 +515,8 @@ namespace Promact.Core.Test
             await _leaveRequestRepository.ApplyLeaveAsync(leaveRequest);
             secondLeaveRequest.EmployeeId = _stringConstant.TeamLeaderIdForTest;
             await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            thirdLeaveRequest.EmployeeId = _stringConstant.TeamLeaderIdForTest;
+            await _leaveRequestRepository.ApplyLeaveAsync(thirdLeaveRequest);
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
                 + _stringConstant.TeamLeader);
             var expectedResult = GetLeaveListMessageByLeaveList(_leaveRequestRepository.LeaveListByUserId(_stringConstant.TeamLeaderIdForTest).ToList());
@@ -865,6 +868,7 @@ namespace Promact.Core.Test
             MockGetUserDetails();
             MockingUserIsAdmin();
             leaveRequest.Type = LeaveType.sl;
+            leaveRequest.EndDate = null;
             await _leaveRequestRepository.ApplyLeaveAsync(leaveRequest);
             var message = string.Format(_stringConstant.LeaveUpdatedMessage, leaveRequest.Id, DateTime.UtcNow.ToShortDateString(),
                 DateTime.UtcNow.AddDays(-1).ToShortDateString());
@@ -1007,6 +1011,90 @@ namespace Promact.Core.Test
                 _stringConstant.LeaveApplyCommand);
             Assert.Equal(result, _stringConstant.InActiveUserErrorMessage);
         }
+
+        /// <summary>
+        /// Method to update leave but got error of format error - SS
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task UpdateLeaveCommandErrorProcessLeaveAsync()
+        {
+            await AddQuestionAsync();
+            await AddUserAndMockAccessTokenReturnAsync();
+            MockGetUserDetails();
+            MockingUserIsAdmin();
+            var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID,
+                _stringConstant.LeaveUpdateCommandWrongFormatForTest);
+            var expectedResult = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.LeaveUpdateFormatErrorMessage,
+                    Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
+            Assert.Equal(result, expectedResult);
+        }
+
+        /// <summary>
+        /// Method to process leave sick leave already exist on same date - SS
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task SickLeaveExistOnSameDateProcessLeaveAsync()
+        {
+            await AddQuestionAsync();
+            await AddUserAndMockAccessTokenReturnAsync();
+            MockGetUserDetails();
+            MockingUserIsAdmin();
+            secondLeaveRequest.EndDate = null;
+            await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            temporaryLeaveDetail.QuestionId = (await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.FromDate)).Id;
+            await AddTemporaryLeaveDetailsAsync();
+            var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, DateTime.UtcNow.ToShortDateString());
+            Assert.Equal(result, _stringConstant.LeaveAlreadyExistOnSameDate);
+        }
+
+        /// <summary>
+        /// Method to process advanced leave exist then leave leave of today - SS
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LeaveApplyBeforeAdvancedLeaveProcessLeaveAsync()
+        {
+            await AddQuestionAsync();
+            await AddUserAndMockAccessTokenReturnAsync();
+            MockGetUserDetails();
+            MockingUserIsAdmin();
+            secondLeaveRequest.FromDate = DateTime.UtcNow.AddDays(5);
+            secondLeaveRequest.EndDate = DateTime.UtcNow.AddDays(5);
+            secondLeaveRequest.RejoinDate = DateTime.UtcNow.AddDays(5);
+            await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            secondLeaveRequest.EndDate = null;
+            await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            temporaryLeaveDetail.FromDate = DateTime.UtcNow;
+            temporaryLeaveDetail.EndDate = null;
+            temporaryLeaveDetail.QuestionId = (await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.EndDate)).Id;
+            await AddTemporaryLeaveDetailsAsync();
+            var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, DateTime.UtcNow.ToShortDateString());
+            Assert.Equal(result, fifthQuestionLeaveManagement.QuestionStatement);
+        }
+
+        /// <summary>
+        /// Method to process advanced leave exist then add end date that cover the advanced leave - SS
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public async Task LeaveApplyBeforeAdvancedAndEndDateCoveringTheAdvancedLeaveLeaveProcessLeaveAsync()
+        {
+            await AddQuestionAsync();
+            await AddUserAndMockAccessTokenReturnAsync();
+            MockGetUserDetails();
+            MockingUserIsAdmin();
+            secondLeaveRequest.FromDate = DateTime.UtcNow.AddDays(5);
+            secondLeaveRequest.EndDate = DateTime.UtcNow.AddDays(5);
+            secondLeaveRequest.RejoinDate = DateTime.UtcNow.AddDays(5);
+            await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            secondLeaveRequest.EndDate = null;
+            await _leaveRequestRepository.ApplyLeaveAsync(secondLeaveRequest);
+            temporaryLeaveDetail.FromDate = DateTime.UtcNow;
+            temporaryLeaveDetail.EndDate = null;
+            temporaryLeaveDetail.QuestionId = (await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.EndDate)).Id;
+            await AddTemporaryLeaveDetailsAsync();
+            var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, 
+                DateTime.UtcNow.AddDays(6).ToShortDateString());
+            Assert.Equal(result, _stringConstant.LeaveAlreadyExistOnSameDate);
+        }
         #endregion
 
         #region Initialisation
@@ -1068,6 +1156,12 @@ namespace Promact.Core.Test
             secondLeaveRequest.Reason = _stringConstant.Reason;
             secondLeaveRequest.Status = Condition.Approved;
             secondLeaveRequest.Type = LeaveType.sl;
+            thirdLeaveRequest.CreatedOn = DateTime.UtcNow;
+            thirdLeaveRequest.EmployeeId = _stringConstant.StringIdForTest;
+            thirdLeaveRequest.FromDate = DateTime.UtcNow;
+            thirdLeaveRequest.Reason = _stringConstant.Reason;
+            thirdLeaveRequest.Status = Condition.Approved;
+            thirdLeaveRequest.Type = LeaveType.sl;
         }
         #endregion
 
@@ -1131,8 +1225,14 @@ namespace Promact.Core.Test
                                 leave.Reason, leave.FromDate.ToShortDateString(),
                                 leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
                 else
-                    replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason,
-                        leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
+                {
+                    if (leave.EndDate.HasValue)
+                        replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason,
+                            leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
+                    else
+                        replyText += string.Format(_stringConstant.ReplyTextForSickLeaveListWithoutEndDate, leave.Id, leave.Reason,
+                            leave.FromDate.ToShortDateString(), leave.Status, Environment.NewLine);
+                }
             return replyText;
         }
 

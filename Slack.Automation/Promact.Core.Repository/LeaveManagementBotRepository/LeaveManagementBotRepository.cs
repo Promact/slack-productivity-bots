@@ -379,7 +379,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
             if (DateTime.TryParseExact(answer, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
             {
                 // check any leave exist on this date
-                if (!DuplicateLeaveExist(startDate, temporaryLeaveRequestDetail.EmployeeId))
+                if (!DuplicateLeaveExist(startDate, temporaryLeaveRequestDetail.EmployeeId, true, null))
                 {
                     // check leave's first date is not beyond toCheckDate. Back date checking
                     if (LeaveDateValid(DateTime.UtcNow, startDate))
@@ -393,8 +393,8 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                         else
                         {
                             nextQuestion = await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.SendLeaveMail);
-                            temporaryLeaveRequestDetail.EndDate = startDate;
-                            temporaryLeaveRequestDetail.RejoinDate = startDate.AddDays(1);
+                            temporaryLeaveRequestDetail.EndDate = null;
+                            temporaryLeaveRequestDetail.RejoinDate = null;
                             temporaryLeaveRequestDetail.Status = Condition.Approved;
                         }
                         temporaryLeaveRequestDetail.QuestionId = nextQuestion.Id;
@@ -432,7 +432,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                 if (LeaveDateValid(temporaryLeaveRequestDetail.FromDate.Value, endDate))
                 {
                     // check any leave exist on this date
-                    if (!DuplicateLeaveExist(endDate, temporaryLeaveRequestDetail.EmployeeId))
+                    if (!DuplicateLeaveExist(temporaryLeaveRequestDetail.FromDate.Value, temporaryLeaveRequestDetail.EmployeeId, false, endDate))
                     {
                         temporaryLeaveRequestDetail.EndDate = endDate;
                         // next question for leave application
@@ -727,23 +727,45 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         /// <summary>
         /// Method to check any leave exist on this date - SS
         /// </summary>
-        /// <param name="date">date to be check</param>
+        /// <param name="startDate">start date to be check</param>
         /// <param name="userId">user's Id</param>
+        /// <param name="isStartDate">comparisaion date is start date or end date</param>
+        /// <param name="endDate">end date is to compare else will recieve null</param>
         /// <returns>boolean value of comparsion</returns>
-        private bool DuplicateLeaveExist(DateTime date, string userId)
+        private bool DuplicateLeaveExist(DateTime startDate, string userId, bool isStartDate, DateTime? endDate)
         {
             bool leaveExist = false;
-            // get all leave list of user
-            var leaves = _leaveRequestRepository.LeaveListByUserId(userId).ToList();
-            foreach (var leave in leaves)
+            // if date is start date then goes here
+            if (isStartDate)
             {
-                // check date provided by user, in that already leave exist or not
-                var res = leave.FromDate.CompareTo(date);
-                if (date.Date >= leave.FromDate.Date && date.Date <= leave.EndDate.Value.Date)
+                // get all leave list of user
+                var leaves = _leaveRequestRepository.LeaveListByUserId(userId).ToList();
+                foreach (var leave in leaves)
                 {
-                    leaveExist = true;
-                    break;
+                    if (leave.EndDate.HasValue)
+                    {
+                        // check date provided by user, in that already leave exist or not
+                        if (startDate.Date >= leave.FromDate.Date && startDate.Date <= leave.EndDate.Value.Date)
+                        {
+                            leaveExist = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // check date provided by user, in that already leave exist or not
+                        if (startDate.Date == leave.FromDate.Date)
+                        {
+                            leaveExist = true;
+                            break;
+                        }
+                    }
                 }
+            }
+            //if date is end date then goes here
+            else
+            {
+                leaveExist = DuplicateLeaveExistWithStartAndEndDate(startDate, endDate.Value, userId);
             }
             return leaveExist;
         }
@@ -756,108 +778,99 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         /// <returns>reply to be send</returns>
         private async Task<string> UpdateSickLeaveByAdminAsync(List<string> leaveValue, string userId)
         {
-            // user' username
-            var username = (await _userManager.FindByIdAsync(userId)).UserName;
-            // check if user is admin then goes here
-            if (await _oauthCallRepository.UserIsAdminAsync(userId, (await _attachmentRepository.UserAccessTokenAsync(username))))
+            if (leaveValue.Count == 5)
             {
-                int leaveId;
-                string replyText = string.Empty;
-                // try to parse user answer to leave id 
-                if (int.TryParse(leaveValue[2], out leaveId))
+                // user' username
+                var username = (await _userManager.FindByIdAsync(userId)).UserName;
+                // check if user is admin then goes here
+                if (await _oauthCallRepository.UserIsAdminAsync(userId, (await _attachmentRepository.UserAccessTokenAsync(username))))
                 {
-                    // check if leave exist or not
-                    var leave = await _leaveRequestRepository.LeaveByIdAsync(leaveId);
-                    if (leave != null)
+                    int leaveId;
+                    string replyText = string.Empty;
+                    // try to parse user answer to leave id 
+                    if (int.TryParse(leaveValue[2], out leaveId))
                     {
-                        // check if leave is sick leave or not
-                        if (leave.Type == LeaveType.sl)
+                        // check if leave exist or not
+                        var leave = await _leaveRequestRepository.LeaveByIdAsync(leaveId);
+                        if (leave != null)
                         {
-                            // add leave in temporary leave table
-                            var leaveTemporaryData = _mapper.Map<LeaveRequest, TemporaryLeaveRequestDetail>(leave);
-                            leaveTemporaryData.QuestionId = (await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.EndDate)).Id;
-                            _temporaryLeaveRequestDetailDataRepository.Insert(leaveTemporaryData);
-                            await _temporaryLeaveRequestDetailDataRepository.SaveChangesAsync();
-                            // adding admin's provided leave end date to temporary table
-                            var nextQuestion = await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.RejoinDate);
-                            replyText = await AddLeaveEndDateDetailsAsync(leaveValue[3], leaveTemporaryData);
-                            // if reply text is equal to rejoin question then goes here
-                            if (replyText == nextQuestion.QuestionStatement)
+                            // check if leave is sick leave or not
+                            if (leave.Type == LeaveType.sl)
                             {
-                                leaveTemporaryData.QuestionId = (await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.EndDate)).Id;
-                                // adding admin's provided leave end date to temporary table
-                                nextQuestion = await GetLeaveQuestionDetailsByOrderAsync(QuestionOrder.SendLeaveMail);
-                                replyText = await AddLeaveRejoinDateDetailsAsync(leaveValue[4], leaveTemporaryData);
-                                // if reply text is equal to send mail question then goes here
-                                if (replyText == nextQuestion.QuestionStatement)
+                                DateTime rejoinDate, endDate;
+                                // get date format of current culture
+                                string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                                // try to parse if answer is as same format of current culture 
+                                if (DateTime.TryParseExact(leaveValue[4], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out rejoinDate) &&
+                                    DateTime.TryParseExact(leaveValue[3], dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
                                 {
-                                    // update leave details in leave request table and delete from temporary table
-                                    leave.EndDate = leaveTemporaryData.EndDate.Value;
-                                    leave.RejoinDate = leaveTemporaryData.RejoinDate.Value;
-                                    await _leaveRequestRepository.UpdateLeaveAsync(leave);
-                                    var employee = await _userManager.FindByIdAsync(leave.EmployeeId);
-                                    // reply to be send in slack to user, management and TL
-                                    replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
-                                        , (await _slackUserRepository.GetByIdAsync(employee.SlackUserId)).Name, leave.FromDate.ToShortDateString(),
-                                        leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.RejoinDate.Value.ToShortDateString());
-                                    // send slack message to user, management and TL
-                                    await _clientRepository.SendSickLeaveMessageToUserIncomingWebhookAsync(leave, username, replyText,
-                                        _mapper.Map<ApplicationUser, User>(employee));
-                                    // reply with leave updated confirmation
-                                    return string.Format(_stringConstant.LeaveUpdateMessage, leaveTemporaryData.Id, Environment.NewLine);
-                                }
-                                // rejoin back date error message
-                                else if (replyText.Contains(_stringConstant.RejoinDateMessage))
-                                {
-                                    replyText = string.Format(_stringConstant.RejoinDateBeyondEndDateErrorMessage, Environment.NewLine,
-                                        _stringConstant.LeaveUpdateFormatMessage);
-                                    return replyText;
+                                    // check leave's first date is not beyond toCheckDate. Back date checking
+                                    if (LeaveDateValid(leave.FromDate, endDate))
+                                    {
+                                        leave.EndDate = null;
+                                        leave.RejoinDate = null;
+                                        await _leaveRequestRepository.UpdateLeaveAsync(leave);
+                                        // check any leave exist on this date
+                                        if (!DuplicateLeaveExist(leave.FromDate, leave.EmployeeId, false, endDate))
+                                        {
+                                            // check leave's first date is not beyond toCheckDate. Back date checking
+                                            if (LeaveDateValid(endDate, rejoinDate))
+                                            {
+                                                leave.EndDate = endDate;
+                                                leave.RejoinDate = rejoinDate;
+                                                await _leaveRequestRepository.UpdateLeaveAsync(leave);
+                                                var employee = await _userManager.FindByIdAsync(leave.EmployeeId);
+                                                // reply to be send in slack to user, management and TL
+                                                replyText = string.Format(_stringConstant.ReplyTextForSickLeaveUpdate
+                                                    , (await _slackUserRepository.GetByIdAsync(employee.SlackUserId)).Name, leave.FromDate.ToShortDateString(),
+                                                    leave.EndDate.Value.ToShortDateString(), leave.Reason, leave.RejoinDate.Value.ToShortDateString());
+                                                // send slack message to user, management and TL
+                                                await _clientRepository.SendSickLeaveMessageToUserIncomingWebhookAsync(leave, username, replyText,
+                                                    _mapper.Map<ApplicationUser, User>(employee));
+                                                // reply with leave updated confirmation
+                                                return string.Format(_stringConstant.LeaveUpdateMessage, leave.Id, Environment.NewLine);
+                                            }
+                                            // back date error message
+                                            else
+                                                return string.Format(_stringConstant.RejoinDateBeyondEndDateErrorMessage, Environment.NewLine,
+                                                    _stringConstant.LeaveUpdateFormatMessage);
+                                        }
+                                        // duplicate date error message
+                                        else
+                                            return _stringConstant.LeaveAlreadyExistOnSameDate;
+                                    }
+                                    // end back date error message
+                                    else
+                                        return string.Format(_stringConstant.EndDateBeyondStartDateErrorMessage, Environment.NewLine,
+                                            _stringConstant.LeaveUpdateFormatMessage);
                                 }
                                 // date format error message
                                 else
                                 {
-                                    string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
                                     var dateErrorMessage = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
-                                    replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, dateErrorMessage,
-                                        Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
-                                    return replyText;
+                                    return string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, dateErrorMessage, Environment.NewLine,
+                                        _stringConstant.LeaveUpdateFormatMessage);
                                 }
                             }
-                            // end date back date error message
-                            else if (replyText.Contains(_stringConstant.EndDateMessage))
-                            {
-                                replyText = string.Format(_stringConstant.EndDateBeyondStartDateErrorMessage, Environment.NewLine,
-                                    _stringConstant.LeaveUpdateFormatMessage);
-                                return replyText;
-                            }
-                            // date format error message
-                            else if (replyText.Contains(_stringConstant.DateFormatError))
-                            {
-                                string dateFormat = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
-                                var dateErrorMessage = string.Format(_stringConstant.DateFormatErrorMessage, dateFormat);
-                                replyText = string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, dateErrorMessage,
-                                    Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
-                                return replyText;
-                            }
-                            // leave already exist on end date
+                            // sick leave doesnot exist for leave id error message 
                             else
-                                return replyText;
+                                return string.Format(_stringConstant.SickLeaveDoesnotExist, leaveId);
                         }
-                        // sick leave doesnot exist for leave id error message 
+                        // leave doesnot exist error message
                         else
-                            return string.Format(_stringConstant.SickLeaveDoesnotExist, leaveId);
+                            return string.Format(_stringConstant.LeaveDoesNotExistErrorMessageWithLeaveIdFormat, leaveId);
                     }
-                    // leave doesnot exist error message
+                    // leave id format error message
                     else
-                        return string.Format(_stringConstant.LeaveDoesNotExistErrorMessageWithLeaveIdFormat, leaveId);
+                        return string.Format(_stringConstant.LeaveUpdateLeaveIdErrorFormatErrorMessage, Environment.NewLine);
                 }
-                // leave id format error message
+                // user want to update leave is not admin error message
                 else
-                    return string.Format(_stringConstant.LeaveUpdateLeaveIdErrorFormatErrorMessage, Environment.NewLine);
+                    return _stringConstant.AdminErrorMessageUpdateSickLeave;
             }
-            // user want to update leave is not admin error message
             else
-                return _stringConstant.AdminErrorMessageUpdateSickLeave;
+                return string.Format(_stringConstant.FirstSecondAndThirdIndexStringFormat, _stringConstant.LeaveUpdateFormatErrorMessage,
+                    Environment.NewLine, _stringConstant.LeaveUpdateFormatMessage);
         }
 
         /// <summary>
@@ -875,9 +888,65 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                                 leave.Reason, leave.FromDate.ToShortDateString(),
                                 leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
                 else
-                    replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason,
-                        leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
+                {
+                    if (leave.EndDate.HasValue)
+                        replyText += string.Format(_stringConstant.ReplyTextForSickLeaveList, leave.Id, leave.Reason,
+                            leave.FromDate.ToShortDateString(), leave.EndDate.Value.ToShortDateString(), leave.Status, Environment.NewLine);
+                    else
+                        replyText += string.Format(_stringConstant.ReplyTextForSickLeaveListWithoutEndDate, leave.Id, leave.Reason,
+                            leave.FromDate.ToShortDateString(), leave.Status, Environment.NewLine);
+                }
             return replyText;
+        }
+
+        /// <summary>
+        /// Method to check more than one leave cannot be applied on that date - SS
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <param name="startDate">leave start date</param>
+        /// <param name="endDate">leave end date</param>
+        /// <returns>true or false</returns>
+        private bool DuplicateLeaveExistWithStartAndEndDate(DateTime startDate, DateTime endDate, string userId)
+        {
+            int valid = -1;
+            bool validIndicator = false;
+            LeaveRequest lastLeave = new LeaveRequest();
+            IEnumerable<LeaveRequest> allLeave = _leaveRequestRepository.LeaveListByUserIdOnlyApprovedAndPending(userId).Result;
+            if (allLeave != null)
+            {
+                foreach (var leave in allLeave)
+                {
+                    if (leave.EndDate.HasValue)
+                        valid = leave.EndDate.Value.Date.CompareTo(startDate.Date);
+                    else
+                        valid = leave.FromDate.Date.CompareTo(endDate.Date);
+                    switch (valid)
+                    {
+                        case -1:
+                            {
+                                validIndicator = false;
+                            }
+                            break;
+                        case 0:
+                            {
+                                validIndicator = true;
+                            }
+                            break;
+                        case 1:
+                            {
+                                valid = leave.FromDate.Date.CompareTo(endDate.Date);
+                                if (valid == 1)
+                                    validIndicator = false;
+                                else
+                                    validIndicator = true;
+                            }
+                            break;
+                    }
+                    if (validIndicator)
+                        break;
+                }
+            }
+            return validIndicator;
         }
         #endregion
     }
