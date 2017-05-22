@@ -27,6 +27,10 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+	<CopyAllFilesToSingleFolderForPackageDependsOn>
+	BuildJs;
+	$(CopyAllFilesToSingleFolderForPackageDependsOn);      
+	</CopyAllFilesToSingleFolderForPackageDependsOn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1000,6 +1004,7 @@
     <Content Include="tslint.json" />
     <Content Include="StringLiteral\StringLiteral.json" />
     <Content Include="tsconfig-aot.json" />
+    <None Include="Properties\PublishProfiles\Promact.ERP.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1317,11 +1322,11 @@
   <Target Name="AfterBuild">
   </Target> -->
   <Target Name="BuildJs">
-  <ItemGroup>
-  <_CustomFiles Include="build.js"/>
-  <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
-  <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
-  </FilesForPackagingFromProject>
-  </ItemGroup>
+    <ItemGroup>
+      <_CustomFiles Include="build.js" />
+      <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
+        <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
   </Target>
 </Project>
