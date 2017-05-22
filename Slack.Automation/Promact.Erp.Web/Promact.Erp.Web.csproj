@@ -1316,4 +1316,12 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+  <Target Name="BuildJs">
+  <ItemGroup>
+  <_CustomFiles Include="build.js"/>
+  <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
+  <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
+  </FilesForPackagingFromProject>
+  </ItemGroup>
+  </Target>
 </Project>
