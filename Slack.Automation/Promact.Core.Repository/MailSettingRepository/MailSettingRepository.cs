@@ -80,7 +80,8 @@ namespace Promact.Core.Repository.MailSettingRepository
             // add list of To
             await AddMailSettingMappingAsync(mailSettingAC.To, true, mailSetting.Id, DateTime.UtcNow);
             // add list of CC
-            await AddMailSettingMappingAsync(mailSettingAC.CC, false, mailSetting.Id, DateTime.UtcNow);
+            if (mailSettingAC.CC != null)
+                await AddMailSettingMappingAsync(mailSettingAC.CC, false, mailSetting.Id, DateTime.UtcNow);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
 
@@ -113,7 +114,8 @@ namespace Promact.Core.Repository.MailSettingRepository
             // add list of To
             await AddMailSettingMappingAsync(mailSettingAC.To, true, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
             // add list of CC
-            await AddMailSettingMappingAsync(mailSettingAC.CC, false, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
+            if (mailSettingAC.CC != null)
+                await AddMailSettingMappingAsync(mailSettingAC.CC, false, previousMailSetting.Id, previousMailSettingMappingCreatedDateTime);
             await _mailSettingMappingDataRepository.SaveChangesAsync();
         }
         #endregion

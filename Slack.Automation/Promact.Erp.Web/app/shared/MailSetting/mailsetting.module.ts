@@ -2,6 +2,7 @@
 import { MailSettingComponent } from "./mailsetting.component";
 import { MailSettingService } from "./mailsetting.service";
 import { SharedModule } from '../shared.module';
+import { MaterialAutoSelectChip } from '../angular-material-chip-autoselect.service';
 
 @NgModule({
     imports: [
@@ -11,7 +12,8 @@ import { SharedModule } from '../shared.module';
         MailSettingComponent
     ],
     providers: [
-        MailSettingService
+        MailSettingService,
+        MaterialAutoSelectChip
     ]
 })
 export class MailSettingModule { }

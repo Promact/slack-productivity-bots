@@ -20,7 +20,7 @@
                             <div class="row">
                                 <label class="col-md-1">Name:</label>
                                 <div class="col-md-3">
-                                  
+
                                     <input type="text" class="form-control" [(ngModel)]="groupModel.Name" name="groupName" #groupName="ngModel" (blur)="checkGroupName(groupModel.Name)" required>
                                     <p [hidden]="!(groupName.touched && !groupName.valid && groupName.errors.required)" class="error">Name is required</p>
                                     <p [hidden]="!(isExistsGroupName)" class="error">Group name already exists</p>
@@ -32,25 +32,27 @@
                             <div class="row">
                                 <label class="col-md-1 emails">Emails:</label>
                                 <div class="col-md-10">
-                                    <md2-chips [(ngModel)]="groupModel.Emails"
-                                               [isRemovable]="true"
-                                               [disabled]="false"
-                                               placeholder="Email"
-                                               name="emails"
-                                               #emails="ngModel"
-                                               [allowedPattern]="validPattern"
-                                               [isAutoComplete]="true"
-                                               [autocompleteDataList]="listOfActiveEmail"
-                                               required>
-                                    </md2-chips>
-                                    <p [hidden]="!(emails.touched && !emails.valid && emails.errors.required)" class="error">Atleast one email is required</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <md-chip-list (click)="autocomplete.focus()">
+                                                    <md-chip *ngFor="let email of groupModel.Emails">{{email}}<i class="material-icons" (click)="removeEmail(email)">close</i></md-chip>
+                                                    <md-input-container>
+                                                        <input mdInput placeholder="Emails" [mdAutocomplete]="email" #autocomplete ngModel name="Email" #emails="ngModel">
+                                                    </md-input-container>
+                                                    <md-autocomplete #email="mdAutocomplete">
+                                                        <md-option *ngFor="let email of listOfActiveEmail" (click)="selectEmail(email)">{{email}}</md-option>
+                                                    </md-autocomplete>
+                                                </md-chip-list>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div [hidden]="!(emails.touched && !emailHasValue)" class="error">Atleast one email is required</div>
                                 </div>
+                            </div>
                         </div>
-
-
                         <div>
-                            <button class="btn-success btn update-btn" (click)="addGroup(groupModel)" [disabled]="!(groupForm.form.valid && !isExistsGroupName)">Submit</button>
+                            <button class="btn-success btn update-btn" (click)="addGroup(groupModel)" [disabled]="!(groupForm.form.valid && !isExistsGroupName && emailHasValue)">Submit</button>
                         </div>
                     </form>
                 </div>
