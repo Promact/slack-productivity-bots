@@ -17,6 +17,7 @@ import { Md2SelectChange } from 'md2';
 import { MockToast } from '../mock/mock.md2toast';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StringConstant } from '../../shared/stringConstant';
+import { MaterialAutoSelectChip } from '../angular-material-chip-autoselect.service';
 
 let promise: TestBed;
 
@@ -37,7 +38,8 @@ describe('Mail Setiings Component Test', () => {
             providers: [
                 { provide: LoaderService, useClass: MockLoaderService },
                 { provide: Md2SelectChange, useClass: MockMd2Select },
-                { provide: Md2Toast, useClass: MockToast }
+                { provide: Md2Toast, useClass: MockToast },
+                { provide: MaterialAutoSelectChip, useClass: MaterialAutoSelectChip }
             ]
         }).compileComponents();
     }));
@@ -121,5 +123,70 @@ describe('Mail Setiings Component Test', () => {
         mailSettingComponent.getGroups();
         tick();
         expect(mailSettingComponent.groupList.length).toBe(1);
+    }));
+
+    it('selectGroup for To for null list', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.selectGroup(stringconstant.testName, true);
+        tick();
+        expect(mailSettingComponent.mailSetting.To.length).toBe(1);
+        expect(mailSettingComponent.toHasValue).toBe(true);
+    }));
+
+    it('selectGroup for To for existing list', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.mailSetting.To = stringconstant.testGroupList;
+        mailSettingComponent.selectGroup(stringconstant.testName, true);
+        tick();
+        expect(mailSettingComponent.toHasValue).toBe(true);
+    }));
+
+    it('selectGroup for CC for null list', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.selectGroup(stringconstant.testName, false);
+        tick();
+        expect(mailSettingComponent.mailSetting.CC.length).toBe(1);
+        expect(mailSettingComponent.toHasValue).toBe(false);
+    }));
+
+    it('selectGroup for CC for existing list', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.mailSetting.CC = stringconstant.testGroupList;
+        mailSettingComponent.selectGroup(stringconstant.testName, false);
+        tick();
+        expect(mailSettingComponent.toHasValue).toBe(false);
+    }));
+
+    it('removeGroup for To and list is empty', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.mailSetting.To = stringconstant.testGroupList;
+        mailSettingComponent.removeGroup(stringconstant.testName, true);
+        tick();
+        expect(mailSettingComponent.mailSetting.To.length).toBe(0);
+        expect(mailSettingComponent.toHasValue).toBe(false);
+    }));
+
+    it('removeGroup for To but list not empty', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.mailSetting.To = stringconstant.testGroupListMultiValue;
+        mailSettingComponent.removeGroup(stringconstant.testName, true);
+        tick();
+        expect(mailSettingComponent.mailSetting.To.length).toBe(1);
+        expect(mailSettingComponent.toHasValue).toBe(true);
+    }));
+
+    it('removeGroup for CC', fakeAsync(() => {
+        let fixture = TestBed.createComponent(MailSettingComponent); //Create instance of component            
+        let mailSettingComponent = fixture.componentInstance;
+        mailSettingComponent.mailSetting.CC = stringconstant.testGroupList;
+        mailSettingComponent.selectGroup(stringconstant.testName, false);
+        tick();
+        expect(mailSettingComponent.toHasValue).toBe(false);
     }));
 });

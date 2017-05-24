@@ -129,4 +129,33 @@ describe('Group Edit Component Test', () => {
         expect(groupModel.Name).toBe(stringConstant.testGroupName);
     }));
 
+    it("selectEmail", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let groupAddComponent = fixture.componentInstance;
+        groupAddComponent.groupModel.Emails = new Array<string>();
+        groupAddComponent.selectEmail(stringConstant.groupName);
+        tick();
+        expect(groupAddComponent.groupModel.Emails.length).toBe(1);
+        expect(groupAddComponent.emailHasValue).toBe(true);
+    }));
+
+    it("removeEmail for empty list", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let groupAddComponent = fixture.componentInstance;
+        groupAddComponent.groupModel.Emails = stringConstant.testGroupList;
+        groupAddComponent.removeEmail(stringConstant.testName);
+        tick();
+        expect(groupAddComponent.groupModel.Emails.length).toBe(0);
+        expect(groupAddComponent.emailHasValue).toBe(false);
+    }));
+
+    it("removeEmail for exist list", fakeAsync(() => {
+        let fixture = TestBed.createComponent(GroupEditComponent);
+        let groupAddComponent = fixture.componentInstance;
+        groupAddComponent.groupModel.Emails = stringConstant.testGroupListMultiValue;
+        groupAddComponent.removeEmail(stringConstant.testName);
+        tick();
+        expect(groupAddComponent.groupModel.Emails.length).toBe(1);
+        expect(groupAddComponent.emailHasValue).toBe(true);
+    }));
 });
