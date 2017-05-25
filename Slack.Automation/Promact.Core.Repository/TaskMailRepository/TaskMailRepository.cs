@@ -503,7 +503,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             string replyText = string.Empty;
             TaskMailStatus status;
             // checking whether string can be convert to TaskMailStatus type or not
-            var taskMailStatusConvertResult = Enum.TryParse(answer.ToLower(), out status);
+            var taskMailStatusConvertResult = Enum.TryParse(answer?.ToLower(), out status);
             if (taskMailStatusConvertResult)
             {
                 // if previous question was status of task and it was not null/wrong value then answer will ask next question
@@ -562,7 +562,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             UserAndTaskMailDetailsAC userAndTaskMailDetails, TaskMailDetails taskDetails)
         {
             SendEmailConfirmation restartTaskConfirmation;
-            if (Enum.TryParse(answer.ToLower(), out restartTaskConfirmation))
+            if (Enum.TryParse(answer?.ToLower(), out restartTaskConfirmation))
             {
                 switch (restartTaskConfirmation)
                 {
@@ -609,7 +609,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             SendEmailConfirmation confirmation;
             // checking whether string can be convert to TaskMailStatus type or not
-            if (Enum.TryParse(answer.ToLower(), out confirmation))
+            if (Enum.TryParse(answer?.ToLower(), out confirmation))
             {
                 taskDetails.SendEmailConfirmation = confirmation;
                 switch (confirmation)
@@ -656,7 +656,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             SendEmailConfirmation confirmation;
             // checking whether string can be convert to TaskMailStatus type or not
-            var sendEmailConfirmationConvertResult = Enum.TryParse(answer.ToLower(), out confirmation);
+            var sendEmailConfirmationConvertResult = Enum.TryParse(answer?.ToLower(), out confirmation);
             if (sendEmailConfirmationConvertResult)
             {
                 taskDetails.SendEmailConfirmation = confirmation;
