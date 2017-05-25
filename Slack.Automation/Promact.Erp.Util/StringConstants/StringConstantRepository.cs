@@ -4008,5 +4008,53 @@ namespace Promact.Erp.Util.StringConstants
                 return "Sick leave Id - {0} for {1} from {2} is {3}{4}";
             }
         }
+
+        public string TaskMailDateFormat
+        {
+            get
+            {
+                return "dd/MM/yyyy";
+            }
+        }
+
+        public string TaskMailSubjectIndexFormat
+        {
+            get
+            {
+                return "{0} {1} {2}";
+            }
+        }
+
+        public string Hyphen
+        {
+            get
+            {
+                return "-";
+            }
+        }
+
+        public string InProgress
+        {
+            get
+            {
+                return "In Progress";
+            }
+        }
+
+        public string Completed
+        {
+            get
+            {
+                return "Completed";
+            }
+        }
+
+        public string RoadBlock
+        {
+            get
+            {
+                return "Road Block";
+            }
+        }
     }
 }

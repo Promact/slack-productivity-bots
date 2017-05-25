@@ -169,6 +169,7 @@
     <Compile Include="ApplicationClass\StringConstantJsonAC.cs" />
     <Compile Include="ApplicationClass\TaskMailAc.cs" />
     <Compile Include="ApplicationClass\TaskMailDetailReportAc.cs" />
+    <Compile Include="ApplicationClass\TaskMailDetailsAC.cs" />
     <Compile Include="ApplicationClass\TaskMailReportAc.cs" />
     <Compile Include="ApplicationClass\EmailHashCodeAC.cs" />
     <Compile Include="ApplicationClass\UserAdminBasicDetailsAC.cs" />

@@ -578,5 +578,11 @@
         string LeaveUpdateFormatErrorMessage { get; }
         string LeaveUpdateCommandWrongFormatForTest { get; }
         string ReplyTextForSickLeaveListWithoutEndDate { get; }
+        string TaskMailDateFormat { get; }
+        string TaskMailSubjectIndexFormat { get; }
+        string Hyphen { get; }
+        string InProgress { get; }
+        string Completed { get; }
+        string RoadBlock { get; }
     }
 }
