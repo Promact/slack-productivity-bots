@@ -68,11 +68,10 @@ namespace Promact.Erp.Core.Controllers
                     _logger.Info("Task mail bot receive message : " + message.text);
                     var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
                     string replyText = string.Empty;
-                    var text = message.text.ToLower();
                     if (user != null)
                     {
                         _logger.Info("User : " + user.Name);
-                        if (text == _stringConstant.TaskMailSubject.ToLower())
+                        if (message.text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                         {
                             _logger.Info("Task Mail process start - StartTaskMailAsync");
                             replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
@@ -81,7 +80,7 @@ namespace Promact.Erp.Core.Controllers
                         else
                         {
                             _logger.Info("Task Mail process start - QuestionAndAnswerAsync");
-                            replyText = _taskMailRepository.QuestionAndAnswerAsync(text, user.UserId).Result;
+                            replyText = _taskMailRepository.QuestionAndAnswerAsync(message.text, user.UserId).Result;
                             _logger.Info("Task Mail process done : " + replyText);
                         }
                     }

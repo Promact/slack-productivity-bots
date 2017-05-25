@@ -28,5 +28,7 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
         string TaskmailAccessToken { get; }
 
         string LeaveManagementBotAccessToken { get; }
+
+        string FromMailAddressForTaskMailBot { get; }
     }
 }

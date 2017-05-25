@@ -584,5 +584,6 @@
         string InProgress { get; }
         string Completed { get; }
         string RoadBlock { get; }
+        string FromMailAddressForTaskMailBot { get; }
     }
 }

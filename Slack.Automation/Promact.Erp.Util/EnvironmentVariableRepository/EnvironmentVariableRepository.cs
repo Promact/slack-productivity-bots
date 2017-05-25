@@ -138,5 +138,13 @@ namespace Promact.Erp.Util.EnvironmentVariableRepository
                 return GetVariables(_stringConstant.LeaveManagementBotAccessToken);
             }
         }
+
+        public string FromMailAddressForTaskMailBot
+        {
+            get
+            {
+                return GetVariables(_stringConstant.FromMailAddressForTaskMailBot);
+            }
+        }
     }
 }

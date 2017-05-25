@@ -4056,5 +4056,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "Road Block";
             }
         }
+
+        public string FromMailAddressForTaskMailBot
+        {
+            get
+            {
+                return "FromMailAddressForTaskMailBot";
+            }
+        }
     }
 }
