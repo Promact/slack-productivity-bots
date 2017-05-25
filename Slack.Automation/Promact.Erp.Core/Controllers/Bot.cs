@@ -67,11 +67,11 @@ namespace Promact.Erp.Core.Controllers
                 {
                     _logger.Info("Task mail bot receive message : " + message.text);
                     var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
-                    _logger.Info("User : " + user.Name);
                     string replyText = string.Empty;
                     var text = message.text.ToLower();
                     if (user != null)
                     {
+                        _logger.Info("User : " + user.Name);
                         if (text == _stringConstant.TaskMailSubject.ToLower())
                         {
                             _logger.Info("Task Mail process start - StartTaskMailAsync");

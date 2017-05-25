@@ -376,7 +376,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             email.To = email.To.Distinct().ToList();
             email.CC = email.CC.Distinct().ToList();
             email.From = userAndTaskMailDetails.User.Email;
-            email.Subject = _stringConstant.TaskMailSubject;
+            email.Subject = string.Format(_stringConstant.TaskMailSubjectIndexFormat, _stringConstant.TaskMailSubject, 
+                _stringConstant.Hyphen, DateTime.UtcNow.ToString(_stringConstant.TaskMailDateFormat));
             // transforming task mail details to template page and getting as string
             email.Body = _emailServiceTemplate.EmailServiceTemplateTaskMail(userAndTaskMailDetails.TaskList);
             // Email send 
