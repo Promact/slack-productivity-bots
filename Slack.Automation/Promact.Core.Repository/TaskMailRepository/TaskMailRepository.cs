@@ -14,6 +14,7 @@ using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
 using System.Collections.Generic;
 using Promact.Erp.Util.StringLiteral;
 using AutoMapper;
+using Promact.Erp.Util.EnvironmentVariableRepository;
 
 namespace Promact.Core.Repository.TaskMailRepository
 {
@@ -34,6 +35,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         private readonly IRepository<MailSetting> _mailSettingDataRepository;
         private readonly IMailSettingDetailsByProjectAndModuleRepository _mailSettingDetails;
         private readonly IMapper _mapper;
+        private readonly IEnvironmentVariableRepository _environmentVariableRepository;
         #endregion
 
         #region Constructor
@@ -42,7 +44,8 @@ namespace Promact.Core.Repository.TaskMailRepository
             IAttachmentRepository attachmentRepository, IRepository<ApplicationUser> userRepository, IEmailService emailService,
             IBotQuestionRepository botQuestionRepository, ApplicationUserManager userManager,
             IEmailServiceTemplateRepository emailServiceTemplate, ILogger logger, IRepository<MailSetting> mailSettingDataRepository,
-            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails, IMapper mapper)
+            IMailSettingDetailsByProjectAndModuleRepository mailSettingDetails, IMapper mapper, 
+            IEnvironmentVariableRepository environmentVariableRepository)
         {
             _taskMailRepository = taskMailRepository;
             _stringConstant = stringConstant.StringConstant;
@@ -58,6 +61,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             _mailSettingDataRepository = mailSettingDataRepository;
             _mailSettingDetails = mailSettingDetails;
             _mapper = mapper;
+            _environmentVariableRepository = environmentVariableRepository;
         }
         #endregion
 
@@ -375,7 +379,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             }
             email.To = email.To.Distinct().ToList();
             email.CC = email.CC.Distinct().ToList();
-            email.From = userAndTaskMailDetails.User.Email;
+            email.From = _environmentVariableRepository.FromMailAddressForTaskMailBot;
             email.Subject = string.Format(_stringConstant.TaskMailSubjectIndexFormat, _stringConstant.TaskMailSubject, 
                 _stringConstant.Hyphen, DateTime.UtcNow.ToString(_stringConstant.TaskMailDateFormat));
             // transforming task mail details to template page and getting as string
@@ -499,7 +503,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             string replyText = string.Empty;
             TaskMailStatus status;
             // checking whether string can be convert to TaskMailStatus type or not
-            var taskMailStatusConvertResult = Enum.TryParse(answer, out status);
+            var taskMailStatusConvertResult = Enum.TryParse(answer.ToLower(), out status);
             if (taskMailStatusConvertResult)
             {
                 // if previous question was status of task and it was not null/wrong value then answer will ask next question
@@ -558,7 +562,7 @@ namespace Promact.Core.Repository.TaskMailRepository
             UserAndTaskMailDetailsAC userAndTaskMailDetails, TaskMailDetails taskDetails)
         {
             SendEmailConfirmation restartTaskConfirmation;
-            if (Enum.TryParse(answer, out restartTaskConfirmation))
+            if (Enum.TryParse(answer.ToLower(), out restartTaskConfirmation))
             {
                 switch (restartTaskConfirmation)
                 {
@@ -605,7 +609,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             SendEmailConfirmation confirmation;
             // checking whether string can be convert to TaskMailStatus type or not
-            if (Enum.TryParse(answer, out confirmation))
+            if (Enum.TryParse(answer.ToLower(), out confirmation))
             {
                 taskDetails.SendEmailConfirmation = confirmation;
                 switch (confirmation)
@@ -652,7 +656,7 @@ namespace Promact.Core.Repository.TaskMailRepository
         {
             SendEmailConfirmation confirmation;
             // checking whether string can be convert to TaskMailStatus type or not
-            var sendEmailConfirmationConvertResult = Enum.TryParse(answer, out confirmation);
+            var sendEmailConfirmationConvertResult = Enum.TryParse(answer.ToLower(), out confirmation);
             if (sendEmailConfirmationConvertResult)
             {
                 taskDetails.SendEmailConfirmation = confirmation;

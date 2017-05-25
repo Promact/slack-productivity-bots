@@ -25,6 +25,8 @@
     Your Mail service Port number 
   * ```Host``` =  smtp.gmail.com :
     Your Mail service Host 
+  * ```FromMailAddressForTaskMailBot``` =  example@examples.com :
+    Your From Email Id for task mail
 
 3. Promact-OAuth-Server Variables 
   * ```PromactOAuthClientId``` =  askfasdl45fdam54dsg51sg :

@@ -129,5 +129,13 @@ namespace Promact.Core.Test.EnvironmentVariableRepository
                 return "LeaveManagementBotAccessToken";
             }
         }
+
+        public string FromMailAddressForTaskMailBot
+        {
+            get
+            {
+                return "FromMailAddressForTaskMailBot";
+            }
+        }
     }
 }

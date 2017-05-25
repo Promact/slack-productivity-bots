@@ -87,7 +87,7 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
             {
                 TaskMailDetailsAC taskMailDetailAC = new TaskMailDetailsAC();
                 taskMailDetailAC = _mapper.Map<TaskMailDetails, TaskMailDetailsAC>(task);
-                if (task.Comment == SendEmailConfirmation.no.ToString())
+                if (task.Comment.ToLower() == SendEmailConfirmation.no.ToString())
                     taskMailDetailAC.Comment = _stringConstant.Hyphen;
                 taskMailDetailAC.Status = GetNameFromTaskMailStatus(task.Status);
                 taskMailDetails.Add(taskMailDetailAC);
