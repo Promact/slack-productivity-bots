@@ -19,7 +19,7 @@ using Promact.Erp.Util.EnvironmentVariableRepository;
 namespace Promact.Core.Repository.TaskMailRepository
 {
     public class TaskMailRepository : ITaskMailRepository
-    {
+    { 
         #region Private Variables
         private readonly IRepository<TaskMail> _taskMailRepository;
         private readonly IRepository<TaskMailDetails> _taskMailDetailRepository;
