@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Promact.Erp.Core.Controllers
 {
     public class Bot
-    {
+    { 
         #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
