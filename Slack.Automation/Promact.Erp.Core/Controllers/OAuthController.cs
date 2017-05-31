@@ -203,7 +203,8 @@ namespace Promact.Erp.Core.Controllers
                 if (eventType == _stringConstantRepository.TeamJoin)
                 {
                     _loggerSlackEvent.Debug("OAuthLoginRepository - SlackEventUpdateAsync");
-                    await _oAuthLoginRepository.SlackEventUpdateAsync(events);
+                    // removed await, will not wait, so that slack can get response on time and not send further request for same event
+                    _oAuthLoginRepository.SlackEventUpdateAsync(events);
                     eventQueue.Dequeue();
                     return Ok();
                 }
@@ -211,7 +212,8 @@ namespace Promact.Erp.Core.Controllers
                 else if (eventType == _stringConstantRepository.UserChange)
                 {
                     _loggerSlackEvent.Debug("SlackUserRepository - UpdateSlackUserAsync");
-                    await _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
+                    // removed await, will not wait, so that slack can get response on time and not send further request for same event
+                    _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
                     eventQueue.Dequeue();
                     return Ok();
                 }
@@ -219,7 +221,8 @@ namespace Promact.Erp.Core.Controllers
                 else if (eventType == _stringConstantRepository.ChannelCreated || eventType == _stringConstantRepository.ChannelRename || eventType == _stringConstantRepository.GroupRename)
                 {
                     _loggerSlackEvent.Debug("OAuthLoginRepository - SlackChannelAddAsync");
-                    await _oAuthLoginRepository.SlackChannelAddAsync(events);
+                    // removed await, will not wait, so that slack can get response on time and not send further request for same event
+                    _oAuthLoginRepository.SlackChannelAddAsync(events);
                     eventQueue.Dequeue();
                     return Ok();
                 }
@@ -227,7 +230,8 @@ namespace Promact.Erp.Core.Controllers
                 else if (eventType == _stringConstantRepository.ChannelArchive || eventType == _stringConstantRepository.GroupArchive)
                 {
                     _loggerSlackEvent.Debug("SlackChannelRepository DeleteChannelAsync");
-                    await _slackChannelRepository.DeleteChannelAsync(events.Event.Channel.ChannelId);
+                    // removed await, will not wait, so that slack can get response on time and not send further request for same event
+                    _slackChannelRepository.DeleteChannelAsync(events.Event.Channel.ChannelId);
                     eventQueue.Dequeue();
                     return Ok();
                 }
