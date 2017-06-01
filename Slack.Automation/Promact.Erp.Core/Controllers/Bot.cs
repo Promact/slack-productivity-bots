@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 
 namespace Promact.Erp.Core.Controllers
-{
+{ 
     public class Bot
     { 
         #region Private Variables
@@ -186,7 +186,7 @@ namespace Promact.Erp.Core.Controllers
                     _leaveManagementBotRepository = _component.Resolve<ILeaveManagementBotRepository>();
                     bool errorInUserConversion;
                     string replyText = string.Empty;
-                    message.text = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(message.text, out errorInUserConversion);
+                    message.text = _leaveManagementBotRepository.ProcessToConvertSlackUserRegexIdToSlackId(message.text, out errorInUserConversion);
                     if (!errorInUserConversion)
                     {
                         var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;

@@ -6,6 +6,7 @@ using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.StringLiteral;
@@ -91,7 +92,13 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                                     {
                                         // if leave list for other user
                                         if (slackText.Count > 2)
-                                            replyText = await GetLeaveListAsync(user.Id, slackText[2]);
+                                        {
+                                            var employee = await _slackUserRepository.GetByIdAsync(slackText[2]);
+                                            if (employee != null)
+                                                replyText = await GetLeaveListAsync(user.Id, employee);
+                                            else
+                                                replyText = _stringConstant.PointUserUsingAtTheRate;
+                                        }
                                         // if leave list for user itself
                                         else
                                             replyText = await GetLeaveListAsync(user.Id, null);
@@ -156,7 +163,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         /// <param name="message">message from slack</param>
         /// <param name="userNotFound">if user is not found</param>
         /// <returns>message after conversation</returns>
-        public string ProcessToConvertSlackIdToSlackUserName(string message, out bool userNotFound)
+        public string ProcessToConvertSlackUserRegexIdToSlackId(string message, out bool userNotFound)
         {
             // regex pattern for slack message of user id
             Regex pattern = new Regex(@_stringConstant.UserIdPattern);
@@ -171,7 +178,7 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
                 if (applicant != null)
                 {
                     userNotFound = false;
-                    message = message.Replace(match.Value, applicant.Name);
+                    message = message.Replace(match.Value, applicant.UserId);
                 }
                 // if user slack detail is not found then message will be send for user not found
                 else
@@ -557,44 +564,36 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         /// <param name="userId">user's Id</param>
         /// <param name="empployeeName">employee name who's leave will displayed</param>
         /// <returns>reply to be send</returns>
-        private async Task<string> GetLeaveListAsync(string userId, string employeeName)
+        private async Task<string> GetLeaveListAsync(string userId, SlackUserDetailAc employeeSlackDetails)
         {
             string replyText = string.Empty;
             List<LeaveRequest> leaves = new List<LeaveRequest>();
             // if null then user want to get own leave list
-            if (employeeName != null)
+            if (employeeSlackDetails != null)
             {
                 // user's username
                 var username = (await _userManager.FindByIdAsync(userId)).UserName;
                 // check if user is admin or not
                 if (await _oauthCallRepository.UserIsAdminAsync(userId, (await _attachmentRepository.UserAccessTokenAsync(username))))
                 {
-                    // employee slack details whose leave detail user wan to get
-                    var employeeSlackDetails = await _slackUserRepository.GetBySlackNameAsync(employeeName);
                     // check if user exist or not
-                    if (employeeSlackDetails != null)
+                    // employee slack details whose leave detail user wan to get
+                    var employee = await _userManager.Users.FirstOrDefaultAsync(x => x.SlackUserId == employeeSlackDetails.UserId);
+                    // check if user exist or not
+                    if (employee != null)
                     {
-                        // employee slack details whose leave detail user wan to get
-                        var employee = await _userManager.Users.FirstOrDefaultAsync(x => x.SlackUserId == employeeSlackDetails.UserId);
-                        // check if user exist or not
-                        if (employee != null)
-                        {
-                            // leave list of employee
-                            leaves = _leaveRequestRepository.LeaveListByUserId(employee.Id).ToList();
-                            // if exist then format the message
-                            if (leaves.Any())
-                                replyText = GetLeaveListMessageByLeaveList(leaves);
-                            // else message will be no record found for employee
-                            else
-                                replyText = string.Format(_stringConstant.LeaveListForOtherErrorMessage, employeeName);
-                        }
-                        // message to ask employee to do login with promact oauth server
+                        // leave list of employee
+                        leaves = _leaveRequestRepository.LeaveListByUserId(employee.Id).ToList();
+                        // if exist then format the message
+                        if (leaves.Any())
+                            replyText = GetLeaveListMessageByLeaveList(leaves);
+                        // else message will be no record found for employee
                         else
-                            replyText = _stringConstant.MessageToRequestToAddToSlackOtherUser;
+                            replyText = string.Format(_stringConstant.LeaveListForOtherErrorMessage, employeeSlackDetails.Name);
                     }
-                    // message to ask employee to do add to slack
+                    // message to ask employee to do login with promact oauth server
                     else
-                        replyText = string.Format(_stringConstant.UserNotFoundRequestToAddToSlackOtherUser, employeeName);
+                        replyText = _stringConstant.MessageToRequestToAddToSlackOtherUser;
                 }
                 // if user is not admin then unauthorize message will be send
                 else

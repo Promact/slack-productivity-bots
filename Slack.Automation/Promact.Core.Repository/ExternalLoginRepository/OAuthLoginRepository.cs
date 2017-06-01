@@ -15,7 +15,6 @@ using System;
 using System.Threading.Tasks;
 
 
-
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
@@ -56,6 +55,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         #endregion
 
         #region Public Methods
+
         /// <summary>
         /// Method to add a new user in Application user table and store user's external login information in UserLogin table
         /// </summary>
@@ -80,6 +80,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             return userInfo;
         }
 
+
         /// <summary>
         /// Method to get OAuth Server's app information
         /// </summary>
@@ -96,6 +97,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             oAuth.ReturnUrl = _stringConstant.ClientReturnUrl;
             return oAuth;
         }
+
 
         /// <summary>
         /// Method to add/update Slack User,channels and groups information 
@@ -187,7 +189,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
             else
                 throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
-
         }
 
 
@@ -211,50 +212,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 slackChannel.Name = slackChannelDetails.Name;
                 await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-            }
-
-        }
-
-
-        /// <summary>
-        /// Method to update slack user table when there is any changes in slack
-        /// </summary>
-        /// <param name="slackEvent"></param>
-        public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
-        {
-            SlackUserDetails user = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
-            _logger.Debug("User details : " + user);
-            if (user == null)
-            {
-                _logger.Debug("SlackUserRepository - AddSlackUserAsync");
-                await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
-            }
-        }
-
-
-        /// <summary>
-        /// Method to update slack channel table when a channel is added or updated in team.
-        /// </summary>
-        /// <param name="slackEvent"></param>
-        public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
-        {
-            SlackChannelDetails channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
-            _logger.Debug("Channel : " + channel);
-            if (channel == null)
-            {
-                _loggerSlackEvent.Debug("New channel adding");
-                slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
-                _slackChannelDetails.Insert(slackEvent.Event.Channel);
-                await _slackChannelDetails.SaveChangesAsync();
-                _loggerSlackEvent.Debug("Channel added successfully");
-            }
-            else
-            {
-                _loggerSlackEvent.Debug("Updating channel");
-                channel.Name = slackEvent.Event.Channel.Name;
-                _slackChannelDetails.Update(channel);
-                await _slackChannelDetails.SaveChangesAsync();
-                _loggerSlackEvent.Debug("Channel updated successfully");
             }
         }
 

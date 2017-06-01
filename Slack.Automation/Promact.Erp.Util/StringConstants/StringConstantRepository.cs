@@ -2471,7 +2471,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "<@pranali> What did you do yesterday?";
+                return "<@13b0f2ca-92f5-4713-a67e-37e50172e148> What did you do yesterday?";
             }
         }
         public string QuestionToNextEmployee
@@ -2615,7 +2615,7 @@ namespace Promact.Erp.Util.StringConstants
         {
             get
             {
-                return "Good Day <@pranali>!\n\r\n*Your scrum status of {0} is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: Sorry I have nothing to ask you.\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
+                return "Good Day <@13b0f2ca-92f5-4713-a67e-37e50172e148>!\n\r\n*Your scrum status of {0} is :*\n\r\n*_Q_*: What did you do yesterday?\r\n*_A_*: Sorry I have nothing to ask you.\r\n\r\n*Please answer the following questions today*\r\n\r\nWhat did you do yesterday?";
             }
         }
         public string InActiveInOAuth
@@ -4062,6 +4062,14 @@ namespace Promact.Erp.Util.StringConstants
             get
             {
                 return "FromMailAddressForTaskMailBot";
+            }
+        }
+
+        public string PointUserUsingAtTheRate
+        {
+            get
+            {
+                return "To point any user, use *@*<username>";
             }
         }
     }
