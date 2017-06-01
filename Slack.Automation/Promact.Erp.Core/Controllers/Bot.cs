@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 
 namespace Promact.Erp.Core.Controllers
-{
+{ 
     public class Bot
     { 
         #region Private Variables
