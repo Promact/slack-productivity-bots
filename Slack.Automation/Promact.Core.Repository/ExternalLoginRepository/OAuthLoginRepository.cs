@@ -15,7 +15,6 @@ using System;
 using System.Threading.Tasks;
 
 
-
 namespace Promact.Core.Repository.ExternalLoginRepository
 {
     public class OAuthLoginRepository : IOAuthLoginRepository
