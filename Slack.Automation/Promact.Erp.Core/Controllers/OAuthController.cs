@@ -10,7 +10,6 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringLiteral;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -19,7 +18,7 @@ namespace Promact.Erp.Core.Controllers
     public class OAuthController : BaseController
     {
         #region Private Variables
-        private static Queue<SlackEventApiAC> eventQueue;
+
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
         private readonly ILogger _loggerSlackEvent;
@@ -28,10 +27,7 @@ namespace Promact.Erp.Core.Controllers
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly ApplicationUserManager _userManager;
         private readonly IOauthCallHttpContextRespository _oauthCallRepository;
-        static OAuthController()
-        {
-            eventQueue = new Queue<SlackEventApiAC>();
-        }
+
         #endregion
 
         #region Constructor
@@ -158,85 +154,16 @@ namespace Promact.Erp.Core.Controllers
         * {
         *       "Description":"This method will be hit when any event to which slack app has subscribed to is triggered
         * }
-        * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
-        * }
-        * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
-        * }
-        * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
-        * }
-        * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
-        * }
-        * @apiErrorExample {json} Error-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hitted when there is any changes in slack user list or channel list
-        * }
         */
         [HttpPost]
         [Route("slack/eventalert")]
-        public async Task<IHttpActionResult> SlackEventAsync(SlackEventApiAC slackEvent)
+        public IHttpActionResult SlackEventAsync(SlackEventApiAC slackEvent)
         {
             _loggerSlackEvent.Debug("slack event fired");
             //slack verification
             if (slackEvent.Type == _stringConstantRepository.VerificationUrl)
             {
                 return Ok(slackEvent.Challenge);
-            }
-            eventQueue.Enqueue(slackEvent);
-            foreach (var events in eventQueue)
-            {
-                string eventType = slackEvent.Event.Type;
-                _loggerSlackEvent.Debug("Event for " + eventType);
-                //when a user is added to the slack team
-                if (eventType == _stringConstantRepository.TeamJoin)
-                {
-                    _loggerSlackEvent.Debug("OAuthLoginRepository - SlackEventUpdateAsync");
-                    await _oAuthLoginRepository.SlackEventUpdateAsync(events);
-                    eventQueue.Dequeue();
-                    return Ok();
-                }
-                //when a user's details are changed
-                else if (eventType == _stringConstantRepository.UserChange)
-                {
-                    _loggerSlackEvent.Debug("SlackUserRepository - UpdateSlackUserAsync");
-                    await _slackUserRepository.UpdateSlackUserAsync(events.Event.User);
-                    eventQueue.Dequeue();
-                    return Ok();
-                }
-                //when a public channel is created or renamed or a private channel is renamed
-                else if (eventType == _stringConstantRepository.ChannelCreated || eventType == _stringConstantRepository.ChannelRename || eventType == _stringConstantRepository.GroupRename)
-                {
-                    _loggerSlackEvent.Debug("OAuthLoginRepository - SlackChannelAddAsync");
-                    await _oAuthLoginRepository.SlackChannelAddAsync(events);
-                    eventQueue.Dequeue();
-                    return Ok();
-                }
-                //when a channel or a group is archived
-                else if (eventType == _stringConstantRepository.ChannelArchive || eventType == _stringConstantRepository.GroupArchive)
-                {
-                    _loggerSlackEvent.Debug("SlackChannelRepository DeleteChannelAsync");
-                    await _slackChannelRepository.DeleteChannelAsync(events.Event.Channel.ChannelId);
-                    eventQueue.Dequeue();
-                    return Ok();
-                }
-                else
-                {
-                    _loggerSlackEvent.Debug("Event not configured");
-                    eventQueue.Dequeue();
-                    return Ok();
-                }
             }
             return Ok();
         }

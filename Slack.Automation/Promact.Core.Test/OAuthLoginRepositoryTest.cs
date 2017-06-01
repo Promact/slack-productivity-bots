@@ -106,28 +106,7 @@ namespace Promact.Core.Test
             _mockHttpClient.Verify(x => x.GetAsync(_stringConstant.SlackGroupListUrl, userDetailsRequest, null, _stringConstant.Bearer), Times.Once);
         }
 
-        /// <summary>
-        /// Test case to check SlackEventUpdate of OAuth Login Repository
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackEventUpdateAsync()
-        {
-            await _oAuthLoginRepository.SlackEventUpdateAsync(slackEvent);
-            var user = await _slackUserRepository.GetByIdAsync(slackEvent.Event.User.UserId);
-            Assert.Equal(user.Name, slackEvent.Event.User.Name);
-        }
 
-        /// <summary>
-        /// Test case to check SlackEventUpdate of OAuth Login Repository
-        /// </summary>
-        [Fact, Trait("Category", "Required")]
-        public async Task SlackAddChannelAsync()
-        {
-            slackEvent.Event.Channel = channel;
-            await _oAuthLoginRepository.SlackChannelAddAsync(slackEvent);
-            var channelAdded = await _slackChannelRepository.GetByIdAsync(slackEvent.Event.Channel.ChannelId);
-            Assert.Equal(channelAdded.Name, slackEvent.Event.Channel.Name);
-        }
         #endregion
 
         #region Initialisation

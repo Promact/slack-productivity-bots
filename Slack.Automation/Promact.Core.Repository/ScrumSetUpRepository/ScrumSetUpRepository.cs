@@ -180,15 +180,12 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                                 else if (String.Compare(command, _stringConstant.Unlink, StringComparison.OrdinalIgnoreCase) == 0)
                                     return await UnlinkAsync(slackChannelId, givenProjectName, project);
                                 return string.Empty;
-
                             }
                             else
                                 return string.Format(_stringConstant.NotActiveUser, slackUserId);
-
                         }
                         else
                             return string.Format(_stringConstant.NotTeamLeader, slackUserId);
-
                     }
                     else
                         return string.Format(_stringConstant.NotTeamLeaderOfProject, givenProjectName, slackUserId);
@@ -223,7 +220,6 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                         _logger.Debug("\nLinkAsync method : not linked to any project yet\n");
                         slackChannel.ProjectId = project.Id;
                         await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-
                         return string.Format(_stringConstant.ProjectLinked, givenProjectName, slackChannel.Name);
                     }
                     else
@@ -256,7 +252,6 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                     _logger.Debug("\nUnLinkAsync method : matching project found\n");
                     slackChannel.ProjectId = null;
                     await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-
                     return string.Format(_stringConstant.UnlinkedSuccessfully, givenProjectName, slackChannel.Name);
                 }
                 else
@@ -279,7 +274,7 @@ namespace Promact.Core.Repository.ScrumSetUpRepository
                 ApplicationUser appUser = await _applicationUser.FirstAsync(x => x.SlackUserId == slackUserId);
                 List<ProjectAc> projectList = await _oauthCallsRepository.GetListOfProjectsEnrollmentOfUserByUserIdAsync(appUser.Id, accessToken);
                 IEnumerable<SlackChannelDetails> slackChannelList = await _slackChannelRepository.FetchChannelAsync();
-             
+
                 projectList.Where(y => y.IsActive && y.TeamLeader != null && y.TeamLeader.IsActive && y.TeamLeaderId == appUser.Id)
                     .Select(proj => new
                     {

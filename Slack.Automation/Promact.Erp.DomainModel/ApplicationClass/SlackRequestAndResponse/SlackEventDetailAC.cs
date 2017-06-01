@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Promact.Erp.DomainModel.JSonConverterUtil;
 
 namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
 {
@@ -10,7 +9,6 @@ namespace Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse
         [JsonProperty("user")]
         public SlackUserDetails User { get; set; }
         [JsonProperty("channel")]
-        [JsonConverter(typeof(SlackChannelDetailsConverter))]
         public SlackChannelDetails Channel { get; set; }
     }
 }
