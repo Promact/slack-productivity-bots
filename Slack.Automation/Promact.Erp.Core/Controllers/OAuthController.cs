@@ -89,7 +89,7 @@ namespace Promact.Erp.Core.Controllers
             });
             return Redirect(newUrl);
         }
-
+         
         /**
         * @api {get} oauth/userIsAdmin
         * @apiVersion 1.0.0
