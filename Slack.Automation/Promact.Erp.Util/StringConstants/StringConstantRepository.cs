@@ -4064,5 +4064,13 @@ namespace Promact.Erp.Util.StringConstants
                 return "FromMailAddressForTaskMailBot";
             }
         }
+
+        public string PointUserUsingAtTheRate
+        {
+            get
+            {
+                return "To point any user, use *@*<username>";
+            }
+        }
     }
 }

@@ -49,36 +49,6 @@ namespace Promact.Erp.Core.Controllers
 
         #region Public Methods
         /**
-        * @api {get} oauth/refreshtoken
-        * @apiVersion 1.0.0
-        * @apiName RefreshTokenAsync
-        * @apiGroup OAuth  
-        * @apiParam {string} Name    refreshToken
-        * @apiParam {string} Name    slackUserName
-        * @apiSuccessExample {json} Success-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *   {
-        *       "ClientId":"dastvgs3rt2031srtgr54dgrf",
-        *       "ClientSecret":"frwhklsjelkjsktjlk656f5dyhddvsfdgv",
-        *       "RefreshToken":"acjshrkjajjsdfxo",
-        *       "ReturnUrl":"http://localhost:28182/Home/ExtrenalLoginCallBack",
-        *       "UserId":"JFF414GSDF"
-        *   }
-        * }
-        */
-        [HttpGet]
-        [Route("oauth/refreshtoken")]
-        public async Task<IHttpActionResult> RefreshTokenAsync(string refreshToken, string slackUserName)
-        {
-            var oAuth = _oAuthLoginRepository.ExternalLoginInformation(refreshToken);
-            SlackUserDetailAc user = await _slackUserRepository.GetBySlackNameAsync(slackUserName);
-            if (user != null)
-                oAuth.UserId = user.UserId;
-            return Ok(oAuth);
-        }
-
-        /**
         * @api {get} oauth/slackoauthrequest
         * @apiVersion 1.0.0
         * @apiName SlackOAuthAsync
@@ -118,54 +88,6 @@ namespace Promact.Erp.Core.Controllers
                 message = message
             });
             return Redirect(newUrl);
-        }
-
-        /**
-        * @api {post} slack/eventalert
-        * @apiVersion 1.0.0
-        * @apiName SlackEventAsync
-        * @apiGroup SlackOAuth  
-        * @apiParam {SlackEventApiAC} Name    slackEvent
-        * @apiParamExample {json} Request-Example:
-        * {
-        *       "token":"Jhj5dZrVaK7ZwHHjRyZWjbDl",
-        *       "challenge":"3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P",
-        *       "type":"url_verification",
-        *       "team_id":"T061EG9RZ",
-        *       "api_app_id":"A0FFV41KK",
-        *       "event_ts":"1465244570.336841",
-        *       "authed_users":"
-                    ["U061F7AUR"]",
-        *       "event":"
-        *       {
-                "type": "reaction_added",
-                "user": "U061F1EUR",
-                "item": 
-                    {
-                        "type": "message",
-                        "channel": "C061EG9SL",
-                        "ts": "1464196127.000002"
-                    },
-                    "reaction": "slightly_smiling_face"
-                },"
-        * }  
-        * @apiSuccessExample {json} Success-Response:
-        * HTTP/1.1 200 OK 
-        * {
-        *       "Description":"This method will be hit when any event to which slack app has subscribed to is triggered
-        * }
-        */
-        [HttpPost]
-        [Route("slack/eventalert")]
-        public IHttpActionResult SlackEventAsync(SlackEventApiAC slackEvent)
-        {
-            _loggerSlackEvent.Debug("slack event fired");
-            //slack verification
-            if (slackEvent.Type == _stringConstantRepository.VerificationUrl)
-            {
-                return Ok(slackEvent.Challenge);
-            }
-            return Ok();
         }
 
         /**

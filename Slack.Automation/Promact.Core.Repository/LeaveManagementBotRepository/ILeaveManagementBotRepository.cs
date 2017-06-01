@@ -13,11 +13,11 @@ namespace Promact.Core.Repository.LeaveManagementBotRepository
         Task<string> ProcessLeaveAsync(string slackUserId, string answer);
          
         /// <summary>
-        /// method to convert slack user id to slack user's name - SS
+        /// method to convert slack user regex id to slack id - SS
         /// </summary>
         /// <param name="message">message from slack</param>
         /// <param name="userFound">if user is not found</param>
         /// <returns>message after conversation</returns>
-        string ProcessToConvertSlackIdToSlackUserName(string message, out bool userFound);
+        string ProcessToConvertSlackUserRegexIdToSlackId(string message, out bool userFound);
     }
 }

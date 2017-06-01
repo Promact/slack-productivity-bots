@@ -585,5 +585,6 @@
         string Completed { get; }
         string RoadBlock { get; }
         string FromMailAddressForTaskMailBot { get; }
+        string PointUserUsingAtTheRate { get; }
     }
 }

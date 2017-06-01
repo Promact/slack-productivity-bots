@@ -518,7 +518,7 @@ namespace Promact.Core.Test
             thirdLeaveRequest.EmployeeId = _stringConstant.TeamLeaderIdForTest;
             await _leaveRequestRepository.ApplyLeaveAsync(thirdLeaveRequest);
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
-                + _stringConstant.TeamLeader);
+                + _stringConstant.TeamLeaderSlackId);
             var expectedResult = GetLeaveListMessageByLeaveList(_leaveRequestRepository.LeaveListByUserId(_stringConstant.TeamLeaderIdForTest).ToList());
             Assert.Equal(result, expectedResult);
         }
@@ -535,7 +535,7 @@ namespace Promact.Core.Test
             await AddEmployeeDetailsAsync();
             MockingUserIsAdmin();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
-                + _stringConstant.TeamLeader);
+                + _stringConstant.TeamLeaderSlackId);
             var expectedResult = string.Format(_stringConstant.LeaveListForOtherErrorMessage, _stringConstant.TeamLeader);
             Assert.Equal(result, expectedResult);
         }
@@ -551,7 +551,7 @@ namespace Promact.Core.Test
             MockGetUserDetails();
             await AddEmployeeDetailsAsync();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
-                + _stringConstant.TeamLeader);
+                + _stringConstant.TeamLeaderSlackId);
             Assert.Equal(result, _stringConstant.UserIsNotAllowedToListOtherLeaveDetailsMessage);
         }
 
@@ -567,7 +567,7 @@ namespace Promact.Core.Test
             MockingUserIsAdmin();
             await AddEmployeeSlackDetailAsync();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
-                + _stringConstant.TeamLeader);
+                + _stringConstant.TeamLeaderSlackId);
             Assert.Equal(result, _stringConstant.MessageToRequestToAddToSlackOtherUser);
         }
 
@@ -583,8 +583,7 @@ namespace Promact.Core.Test
             MockingUserIsAdmin();
             var result = await _leaveManagementBotRepository.ProcessLeaveAsync(_stringConstant.SlackUserID, _stringConstant.LeaveListCommand
                 + _stringConstant.TeamLeader);
-            var expectedResult = string.Format(_stringConstant.UserNotFoundRequestToAddToSlackOtherUser, _stringConstant.TeamLeader);
-            Assert.Equal(result, expectedResult);
+            Assert.Equal(result, _stringConstant.PointUserUsingAtTheRate);
         }
 
         /// <summary>
@@ -955,7 +954,7 @@ namespace Promact.Core.Test
         {
             await AddEmployeeSlackDetailAsync();
             bool result;
-            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok + " <@" +
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackUserRegexIdToSlackId(_stringConstant.Ok + " <@" +
                 _stringConstant.TeamLeaderSlackId + ">", out result);
             Assert.False(result);
         }
@@ -968,7 +967,7 @@ namespace Promact.Core.Test
         public void ProcessToConvertSlackIdToSlackUserNameForUserNotFound()
         {
             bool result;
-            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok + " <@" +
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackUserRegexIdToSlackId(_stringConstant.Ok + " <@" +
                 _stringConstant.TeamLeaderSlackId + ">", out result);
             Assert.True(result);
         }
@@ -981,7 +980,7 @@ namespace Promact.Core.Test
         public void ProcessToConvertSlackIdToSlackUserNameNormalString()
         {
             bool result;
-            var message = _leaveManagementBotRepository.ProcessToConvertSlackIdToSlackUserName(_stringConstant.Ok, out result);
+            var message = _leaveManagementBotRepository.ProcessToConvertSlackUserRegexIdToSlackId(_stringConstant.Ok, out result);
             Assert.False(result);
         }
 

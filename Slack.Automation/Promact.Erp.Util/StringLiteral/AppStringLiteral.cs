@@ -584,5 +584,6 @@
         public string Completed { get; set; }
         public string RoadBlock { get; set; }
         public string FromMailAddressForTaskMailBot { get; set; }
+        public string PointUserUsingAtTheRate { get; set; }
     }
 }
