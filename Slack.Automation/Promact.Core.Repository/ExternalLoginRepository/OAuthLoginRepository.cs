@@ -12,6 +12,7 @@ using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringLiteral;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -72,14 +73,17 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
-
-                //Adding external Oauth details
-                UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-                var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
             }
+            else
+            {
+                var previousUserLoginInfo = (await _userManager.GetLoginsAsync(userInfo.Id)).Single(x => x.LoginProvider == _stringConstant.PromactStringName);
+                await _userManager.RemoveLoginAsync(userInfo.Id, previousUserLoginInfo);
+            }
+            //Adding external Oauth details
+            UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
+            var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
             return userInfo;
         }
-
 
         /// <summary>
         /// Method to get OAuth Server's app information

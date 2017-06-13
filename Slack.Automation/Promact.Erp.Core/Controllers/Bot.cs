@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 
 namespace Promact.Erp.Core.Controllers
-{ 
+{
     public class Bot
-    { 
+    {
         #region Private Variables
         private readonly ITaskMailRepository _taskMailRepository;
         private readonly ISlackUserRepository _slackUserDetailsRepository;
@@ -59,11 +59,12 @@ namespace Promact.Erp.Core.Controllers
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             // Telling Slack Socket Client to the bot whose access token was given early
             client.Connect((connected) => { });
-            try
+
+            _logger.Info("Task mail bot connected");
+            // Method will hit when someone send some text in task mail bot
+            client.OnMessageReceived += (message) =>
             {
-                _logger.Info("Task mail bot connected");
-                // Method will hit when someone send some text in task mail bot
-                client.OnMessageReceived += (message) =>
+                try
                 {
                     _logger.Info("Task mail bot receive message : " + message.text);
                     var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
@@ -89,17 +90,17 @@ namespace Promact.Erp.Core.Controllers
                         replyText = _stringConstant.NoSlackDetails;
                         _logger.Info("User is null : " + replyText);
                     }
-                    // Method to send back response to task mail bot
-                    client.SendMessage(showMethod, message.channel, replyText);
+                        // Method to send back response to task mail bot
+                        client.SendMessage(showMethod, message.channel, replyText);
                     _logger.Info("Reply message sended");
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
-                    Environment.NewLine + ex.StackTrace);
-                throw ex;
-            }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
+                        Environment.NewLine + ex.StackTrace);
+                    TaskMailBot();
+                }
+            };
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace Promact.Erp.Core.Controllers
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
                     client.CloseSocket();
-                    throw ex;
+                    Scrum();
                 }
                 catch (HttpRequestException ex)
                 {
@@ -152,7 +153,7 @@ namespace Promact.Erp.Core.Controllers
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
                     client.CloseSocket();
-                    throw ex;
+                    Scrum();
                 }
                 catch (Exception ex)
                 {
@@ -160,7 +161,7 @@ namespace Promact.Erp.Core.Controllers
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
                     client.CloseSocket();
-                    throw ex;
+                    Scrum();
                 }
             };
         }
@@ -178,10 +179,10 @@ namespace Promact.Erp.Core.Controllers
             Action<MessageReceived> showMethod = (MessageReceived messageReceived) => new MessageReceived();
             // Telling Slack Socket Client to the bot whose access token was given early
             client.Connect((connected) => { });
-            try
+            // Method will hit when someone send some text in task mail bot
+            client.OnMessageReceived += async (message) =>
             {
-                // Method will hit when someone send some text in task mail bot
-                client.OnMessageReceived += async (message) =>
+                try
                 {
                     _leaveManagementBotRepository = _component.Resolve<ILeaveManagementBotRepository>();
                     bool errorInUserConversion;
@@ -200,14 +201,15 @@ namespace Promact.Erp.Core.Controllers
                         replyText = message.text;
                     // Method to send back response to task mail bot
                     client.SendMessage(showMethod, message.channel, replyText);
-                };
-            }
-            catch (Exception ex)
-            {
-                client.CloseSocket();
-                _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
-                    Environment.NewLine + ex.StackTrace);
-            }
+                }
+                catch (Exception ex)
+                {
+                    client.CloseSocket();
+                    _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
+                        Environment.NewLine + ex.StackTrace);
+                    LeaveManagement();
+                }
+            };
         }
         #endregion
     }
