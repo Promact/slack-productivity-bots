@@ -1,9 +1,10 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
 import { StringConstant } from './stringConstant';
+//import { jsPDF } from 'jspdf';
 
 @Injectable()
 export class JsonToPdfService {
-    constructor(private stringConstant: StringConstant) { }
+    constructor(private stringConstant: StringConstant/*, private jspdf: jsPDF*/) { }
     jsPDF: any;
     exportJsonToPdf(columns: any, rows: any) {
         let doc = new this.jsPDF(this.stringConstant.portrait, this.stringConstant.unit, this.stringConstant.format);

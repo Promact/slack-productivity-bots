@@ -108,7 +108,7 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             var secondResult = await _userManager.AddLoginAsync(user.Id, info);
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, user.Id)).Returns(accessTokenForTest);
              var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.Email);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
         }
@@ -177,7 +177,7 @@ namespace Promact.Core.Test
             result = await _userManager.AddLoginAsync(firstUser.Id, firstInfo);
             result = await _userManager.AddLoginAsync(secondUser.Id, secondInfo);
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, firstUser.Id)).Returns(accessTokenForTest);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(secondUser.Email);
             Assert.NotEqual(accessToken, _stringConstant.AccessTokenForTest);
         }

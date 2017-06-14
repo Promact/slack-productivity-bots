@@ -140,7 +140,8 @@ namespace Promact.Core.Repository.AttachmentRepository
         public async Task<string> UserAccessTokenAsync(string username)
         {
             _logger.Debug("User Acces Token Async" + username);
-            var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
+            var user = await _userManager.FindByNameAsync(username);
+            var providerInfo = await _userManager.GetLoginsAsync(user.Id);
             var refreshToken = string.Empty;
             foreach (var provider in providerInfo)
             {
@@ -150,7 +151,7 @@ namespace Promact.Core.Repository.AttachmentRepository
                 }
             }
             _logger.Debug("RefreshToken" + refreshToken);
-            return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken);
+            return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken, user.Id);
         }
 
         /// <summary>

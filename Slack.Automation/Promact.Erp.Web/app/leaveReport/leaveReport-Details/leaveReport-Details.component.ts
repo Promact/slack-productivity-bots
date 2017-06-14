@@ -29,6 +29,10 @@ export class LeaveReportDetailsComponent implements OnInit {
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => {
+                for (let index = 0; index < leaveReportDetail.length; index++){
+                    let leave = leaveReportDetail[index];
+                    leave.Reason = this.replaceSpecialCharacter(leave.Reason);
+                }
                 this.leaveReportDetail = leaveReportDetail;
                 if (leaveReportDetail.length !== 0) {
                     this.loader.loader = false;
@@ -64,5 +68,9 @@ export class LeaveReportDetailsComponent implements OnInit {
             ]);
         };
         this.jsPDF.exportJsonToPdf(columns, rows);
+    }
+
+    replaceSpecialCharacter(text: string) {
+        return text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
     }
 }

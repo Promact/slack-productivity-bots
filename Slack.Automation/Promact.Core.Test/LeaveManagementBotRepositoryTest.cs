@@ -1188,7 +1188,7 @@ namespace Promact.Core.Test
             UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             var success = await _userManager.AddLoginAsync(user.Id, userLoginInfo);
             var result = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _serviceRepositoryMock.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(result);
+            _serviceRepositoryMock.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(result);
         }
 
         /// <summary>
