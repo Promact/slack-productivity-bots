@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Autofac;
+using Newtonsoft.Json;
 using NLog;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
@@ -17,20 +18,22 @@ namespace Promact.Core.Repository.AttachmentRepository
     {
         #region Private Variables
 
-        private readonly ApplicationUserManager _userManager;
+        private ApplicationUserManager _userManager;
         private readonly AppStringLiteral _stringConstant;
         private readonly IServiceRepository _serviceRepository;
         private readonly ILogger _logger;
+        private readonly IComponentContext _componentContext;
         #endregion
 
         #region Constructor
         public AttachmentRepository(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant,
-            IServiceRepository serviceRepository)
+            IServiceRepository serviceRepository, IComponentContext componentContext)
         {
             _userManager = userManager;
             _stringConstant = stringConstant.StringConstant;
             _serviceRepository = serviceRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
+            _componentContext = componentContext;
         }
         #endregion
 
@@ -139,6 +142,7 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <returns>access token from AspNetUserLogin table</returns>
         public async Task<string> UserAccessTokenAsync(string username)
         {
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _logger.Debug("User Acces Token Async" + username);
             var user = await _userManager.FindByNameAsync(username);
             var providerInfo = await _userManager.GetLoginsAsync(user.Id);
