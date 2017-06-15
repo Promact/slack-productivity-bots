@@ -1,8 +1,10 @@
 ﻿using IdentityModel.Client;
+using Microsoft.AspNet.Identity;
 using NLog;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.StringLiteral;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,14 +16,17 @@ namespace Promact.Core.Repository.ServiceRepository
         private readonly IEnvironmentVariableRepository _environmentVariable;
         private readonly ILogger _logger;
         private readonly ApplicationUserManager _userManager;
+        private readonly AppStringLiteral _stringConstant;
         #endregion
 
         #region Constructor
-        public ServiceRepository(IEnvironmentVariableRepository environmentVariable, ApplicationUserManager userManager)
+        public ServiceRepository(IEnvironmentVariableRepository environmentVariable, ApplicationUserManager userManager,
+            ISingletonStringLiteral stringLiteral)
         {
             _environmentVariable = environmentVariable;
             _logger = LogManager.GetLogger("AuthenticationModule");
             _userManager = userManager;
+            _stringConstant = stringLiteral.StringConstant;
         }
         #endregion
 
@@ -44,16 +49,25 @@ namespace Promact.Core.Repository.ServiceRepository
             var requestRefreshToken = await tokenClient.RequestRefreshTokenAsync(refreshToken);
             _logger.Debug("Request RequestRefreshTokenAsync response : " + requestRefreshToken.IsError);
             _logger.Debug("Request RequestRefreshTokenAsync Error : " + requestRefreshToken.Error);
-            if(requestRefreshToken.IsError)
-            {
-                var userLoginInfo = (await _userManager.GetLoginsAsync(userId)).Single(x=>x.ProviderKey == refreshToken);
-                await _userManager.RemoveLoginAsync(userId, userLoginInfo);
-                userLoginInfo.ProviderKey = requestRefreshToken.RefreshToken;
-                await _userManager.AddLoginAsync(userId, userLoginInfo);
-                requestRefreshToken = await tokenClient.RequestRefreshTokenAsync(refreshToken);
-            }
+            await UpdateExistingRefreshToken(refreshToken, requestRefreshToken.RefreshToken, userId);
             _logger.Debug("Access Token : " + requestRefreshToken.AccessToken);
-            return requestRefreshToken.AccessToken; 
+            return requestRefreshToken.AccessToken;
+        }
+        #endregion
+
+        #region Private Method
+        /// <summary>
+        /// Method to update old refresh token with new token of user
+        /// </summary>
+        /// <param name="oldRefreshToken">previous refresh token</param>
+        /// <param name="newRefreshToken">new refresh token</param>
+        /// <param name="userId">user's Id</param>
+        private async Task UpdateExistingRefreshToken(string oldRefreshToken, string newRefreshToken, string userId)
+        {
+            var userLoginInfo = (await _userManager.GetLoginsAsync(userId)).Single(x => x.ProviderKey == oldRefreshToken);
+            await _userManager.RemoveLoginAsync(userId, userLoginInfo);
+            userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, newRefreshToken);
+            await _userManager.AddLoginAsync(userId, userLoginInfo);
         }
         #endregion
     }
