@@ -4072,5 +4072,22 @@ namespace Promact.Erp.Util.StringConstants
                 return "To point any user, use *@*<username>";
             }
         }
+
+        public string SessionExpiredMessage
+        {
+            get
+            {
+                return string.Format("Your Service has been stopped. Please Re-Login to resume the service. Click here - {0}",
+                    AppSettingUtil.PromactErpUrl);
+            }
+        }
+
+        public string ExceptionMessageBugCreate
+        {
+            get
+            {
+                return string.Format("*Something went wrong.*{0}If you get this message. Feel free to create bug. Click here - https://github.com/Promact/slack-productivity-bots/issues/new", Environment.NewLine);
+            }
+        }
     }
 }
