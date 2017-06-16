@@ -17,7 +17,7 @@
         public string Button { get; set; }
         public string Rejected { get; set; }
         public string Fallback { get; set; }
-        public string Color { get; set; }
+        public string Color { get; set; } 
         public string AttachmentType { get; set; }
         public string CancelLeaveError { get; set; }
         public string SlackHelpMessage { get; set; }
