@@ -400,7 +400,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
         }
         #endregion
     }

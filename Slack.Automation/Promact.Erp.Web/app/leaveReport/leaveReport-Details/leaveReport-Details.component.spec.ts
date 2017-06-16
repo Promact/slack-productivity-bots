@@ -94,7 +94,7 @@ describe('LeaveReport Detials Tests', () => {
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
         spyOn(leaveReportService, stringConstant.getLeaveReportDetail).and.returnValue(new BehaviorSubject(mockLeaveReportDetails).asObservable());
         let result = leaveReportDetailsComponent.getLeaveReportDetail();
-        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(0);
 
     });
 

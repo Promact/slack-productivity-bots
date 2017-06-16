@@ -38,6 +38,15 @@ export class TaskMailDetailsComponent implements OnInit {
             }
             this.isMaxDate = true;
             this.taskService.getTaskMailDetailsReport(params[this.stringConstant.paramsUserId], params[this.stringConstant.userRole], params[this.stringConstant.paramsUserName]).subscribe(taskMails => {
+                for (let index = 0; index < taskMails.length; index++) {
+                    let task = taskMails[index];
+                    let taskDetails = task.TaskMails;
+                    for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                        let taskDetail = taskDetails[taskIndex];
+                        taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                        taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                    }
+                }
                 this.taskMail = taskMails;
                 let datePipeMinDate = new DatePipe(this.stringConstant.medium);
                 this.minDate = new Date(this.taskMail[0].MinDate);
@@ -65,6 +74,15 @@ export class TaskMailDetailsComponent implements OnInit {
         this.loader.loader = true;
         this.selectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportPreviousDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
+            for (let index = 0; index < taskMails.length; index++) {
+                let task = taskMails[index];
+                let taskDetails = task.TaskMails;
+                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                    let taskDetail = taskDetails[taskIndex];
+                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                }
+            }
             this.taskMail = taskMails;
             let datePipeMinDate = new DatePipe(this.stringConstant.medium);
             if (datePipeMinDate.transform(this.taskMail[0].MinDate, this.stringConstant.dateDefaultFormat) === datePipeMinDate.transform(this.taskMail[0].CreatedOn, this.stringConstant.dateDefaultFormat)) {
@@ -86,6 +104,15 @@ export class TaskMailDetailsComponent implements OnInit {
         this.loader.loader = true;
         this.selectedDate = this.stringConstant.empty;
         this.taskService.getTaskMailDetailsReportNextDate(UserName, UserId, UserRole, CreatedOn).subscribe(taskMails => {
+            for (let index = 0; index < taskMails.length; index++) {
+                let task = taskMails[index];
+                let taskDetails = task.TaskMails;
+                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                    let taskDetail = taskDetails[taskIndex];
+                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                }
+            }
             this.taskMail = taskMails;
             let datePipeMaxDate = new DatePipe(this.stringConstant.medium);
             if (datePipeMaxDate.transform(this.taskMail[0].MaxDate, this.stringConstant.dateDefaultFormat) === datePipeMaxDate.transform(this.taskMail[0].CreatedOn, this.stringConstant.dateDefaultFormat)) {
@@ -108,6 +135,15 @@ export class TaskMailDetailsComponent implements OnInit {
         let datePipeSelectedDate = new DatePipe(this.stringConstant.medium);
         let selectedDate = datePipeSelectedDate.transform(SelectedDate, this.stringConstant.dateDefaultFormat);
         this.taskService.getTaskMailDetailsReportSelectedDate(UserName, UserId, UserRole, CreatedOn, selectedDate).subscribe(taskMails => {
+            for (let index = 0; index < taskMails.length; index++) {
+                let task = taskMails[index];
+                let taskDetails = task.TaskMails;
+                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                    let taskDetail = taskDetails[taskIndex];
+                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                }
+            }
             this.taskMail = taskMails;
             this.isMaxDate = false;
             this.isMinDate = false;
@@ -126,5 +162,9 @@ export class TaskMailDetailsComponent implements OnInit {
             });
             this.loader.loader = false;
         });
+    }
+
+    replaceSpecialCharacter(text: string) {
+        return text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
     }
 }

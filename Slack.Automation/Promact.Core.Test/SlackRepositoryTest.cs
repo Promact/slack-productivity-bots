@@ -1296,7 +1296,7 @@ namespace Promact.Core.Test
             updaterUser.Id = _stringConstant.TeamLeaderIdForTest;
 
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, It.IsAny<string>())).Returns(accessTokenForTest);
 
             mailSetting.CreatedOn = DateTime.UtcNow;
             mailSetting.Module = _stringConstant.LeaveModule;

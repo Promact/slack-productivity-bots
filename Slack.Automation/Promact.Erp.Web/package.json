@@ -37,6 +37,7 @@
     "@angular/platform-browser-dynamic": "4.0.0",
     "@angular/platform-server": "4.0.0",
     "@angular/router": "4.0.0",
+    "@types/jspdf": "1.1.31",
     "angular-in-memory-web-api": "0.3.1",
     "bootstrap": "3.3.7",
     "codelyzer": "2.1.1",

@@ -110,7 +110,7 @@ namespace Promact.Core.Test
             slackChannelDetails.ProjectId = 1;
 
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, It.IsAny<string>())).Returns(accessTokenForTest);
         }
 
 

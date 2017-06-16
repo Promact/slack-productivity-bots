@@ -1138,7 +1138,7 @@ namespace Promact.Core.Test
             email.From = _stringConstant.ManagementEmailForTest;
             email.Subject = _stringConstant.TaskMailSubject;
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, It.IsAny<string>())).Returns(accessTokenForTest);
 
             EighthQuestion.CreatedOn = DateTime.UtcNow;
             EighthQuestion.OrderNumber = QuestionOrder.RestartTask;
@@ -1174,7 +1174,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
         }
         #endregion
     }
