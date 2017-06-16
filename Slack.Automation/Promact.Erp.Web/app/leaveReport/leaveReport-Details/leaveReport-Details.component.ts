@@ -29,7 +29,7 @@ export class LeaveReportDetailsComponent implements OnInit {
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => {
-                for (let index = 0; index < leaveReportDetail.length; index++){
+                for (let index = 0; index < leaveReportDetail.length; index++) {
                     let leave = leaveReportDetail[index];
                     leave.Reason = this.replaceSpecialCharacter(leave.Reason);
                 }
