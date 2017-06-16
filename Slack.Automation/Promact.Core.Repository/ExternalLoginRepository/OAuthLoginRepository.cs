@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using NLog;
 using Promact.Core.Repository.SlackChannelRepository;
@@ -21,7 +22,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
     public class OAuthLoginRepository : IOAuthLoginRepository
     {
         #region Private Variables
-        private readonly ApplicationUserManager _userManager;
+        private ApplicationUserManager _userManager;
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackUserDetails> _slackUserDetailsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
@@ -32,6 +33,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly ILogger _logger;
         private readonly ILogger _loggerSlackEvent;
+        private readonly IComponentContext _componentContext;
         #endregion
 
         #region Constructor
@@ -39,7 +41,8 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
             IRepository<SlackChannelDetails> slackChannelDetailsRepository, ISingletonStringLiteral stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
-            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
+            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
+            IComponentContext componentContext)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
@@ -52,6 +55,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             _slackChannelRepository = slackChannelRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
             _loggerSlackEvent = LogManager.GetLogger("SlackEvent");
+            _componentContext = componentContext;
         }
         #endregion
 
@@ -66,6 +70,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _logger.Debug("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
@@ -76,8 +81,12 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
             else
             {
-                var previousUserLoginInfo = (await _userManager.GetLoginsAsync(userInfo.Id)).Single(x => x.LoginProvider == _stringConstant.PromactStringName);
-                await _userManager.RemoveLoginAsync(userInfo.Id, previousUserLoginInfo);
+                var previousUserLoginInfos = (await _userManager.GetLoginsAsync(userInfo.Id)).ToList();
+                if (previousUserLoginInfos.Any())
+                {
+                    var previousUserLoginInfo = previousUserLoginInfos.Single(x => x.LoginProvider == _stringConstant.PromactStringName);
+                    await _userManager.RemoveLoginAsync(userInfo.Id, previousUserLoginInfo);
+                }
             }
             //Adding external Oauth details
             UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);

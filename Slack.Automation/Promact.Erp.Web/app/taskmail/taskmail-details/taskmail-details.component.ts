@@ -41,10 +41,12 @@ export class TaskMailDetailsComponent implements OnInit {
                 for (let index = 0; index < taskMails.length; index++) {
                     let task = taskMails[index];
                     let taskDetails = task.TaskMails;
-                    for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
-                        let taskDetail = taskDetails[taskIndex];
-                        taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
-                        taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                    if (taskDetails !== null && taskDetails !== undefined) {
+                        for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                            let taskDetail = taskDetails[taskIndex];
+                            taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                            taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                        }
                     }
                 }
                 this.taskMail = taskMails;
@@ -77,10 +79,12 @@ export class TaskMailDetailsComponent implements OnInit {
             for (let index = 0; index < taskMails.length; index++) {
                 let task = taskMails[index];
                 let taskDetails = task.TaskMails;
-                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
-                    let taskDetail = taskDetails[taskIndex];
-                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
-                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                if (taskDetails !== null && taskDetails !== undefined) {
+                    for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                        let taskDetail = taskDetails[taskIndex];
+                        taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                        taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                    }
                 }
             }
             this.taskMail = taskMails;
@@ -107,10 +111,12 @@ export class TaskMailDetailsComponent implements OnInit {
             for (let index = 0; index < taskMails.length; index++) {
                 let task = taskMails[index];
                 let taskDetails = task.TaskMails;
-                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
-                    let taskDetail = taskDetails[taskIndex];
-                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
-                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                if (taskDetails !== null && taskDetails !== undefined) {
+                    for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                        let taskDetail = taskDetails[taskIndex];
+                        taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                        taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                    }
                 }
             }
             this.taskMail = taskMails;
@@ -138,10 +144,12 @@ export class TaskMailDetailsComponent implements OnInit {
             for (let index = 0; index < taskMails.length; index++) {
                 let task = taskMails[index];
                 let taskDetails = task.TaskMails;
-                for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
-                    let taskDetail = taskDetails[taskIndex];
-                    taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
-                    taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                if (taskDetails !== null && taskDetails !== undefined) {
+                    for (let taskIndex = 0; taskIndex < taskDetails.length; taskIndex++) {
+                        let taskDetail = taskDetails[taskIndex];
+                        taskDetail.Comment = this.replaceSpecialCharacter(taskDetail.Comment);
+                        taskDetail.Description = this.replaceSpecialCharacter(taskDetail.Description);
+                    }
                 }
             }
             this.taskMail = taskMails;

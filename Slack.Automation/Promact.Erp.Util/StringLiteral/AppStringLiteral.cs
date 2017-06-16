@@ -17,7 +17,7 @@
         public string Button { get; set; }
         public string Rejected { get; set; }
         public string Fallback { get; set; }
-        public string Color { get; set; }
+        public string Color { get; set; } 
         public string AttachmentType { get; set; }
         public string CancelLeaveError { get; set; }
         public string SlackHelpMessage { get; set; }
@@ -585,5 +585,7 @@
         public string RoadBlock { get; set; }
         public string FromMailAddressForTaskMailBot { get; set; }
         public string PointUserUsingAtTheRate { get; set; }
+        public string SessionExpiredMessage { get; set; }
+        public string ExceptionMessageBugCreate { get; set; }
     }
 }

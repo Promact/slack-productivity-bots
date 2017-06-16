@@ -586,5 +586,7 @@
         string RoadBlock { get; }
         string FromMailAddressForTaskMailBot { get; }
         string PointUserUsingAtTheRate { get; }
+        string SessionExpiredMessage { get; }
+        string ExceptionMessageBugCreate { get; }
     }
 }

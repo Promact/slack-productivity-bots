@@ -140,6 +140,7 @@
     <Compile Include="EnvironmentVariableRepository\IEnvironmentVariableRepository.cs" />
     <Compile Include="ExceptionHandler\GroupNotFound.cs" />
     <Compile Include="ExceptionHandler\LeaveNotFoundForUser.cs" />
+    <Compile Include="ExceptionHandler\SessionExpiredException.cs" />
     <Compile Include="HashingMd5\IMd5Service.cs" />
     <Compile Include="HashingMd5\Md5Service.cs" />
     <Compile Include="HttpClient\HttpClientService.cs" />

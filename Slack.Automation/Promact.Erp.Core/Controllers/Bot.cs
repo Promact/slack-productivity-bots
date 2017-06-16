@@ -5,6 +5,7 @@ using Promact.Core.Repository.ScrumRepository;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.TaskMailRepository;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringLiteral;
 using SlackAPI;
 using SlackAPI.WebSocketMessages;
@@ -62,26 +63,26 @@ namespace Promact.Erp.Core.Controllers
 
             _logger.Info("Task mail bot connected");
             // Method will hit when someone send some text in task mail bot
-            client.OnMessageReceived += (message) =>
+            client.OnMessageReceived += async (message) =>
             {
+                string replyText = string.Empty;
+                var user = await _slackUserDetailsRepository.GetByIdAsync(message.user);
                 try
                 {
                     _logger.Info("Task mail bot receive message : " + message.text);
-                    var user = _slackUserDetailsRepository.GetByIdAsync(message.user).Result;
-                    string replyText = string.Empty;
                     if (user != null)
                     {
                         _logger.Info("User : " + user.Name);
                         if (message.text.ToLower() == _stringConstant.TaskMailSubject.ToLower())
                         {
                             _logger.Info("Task Mail process start - StartTaskMailAsync");
-                            replyText = _taskMailRepository.StartTaskMailAsync(user.UserId).Result;
+                            replyText = await _taskMailRepository.StartTaskMailAsync(user.UserId);
                             _logger.Info("Task Mail process done : " + replyText);
                         }
                         else
                         {
                             _logger.Info("Task Mail process start - QuestionAndAnswerAsync");
-                            replyText = _taskMailRepository.QuestionAndAnswerAsync(message.text, user.UserId).Result;
+                            replyText = await _taskMailRepository.QuestionAndAnswerAsync(message.text, user.UserId);
                             _logger.Info("Task Mail process done : " + replyText);
                         }
                     }
@@ -90,16 +91,21 @@ namespace Promact.Erp.Core.Controllers
                         replyText = _stringConstant.NoSlackDetails;
                         _logger.Info("User is null : " + replyText);
                     }
-                        // Method to send back response to task mail bot
-                        client.SendMessage(showMethod, message.channel, replyText);
-                    _logger.Info("Reply message sended");
+                }
+                catch (SessionExpiredException)
+                {
+                    _logger.Info(user.Name + "- session expired.");
+                    replyText = _stringConstant.SessionExpiredMessage;
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
                         Environment.NewLine + ex.StackTrace);
-                    TaskMailBot();
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                 }
+                // Method to send back response to task mail bot
+                client.SendMessage(showMethod, message.channel, replyText);
+                _logger.Info("Reply message sended");
             };
         }
 
@@ -124,44 +130,43 @@ namespace Promact.Erp.Core.Controllers
             client.OnMessageReceived += (message) =>
             {
                 _scrumlogger.Debug("Scrum bot got message :" + message);
+                string replyText = string.Empty;
                 try
                 {
                     IScrumBotRepository scrumBotRepository = _component.Resolve<IScrumBotRepository>();
-
                     _scrumlogger.Debug("Scrum bot got message : " + message.text + " From user : " + message.user + " Of channel : " + message.channel);
-                    string replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
+                    replyText = scrumBotRepository.ProcessMessagesAsync(message.user, message.channel, message.text, _scrumBotId).Result;
                     _scrumlogger.Debug("Scrum bot got reply : " + replyText + " To user : " + message.user + " Of channel : " + message.channel);
-
-                    if (!String.IsNullOrEmpty(replyText))
-                    {
-                        _scrumlogger.Debug("Scrum bot sending reply");
-                        client.SendMessage(showMethod, message.channel, replyText);
-                        _scrumlogger.Debug("Scrum bot sent reply");
-                    }
                 }
                 catch (TaskCanceledException ex)
                 {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Not Responding " + ex.InnerException);
-                    client.CloseSocket();
-                    Scrum();
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                 }
                 catch (HttpRequestException ex)
                 {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " OAuth Server Closed \nInner exception :\n" + ex.InnerException);
-                    client.CloseSocket();
-                    Scrum();
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
+                }
+                catch (SessionExpiredException)
+                {
+                    replyText = _stringConstant.SessionExpiredMessage;
                 }
                 catch (Exception ex)
                 {
-                    client.SendMessage(showMethod, message.channel, _stringConstant.ErrorMsg);
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                     _scrumlogger.Trace(ex.StackTrace);
                     _scrumlogger.Error("\n" + _stringConstant.LoggerScrumBot + " Generic exception \nMessage : \n" + ex.Message + "\nInner exception :\n" + ex.InnerException);
-                    client.CloseSocket();
-                    Scrum();
+                }
+                if (!string.IsNullOrEmpty(replyText))
+                {
+                    _scrumlogger.Debug("Scrum bot sending reply");
+                    client.SendMessage(showMethod, message.channel, replyText);
+                    _scrumlogger.Debug("Scrum bot sent reply");
                 }
             };
         }
@@ -182,11 +187,11 @@ namespace Promact.Erp.Core.Controllers
             // Method will hit when someone send some text in task mail bot
             client.OnMessageReceived += async (message) =>
             {
+                string replyText = string.Empty;
                 try
                 {
                     _leaveManagementBotRepository = _component.Resolve<ILeaveManagementBotRepository>();
                     bool errorInUserConversion;
-                    string replyText = string.Empty;
                     message.text = _leaveManagementBotRepository.ProcessToConvertSlackUserRegexIdToSlackId(message.text, out errorInUserConversion);
                     if (!errorInUserConversion)
                     {
@@ -199,16 +204,20 @@ namespace Promact.Erp.Core.Controllers
                     }
                     else
                         replyText = message.text;
-                    // Method to send back response to task mail bot
-                    client.SendMessage(showMethod, message.channel, replyText);
+                }
+                catch (SessionExpiredException)
+                {
+                    _logger.Info("session expired.");
+                    replyText = _stringConstant.SessionExpiredMessage;
                 }
                 catch (Exception ex)
                 {
-                    client.CloseSocket();
                     _logger.Error(_stringConstant.LoggerErrorMessageTaskMailBot + _stringConstant.Space + ex.Message +
                         Environment.NewLine + ex.StackTrace);
-                    LeaveManagement();
+                    replyText = _stringConstant.ExceptionMessageBugCreate;
                 }
+                // Method to send back response to task mail bot
+                client.SendMessage(showMethod, message.channel, replyText);
             };
         }
         #endregion

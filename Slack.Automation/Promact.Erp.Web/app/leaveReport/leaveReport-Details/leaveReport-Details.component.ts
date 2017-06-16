@@ -29,9 +29,11 @@ export class LeaveReportDetailsComponent implements OnInit {
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => {
-                for (let index = 0; index < leaveReportDetail.length; index++) {
-                    let leave = leaveReportDetail[index];
-                    leave.Reason = this.replaceSpecialCharacter(leave.Reason);
+                if (this.leaveReportDetail !== null && this.leaveReportDetail !== undefined) {
+                    for (let index = 0; index < leaveReportDetail.length; index++) {
+                        let leave = leaveReportDetail[index];
+                        leave.Reason = this.replaceSpecialCharacter(leave.Reason);
+                    }
                 }
                 this.leaveReportDetail = leaveReportDetail;
                 if (leaveReportDetail.length !== 0) {

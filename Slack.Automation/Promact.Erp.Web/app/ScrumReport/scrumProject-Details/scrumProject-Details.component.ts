@@ -63,11 +63,13 @@ export class ScrumProjectDetailComponent implements OnInit {
                 this.projectCreationDate = scrumDetails.ProjectCreationDate;
                 this.minDateForDateRange = new Date(this.projectCreationDate);
                 this.employeeScrumAnswers = scrumDetails.EmployeeScrumAnswers;
-                for (let index = 0; index < this.employeeScrumAnswers.length; index++) {
-                    let answer = this.employeeScrumAnswers[index];
-                    answer.Answer1 = this.replaceSpecialCharacter(answer.Answer1);
-                    answer.Answer2 = this.replaceSpecialCharacter(answer.Answer2);
-                    answer.Answer3 = this.replaceSpecialCharacter(answer.Answer3);
+                if (this.employeeScrumAnswers !== null && this.employeeScrumAnswers !== undefined) {
+                    for (let index = 0; index < this.employeeScrumAnswers.length; index++) {
+                        let answer = this.employeeScrumAnswers[index];
+                        answer.Answer1 = this.replaceSpecialCharacter(answer.Answer1);
+                        answer.Answer2 = this.replaceSpecialCharacter(answer.Answer2);
+                        answer.Answer3 = this.replaceSpecialCharacter(answer.Answer3);
+                    }
                 }
                 this.minDate = new Date(new Date(scrumDetails.ScrumDate).valueOf() + 1000 * 60 * 60 * 24).toISOString().slice(0, 10);
                 if (scrumDetails.EmployeeScrumAnswers === null) {this.status = true;}
