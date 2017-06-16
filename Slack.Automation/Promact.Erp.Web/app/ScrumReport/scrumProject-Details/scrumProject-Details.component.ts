@@ -83,7 +83,10 @@ export class ScrumProjectDetailComponent implements OnInit {
         this.router.navigate([this.stringConstant.scrumList]);
     }
 
-    replaceSpecialCharacter(text: string) {
-        return text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
+    replaceSpecialCharacter(value: Array<string>) {
+        for (let index = 0; index < value.length; index++) {
+            value[index].replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
+        }
+        return value;
     }
 }
