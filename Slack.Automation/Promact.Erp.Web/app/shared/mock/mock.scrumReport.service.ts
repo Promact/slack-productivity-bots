@@ -26,9 +26,9 @@ export class MockScrumReportService {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
         let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
-        mockEmployeeScrumAnswer.Answer1 = this.stringConstant.Answer1;
-        mockEmployeeScrumAnswer.Answer2 = this.stringConstant.Answer2;
-        mockEmployeeScrumAnswer.Answer3 = this.stringConstant.Answer3;
+        mockEmployeeScrumAnswer.Answer1 = [this.stringConstant.Answer1];
+        mockEmployeeScrumAnswer.Answer2 = [this.stringConstant.Answer2];
+        mockEmployeeScrumAnswer.Answer3 = [this.stringConstant.Answer3];
         mockEmployeeScrumAnswer.EmployeeName = this.stringConstant.EmployeeName;
         mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
         if (id === 123) {

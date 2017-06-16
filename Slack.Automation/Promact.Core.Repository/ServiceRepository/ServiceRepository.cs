@@ -64,8 +64,13 @@ namespace Promact.Core.Repository.ServiceRepository
         /// <param name="userId">user's Id</param>
         private async Task UpdateExistingRefreshToken(string oldRefreshToken, string newRefreshToken, string userId)
         {
-            var userLoginInfo = (await _userManager.GetLoginsAsync(userId)).Single(x => x.ProviderKey == oldRefreshToken);
-            await _userManager.RemoveLoginAsync(userId, userLoginInfo);
+            var userLoginInfos = (await _userManager.GetLoginsAsync(userId)).ToList();
+            UserLoginInfo userLoginInfo;
+            if (userLoginInfos.Any())
+            {
+                userLoginInfo = userLoginInfos.Single(x => x.ProviderKey == oldRefreshToken);
+                await _userManager.RemoveLoginAsync(userId, userLoginInfo);
+            }
             userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, newRefreshToken);
             await _userManager.AddLoginAsync(userId, userLoginInfo);
         }
