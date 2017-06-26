@@ -1,4 +1,4 @@
-﻿declare let describe, it, beforeEach, expect;
+﻿declare let describe, it, beforeEach, expect, spyOn;
 import { async, inject, TestBed, ComponentFixture } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -94,7 +94,7 @@ describe('LeaveReport Detials Tests', () => {
         let leaveReportService = fixture.debugElement.injector.get(LeaveReportService);
         spyOn(leaveReportService, stringConstant.getLeaveReportDetail).and.returnValue(new BehaviorSubject(mockLeaveReportDetails).asObservable());
         let result = leaveReportDetailsComponent.getLeaveReportDetail();
-        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(1);
+        expect(leaveReportDetailsComponent.leaveReportDetail.length).toBe(0);
 
     });
 

@@ -68,5 +68,12 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <param name="value">current context value</param>
         /// <returns>SlashChatUpdateResponse</returns>
         SlashChatUpdateResponse SlashChatUpdateResponseTransfrom(NameValueCollection value);
+
+        /// <summary>
+        /// Method to get task mail in slack message format in string
+        /// </summary>
+        /// <param name="taskMailDetails">list of task mail details</param>
+        /// <returns>task mail in string</returns>
+        string GetTaskMailInStringFormat(IEnumerable<TaskMailDetails> taskMailDetails);
     }
 }

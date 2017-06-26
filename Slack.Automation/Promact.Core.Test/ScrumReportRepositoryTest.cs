@@ -3,7 +3,6 @@ using Moq;
 using Promact.Core.Repository.ScrumReportRepository;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Test
 {
@@ -28,7 +27,7 @@ namespace Promact.Core.Test
         private readonly IRepository<Scrum> _scrumDataRepository;
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
         private readonly IRepository<Question> _questionDataRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
         private readonly ApplicationUserManager _userManager;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
@@ -49,7 +48,7 @@ namespace Promact.Core.Test
             _scrumDataRepository = _componentContext.Resolve<IRepository<Scrum>>();
             _scrumAnswerDataRepository = _componentContext.Resolve<IRepository<ScrumAnswer>>();
             _questionDataRepository = _componentContext.Resolve<IRepository<Question>>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
@@ -61,7 +60,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is admin
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsAdminTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -78,7 +77,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is team leader
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsTeamLeaderTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -97,7 +96,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test GetProjects when the logged in person is employee
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task GetProjectsEmployeeTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -117,7 +116,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the person is not available on the scrum date
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsPersonUnavailableTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -139,7 +138,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is employee 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsEmployeeTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -165,7 +164,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is admin 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsAdminTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -191,7 +190,7 @@ namespace Promact.Core.Test
         /// <summary>
         /// Method to test ScrumReportDetails when the logged in person is teamLeader 
         /// </summary>
-        [Fact Trait("Category", "Required")]
+        [Fact, Trait("Category", "Required")]
         public async Task ScrumReportDetailsTeamLeaderTest()
         {
             await CreateUserAndMockingHttpContextToReturnAccessToken();
@@ -270,7 +269,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
         }
 
         /// <summary>

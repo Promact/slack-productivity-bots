@@ -1,9 +1,7 @@
 ﻿using Autofac.Extras.NLog;
-using Newtonsoft.Json;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.SlackRepository;
-using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Threading.Tasks;
 using System.Web;
@@ -11,7 +9,7 @@ using System.Web.Http;
 
 namespace Promact.Erp.Core.Controllers
 {
-   public class LeaveRequestController : BaseController
+    public class LeaveRequestController : BaseController
     {
         #region Private Variables
         private readonly ISlackRepository _slackRepository;
@@ -21,7 +19,7 @@ namespace Promact.Erp.Core.Controllers
 
         #region Constructor
         public LeaveRequestController(ISlackRepository slackRepository, IAttachmentRepository attachmentRepository, 
-            ILogger logger, IStringConstantRepository stringConstant) : base(stringConstant)
+            ILogger logger, ISingletonStringLiteral stringConstant) : base(stringConstant)
         {
             _slackRepository = slackRepository;
             _attachmentRepository = attachmentRepository;

@@ -5,8 +5,9 @@ using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Promact.Core.Test
         private readonly IComponentContext _componentContext;
         private readonly IAttachmentRepository _attachmentRepository;
         private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
         #endregion
 
@@ -30,7 +31,7 @@ namespace Promact.Core.Test
             _componentContext = AutofacConfig.RegisterDependancies();
             _attachmentRepository = _componentContext.Resolve<IAttachmentRepository>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
         }
         #endregion
@@ -107,7 +108,7 @@ namespace Promact.Core.Test
             UserLoginInfo info = new UserLoginInfo(_stringConstant.PromactStringName, _stringConstant.AccessTokenForTest);
             var secondResult = await _userManager.AddLoginAsync(user.Id, info);
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, user.Id)).Returns(accessTokenForTest);
              var accessToken = await _attachmentRepository.UserAccessTokenAsync(user.Email);
             Assert.Equal(accessToken, _stringConstant.AccessTokenForTest);
         }
@@ -176,7 +177,7 @@ namespace Promact.Core.Test
             result = await _userManager.AddLoginAsync(firstUser.Id, firstInfo);
             result = await _userManager.AddLoginAsync(secondUser.Id, secondInfo);
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, firstUser.Id)).Returns(accessTokenForTest);
             var accessToken = await _attachmentRepository.UserAccessTokenAsync(secondUser.Email);
             Assert.NotEqual(accessToken, _stringConstant.AccessTokenForTest);
         }
@@ -202,6 +203,26 @@ namespace Promact.Core.Test
             value[_stringConstant.Payload] = _stringConstant.LeaveUpdateResponseJsonString;
             var response = _attachmentRepository.SlashChatUpdateResponseTransfrom(value);
             Assert.Equal(response.User.Id, _stringConstant.UserSlackId);
+        }
+
+        /// <summary>
+        /// Test case to check method SlashChatUpdateResponseTransfrom of Attachment Repository
+        /// </summary>
+        [Fact, Trait("Category", "Required")]
+        public void GetTaskMailInStringFormat()
+        {
+            List<TaskMailDetails> taskMailDetails = new List<TaskMailDetails>()
+            {
+                new TaskMailDetails()
+                {
+                    Description = _stringConstant.TaskMailDescription,
+                    Comment = _stringConstant.TaskMailComment,
+                    Hours = Convert.ToDecimal(_stringConstant.HourSpentForTest),
+                    Status = TaskMailStatus.completed
+                }
+            };
+            var response = _attachmentRepository.GetTaskMailInStringFormat(taskMailDetails);
+            Assert.NotEqual(response, string.Empty);
         }
         #endregion
     }

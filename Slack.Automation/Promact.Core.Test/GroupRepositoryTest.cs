@@ -6,7 +6,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -25,7 +25,7 @@ namespace Promact.Core.Test
 
         private readonly IComponentContext _componentContext;
         private readonly IGroupRepository _groupRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IHttpClientService> _mockHttpClient;
         private readonly ApplicationUserManager _userManager;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
@@ -38,7 +38,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _groupRepository = _componentContext.Resolve<IGroupRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
@@ -279,7 +279,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
             var emailGroupListResponse = Task.FromResult(_stringConstant.EmailListForGroup);
             _mockHttpClient.Setup(x => x.GetAsync(_stringConstant.ProjectUserUrl, _stringConstant.Email, _stringConstant.AccessTokenForTest, _stringConstant.Bearer)).Returns(emailGroupListResponse);
 

@@ -14,6 +14,7 @@ md2-chips .md2-chips-container {box-shadow:  none !important;}
 .mail-settings .chip-input-form {width:100%;}
 .mail-settings input[type=checkbox]{vertical-align:middle;margin:0;}
 .mail-settings .btn{width:100px;}
+.mail-settings .mat-chip i.material-icons{    vertical-align: middle;font-size: 20px;margin-top: -4px; padding-left: 4px;cursor:pointer;}
  md2-option.md2-selected ,md2-select:focus:not(.md2-select-disabled) .md2-select-trigger ,.md2-autocomplete-trigger.is-focused .md2-autocomplete-placeholder{color:#169F85!important;}
  md2-select:focus:not(.md2-select-disabled) .md2-select-trigger{border-color:#169F85!important;}
 .md2-autocomplete-trigger.is-focused{border-bottom:2px solid #169F85!important}
@@ -61,6 +62,7 @@ md2-pagination .md2-rows-select{margin:0 !important;}
 .after-login-nav {float: right;background: #EDEDED;border-bottom: 1px solid #D9DEE4;margin-bottom: 10px;width: 100%;padding:15px;}
 .after-login-nav a{float:right;font-size:18px;}
 .base-body .text-center{text-align:center;}
+#content {width:80%;margin:0 auto;}
 #content  a {background: url(https://platform.slack-edge.com/img/add_to_slack.png) no-repeat 50% center;display: block;width: 100%;height: 55px;color:transparent;}
 #content p{font-size: 20px;margin: 28px 0;}
 #content p span{color:#73879C;}
@@ -87,3 +89,24 @@ md2-pagination .md2-pagination li.active {background: #26B99A !important;}
 
 .loader {display: inline-block;font-size: 6rem;animation: 2s rotate infinite linear;width: 1em;height: 1em;position: absolute;top: 38%;left: 57%;margin: -50px 0px 0px -50px;}
 .loader circle {fill: transparent;stroke: #4bcf99 ;stroke-width: 0.1em;stroke-linecap: round;stroke-dasharray: 2.3525em 0.4705em;animation: 1.5s strokeDashArray infinite linear, 24s colorBounce infinite linear;}
+
+
+.mat-chip.mat-primary{    background-color: #e0e0e0;
+    color: rgba(0,0,0,.87);}
+
+md-option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    line-height: 48px;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 16px;
+    font-family: Roboto,Helvetica Neue,sans-serif;
+    text-align: left;
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+}

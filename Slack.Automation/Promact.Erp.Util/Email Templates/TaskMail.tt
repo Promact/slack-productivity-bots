@@ -4,7 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 
-<#@ parameter name ="Descriptions" type="System.Collections.Generic.List<Promact.Erp.DomainModel.Models.TaskMailDetails>" #>
+<#@ parameter name ="Descriptions" type="System.Collections.Generic.List<Promact.Erp.DomainModel.ApplicationClass.TaskMailDetailsAC>" #>
 
 <!DOCTYPE> 
 <html>
@@ -26,11 +26,10 @@ tr:nth-child(even){background-color: #9FA3A5}
 </style>
 </head>
 <body>
-    Daily Task Mail <#= DateTime.UtcNow.Date.ToShortDateString() #>
     <table>
 		<tr>
 			<td>
-				<b>Sl. No.</b>
+				<b>Sr. No.</b>
 			</td>
 			<td>
 				<b>Description</b>

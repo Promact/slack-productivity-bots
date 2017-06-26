@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Autofac;
+using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -16,17 +18,22 @@ namespace Promact.Core.Repository.AttachmentRepository
     {
         #region Private Variables
 
-        private readonly ApplicationUserManager _userManager;
-        private readonly IStringConstantRepository _stringConstant;
+        private ApplicationUserManager _userManager;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IServiceRepository _serviceRepository;
+        private readonly ILogger _logger;
+        private readonly IComponentContext _componentContext;
         #endregion
 
         #region Constructor
-        public AttachmentRepository(ApplicationUserManager userManager, IStringConstantRepository stringConstant, IServiceRepository serviceRepository)
+        public AttachmentRepository(ApplicationUserManager userManager, ISingletonStringLiteral stringConstant,
+            IServiceRepository serviceRepository, IComponentContext componentContext)
         {
             _userManager = userManager;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _serviceRepository = serviceRepository;
+            _logger = LogManager.GetLogger("AuthenticationModule");
+            _componentContext = componentContext;
         }
         #endregion
 
@@ -135,7 +142,10 @@ namespace Promact.Core.Repository.AttachmentRepository
         /// <returns>access token from AspNetUserLogin table</returns>
         public async Task<string> UserAccessTokenAsync(string username)
         {
-            var providerInfo = await _userManager.GetLoginsAsync(_userManager.FindByNameAsync(username).Result.Id);
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
+            _logger.Debug("User Acces Token Async" + username);
+            var user = await _userManager.FindByNameAsync(username);
+            var providerInfo = await _userManager.GetLoginsAsync(user.Id);
             var refreshToken = string.Empty;
             foreach (var provider in providerInfo)
             {
@@ -144,7 +154,8 @@ namespace Promact.Core.Repository.AttachmentRepository
                     refreshToken = provider.ProviderKey;
                 }
             }
-            return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken);
+            _logger.Debug("RefreshToken" + refreshToken);
+            return await _serviceRepository.GerAccessTokenByRefreshToken(refreshToken, user.Id);
         }
 
         /// <summary>
@@ -196,6 +207,25 @@ namespace Promact.Core.Repository.AttachmentRepository
             var decodeResponse = HttpUtility.UrlDecode(value[_stringConstant.Payload]);
             var response = JsonConvert.DeserializeObject<SlashChatUpdateResponse>(decodeResponse);
             return response;
+        }
+
+        /// <summary>
+        /// Method to get task mail in slack message format in string
+        /// </summary>
+        /// <param name="taskMailDetails">list of task mail details</param>
+        /// <returns>task mail in string</returns>
+        public string GetTaskMailInStringFormat(IEnumerable<TaskMailDetails> taskMailDetails)
+        {
+            string body = string.Empty;
+            int serialNumber = 1;
+            foreach (var taskMailDetail in taskMailDetails)
+            {
+                body += string.Format(_stringConstant.TaskMailUserViewBodyFormat, serialNumber,
+                    taskMailDetail.Description, taskMailDetail.Hours, taskMailDetail.Comment, taskMailDetail.Status.ToString(),
+                    Environment.NewLine);
+                serialNumber++;
+            }
+            return string.Format(_stringConstant.TaskMailUserViewHeaderFormat, Environment.NewLine, body);
         }
         #endregion
     }

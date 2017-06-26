@@ -3,6 +3,7 @@ import { Router}from '@angular/router';
 import { TaskService }   from './taskmail.service';
 
 @Component({
+    moduleId: module.id,
     template: `
     <router-outlet></router-outlet>
 `,

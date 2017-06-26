@@ -8,9 +8,12 @@ import { LoaderService } from '../../shared/loader.service';
 import { Md2Toast } from 'md2';
 import { MailSettingAC } from './mailsettingAC.model';
 import { StringConstant } from '../stringConstant';
+import { FormControl } from '@angular/forms';
+import { MaterialAutoSelectChip } from '../angular-material-chip-autoselect.service';
 
 @Component({
-    templateUrl: './app/shared/MailSetting/mailsetting.html',
+    moduleId: module.id,
+    templateUrl: 'mailsetting.html',
 })
 export class MailSettingComponent implements OnInit {
     mailSetting: MailSetting = new MailSetting;
@@ -22,15 +25,17 @@ export class MailSettingComponent implements OnInit {
     mailSettingAC: MailSettingAC;
     currentModule: string;
     projectSelected: boolean;
+    toHasValue: boolean;
 
     constructor(private httpService: MailSettingService, private loader: LoaderService, private router: Router,
-        private toaster: Md2Toast, private stringConstant: StringConstant) {
+        private toaster: Md2Toast, private stringConstant: StringConstant, private materialAutoSelectChipService: MaterialAutoSelectChip) {
         let currentLocation = window.location.hash;
         let listofString = currentLocation.split('/');
         this.currentModule = listofString[1];
         this.showButton = false;
         this.groupList = new Array<string>();
         this.mailSettingAC = new MailSettingAC;
+        this.toHasValue = false;
     }
 
     ngOnInit() {
@@ -91,6 +96,7 @@ export class MailSettingComponent implements OnInit {
             }
             else {
                 this.isToUpdate = true;
+                this.toHasValue = true;
             }
         });
         this.showButton = true;
@@ -102,4 +108,41 @@ export class MailSettingComponent implements OnInit {
             this.groupList = result;
         });
     };
+
+    selectGroup(group: string, isTo: boolean) {
+        if (isTo) {
+            if (this.mailSetting.To === null || this.mailSetting.To === undefined) {
+                this.mailSetting.To = new Array<string>();
+                this.mailSetting.To = this.materialAutoSelectChipService.selectGroup(group, this.mailSetting.To);
+            }
+            else {
+                this.mailSetting.To = this.materialAutoSelectChipService.selectGroup(group, this.mailSetting.To);
+            }
+            this.toHasValue = true;
+        }
+        else {
+            if (this.mailSetting.CC === null || this.mailSetting.CC === undefined) {
+                this.mailSetting.CC = new Array<string>();
+                this.mailSetting.CC = this.materialAutoSelectChipService.selectGroup(group, this.mailSetting.CC);
+            }
+            else {
+                this.mailSetting.CC = this.materialAutoSelectChipService.selectGroup(group, this.mailSetting.CC);
+            }
+        }
+    }
+
+    removeGroup(group: string, isTo: boolean) {
+        if (isTo) {
+            this.mailSetting.To = this.materialAutoSelectChipService.removeGroup(group, this.mailSetting.To);
+            if (this.mailSetting.To.length === 0) {
+                this.toHasValue = false;
+            }
+            else {
+                this.toHasValue = true;
+            }
+        }
+        else {
+            this.mailSetting.CC = this.materialAutoSelectChipService.removeGroup(group, this.mailSetting.CC);
+        }
+    }
 }

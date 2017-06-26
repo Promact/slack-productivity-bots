@@ -1,25 +1,25 @@
-﻿using Promact.Erp.DomainModel.Models;
+﻿using AutoMapper;
+using Promact.Erp.DomainModel.ApplicationClass;
+using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.Email_Templates;
-using Promact.Erp.Util.StringConstants;
-using System;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Promact.Core.Repository.EmailServiceTemplateRepository
 {
     public class EmailServiceTemplateRepository : IEmailServiceTemplateRepository
     {
         #region Private Variable
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
+        private readonly IMapper _mapper;
         #endregion
 
         #region Constructor
-        public EmailServiceTemplateRepository(IStringConstantRepository stringConstant)
+        public EmailServiceTemplateRepository(ISingletonStringLiteral stringConstant, IMapper mapper)
         {
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
+            _mapper = mapper;
         }
         #endregion
 
@@ -80,11 +80,22 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
         /// <returns>template emailBody as string</returns>
         public string EmailServiceTemplateTaskMail(IEnumerable<TaskMailDetails> taskMail)
         {
+
+            var taskMailDetails = new List<TaskMailDetailsAC>();
             Erp.Util.Email_Templates.TaskMail leaveTemplate = new Erp.Util.Email_Templates.TaskMail();
+            foreach (var task in taskMail)
+            {
+                TaskMailDetailsAC taskMailDetailAC = new TaskMailDetailsAC();
+                taskMailDetailAC = _mapper.Map<TaskMailDetails, TaskMailDetailsAC>(task);
+                if (task.Comment.ToLower() == SendEmailConfirmation.no.ToString())
+                    taskMailDetailAC.Comment = _stringConstant.Hyphen;
+                taskMailDetailAC.Status = GetNameFromTaskMailStatus(task.Status);
+                taskMailDetails.Add(taskMailDetailAC);
+            }
             // Assigning Value in template page
             leaveTemplate.Session = new Dictionary<string, object>
             {
-                {_stringConstant.TaskMailDescription, taskMail},
+                {_stringConstant.TaskMailDescription, taskMailDetails},
             };
             leaveTemplate.Initialize();
             var emailBody = leaveTemplate.TransformText();
@@ -113,6 +124,31 @@ namespace Promact.Core.Repository.EmailServiceTemplateRepository
             leaveTemplate.Initialize();
             var emailBody = leaveTemplate.TransformText();
             return emailBody;
+        }
+        #endregion
+
+        #region Private Method
+        /// <summary>
+        /// Method to get proper format of string for task mail status
+        /// </summary>
+        /// <param name="status">task mail status</param>
+        /// <returns>string in proper casing</returns>
+        private string GetNameFromTaskMailStatus(TaskMailStatus status)
+        {
+            string reply = string.Empty;
+            switch (status)
+            {
+                case TaskMailStatus.completed:
+                    reply = _stringConstant.Completed;
+                    break;
+                case TaskMailStatus.inprogress:
+                    reply = _stringConstant.InProgress;
+                    break;
+                case TaskMailStatus.roadblock:
+                    reply = _stringConstant.RoadBlock;
+                    break;
+            }
+            return reply;
         }
         #endregion
     }

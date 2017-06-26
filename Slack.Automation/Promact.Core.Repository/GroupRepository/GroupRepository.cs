@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.OauthCallsRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.ExceptionHandler;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -19,18 +21,20 @@ namespace Promact.Core.Repository.GroupRepository
         private readonly IRepository<Group> _groupRepository;
         private readonly IRepository<GroupEmailMapping> _groupEmailMappingRepository;
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
-        private readonly IStringConstantRepository _stringConstantRepository;
+        private readonly AppStringLiteral _stringConstantRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         #endregion
 
         #region Constructor
-        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository, IOauthCallHttpContextRespository oauthCallsRepository, IStringConstantRepository stringConstantRepository)
+        public GroupRepository(IRepository<Group> groupRepository, IMapper mapper, IRepository<GroupEmailMapping> groupEmailMappingRepository, IOauthCallHttpContextRespository oauthCallsRepository, ISingletonStringLiteral stringConstantRepository)
         {
             _groupRepository = groupRepository;
             _mapper = mapper;
             _oauthCallsRepository = oauthCallsRepository;
             _groupEmailMappingRepository = groupEmailMappingRepository;
-            _stringConstantRepository = stringConstantRepository;
+            _stringConstantRepository = stringConstantRepository.StringConstant;
+            _logger = LogManager.GetLogger("AuthenticationModule");
         }
         #endregion
 
@@ -156,7 +160,9 @@ namespace Promact.Core.Repository.GroupRepository
         /// <returns></returns>
         public async Task AddDynamicGroupAsync()
         {
+            _logger.Debug("request to get all details from oauth server for AddDynamicGroupAsync");
             UserEmailListAc userEmailListAc = await _oauthCallsRepository.GetUserEmailListBasedOnRoleAsync();
+            _logger.Debug("get all details from oauth server for AddDynamicGroupAsync");
             if (userEmailListAc != null)
             {
                 //create team leader group

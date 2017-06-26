@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Promact.Erp.DomainModel.ApplicationClass
 {
-    public class UserAndTaskMailDetailsWithAccessToken
+    public class UserAndTaskMailDetailsAC
     {
-        public UserAndTaskMailDetailsWithAccessToken()
+        public UserAndTaskMailDetailsAC()
         {
             IsTaskMailContinue = false;
         }
         public User User { get; set; }
-        public string AccessToken { get; set; }
         public TaskMail TaskMail { get; set; }
         public string QuestionText { get; set; }
         public IEnumerable<TaskMailDetails> TaskList { get; set; }

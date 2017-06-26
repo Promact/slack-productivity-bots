@@ -8,7 +8,8 @@ import { Md2Toast } from 'md2';
 
 
 @Component({
-    templateUrl: './app/Group/GroupList/groupList.html'
+    moduleId: module.id,
+    templateUrl: 'groupList.html'
 })
 
 export class GroupListComponent implements OnInit {
@@ -36,12 +37,12 @@ export class GroupListComponent implements OnInit {
         this.router.navigate(['/group/edit', id]);
     }
 
-    delteGroupPopup(id: number, popup) {
+    delteGroupPopup(id: number, popup: any) {
         this.groupId = id;
         popup.open();
     }
 
-    deleteGroup(popup) {
+    deleteGroup(popup: any) {
         this.loader.loader = true;
         this.groupService.deleteGroupById(this.groupId).then((result) => {
             this.toast.show("Group deleted sucessfully.");
@@ -54,7 +55,7 @@ export class GroupListComponent implements OnInit {
         popup.close();
     }
 
-    closeDeletePopup(popup) {
+    closeDeletePopup(popup: any) {
         popup.close();
     }
 }

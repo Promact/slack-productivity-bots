@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Autofac;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using NLog;
 using Promact.Core.Repository.SlackChannelRepository;
@@ -10,10 +11,10 @@ using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-
 
 
 namespace Promact.Core.Repository.ExternalLoginRepository
@@ -21,40 +22,45 @@ namespace Promact.Core.Repository.ExternalLoginRepository
     public class OAuthLoginRepository : IOAuthLoginRepository
     {
         #region Private Variables
-        private readonly ApplicationUserManager _userManager;
+        private ApplicationUserManager _userManager;
         private readonly IHttpClientService _httpClientService;
         private readonly IRepository<SlackUserDetails> _slackUserDetailsRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelRepository;
         private readonly IRepository<SlackChannelDetails> _slackChannelDetails;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IEnvironmentVariableRepository _envVariableRepository;
         private readonly IRepository<IncomingWebHook> _incomingWebHookRepository;
         private readonly ILogger _logger;
-
+        private readonly ILogger _loggerSlackEvent;
+        private readonly IComponentContext _componentContext;
         #endregion
 
         #region Constructor
         public OAuthLoginRepository(ApplicationUserManager userManager,
             IHttpClientService httpClientService, IRepository<SlackUserDetails> slackUserDetailsRepository,
-            IRepository<SlackChannelDetails> slackChannelDetailsRepository, IStringConstantRepository stringConstant,
+            IRepository<SlackChannelDetails> slackChannelDetailsRepository, ISingletonStringLiteral stringConstant,
             ISlackUserRepository slackUserRepository, IEnvironmentVariableRepository envVariableRepository,
-            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository)
+            IRepository<IncomingWebHook> incomingWebHook, ISlackChannelRepository slackChannelRepository,
+            IComponentContext componentContext)
         {
             _userManager = userManager;
             _httpClientService = httpClientService;
             _slackUserDetailsRepository = slackUserDetailsRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _slackUserRepository = slackUserRepository;
             _slackChannelDetails = slackChannelDetailsRepository;
             _envVariableRepository = envVariableRepository;
             _incomingWebHookRepository = incomingWebHook;
             _slackChannelRepository = slackChannelRepository;
             _logger = LogManager.GetLogger("AuthenticationModule");
+            _loggerSlackEvent = LogManager.GetLogger("SlackEvent");
+            _componentContext = componentContext;
         }
         #endregion
 
         #region Public Methods
+
         /// <summary>
         /// Method to add a new user in Application user table and store user's external login information in UserLogin table
         /// </summary>
@@ -64,6 +70,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
         /// <returns>user information</returns>
         public async Task<ApplicationUser> AddNewUserFromExternalLoginAsync(string email, string refreshToken, string userId)
         {
+            _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _logger.Debug("Start AddNewUserFromExternalLoginAsync:" + email + "RefreshToken: " + refreshToken + " UserID: " + userId);
             ApplicationUser userInfo = _userManager.FindById(userId);
             if (userInfo == null)// check user is already added or not
@@ -71,11 +78,19 @@ namespace Promact.Core.Repository.ExternalLoginRepository
                 userInfo = new ApplicationUser() { Email = email, UserName = email, Id = userId };
                 //Creating a user with email only. Password not required
                 IdentityResult result = await _userManager.CreateAsync(userInfo);
-
-                //Adding external Oauth details
-                UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
-                var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
             }
+            else
+            {
+                var previousUserLoginInfos = (await _userManager.GetLoginsAsync(userInfo.Id)).ToList();
+                if (previousUserLoginInfos.Any())
+                {
+                    var previousUserLoginInfo = previousUserLoginInfos.Single(x => x.LoginProvider == _stringConstant.PromactStringName);
+                    await _userManager.RemoveLoginAsync(userInfo.Id, previousUserLoginInfo);
+                }
+            }
+            //Adding external Oauth details
+            UserLoginInfo userLoginInfo = new UserLoginInfo(_stringConstant.PromactStringName, refreshToken);
+            var success = await _userManager.AddLoginAsync(userInfo.Id, userLoginInfo);
             return userInfo;
         }
 
@@ -95,6 +110,7 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             oAuth.ReturnUrl = _stringConstant.ClientReturnUrl;
             return oAuth;
         }
+
 
         /// <summary>
         /// Method to add/update Slack User,channels and groups information 
@@ -186,7 +202,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             }
             else
                 throw new SlackAuthorizeException(_stringConstant.SlackAuthError + slackUsers.ErrorMessage);
-
         }
 
 
@@ -210,41 +225,6 @@ namespace Promact.Core.Repository.ExternalLoginRepository
             {
                 slackChannel.Name = slackChannelDetails.Name;
                 await _slackChannelRepository.UpdateSlackChannelAsync(slackChannel);
-            }
-
-        }
-
-
-        /// <summary>
-        /// Method to update slack user table when there is any changes in slack
-        /// </summary>
-        /// <param name="slackEvent"></param>
-        public async Task SlackEventUpdateAsync(SlackEventApiAC slackEvent)
-        {
-            SlackUserDetails user = await _slackUserDetailsRepository.FirstOrDefaultAsync(x => x.UserId == slackEvent.Event.User.UserId);
-            if (user == null)
-                await _slackUserRepository.AddSlackUserAsync(slackEvent.Event.User);
-        }
-
-
-        /// <summary>
-        /// Method to update slack channel table when a channel is added or updated in team.
-        /// </summary>
-        /// <param name="slackEvent"></param>
-        public async Task SlackChannelAddAsync(SlackEventApiAC slackEvent)
-        {
-            SlackChannelDetails channel = await _slackChannelDetails.FirstOrDefaultAsync(x => x.ChannelId == slackEvent.Event.Channel.ChannelId);
-            if (channel == null)
-            {
-                slackEvent.Event.Channel.CreatedOn = DateTime.UtcNow;
-                _slackChannelDetails.Insert(slackEvent.Event.Channel);
-                await _slackChannelDetails.SaveChangesAsync();
-            }
-            else
-            {
-                channel.Name = slackEvent.Event.Channel.Name;
-                _slackChannelDetails.Update(channel);
-                await _slackChannelDetails.SaveChangesAsync();
             }
         }
 

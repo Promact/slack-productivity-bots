@@ -12,6 +12,7 @@ using Promact.Core.Repository.Client;
 using Promact.Core.Repository.EmailServiceTemplateRepository;
 using Promact.Core.Repository.ExternalLoginRepository;
 using Promact.Core.Repository.GroupRepository;
+using Promact.Core.Repository.LeaveManagementBotRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Core.Repository.LeaveRequestRepository;
 using Promact.Core.Repository.MailSettingDetailsByProjectAndModule;
@@ -37,6 +38,7 @@ using Promact.Erp.Util.EnvironmentVariableRepository;
 using Promact.Erp.Util.HashingMd5;
 using Promact.Erp.Util.HttpClient;
 using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Data.Entity;
 using System.Net.Http;
 using System.Web;
@@ -100,11 +102,14 @@ namespace Promact.Erp.Web.App_Start
             builder.RegisterType<Md5Service>().As<IMd5Service>();
             builder.RegisterType<MailSettingDetailsByProjectAndModuleRepository>().As<IMailSettingDetailsByProjectAndModuleRepository>();
             builder.RegisterType<RedmineRepository>().As<IRedmineRepository>();
+            builder.RegisterType<LeaveManagementBotRepository>().As<ILeaveManagementBotRepository>();
 
             builder.RegisterModule<AutofacWebTypesModule>();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule<SimpleNLogModule>();
             builder.Register(x => AutoMapperConfiguration.ConfigureMap()).As<IMapper>().SingleInstance();
+            builder.RegisterType<StringLiteral>().As<IStringLiteral>();
+            builder.RegisterType<SingletonStringLiteral>().As<ISingletonStringLiteral>().SingleInstance();
             var container = builder.Build();
             
             // replace mvc dependancy resolver with autofac

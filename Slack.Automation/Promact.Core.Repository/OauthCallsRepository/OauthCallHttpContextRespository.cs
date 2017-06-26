@@ -1,10 +1,10 @@
-﻿using Autofac.Extras.NLog;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using NLog;
 using Promact.Core.Repository.AttachmentRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -16,7 +16,7 @@ namespace Promact.Core.Repository.OauthCallsRepository
     public class OauthCallHttpContextRespository : IOauthCallHttpContextRespository
     {
         #region Private 
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly IHttpClientService _httpClientService;
         private readonly HttpContextBase _httpContextBase;
         private readonly ApplicationUserManager _userManager;
@@ -25,15 +25,15 @@ namespace Promact.Core.Repository.OauthCallsRepository
         #endregion
 
         #region Constructor
-        public OauthCallHttpContextRespository(IStringConstantRepository stringConstant, IHttpClientService httpClientService,
-            HttpContextBase httpContextBase, ApplicationUserManager userManager, IAttachmentRepository attachmentRepository, ILogger logger)
+        public OauthCallHttpContextRespository(ISingletonStringLiteral stringConstant, IHttpClientService httpClientService,
+            HttpContextBase httpContextBase, ApplicationUserManager userManager, IAttachmentRepository attachmentRepository)
         {
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _httpClientService = httpClientService;
             _httpContextBase = httpContextBase;
             _userManager = userManager;
             _attachmentRepository = attachmentRepository;
-            _logger = logger;
+            _logger = LogManager.GetLogger("AuthenticationModule");
         }
         #endregion
 
@@ -203,7 +203,9 @@ namespace Promact.Core.Repository.OauthCallsRepository
         /// <returns>access token</returns>
         private async Task<string> GetCurrentUserAcceesToken()
         {
+            _logger.Debug("Get Current User Accees Token");
             var userName = (await GetCurrentUserDetails()).UserName;
+            _logger.Debug("Get Current User Accees Token UserName" + userName);
             return (await _attachmentRepository.UserAccessTokenAsync(userName));
         }
 

@@ -1,4 +1,4 @@
-﻿declare var describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect, spyOn;
 import { async, inject, TestBed, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -41,16 +41,16 @@ describe('ScrumReport Tests', () => {
     it('Shows scrum answers of employees in a project on initialization', fakeAsync(() => {
             let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
             let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-            activatedRoute.testParams = { Id: stringConstant.userId };
+            activatedRoute.params = Observable.of({ Id: stringConstant.userId });
             
             let scrumProjectDetailsComponent = fixture.componentInstance;
             let scrumService = fixture.debugElement.injector.get(ScrumReportService);
             let mockScrumDetails = new ScrumDetails();
             let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
             let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
-            mockEmployeeScrumAnswer.Answer1 = stringConstant.Answer1;
-            mockEmployeeScrumAnswer.Answer2 = stringConstant.Answer2;
-            mockEmployeeScrumAnswer.Answer3 = stringConstant.Answer3;
+            mockEmployeeScrumAnswer.Answer1 = [stringConstant.Answer1];
+            mockEmployeeScrumAnswer.Answer2 = [stringConstant.Answer2];
+            mockEmployeeScrumAnswer.Answer3 = [stringConstant.Answer3];
             mockEmployeeScrumAnswer.EmployeeName = stringConstant.EmployeeName;
             mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
             let date = new Date().toString();
@@ -70,7 +70,7 @@ describe('ScrumReport Tests', () => {
     it('Shows scrum answers of employees null', fakeAsync(() => {
         let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { Id: stringConstant.userId };
+        activatedRoute.params = Observable.of({ Id: stringConstant.userId });
 
         let scrumProjectDetailsComponent = fixture.componentInstance;
         let scrumService = fixture.debugElement.injector.get(ScrumReportService);
@@ -94,9 +94,9 @@ describe('ScrumReport Tests', () => {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
         let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
-        mockEmployeeScrumAnswer.Answer1 = stringConstant.Answer1;
-        mockEmployeeScrumAnswer.Answer2 = stringConstant.Answer2;
-        mockEmployeeScrumAnswer.Answer3 = stringConstant.Answer3;
+        mockEmployeeScrumAnswer.Answer1 = [stringConstant.Answer1];
+        mockEmployeeScrumAnswer.Answer2 = [stringConstant.Answer2];
+        mockEmployeeScrumAnswer.Answer3 = [stringConstant.Answer3];
         mockEmployeeScrumAnswer.EmployeeName = stringConstant.EmployeeName;
         mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
         mockScrumDetails.ScrumDate = stringConstant.ProjectCreationDate;
@@ -104,7 +104,7 @@ describe('ScrumReport Tests', () => {
         mockScrumDetails.EmployeeScrumAnswers = mockEmployeeScrumAnswers;
         let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { Id: stringConstant.userId };
+        activatedRoute.params = Observable.of({ Id: stringConstant.userId });
 
         let scrumReportService = fixture.debugElement.injector.get(ScrumReportService);
         spyOn(scrumReportService, "getScrumDetails").and.returnValue(new BehaviorSubject(mockScrumDetails).asObservable());
@@ -117,9 +117,9 @@ describe('ScrumReport Tests', () => {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
         let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
-        mockEmployeeScrumAnswer.Answer1 = stringConstant.Answer1;
-        mockEmployeeScrumAnswer.Answer2 = stringConstant.Answer2;
-        mockEmployeeScrumAnswer.Answer3 = stringConstant.Answer3;
+        mockEmployeeScrumAnswer.Answer1 = [stringConstant.Answer1];
+        mockEmployeeScrumAnswer.Answer2 = [stringConstant.Answer2];
+        mockEmployeeScrumAnswer.Answer3 = [stringConstant.Answer3];
         mockEmployeeScrumAnswer.EmployeeName = stringConstant.EmployeeName;
         mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
         mockScrumDetails.ScrumDate = stringConstant.ProjectCreationDate;
@@ -128,7 +128,7 @@ describe('ScrumReport Tests', () => {
 
         let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { Id: stringConstant.userId };
+        activatedRoute.params = Observable.of({ Id: stringConstant.userId });
 
         let scrumReportService = fixture.debugElement.injector.get(ScrumReportService);
         spyOn(scrumReportService, "getScrumDetails").and.returnValue(new BehaviorSubject(mockScrumDetails).asObservable());
@@ -141,9 +141,9 @@ describe('ScrumReport Tests', () => {
         let mockScrumDetails = new ScrumDetails();
         let mockEmployeeScrumAnswers = new Array<EmployeeScrumAnswers>();
         let mockEmployeeScrumAnswer = new EmployeeScrumAnswers();
-        mockEmployeeScrumAnswer.Answer1 = stringConstant.Answer1;
-        mockEmployeeScrumAnswer.Answer2 = stringConstant.Answer2;
-        mockEmployeeScrumAnswer.Answer3 = stringConstant.Answer3;
+        mockEmployeeScrumAnswer.Answer1 = [stringConstant.Answer1];
+        mockEmployeeScrumAnswer.Answer2 = [stringConstant.Answer2];
+        mockEmployeeScrumAnswer.Answer3 = [stringConstant.Answer3];
         mockEmployeeScrumAnswer.EmployeeName = stringConstant.EmployeeName;
         mockEmployeeScrumAnswers.push(mockEmployeeScrumAnswer);
         mockScrumDetails.ScrumDate = stringConstant.ProjectCreationDate;
@@ -152,7 +152,7 @@ describe('ScrumReport Tests', () => {
         let fixture = TestBed.createComponent(ScrumProjectDetailComponent);
 
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { Id: stringConstant.userId };
+        activatedRoute.params = Observable.of({ Id: stringConstant.userId });
 
         let scrumReportService = fixture.debugElement.injector.get(ScrumReportService);
         spyOn(scrumReportService, "getScrumDetails").and.returnValue(new BehaviorSubject(mockScrumDetails).asObservable());

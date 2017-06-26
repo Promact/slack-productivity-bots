@@ -1,19 +1,17 @@
 ﻿using Autofac;
 using Moq;
-using Promact.Core.Repository.BotQuestionRepository;
 using Promact.Erp.DomainModel.Models;
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using Promact.Erp.DomainModel.DataRepository;
 using Microsoft.AspNet.Identity;
 using Promact.Core.Repository.SlackUserRepository;
 using Promact.Core.Repository.SlackChannelRepository;
 using Promact.Erp.DomainModel.ApplicationClass.SlackRequestAndResponse;
-using Promact.Erp.Util.StringConstants;
 using Promact.Erp.Util.HttpClient;
 using Promact.Core.Repository.ServiceRepository;
 using Promact.Core.Repository.ScrumSetUpRepository;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Test
 {
@@ -30,7 +28,7 @@ namespace Promact.Core.Test
         private readonly IScrumSetUpRepository _scrumSetUpRepository;
         private readonly ISlackUserRepository _slackUserRepository;
         private readonly ISlackChannelRepository _slackChannelReposiroty;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
 
 
@@ -58,7 +56,7 @@ namespace Promact.Core.Test
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _slackUserRepository = _componentContext.Resolve<ISlackUserRepository>();
             _slackChannelReposiroty = _componentContext.Resolve<ISlackChannelRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
             Initialization();
 
@@ -112,7 +110,7 @@ namespace Promact.Core.Test
             slackChannelDetails.ProjectId = 1;
 
             var accessTokenForTest = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest)).Returns(accessTokenForTest);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(_stringConstant.AccessTokenForTest, It.IsAny<string>())).Returns(accessTokenForTest);
         }
 
 

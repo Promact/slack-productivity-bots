@@ -14,15 +14,15 @@
                             <input type="hidden" [(ngModel)]="mailSetting.Id" #id="ngModel" name="id" />
                         </div>
 
-                        <div class="form-group">
-                            <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" data-parsley-mincheck="2" class="flat" /> Send Mail
+                        <div [hidden]="!projectSelected">
+                            <div class="form-group">
+                                <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail" data-parsley-mincheck="2" class="flat" /> Send Mail
+                            </div>
                         </div>
-                        <!-- <input type="checkbox" [(ngModel)]="mailSetting.SendMail" #sendMail="ngModel" name="sendMail">Send Mail<br />-->
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-
                                     <md2-select placeholder="Project" [(ngModel)]="mailSetting.Project" #project="ngModel" name="project" required (change)="getMailSettingDetailsByProjectId(mailSetting.Project.Id)">
                                         <md2-option *ngFor="let project of listOfProject" [value]="project">{{project.Name}}</md2-option>
                                     </md2-select>
@@ -31,46 +31,44 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-
-                                    <md2-chips [(ngModel)]="mailSetting.To"
-                                               #listofTO="ngModel"
-                                               name="listofTO"
-                                               placeholder="To"
-                                               [isRemovable]="true"
-                                               [readonly]="!projectSelected"
-                                               [isAutoComplete]="true"
-                                               [autocompleteDataList]="groupList"
-                                               autocomplete-item-text="value" required>
-                                    </md2-chips>
+                        <div [hidden]="!projectSelected">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <md-chip-list (click)="autocompleteTo.focus()">
+                                            <md-chip *ngFor="let to of mailSetting.To">{{to}}<i class="material-icons" (click)="removeGroup(to, true)">close</i></md-chip>
+                                            <md-input-container>
+                                                <input mdInput placeholder="To" [mdAutocomplete]="tolist" #autocompleteTo ngModel name="To" #listOfTo="ngModel">
+                                            </md-input-container>
+                                            <md-autocomplete #tolist="mdAutocomplete">
+                                                <md-option *ngFor="let group of groupList" (click)="selectGroup(group, true)">{{group}}</md-option>
+                                            </md-autocomplete>
+                                        </md-chip-list>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div [hidden]="!(listOfTo.touched && !toHasValue)" class="error">Required</div>
 
-
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <md2-chips [(ngModel)]="mailSetting.CC"
-                                               #listofCC="ngModel"
-                                               name="listofCC"
-                                               placeholder="CC"
-                                               [isRemovable]="true"
-                                               [readonly]="!projectSelected"
-                                               [isAutoComplete]="true"
-                                               [autocompleteDataList]="groupList"
-                                               autocomplete-item-text="value">
-                                    </md2-chips>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <md-chip-list (click)="autocompleteCC.focus()">
+                                            <md-chip *ngFor="let cc of mailSetting.CC">{{cc}}<i class="material-icons" (click)="removeGroup(cc, false)">clear</i></md-chip>
+                                            <md-input-container>
+                                                <input mdInput placeholder="CC" [mdAutocomplete]="cclist" #autocompleteCC ngModel name="CC" #listOfCC="ngModel">
+                                            </md-input-container>
+                                            <md-autocomplete #cclist="mdAutocomplete">
+                                                <md-option *ngFor="let group of groupList" (click)="selectGroup(group, false)">{{group}}</md-option>
+                                            </md-autocomplete>
+                                        </md-chip-list>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div [hidden]="!showButton">
-                            <button type="submit" (click)="addMailSetting(mailSetting)" *ngIf ="!isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Save</button>
-                            <button type="submit" (click)="updateMailSetting(mailSetting)" *ngIf ="isToUpdate" class="btn btn-success" [disabled]="!mailSettingForm.form.valid">Update</button>
+                            <button type="submit" (click)="addMailSetting(mailSetting)" *ngIf="!isToUpdate" class="btn btn-success" [disabled]="!(mailSettingForm.form.valid && toHasValue)">Save</button>
+                            <button type="submit" (click)="updateMailSetting(mailSetting)" *ngIf="isToUpdate" class="btn btn-success" [disabled]="!(mailSettingForm.form.valid && toHasValue)">Update</button>
                         </div>
                     </form>
                 </div>

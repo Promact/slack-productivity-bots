@@ -6,6 +6,8 @@ import { GroupEditComponent } from "./GroupEdit/groupEdit.component";
 import { GroupListComponent } from "./GroupList/groupList.component";
 import { GroupService} from "./group.service";
 import { SharedModule } from "../shared/shared.module";
+import { MaterialAutoSelectChip } from '../shared/angular-material-chip-autoselect.service';
+
 @NgModule({
     imports: [
         groupReportRoutes,
@@ -17,6 +19,6 @@ import { SharedModule } from "../shared/shared.module";
         GroupListComponent,
         GroupEditComponent
     ],
-    providers: [GroupService]
+    providers: [GroupService, MaterialAutoSelectChip]
 })
 export class GroupModule { }

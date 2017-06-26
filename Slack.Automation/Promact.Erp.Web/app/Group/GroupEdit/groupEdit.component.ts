@@ -5,9 +5,11 @@ import { StringConstant } from '../../shared/stringConstant';
 import { GroupService } from '../group.service';
 import { GroupModel } from '../group.model';
 import { Md2Toast } from 'md2';
+import { MaterialAutoSelectChip } from '../../shared/angular-material-chip-autoselect.service';
 
 @Component({
-    templateUrl: './app/Group/GroupEdit/groupEdit.html',
+    moduleId: module.id,
+    templateUrl: 'groupEdit.html',
 })
 export class GroupEditComponent implements OnInit {
     validPattern: any;
@@ -15,18 +17,22 @@ export class GroupEditComponent implements OnInit {
     isExistsGroupName: boolean;
     id: number;
     listOfActiveEmail: Array<string>;
+    emailHasValue: boolean;
 
-    constructor(private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant, private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast) {
+    constructor(private router: Router, private route: ActivatedRoute, private stringConstant: StringConstant,
+        private loader: LoaderService, private groupService: GroupService, private toast: Md2Toast,
+        private materialAutoSelectChipService: MaterialAutoSelectChip) {
         this.validPattern = this.stringConstant.emailValidPattern;
         this.groupModel = new GroupModel();
         this.isExistsGroupName = false;
+        this.emailHasValue = false;
     }
 
     ngOnInit() {
         this.loader.loader = true;
         this.getActiveUserEmailList();
         this.route.params.subscribe(params => {
-            this.id = +this.route.snapshot.params[this.stringConstant.paramsId];
+            this.id = params[this.stringConstant.paramsId];
             this.groupService.getGroupbyId(this.id).then((result) => {
                 this.groupModel = result;
                 this.loader.loader = false;
@@ -52,6 +58,7 @@ export class GroupEditComponent implements OnInit {
                 this.backToGroupList();
                 this.toast.show('Group updated successfully.');
                 this.loader.loader = false;
+                this.emailHasValue = true;
             }, err => {
                 this.toast.show('Group must not be updated.');
                 this.loader.loader = false;
@@ -73,5 +80,20 @@ export class GroupEditComponent implements OnInit {
 
     backToGroupList() {
         this.router.navigate(['/group']);
+    }
+
+    selectEmail(email: string) {
+        this.groupModel.Emails = this.materialAutoSelectChipService.selectGroup(email, this.groupModel.Emails);
+        this.emailHasValue = true;
+    }
+
+    removeEmail(email: string) {
+        this.groupModel.Emails = this.materialAutoSelectChipService.removeGroup(email, this.groupModel.Emails);
+        if (this.groupModel.Emails.length === 0) {
+            this.emailHasValue = false;
+        }
+        else {
+            this.emailHasValue = true;
+        }
     }
 }

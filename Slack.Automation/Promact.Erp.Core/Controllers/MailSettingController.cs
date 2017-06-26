@@ -1,6 +1,6 @@
 ﻿using Promact.Core.Repository.MailSettingRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -10,13 +10,19 @@ namespace Promact.Erp.Core.Controllers
     [RoutePrefix("api/mailsetting")]
     public class MailSettingController : BaseController
     {
+        #region Private Variable
         private IMailSettingRepository _mailSettingRepository;
-        public MailSettingController(IStringConstantRepository stringConstant, IMailSettingRepository mailSettingRepository)
+        #endregion
+
+        #region Constructor
+        public MailSettingController(ISingletonStringLiteral stringConstant, IMailSettingRepository mailSettingRepository)
             : base(stringConstant)
         {
             _mailSettingRepository = mailSettingRepository;
         }
+        #endregion
 
+        #region Public Methods
         /**
         * @api {get} api/mailsetting/project
         * @apiVersion 1.0.0
@@ -158,5 +164,6 @@ namespace Promact.Erp.Core.Controllers
             await _mailSettingRepository.UpdateMailSettingAsync(mailSettingAC);
             return Ok();
         }
+        #endregion
     }
 }

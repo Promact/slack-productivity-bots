@@ -1,7 +1,6 @@
 ﻿using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using Promact.Core.Repository.OauthCallsRepository;
 using System.Data.Entity;
 using NLog;
 using Newtonsoft.Json;
+using Promact.Erp.Util.StringLiteral;
 
 namespace Promact.Core.Repository.ScrumReportRepository
 {
@@ -19,19 +19,19 @@ namespace Promact.Core.Repository.ScrumReportRepository
         private readonly IRepository<Scrum> _scrumDataRepository;
         private readonly IRepository<ScrumAnswer> _scrumAnswerDataRepository;
         private readonly IOauthCallHttpContextRespository _oauthCallsRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly ILogger _logger;
         #endregion
 
         #region Constructor
         public ScrumReportRepository(IRepository<Scrum> scrumDataRepository,
-            IRepository<ScrumAnswer> scrumAnswerDataRepository, IStringConstantRepository stringConstant,
+            IRepository<ScrumAnswer> scrumAnswerDataRepository, ISingletonStringLiteral stringConstant,
             IOauthCallHttpContextRespository oauthCallsRepository)
         {
             _scrumDataRepository = scrumDataRepository;
             _scrumAnswerDataRepository = scrumAnswerDataRepository;
             _oauthCallsRepository = oauthCallsRepository;
-            _stringConstant = stringConstant;
+            _stringConstant = stringConstant.StringConstant;
             _logger = LogManager.GetLogger("ScrumReportModule");
         }
         #endregion

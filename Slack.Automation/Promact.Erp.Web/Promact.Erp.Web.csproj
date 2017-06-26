@@ -27,6 +27,10 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <CopyAllFilesToSingleFolderForPackageDependsOn>
+	BuildJs;
+	$(CopyAllFilesToSingleFolderForPackageDependsOn);      
+	</CopyAllFilesToSingleFolderForPackageDependsOn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -305,6 +309,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="rollup-config.js" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Scripts\bootstrap\dist\css\bootstrap.css" />
@@ -995,8 +1000,9 @@
     <Content Include="Views\Home\AfterLogIn.cshtml" />
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
-    <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="tslint.json" />
+    <Content Include="StringLiteral\StringLiteral.json" />
+    <Content Include="tsconfig-aot.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1215,6 +1221,7 @@
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport-List\leaveReport-List.component.spec.ts" />
     <TypeScriptCompile Include="app\leaveReport\leaveReport.service.ts" />
+    <TypeScriptCompile Include="app\main-aot.ts" />
     <TypeScriptCompile Include="app\main.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.spec.ts" />
     <TypeScriptCompile Include="app\ScrumReport\scrumProject-Details\scrumProject-Details.component.ts" />
@@ -1312,4 +1319,12 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+  <Target Name="BuildJs">
+    <ItemGroup>
+      <_CustomFiles Include="build.js" />
+      <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
+        <DestinationRelativePath>%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
 </Project>

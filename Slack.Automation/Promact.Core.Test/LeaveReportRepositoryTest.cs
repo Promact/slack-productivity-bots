@@ -8,7 +8,7 @@ using Promact.Core.Repository.ServiceRepository;
 using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace Promact.Core.Test
         private ILeaveReportRepository _leaveReportRepository;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly Mock<IHttpClientService> _mockHttpClient;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private LeaveRequest leave = new LeaveRequest();
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
         private readonly ApplicationUserManager _userManager;
@@ -40,7 +40,7 @@ namespace Promact.Core.Test
             _leaveReportRepository = _componentContext.Resolve<ILeaveReportRepository>();
             _leaveRequestRepository = _componentContext.Resolve<ILeaveRequestRepository>();
             _mockHttpClient = _componentContext.Resolve<Mock<IHttpClientService>>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
@@ -191,7 +191,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿declare var describe, it, beforeEach, expect;
+﻿declare var describe, it, beforeEach, expect, spyOn;
 import { async, inject, TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { Provider } from "@angular/core";
 import { Router, ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -53,7 +53,7 @@ describe('TaskMail Detials Tests', () => {
     it('Shows list of taskMail Details', fakeAsync(() => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent); //Create instance of component  
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };
+        activatedRoute.params = Observable.of({ UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName });
         let taskMailDetailsComponent = fixture.componentInstance;
         let result = taskMailDetailsComponent.ngOnInit();
         tick();
@@ -63,7 +63,7 @@ describe('TaskMail Detials Tests', () => {
     it('Shows details of task mail report for an employee on initialization For Admin', fakeAsync(() => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName };
+        activatedRoute.params = Observable.of({ UserId: stringConstant.userId, UserRole: stringConstant.RoleAdmin, UserName: stringConstant.userName });
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         tick();
@@ -74,7 +74,7 @@ describe('TaskMail Detials Tests', () => {
     it('Shows details of task mail report for an employee on initialization For Teamleader', fakeAsync(() => {
         let fixture = TestBed.createComponent(TaskMailDetailsComponent);
         let activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-        activatedRoute.testParams = { UserId: stringConstant.userId, UserRole: stringConstant.RoleTeamLeader, UserName: stringConstant.userName };
+        activatedRoute.params = Observable.of({ UserId: stringConstant.userId, UserRole: stringConstant.RoleTeamLeader, UserName: stringConstant.userName });
         let taskMailDetailsComponent = fixture.componentInstance;
         taskMailDetailsComponent.getTaskMailDetails();
         tick();

@@ -8,7 +8,7 @@ using Promact.Erp.DomainModel.ApplicationClass;
 using Promact.Erp.DomainModel.DataRepository;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util.HttpClient;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Promact.Core.Test
         #region Private Variable
         private IComponentContext _componentContext;
         private readonly IMailSettingRepository _mailSettingRepository;
-        private readonly IStringConstantRepository _stringConstant;
+        private readonly AppStringLiteral _stringConstant;
         private readonly ApplicationUserManager _userManager;
         private readonly Mock<HttpContextBase> _mockHttpContextBase;
         private readonly Mock<IServiceRepository> _mockServiceRepository;
@@ -42,7 +42,7 @@ namespace Promact.Core.Test
         {
             _componentContext = AutofacConfig.RegisterDependancies();
             _mailSettingRepository = _componentContext.Resolve<IMailSettingRepository>();
-            _stringConstant = _componentContext.Resolve<IStringConstantRepository>();
+            _stringConstant = _componentContext.Resolve<ISingletonStringLiteral>().StringConstant;
             _userManager = _componentContext.Resolve<ApplicationUserManager>();
             _mockHttpContextBase = _componentContext.Resolve<Mock<HttpContextBase>>();
             _mockServiceRepository = _componentContext.Resolve<Mock<IServiceRepository>>();
@@ -152,7 +152,7 @@ namespace Promact.Core.Test
             mockClaims.Setup(x => x.Claims).Returns(claims);
             _mockHttpContextBase.Setup(x => x.User.Identity).Returns(mockClaims.Object);
             var accessToken = Task.FromResult(_stringConstant.AccessTokenForTest);
-            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>())).Returns(accessToken);
+            _mockServiceRepository.Setup(x => x.GerAccessTokenByRefreshToken(It.IsAny<string>(), It.IsAny<string>())).Returns(accessToken);
         }
         #endregion
 

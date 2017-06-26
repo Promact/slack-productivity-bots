@@ -7,7 +7,8 @@ import { LoaderService } from '../../shared/loader.service';
 import { JsonToPdfService } from '../../shared/jsontopdf.service';
 
 @Component({
-    templateUrl: './app/leaveReport/leaveReport-Details/leaveReport-Details.html',
+    moduleId: module.id,
+    templateUrl: 'leaveReport-Details.html',
 })
 
 export class LeaveReportDetailsComponent implements OnInit {
@@ -28,6 +29,12 @@ export class LeaveReportDetailsComponent implements OnInit {
         this.leaveReportService.getLeaveReportDetail(this.Id)
             .subscribe(
             leaveReportDetail => {
+                if (this.leaveReportDetail !== null && this.leaveReportDetail !== undefined) {
+                    for (let index = 0; index < leaveReportDetail.length; index++) {
+                        let leave = leaveReportDetail[index];
+                        leave.Reason = this.replaceSpecialCharacter(leave.Reason);
+                    }
+                }
                 this.leaveReportDetail = leaveReportDetail;
                 if (leaveReportDetail.length !== 0) {
                     this.loader.loader = false;
@@ -63,5 +70,9 @@ export class LeaveReportDetailsComponent implements OnInit {
             ]);
         };
         this.jsPDF.exportJsonToPdf(columns, rows);
+    }
+
+    replaceSpecialCharacter(text: string) {
+        return text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
     }
 }

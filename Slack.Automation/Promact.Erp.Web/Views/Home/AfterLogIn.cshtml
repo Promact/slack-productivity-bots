@@ -10,30 +10,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Slack ERP</title>
-    <!-- Bootstrap -->
-    <link href="~/Scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Font Awesome -->
-    <link href="../../Content/css/font-awesome.min.css" rel="stylesheet">
-    <!-- Custom Theme Style -->
-    <link href="../../Content/css/custom.min.css" rel="stylesheet">
-    <link href="../../Content/css/erp-custom.css" rel="stylesheet" />
-    <link href="../../Content/Site.css" rel="stylesheet">
-    <link href="~/Content/js/nprogress/nprogress.css" rel="stylesheet" />
-    @*Polyfill(s) for older browsers*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
     <script src="node_modules/jspdf/dist/jspdf.min.js"></script>
     <script src="node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.umd.js"></script>
-    <script src="node_modules/core-js/client/shim.min.js"></script>
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <script src="systemjs.config.js"></script>
-    <!-- Theme Scripts -->
-    @Scripts.Render("~/bundles/themejs")
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.7.6/zone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reflect-metadata/0.1.9/Reflect.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.42/system.js"></script>
+    <!-- Font Awesome -->
+    @Styles.Render("~/bundles/afterlogin")
+    @Styles.Render("~/bundles/css")
+    <!--Use below commented code for debug-->
+    @*<script src="systemjs.config.js"></script>*@
     @if (@ViewBag.userEmail == "")
     {
         <script>
-            System.import('app').catch(function (err) { console.error(err); });
             var emailHashCode = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@ViewBag.emailHashCode));
         </script>
     }
@@ -52,7 +48,7 @@
         <div class="text-center" id="content">
             @Html.ActionLink("Add To Slack", "SlackOAuthAuthorization", "Home")
             @*<img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />*@
-            <p>Please add user whose email is <span>"@ViewBag.userEmail"</span>  to slack before proceeding to view reports or use app functionalities in slack.</p>
+            <p>User whose email is <span>"@ViewBag.userEmail"</span> must add app to slack before proceeding to view reports or use app functionalities in slack. Also select the channel in which you want the app to post messages to.</p>
         </div>
     </body>
 }
@@ -62,13 +58,9 @@ else
         <my-app>
             <div id="nprogress"><div class="bar" role="bar" style="transform: translate3d(-0.6%, 0px, 0px); transition: all 200ms ease;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div></div>
         </my-app>
-        <!-- jQuery -->
-        <script src="~/Scripts/jquery/dist/jquery.min.js"></script>
-        <!-- Bootstrap -->
-        <script src="~/Scripts/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="~/Content/js/nprogress/nprogress.js"></script>
-        <!-- Custom Theme Scripts -->
-        <script src="../../Content/js/custom.js"></script>
+        <script>window.module = "aot";</script>
+        <script src="~/build.js"></script>
+        @Scripts.Render("~/bundles/customjs");
     </body>
 }
 </html>

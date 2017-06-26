@@ -76,7 +76,11 @@ System.config({
         '@angular/http/testing': 'node_modules/@angular/http/bundles/http-testing.umd.js',
         '@angular/router/testing': 'node_modules/@angular/router/bundles/router-testing.umd.js',
         '@angular/forms/testing': 'node_modules/@angular/forms/bundles/forms-testing.umd.js',
-        'md2': 'node_modules/md2/bundles'
+        'md2': 'node_modules/md2/bundles',
+        '@angular/animations': 'node_modules/@angular/animations/bundles/animations.umd.js',
+        '@angular/platform-browser/animations': 'node_modules/@angular/platform-browser/bundles/platform-browser-animations.umd.js',
+        '@angular/animations/browser': 'node_modules/@angular/animations/bundles/animations-browser.umd.js',
+        '@angular/material': 'node_modules/@angular/material/bundles/material.umd.js'
     }
 });
 

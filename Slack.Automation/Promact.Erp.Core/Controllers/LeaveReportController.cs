@@ -1,7 +1,7 @@
 ﻿using Promact.Core.Repository.AttachmentRepository;
 using Promact.Core.Repository.LeaveReportRepository;
 using Promact.Erp.DomainModel.Models;
-using Promact.Erp.Util.StringConstants;
+using Promact.Erp.Util.StringLiteral;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -19,7 +19,7 @@ namespace Promact.Erp.Core.Controllers
 
         #region Constructor
         public LeaveReportController(ILeaveReportRepository leaveReport, IAttachmentRepository attachmentRepository,
-            ApplicationUserManager userManager, IStringConstantRepository stringConstant) : base(stringConstant)
+            ApplicationUserManager userManager, ISingletonStringLiteral stringConstant) : base(stringConstant)
         {
             _leaveReport = leaveReport;
             _attachmentRepository = attachmentRepository;
