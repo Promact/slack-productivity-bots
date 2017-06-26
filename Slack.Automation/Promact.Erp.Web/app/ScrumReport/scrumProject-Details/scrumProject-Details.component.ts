@@ -85,7 +85,7 @@ export class ScrumProjectDetailComponent implements OnInit {
 
     replaceSpecialCharacter(value: Array<string>) {
         for (let index = 0; index < value.length; index++) {
-            value[index].replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
+            value[index] = value[index].replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>');
         }
         return value;
     }
