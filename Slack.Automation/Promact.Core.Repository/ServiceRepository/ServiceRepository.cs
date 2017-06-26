@@ -4,6 +4,7 @@ using NLog;
 using Promact.Erp.DomainModel.Models;
 using Promact.Erp.Util;
 using Promact.Erp.Util.EnvironmentVariableRepository;
+using Promact.Erp.Util.ExceptionHandler;
 using Promact.Erp.Util.StringLiteral;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,7 +50,10 @@ namespace Promact.Core.Repository.ServiceRepository
             var requestRefreshToken = await tokenClient.RequestRefreshTokenAsync(refreshToken);
             _logger.Debug("Request RequestRefreshTokenAsync response : " + requestRefreshToken.IsError);
             _logger.Debug("Request RequestRefreshTokenAsync Error : " + requestRefreshToken.Error);
-            await UpdateExistingRefreshToken(refreshToken, requestRefreshToken.RefreshToken, userId);
+            if (!requestRefreshToken.IsError)
+                await UpdateExistingRefreshToken(refreshToken, requestRefreshToken.RefreshToken, userId);
+            else
+                throw new SessionExpiredException();
             _logger.Debug("Access Token : " + requestRefreshToken.AccessToken);
             return requestRefreshToken.AccessToken;
         }
